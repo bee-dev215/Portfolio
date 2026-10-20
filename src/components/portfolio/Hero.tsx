@@ -108,7 +108,7 @@ export default function Hero({ onResume }: { onResume: () => void }) {
             </h1>
 
             <div className="mt-8 flex items-center gap-3">
-              <div className="draw-x h-1.5 w-32 bg-signal shadow-[0_0_14px_rgba(255,107,26,.7)] sm:w-44" />
+              <div className="draw-x h-1.5 w-32 bg-signal shadow-[0_0_14px_rgba(217, 88, 13,.7)] sm:w-44" />
               <div className="draw-x hazard h-1.5 w-20 opacity-60" style={{ animationDelay: ".7s" }} />
             </div>
 

@@ -55,7 +55,7 @@
     --popover: 225 17% 8%;
     --popover-foreground: 37 18% 90%;
 
-    --primary: 22 100% 55%;
+    --primary: 22 89% 45%;
     --primary-foreground: 225 15% 5%;
 
     --secondary: 222 15% 12%;
@@ -72,16 +72,16 @@
 
     --border: 222 12% 16%;
     --input: 222 12% 16%;
-    --ring: 22 100% 55%;
+    --ring: 22 89% 45%;
 
     --sidebar-background: 225 17% 8%;
     --sidebar-foreground: 37 18% 90%;
-    --sidebar-primary: 22 100% 55%;
+    --sidebar-primary: 22 89% 45%;
     --sidebar-primary-foreground: 225 15% 5%;
     --sidebar-accent: 222 15% 12%;
     --sidebar-accent-foreground: 37 18% 90%;
     --sidebar-border: 222 12% 16%;
-    --sidebar-ring: 22 100% 55%;
+    --sidebar-ring: 22 89% 45%;
   }
 }
 
@@ -187,9 +187,9 @@
   --muted: #8d939f;
   --line: rgba(236, 232, 225, 0.12);
   --line-2: rgba(236, 232, 225, 0.24);
-  --signal: #ff6b1a;
-  --signal-deep: #e0560b;
-  --signal-hi: #ff9152;
+  --signal: #d9580d;
+  --signal-deep: #b4460a;
+  --signal-hi: #ef6a1c;
   color: var(--ink);
   font-family: 'IBM Plex Sans', system-ui, sans-serif;
   color-scheme: dark;
@@ -204,8 +204,8 @@
    Fixed, so it stays put while content scrolls. */
 .atmos { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 .atmos-glow { position: absolute; border-radius: 9999px; will-change: transform; }
-.atmos-glow.g1 { width: 70vmax; height: 70vmax; right: -24vmax; top: -30vmax; background: radial-gradient(closest-side, rgba(255, 107, 26, .16), rgba(255, 107, 26, .06) 45%, transparent); animation: drift-a 30s ease-in-out infinite alternate; }
-.atmos-glow.g2 { width: 60vmax; height: 60vmax; left: -24vmax; bottom: -30vmax; background: radial-gradient(closest-side, rgba(255, 145, 82, .09), rgba(255, 145, 82, .03) 45%, transparent); animation: drift-b 36s ease-in-out infinite alternate; }
+.atmos-glow.g1 { width: 70vmax; height: 70vmax; right: -24vmax; top: -30vmax; background: radial-gradient(closest-side, rgba(217, 88, 13, .16), rgba(217, 88, 13, .06) 45%, transparent); animation: drift-a 30s ease-in-out infinite alternate; }
+.atmos-glow.g2 { width: 60vmax; height: 60vmax; left: -24vmax; bottom: -30vmax; background: radial-gradient(closest-side, rgba(217, 88, 13, .09), rgba(217, 88, 13, .03) 45%, transparent); animation: drift-b 36s ease-in-out infinite alternate; }
 @keyframes drift-a { to { transform: translate3d(-10vw, 10vh, 0) scale(1.1); } }
 @keyframes drift-b { to { transform: translate3d(12vw, -8vh, 0) scale(.9); } }
 .atmos-grid {
@@ -224,8 +224,8 @@
 .bay { background: linear-gradient(to bottom, rgba(17, 19, 25, .92), rgba(11, 12, 15, .92)); }
 .bay-glow {
   background:
-    radial-gradient(55% 65% at 90% 0%, rgba(255, 107, 26, .14), transparent 70%),
-    radial-gradient(45% 55% at 0% 100%, rgba(255, 107, 26, .07), transparent 70%);
+    radial-gradient(55% 65% at 90% 0%, rgba(217, 88, 13, .14), transparent 70%),
+    radial-gradient(45% 55% at 0% 100%, rgba(217, 88, 13, .07), transparent 70%);
 }
 
 .site-root section[id] { scroll-margin-top: 4rem; }
@@ -267,9 +267,9 @@
 /* Segmented gauge (set --on to the number of lit cells) */
 .gauge { display: flex; gap: 3px; }
 .gauge > i { display: block; width: 7px; height: 12px; background: var(--line); transform: skewX(-18deg); }
-.gauge > i.on { background: var(--signal); box-shadow: 0 0 6px rgba(255, 107, 26, .55); }
+.gauge > i.on { background: var(--signal); box-shadow: 0 0 6px rgba(217, 88, 13, .55); }
 
-.glow-text { text-shadow: 0 0 22px rgba(255, 107, 26, .45); }
+.glow-text { text-shadow: 0 0 22px rgba(217, 88, 13, .45); }
 
 /* Machine grid backdrop */
 .bp-grid {
@@ -322,7 +322,7 @@
 
 /* Outlined surname charges up letter by letter on hover */
 .wave-fill .ch { transition: color .35s ease, text-shadow .35s ease; transition-delay: calc(var(--i, 0) * 45ms); }
-.wave-fill:hover .ch { color: var(--signal); text-shadow: 0 0 24px rgba(255, 107, 26, .5); }
+.wave-fill:hover .ch { color: var(--signal); text-shadow: 0 0 24px rgba(217, 88, 13, .5); }
 
 /* Hero parallax: --mx/--my (-1..1) and --scroll are set on .hero from JS */
 .parallax {
@@ -345,7 +345,7 @@
 .blink { animation: pf-blink 1.1s step-end infinite; }
 
 /* Scanner sweep across HUD panels */
-.scan-line { background: linear-gradient(to bottom, transparent, rgba(255, 107, 26, .12), transparent); transform: translateY(-100%); animation: scan 5s 2s cubic-bezier(.6,0,.4,1) infinite; }
+.scan-line { background: linear-gradient(to bottom, transparent, rgba(217, 88, 13, .12), transparent); transform: translateY(-100%); animation: scan 5s 2s cubic-bezier(.6,0,.4,1) infinite; }
 @keyframes scan { 0% { transform: translateY(-100%); } 45%, 100% { transform: translateY(900%); } }
 
 /* Robot arm (hero) */
@@ -355,14 +355,14 @@
 
 /* Magnetic buttons (transform is driven from JS) */
 .magnetic { transition: transform .35s cubic-bezier(.2,.8,.2,1), background-color .2s, color .2s, border-color .2s, box-shadow .2s; will-change: transform; }
-.btn-signal { box-shadow: 0 0 0 rgba(255, 107, 26, 0); }
-.btn-signal:hover { box-shadow: 0 0 28px -4px rgba(255, 107, 26, .7); }
+.btn-signal { box-shadow: 0 0 0 rgba(217, 88, 13, 0); }
+.btn-signal:hover { box-shadow: 0 0 28px -4px rgba(217, 88, 13, .7); }
 
 /* Cursor-following glow — --sx/--sy are set by MotionLayer */
 .spotlight { position: relative; isolation: isolate; }
 .spotlight::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .4s;
-  background: radial-gradient(320px circle at var(--sx, 50%) var(--sy, 50%), var(--spot, rgba(255, 107, 26, .13)), transparent 65%);
+  background: radial-gradient(320px circle at var(--sx, 50%) var(--sy, 50%), var(--spot, rgba(217, 88, 13, .13)), transparent 65%);
 }
 .spotlight:hover::before { opacity: 1; }
 
@@ -389,7 +389,7 @@
 
 /* Experience timeline nodes (lit by the scroll rail) */
 .rail-node { width: 14px; height: 14px; background: var(--paper); border: 2px solid var(--muted); transform: rotate(45deg) scale(.8); transition: transform .4s cubic-bezier(.2,.8,.2,1), background-color .3s, border-color .3s, box-shadow .3s; }
-.rail-node[data-active="true"] { background: var(--signal); border-color: var(--signal); transform: rotate(45deg) scale(1); box-shadow: 0 0 0 5px rgba(255, 107, 26, .18), 0 0 16px rgba(255, 107, 26, .6); }
+.rail-node[data-active="true"] { background: var(--signal); border-color: var(--signal); transform: rotate(45deg) scale(1); box-shadow: 0 0 0 5px rgba(217, 88, 13, .18), 0 0 16px rgba(217, 88, 13, .6); }
 
 /* Expanded job: achievements slide in one by one */
 .exp-open .exp-item { animation: slide-in-left .55s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(120ms + var(--i, 0) * 60ms); }

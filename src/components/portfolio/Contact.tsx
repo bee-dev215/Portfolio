@@ -71,7 +71,7 @@ export default function Contact() {
   };
 
   const field =
-    "w-full border bg-paper/60 px-4 py-3 text-ink placeholder:text-ink/30 outline-none transition-colors focus:border-signal focus:bg-paper focus:shadow-[0_0_0_3px_rgba(255,107,26,.15)]";
+    "w-full border bg-paper/60 px-4 py-3 text-ink placeholder:text-ink/30 outline-none transition-colors focus:border-signal focus:bg-paper focus:shadow-[0_0_0_3px_rgba(217, 88, 13,.15)]";
   const label = "mb-2 block font-code text-[11px] uppercase tracking-[0.18em] text-muted2";
 
   return (
@@ -187,7 +187,7 @@ export default function Contact() {
                     {errors.message && <p className="mt-1.5 text-xs text-red-300">{errors.message}</p>}
                   </div>
                   <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-muted2">
-                    <input type="checkbox" checked={smsOptIn} onChange={(e) => setSmsOptIn(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#ff6b1a]" />
+                    <input type="checkbox" checked={smsOptIn} onChange={(e) => setSmsOptIn(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#d9580d]" />
                     Text me updates. Msg & data rates may apply. Reply STOP to unsubscribe.
                   </label>
                   <button

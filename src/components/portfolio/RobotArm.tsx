@@ -169,21 +169,21 @@ export default function RobotArm() {
             <path d="M24 0H0V24" fill="none" stroke="rgba(236,232,225,.06)" strokeWidth="1" />
           </pattern>
           <pattern id="arm-hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <rect width="5" height="10" fill="#ff6b1a" />
+            <rect width="5" height="10" fill="#d9580d" />
           </pattern>
           <linearGradient id="arm-metal" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#2a2f39" />
             <stop offset="1" stopColor="#15181e" />
           </linearGradient>
           <radialGradient id="arm-glow">
-            <stop offset="0" stopColor="rgba(255,107,26,.35)" />
-            <stop offset="1" stopColor="rgba(255,107,26,0)" />
+            <stop offset="0" stopColor="rgba(217, 88, 13,.35)" />
+            <stop offset="1" stopColor="rgba(217, 88, 13,0)" />
           </radialGradient>
         </defs>
 
         <rect width={W} height={H} fill="url(#arm-grid)" />
         {/* reach envelope */}
-        <circle cx={BASE.x} cy={BASE.y} r={REACH} fill="none" stroke="rgba(255,107,26,.18)" strokeDasharray="2 6" />
+        <circle cx={BASE.x} cy={BASE.y} r={REACH} fill="none" stroke="rgba(217, 88, 13,.18)" strokeDasharray="2 6" />
         <circle cx={BASE.x} cy={BASE.y} r={L1} fill="none" stroke="rgba(236,232,225,.07)" strokeDasharray="2 6" />
 
         {/* floor */}
@@ -194,11 +194,11 @@ export default function RobotArm() {
         <g ref={reticle}>
           <circle r="22" fill="url(#arm-glow)" />
           <g className="arm-reticle">
-            <circle r="13" fill="none" stroke="#ff6b1a" strokeWidth="1.5" strokeDasharray="6 4" />
+            <circle r="13" fill="none" stroke="#d9580d" strokeWidth="1.5" strokeDasharray="6 4" />
           </g>
-          <path d="M-20 0h8M12 0h8M0 -20v8M0 12v8" stroke="#ff6b1a" strokeWidth="1.5" />
+          <path d="M-20 0h8M12 0h8M0 -20v8M0 12v8" stroke="#d9580d" strokeWidth="1.5" />
         </g>
-        <line ref={laser} className="arm-laser" stroke="#ff6b1a" strokeWidth="1.5" style={{ opacity: 0, transition: "opacity .2s" }} />
+        <line ref={laser} className="arm-laser" stroke="#d9580d" strokeWidth="1.5" style={{ opacity: 0, transition: "opacity .2s" }} />
 
         {/* pedestal */}
         <path d={`M${BASE.x - 52} ${BASE.y + 30} L${BASE.x - 38} ${BASE.y + 4} H${BASE.x + 38} L${BASE.x + 52} ${BASE.y + 30} Z`} fill="url(#arm-metal)" stroke="rgba(236,232,225,.3)" />
@@ -207,29 +207,29 @@ export default function RobotArm() {
         {/* link 1 (shoulder → elbow) */}
         <g ref={link1} transform={`translate(${BASE.x} ${BASE.y})`}>
           <rect x="-16" y="-15" width={L1 + 32} height="30" rx="15" fill="url(#arm-metal)" stroke="rgba(236,232,225,.35)" />
-          <line x1="18" y1="0" x2={L1 - 18} y2="0" stroke="#ff6b1a" strokeWidth="3" strokeLinecap="round" />
+          <line x1="18" y1="0" x2={L1 - 18} y2="0" stroke="#d9580d" strokeWidth="3" strokeLinecap="round" />
           <circle cx={L1 / 2 - 22} cy="-8" r="1.6" fill="rgba(236,232,225,.5)" />
           <circle cx={L1 / 2 + 22} cy="-8" r="1.6" fill="rgba(236,232,225,.5)" />
           {/* shoulder joint */}
-          <circle r="21" fill="#0b0c0f" stroke="#ff6b1a" strokeWidth="2.5" />
-          <circle r="8" fill="#ff6b1a" />
+          <circle r="21" fill="#0b0c0f" stroke="#d9580d" strokeWidth="2.5" />
+          <circle r="8" fill="#d9580d" />
 
           {/* link 2 (elbow → wrist) */}
           <g ref={link2} transform={`translate(${L1} 0)`}>
             <rect x="-12" y="-11" width={L2 + 18} height="22" rx="11" fill="url(#arm-metal)" stroke="rgba(236,232,225,.35)" />
             <rect x="22" y="-3" width={L2 - 50} height="6" fill="url(#arm-hatch)" opacity=".85" />
             {/* elbow joint */}
-            <circle r="16" fill="#0b0c0f" stroke="#ff6b1a" strokeWidth="2.5" />
-            <circle r="5.5" fill="#ff6b1a" />
+            <circle r="16" fill="#0b0c0f" stroke="#d9580d" strokeWidth="2.5" />
+            <circle r="5.5" fill="#d9580d" />
 
             {/* wrist + gripper */}
             <g transform={`translate(${L2} 0)`}>
-              <rect x="-6" y="-14" width="12" height="28" rx="2" fill="#1d212a" stroke="#ff6b1a" strokeWidth="1.5" />
+              <rect x="-6" y="-14" width="12" height="28" rx="2" fill="#1d212a" stroke="#d9580d" strokeWidth="1.5" />
               <g ref={jawA}>
-                <path d="M6 -4 H24 L30 2 H24 L22 -1 H6 Z" fill="#ff6b1a" transform="translate(0 -1) scale(1 -1)" />
+                <path d="M6 -4 H24 L30 2 H24 L22 -1 H6 Z" fill="#d9580d" transform="translate(0 -1) scale(1 -1)" />
               </g>
               <g ref={jawB}>
-                <path d="M6 -4 H24 L30 2 H24 L22 -1 H6 Z" fill="#ff6b1a" transform="translate(0 1)" />
+                <path d="M6 -4 H24 L30 2 H24 L22 -1 H6 Z" fill="#d9580d" transform="translate(0 1)" />
               </g>
             </g>
           </g>
@@ -239,7 +239,7 @@ export default function RobotArm() {
         <text x="14" y="22" fill="rgba(236,232,225,.4)" fontFamily="IBM Plex Mono, monospace" fontSize="10" letterSpacing="2">
           ENVELOPE R{REACH}
         </text>
-        <text x={W - 14} y="22" textAnchor="end" fill="rgba(255,107,26,.8)" fontFamily="IBM Plex Mono, monospace" fontSize="10" letterSpacing="2">
+        <text x={W - 14} y="22" textAnchor="end" fill="rgba(217, 88, 13,.8)" fontFamily="IBM Plex Mono, monospace" fontSize="10" letterSpacing="2">
           DOF 2 + GRIP
         </text>
       </svg>

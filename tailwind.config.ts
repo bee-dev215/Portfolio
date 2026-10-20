@@ -57,7 +57,7 @@ export default {
         // Robotics theme: "paper" = gunmetal surfaces, "ink" = light text, "signal" = industrial orange
         paper: { DEFAULT: '#0b0c0f', 2: '#111319', 3: '#181b22' },
         ink: { DEFAULT: '#ece8e1', 2: '#c8c3ba' },
-        signal: { DEFAULT: '#ff6b1a', deep: '#e0560b', hi: '#ff9152' },
+        signal: { DEFAULT: '#d9580d', deep: '#b4460a', hi: '#ef6a1c' },
         muted2: '#8d939f',
         line: 'rgba(236, 232, 225, 0.12)',
         sidebar: {

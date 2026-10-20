@@ -18,7 +18,7 @@ export default function ProjectCard({
       ref={tilt}
       onClick={() => onOpen(project)}
       data-cursor="view"
-      className="tilt hud group relative flex h-full w-full flex-col border border-line bg-paper-2/80 text-left hover:border-signal/50 hover:shadow-[0_30px_70px_-30px_rgba(255,107,26,0.45)]"
+      className="tilt hud group relative flex h-full w-full flex-col border border-line bg-paper-2/80 text-left hover:border-signal/50 hover:shadow-[0_30px_70px_-30px_rgba(217, 88, 13,0.45)]"
     >
       <div className="img-wipe relative aspect-[16/10] overflow-hidden border-b border-line bg-paper-3">
         {project.image && (
@@ -53,7 +53,7 @@ export default function ProjectCard({
           ))}
         </div>
       </div>
-      <span className="absolute inset-x-0 bottom-0 h-[2px] origin-left scale-x-0 bg-signal shadow-[0_0_12px_rgba(255,107,26,.8)] transition-transform duration-500 group-hover:scale-x-100" />
+      <span className="absolute inset-x-0 bottom-0 h-[2px] origin-left scale-x-0 bg-signal shadow-[0_0_12px_rgba(217, 88, 13,.8)] transition-transform duration-500 group-hover:scale-x-100" />
     </button>
   );
 }

@@ -74,7 +74,7 @@ export default function Navbar({ onResume }: { onResume: () => void }) {
                 <ScrambleText text={l.label} delay={300 + i * 90} duration={600} replayOnHover />
                 {/* active indicator: orange rail with a glow, pinned to the bar's bottom edge */}
                 <span
-                  className={`absolute inset-x-3 -bottom-px h-[2px] origin-center bg-signal shadow-[0_0_10px_rgba(255,107,26,.8)] transition-transform duration-300 xl:inset-x-4 ${
+                  className={`absolute inset-x-3 -bottom-px h-[2px] origin-center bg-signal shadow-[0_0_10px_rgba(217, 88, 13,.8)] transition-transform duration-300 xl:inset-x-4 ${
                     isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-50"
                   }`}
                 />

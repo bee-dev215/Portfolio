@@ -73,7 +73,7 @@ export default function About() {
                 <span className="font-code text-xs text-signal">0{i + 1} /</span>
                 <h3 className="mt-3 font-display text-2xl font-semibold uppercase tracking-wide transition-transform duration-300 group-hover:translate-x-1">{f.title}</h3>
                 <p className="mt-3 max-w-md leading-relaxed text-muted2">{f.desc}</p>
-                <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-signal shadow-[0_0_10px_rgba(255,107,26,.7)] transition-all duration-500 group-hover:w-full" />
+                <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-signal shadow-[0_0_10px_rgba(217, 88, 13,.7)] transition-all duration-500 group-hover:w-full" />
               </div>
             </Reveal>
           ))}

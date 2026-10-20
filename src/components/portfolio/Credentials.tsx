@@ -94,7 +94,7 @@ export default function Credentials() {
 
         {/* Résumé band */}
         <Reveal delay={100} variant="scale">
-          <div className="cut relative mt-24 overflow-hidden bg-signal p-8 text-paper shadow-[0_0_80px_-20px_rgba(255,107,26,.6)] sm:p-12">
+          <div className="cut relative mt-24 overflow-hidden bg-signal p-8 text-paper shadow-[0_0_80px_-20px_rgba(217, 88, 13,.6)] sm:p-12">
             <div className="grid-drift pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,#0b0c0f_1px,transparent_1px),linear-gradient(to_bottom,#0b0c0f_1px,transparent_1px)] [background-size:40px_40px]" />
             <div className="hazard-dark pointer-events-none absolute inset-x-0 top-0 h-2 opacity-60" />
             <div className="relative flex flex-col justify-between gap-8 lg:flex-row lg:items-end">

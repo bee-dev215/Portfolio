@@ -76,7 +76,7 @@ export default function Experience() {
           <span className="absolute bottom-0 left-[7px] top-0 w-px bg-ink/15 sm:left-[11px]" aria-hidden="true" />
           <span
             ref={fill}
-            className="absolute bottom-0 left-[6px] top-0 w-[3px] origin-top bg-signal shadow-[0_0_10px_rgba(255,107,26,.7)] transition-transform duration-200 ease-out sm:left-[10px]"
+            className="absolute bottom-0 left-[6px] top-0 w-[3px] origin-top bg-signal shadow-[0_0_10px_rgba(217, 88, 13,.7)] transition-transform duration-200 ease-out sm:left-[10px]"
             style={{ transform: "scaleY(0)" }}
             aria-hidden="true"
           />
