@@ -372,8 +372,8 @@
 .tilt-glare { pointer-events: none; opacity: 0; transition: opacity .4s; mix-blend-mode: soft-light; background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255,255,255,.55), transparent 55%); }
 .tilt:hover .tilt-glare { opacity: 1; }
 
-/* Image reveal: a signal panel wipes off the picture */
-.img-wipe::after { content: ""; position: absolute; inset: 0; background: var(--signal); transform-origin: right; transform: scaleX(1); transition: transform 1s cubic-bezier(.7,0,.2,1); transition-delay: calc(var(--rv-delay, 0ms) + 150ms); }
+/* Image reveal: a translucent signal panel wipes off the picture */
+.img-wipe::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(217, 88, 13, .42), rgba(217, 88, 13, .22)); backdrop-filter: saturate(.6); border-left: 2px solid rgba(217, 88, 13, .8); transform-origin: right; transform: scaleX(1); transition: transform 1s cubic-bezier(.7,0,.2,1); transition-delay: calc(var(--rv-delay, 0ms) + 150ms); }
 .rv-in .img-wipe::after { transform: scaleX(0); }
 .img-zoom { transform: scale(1.18); transition: transform 1.6s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--rv-delay, 0ms) + 150ms); }
 .rv-in .img-zoom { transform: none; }
