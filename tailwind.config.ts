@@ -54,11 +54,12 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
-        paper: { DEFAULT: '#f4f2ec', 2: '#ebe8df' },
-        ink: { DEFAULT: '#12141a', 2: '#1b1e27' },
-        signal: { DEFAULT: '#ff5b24', deep: '#c2410c' },
-        muted2: '#5b5f6b',
-        line: 'rgba(18, 20, 26, 0.14)',
+        // Robotics theme: "paper" = gunmetal surfaces, "ink" = light text, "signal" = industrial orange
+        paper: { DEFAULT: '#0b0c0f', 2: '#111319', 3: '#181b22' },
+        ink: { DEFAULT: '#ece8e1', 2: '#c8c3ba' },
+        signal: { DEFAULT: '#ff6b1a', deep: '#e0560b', hi: '#ff9152' },
+        muted2: '#8d939f',
+        line: 'rgba(236, 232, 225, 0.12)',
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',

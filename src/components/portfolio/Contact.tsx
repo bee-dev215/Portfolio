@@ -71,25 +71,25 @@ export default function Contact() {
   };
 
   const field =
-    "w-full border bg-transparent px-4 py-3 text-paper placeholder:text-white/35 outline-none transition-colors focus:border-signal focus:bg-white/[0.04]";
-  const label = "mb-2 block font-code text-[11px] uppercase tracking-[0.18em] text-white/60";
+    "w-full border bg-paper/60 px-4 py-3 text-ink placeholder:text-ink/30 outline-none transition-colors focus:border-signal focus:bg-paper focus:shadow-[0_0_0_3px_rgba(255,107,26,.15)]";
+  const label = "mb-2 block font-code text-[11px] uppercase tracking-[0.18em] text-muted2";
 
   return (
-    <section id="contact" className="site-dark relative overflow-hidden bg-ink px-5 py-24 text-paper sm:px-10 lg:px-14 lg:py-32">
-      <div className="ink-glow pointer-events-none absolute inset-0" />
+    <section id="contact" className="bay relative overflow-hidden border-t border-line px-5 py-24 sm:px-10 lg:px-14 lg:py-32">
+      <div className="bay-glow pointer-events-none absolute inset-0" />
+      <div className="hazard pointer-events-none absolute inset-x-0 top-0 h-1.5 opacity-50" />
       <div className="bp-grid-dark pointer-events-none absolute inset-0 opacity-50 [mask-image:linear-gradient(to_bottom,black,transparent_75%)]" />
-      <div className="relative">
+      <div className="relative mx-auto max-w-[1320px]">
         <SectionHeading
-          dark
           index="06"
           label="Contact"
           title={
             <>
-              Let's build something <span className="text-signal">great.</span>
+              Let's build something <span className="glow-text text-signal">great.</span>
             </>
           }
         >
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/65">
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted2">
             Have a project, role or idea in mind? Reach out directly or send a message below — I usually reply within a day.
           </p>
         </SectionHeading>
@@ -98,24 +98,24 @@ export default function Contact() {
           <div className="space-y-4">
             {socials.map((s, i) => (
               <Reveal key={s.key} delay={i * 80} variant="left">
-                <div className="spotlight group relative flex items-center gap-5 border border-white/25 p-5 transition-colors hover:border-signal">
-                  <span className="cut-sm grid h-12 w-12 shrink-0 place-items-center bg-signal text-ink transition-transform duration-300 group-hover:rotate-[-8deg] group-hover:scale-110">
+                <div className="spotlight hud group relative flex items-center gap-5 border border-line bg-paper/50 p-5 transition-colors hover:border-signal/50">
+                  <span className="cut-sm grid h-12 w-12 shrink-0 place-items-center bg-signal text-paper transition-transform duration-300 group-hover:rotate-[-8deg] group-hover:scale-110">
                     <SocialIcon name={s.key} className="h-5 w-5" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="font-code text-[11px] uppercase tracking-[0.18em] text-white/55">{s.label}</div>
+                    <div className="font-code text-[11px] uppercase tracking-[0.18em] text-muted2">{s.label}</div>
                     <a href={s.href} className="u-link mt-1 block truncate font-display text-lg font-medium tracking-wide">
                       {s.handle}
                     </a>
                   </div>
                   <button
                     onClick={() => copy(s.key, s.handle)}
-                    className="grid h-9 w-9 place-items-center text-white/60 transition-colors hover:bg-white/10 hover:text-signal"
+                    className="grid h-9 w-9 place-items-center text-muted2 transition-colors hover:bg-paper-3 hover:text-signal"
                     aria-label={`Copy ${s.label}`}
                   >
                     {copied === s.key ? <Check className="h-4 w-4 text-signal" /> : <Copy className="h-4 w-4" />}
                   </button>
-                  <a href={s.href} className="grid h-9 w-9 place-items-center text-white/60 transition-colors hover:bg-white/10 hover:text-signal" aria-label={`Open ${s.label}`}>
+                  <a href={s.href} className="grid h-9 w-9 place-items-center text-muted2 transition-colors hover:bg-paper-3 hover:text-signal" aria-label={`Open ${s.label}`}>
                     <ArrowUpRight className="h-4 w-4" />
                   </a>
                 </div>
@@ -124,14 +124,22 @@ export default function Contact() {
           </div>
 
           <Reveal delay={150} variant="right">
-            <form onSubmit={submit} noValidate className="spotlight cut border border-white/25 p-6 sm:p-8">
+            <form onSubmit={submit} noValidate className="spotlight hud border border-line bg-paper-2/70 p-6 sm:p-8">
+              <div className="-mx-6 -mt-6 mb-6 flex items-center justify-between border-b border-line px-6 py-2.5 font-code text-[10px] uppercase tracking-[0.2em] text-muted2 sm:-mx-8 sm:-mt-8 sm:px-8">
+                <span>
+                  <span className="text-signal">TX</span> // Open channel
+                </span>
+                <span className="flex items-center gap-2 text-ink">
+                  <span className="led" /> Ready
+                </span>
+              </div>
               {sent ? (
                 <div className="flex min-h-[420px] flex-col items-center justify-center text-center">
-                  <div className="cut-sm grid h-16 w-16 place-items-center bg-signal text-ink">
+                  <div className="cut-sm grid h-16 w-16 place-items-center bg-signal text-paper">
                     <Check className="h-8 w-8" />
                   </div>
                   <h3 className="mt-6 font-display text-3xl font-bold uppercase">Message received</h3>
-                  <p className="mt-3 max-w-sm text-white/65">Thanks for reaching out to {profile.firstName}. I'll get back to you shortly.</p>
+                  <p className="mt-3 max-w-sm text-muted2">Thanks for reaching out to {profile.firstName}. I'll get back to you shortly.</p>
                   <button type="button" onClick={() => setSent(false)} className="u-link mt-6 font-display text-sm font-medium uppercase tracking-wide text-signal">
                     Send another message
                   </button>
@@ -141,23 +149,23 @@ export default function Contact() {
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
                       <label htmlFor="c-name" className={label}>Name</label>
-                      <input id="c-name" value={form.name} onChange={set("name")} placeholder="Jane Doe" className={`${field} ${errors.name ? "border-red-400" : "border-white/25"}`} />
+                      <input id="c-name" value={form.name} onChange={set("name")} placeholder="Jane Doe" className={`${field} ${errors.name ? "border-red-400" : "border-line"}`} />
                       {errors.name && <p className="mt-1.5 text-xs text-red-300">{errors.name}</p>}
                     </div>
                     <div>
                       <label htmlFor="c-email" className={label}>Email</label>
-                      <input id="c-email" type="email" value={form.email} onChange={set("email")} placeholder="jane@company.com" className={`${field} ${errors.email ? "border-red-400" : "border-white/25"}`} />
+                      <input id="c-email" type="email" value={form.email} onChange={set("email")} placeholder="jane@company.com" className={`${field} ${errors.email ? "border-red-400" : "border-line"}`} />
                       {errors.email && <p className="mt-1.5 text-xs text-red-300">{errors.email}</p>}
                     </div>
                   </div>
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
                       <label htmlFor="c-phone" className={label}>Phone (optional)</label>
-                      <input id="c-phone" type="tel" value={form.phone} onChange={set("phone")} placeholder="+1 555 000 0000" className={`${field} border-white/25`} />
+                      <input id="c-phone" type="tel" value={form.phone} onChange={set("phone")} placeholder="+1 555 000 0000" className={`${field} border-line`} />
                     </div>
                     <div>
                       <label htmlFor="c-subject" className={label}>Subject</label>
-                      <select id="c-subject" value={form.subject} onChange={set("subject")} className={`${field} border-white/25 [&>option]:bg-ink`}>
+                      <select id="c-subject" value={form.subject} onChange={set("subject")} className={`${field} border-line [&>option]:bg-paper-2`}>
                         <option>Project inquiry</option>
                         <option>Full-time role</option>
                         <option>Contract work</option>
@@ -174,18 +182,18 @@ export default function Contact() {
                       value={form.message}
                       onChange={set("message")}
                       placeholder="Tell me about your project, timeline and goals..."
-                      className={`${field} resize-none ${errors.message ? "border-red-400" : "border-white/25"}`}
+                      className={`${field} resize-none ${errors.message ? "border-red-400" : "border-line"}`}
                     />
                     {errors.message && <p className="mt-1.5 text-xs text-red-300">{errors.message}</p>}
                   </div>
-                  <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-white/55">
-                    <input type="checkbox" checked={smsOptIn} onChange={(e) => setSmsOptIn(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#ff5b24]" />
+                  <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-muted2">
+                    <input type="checkbox" checked={smsOptIn} onChange={(e) => setSmsOptIn(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#ff6b1a]" />
                     Text me updates. Msg & data rates may apply. Reply STOP to unsubscribe.
                   </label>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="cut-sm flex w-full items-center justify-center gap-2 bg-signal py-4 font-display text-sm font-semibold uppercase tracking-wide text-ink transition-colors hover:bg-paper disabled:opacity-60"
+                    className="btn-signal cut-sm flex w-full items-center justify-center gap-2 bg-signal py-4 font-display text-sm font-semibold uppercase tracking-wide text-paper transition-colors hover:bg-signal-hi disabled:opacity-60"
                   >
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                     {loading ? "Sending..." : "Send message"}

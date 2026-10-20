@@ -70,14 +70,14 @@ export default function VelocityTicker({ items }: { items: string[] }) {
   }, []);
 
   return (
-    <div ref={wrap} className="relative overflow-hidden border-y border-ink bg-ink py-4 text-paper" aria-hidden="true">
+    <div ref={wrap} className="relative overflow-hidden border-y border-signal bg-signal py-3.5 text-paper" aria-hidden="true">
       <div ref={track} className="flex w-max will-change-transform">
         {[0, 1].map((n) => (
           <div key={n} className="flex shrink-0 items-center gap-8 pr-8">
             {items.map((t, i) => (
-              <span key={i} className="flex items-center gap-8 whitespace-nowrap font-display text-lg font-medium uppercase tracking-wider">
+              <span key={i} className="flex items-center gap-8 whitespace-nowrap font-display text-lg font-semibold uppercase tracking-wider">
                 {t}
-                <span className="h-2 w-2 rotate-45 bg-signal" />
+                <span className="h-2 w-2 rotate-45 bg-paper" />
               </span>
             ))}
           </div>

@@ -13,15 +13,15 @@ export default function AppLayout() {
   return (
     <div className="site-root site-bg min-h-screen antialiased">
       <div className="atmos" aria-hidden="true">
-        <div className="atmos-wash w1" />
-        <div className="atmos-wash w2" />
-        <div className="atmos-wash w3" />
-        <div className="atmos-dots" />
-        <div className="atmos-grain" />
+        <div className="atmos-glow g1" />
+        <div className="atmos-glow g2" />
+        <div className="atmos-grid" />
+        <div className="atmos-scan" />
+        <div className="atmos-vignette" />
       </div>
       <MotionLayer />
       <Navbar onResume={downloadResume} />
-      <div className="pt-16 lg:pl-64 lg:pt-0">
+      <div className="pt-16">
         <main>
           <Hero onResume={downloadResume} />
           <About />

@@ -7,7 +7,7 @@ const INTERACTIVE = "a, button, input, textarea, select, label, [role='tab']";
 /**
  * Site-wide pointer effects, mounted once:
  *  - feeds --sx/--sy to the hovered `.spotlight` element (cursor-following glow)
- *  - a blueprint crosshair cursor that trails the pointer, grows over interactive
+ *  - a targeting-reticle cursor that trails the pointer, grows over interactive
  *    elements and turns into a "View" badge over `[data-cursor="view"]`
  * The cursor is skipped on touch devices and when reduced motion is requested.
  */
@@ -101,7 +101,7 @@ export default function MotionLayer() {
         </svg>
       </div>
       <div ref={badge} className="cursor-badge">
-        <span className="cut-sm flex h-full w-full items-center justify-center gap-1 bg-signal font-display text-xs font-bold uppercase tracking-wider text-ink">
+        <span className="cut-sm flex h-full w-full items-center justify-center gap-1 bg-signal font-display text-xs font-bold uppercase tracking-wider text-paper">
           View <ArrowUpRight className="h-3.5 w-3.5" />
         </span>
       </div>

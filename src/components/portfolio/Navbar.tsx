@@ -30,8 +30,8 @@ function useScrollState() {
   return { active, progress };
 }
 
-const Monogram = ({ className = "h-11 w-11 text-lg" }: { className?: string }) => (
-  <span className={`cut-sm grid shrink-0 place-items-center bg-ink font-display font-bold tracking-tight text-signal ${className}`}>
+const Monogram = ({ className = "h-10 w-10 text-base" }: { className?: string }) => (
+  <span className={`cut-sm grid shrink-0 place-items-center bg-signal font-display font-bold tracking-tight text-paper ${className}`}>
     {profile.initials}
   </span>
 );
@@ -46,107 +46,100 @@ export default function Navbar({ onResume }: { onResume: () => void }) {
   };
 
   return (
-    <>
-      {/* Scroll progress */}
-      <div className="fixed inset-x-0 top-0 z-[60] h-[3px] bg-transparent">
-        <div className="h-full origin-left bg-signal" style={{ transform: `scaleX(${progress})` }} />
-      </div>
-
-      {/* Desktop rail */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-line bg-paper/60 px-8 py-10 backdrop-blur-sm lg:flex">
-        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex items-center gap-3 text-left">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-paper/80 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-4 px-5 sm:px-8 lg:gap-6 lg:px-10">
+        {/* Identity */}
+        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex shrink-0 items-center gap-3 text-left">
           <Monogram />
-          <span className="font-display text-sm font-semibold uppercase leading-tight tracking-wide">
-            {profile.name.split(" ")[0]}
-            <br />
-            {profile.name.split(" ")[1]}
+          <span className="hidden leading-tight sm:block lg:hidden xl:block">
+            <span className="block font-display text-sm font-semibold uppercase tracking-wide">{profile.name}</span>
+            <span className="block font-code text-[10px] uppercase tracking-[0.2em] text-muted2">Unit {profile.initials}-01 · Full-stack</span>
           </span>
         </button>
 
-        <nav className="mt-14 flex flex-col" aria-label="Primary">
+        {/* Primary nav */}
+        <nav className="mx-auto hidden h-full items-stretch lg:flex" aria-label="Primary">
           {navLinks.map((l, i) => {
             const isActive = active === l.id;
             return (
               <button
                 key={l.id}
                 onClick={() => go(l.id)}
-                className={`group relative flex items-center gap-4 border-t border-line py-3.5 text-left font-display text-[15px] font-medium uppercase tracking-wide transition-colors last:border-b ${
+                aria-current={isActive ? "true" : undefined}
+                className={`group relative flex items-center gap-1.5 px-3 font-display text-[13px] font-medium uppercase tracking-wider transition-colors xl:px-4 ${
                   isActive ? "text-ink" : "text-muted2 hover:text-ink"
                 }`}
               >
-                <span className={`absolute inset-y-0 left-0 w-[3px] origin-top bg-signal transition-transform duration-300 ${isActive ? "scale-y-100" : "scale-y-0"}`} />
-                <span className={`pl-3 font-code text-[11px] ${isActive ? "text-signal-deep" : "text-muted2"}`}>0{i + 1}</span>
-                <span className="transition-transform duration-300 group-hover:translate-x-1">
-                  <ScrambleText text={l.label} delay={400 + i * 90} duration={600} replayOnHover />
-                </span>
+                <span className={`hidden font-code text-[10px] xl:inline ${isActive ? "text-signal" : "text-muted2/70 group-hover:text-signal"}`}>0{i + 1}</span>
+                <ScrambleText text={l.label} delay={300 + i * 90} duration={600} replayOnHover />
+                {/* active indicator: orange rail with a glow, pinned to the bar's bottom edge */}
+                <span
+                  className={`absolute inset-x-3 -bottom-px h-[2px] origin-center bg-signal shadow-[0_0_10px_rgba(255,107,26,.8)] transition-transform duration-300 xl:inset-x-4 ${
+                    isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-50"
+                  }`}
+                />
               </button>
             );
           })}
         </nav>
 
-        <div className="mt-auto space-y-5">
-          <div className="flex items-center gap-2.5 font-code text-[11px] uppercase tracking-wider text-muted2">
-            <span className="relative flex h-2 w-2">
-              <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-signal" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-signal" />
-            </span>
-            {profile.availability}
-          </div>
+        {/* Status + actions */}
+        <div className="ml-auto flex items-center gap-3 lg:ml-0">
+          <span className="hidden items-center gap-2 font-code text-[10px] uppercase tracking-[0.2em] text-muted2 2xl:flex">
+            <span className="led" /> Online
+          </span>
           <button
             onClick={onResume}
-            className="cut-sm group flex w-full items-center justify-between bg-ink px-4 py-3 font-display text-sm font-semibold uppercase tracking-wide text-paper transition-colors hover:bg-signal hover:text-ink"
+            className="btn-signal cut-sm group hidden items-center gap-2 bg-signal px-4 py-2.5 font-display text-xs font-semibold uppercase tracking-wider text-paper transition-colors hover:bg-signal-hi sm:inline-flex"
           >
+            <Download className="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5" />
             Résumé
-            <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
-          </button>
-          <a href={`mailto:${profile.email}`} className="u-link block truncate font-code text-xs text-muted2 hover:text-ink">
-            {profile.email}
-          </a>
-        </div>
-      </aside>
-
-      {/* Mobile top bar */}
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-paper/90 backdrop-blur lg:hidden">
-        <div className="flex h-16 items-center justify-between px-5 sm:px-8">
-          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex items-center gap-3">
-            <Monogram className="h-9 w-9 text-sm" />
-            <span className="font-display text-sm font-semibold uppercase tracking-wide">{profile.name}</span>
           </button>
           <button
             onClick={() => setOpen((o) => !o)}
-            className="grid h-10 w-10 place-items-center border border-line"
+            className="grid h-10 w-10 place-items-center border border-line text-ink transition-colors hover:border-signal hover:text-signal lg:hidden"
             aria-label="Toggle menu"
             aria-expanded={open}
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
-        {open && (
-          <div className="fade-up border-t border-line bg-paper px-5 pb-6 pt-2 sm:px-8" style={{ animationDuration: ".3s" }}>
-            {navLinks.map((l, i) => (
-              <button
-                key={l.id}
-                onClick={() => go(l.id)}
-                className={`flex w-full items-center gap-4 border-b border-line py-4 text-left font-display text-lg font-medium uppercase ${
-                  active === l.id ? "text-signal-deep" : "text-ink"
-                }`}
-              >
-                <span className="font-code text-xs text-muted2">0{i + 1}</span>
-                {l.label}
-              </button>
-            ))}
+      </div>
+
+      {/* Scroll progress — a charge bar along the bottom edge */}
+      <div className="absolute inset-x-0 -bottom-px h-[2px]" aria-hidden="true">
+        <div className="h-full origin-left bg-signal/70" style={{ transform: `scaleX(${progress})` }} />
+      </div>
+
+      {/* Mobile menu */}
+      {open && (
+        <div className="fade-up border-t border-line bg-paper-2 px-5 pb-6 pt-2 sm:px-8 lg:hidden" style={{ animationDuration: ".3s" }}>
+          {navLinks.map((l, i) => (
             <button
-              onClick={() => {
-                setOpen(false);
-                onResume();
-              }}
-              className="cut-sm mt-5 flex w-full items-center justify-center gap-2 bg-ink py-3.5 font-display font-semibold uppercase tracking-wide text-paper"
+              key={l.id}
+              onClick={() => go(l.id)}
+              className={`flex w-full items-center gap-4 border-b border-line py-4 text-left font-display text-lg font-medium uppercase tracking-wide ${
+                active === l.id ? "text-signal" : "text-ink"
+              }`}
             >
-              <Download className="h-4 w-4" /> Download résumé
+              <span className="font-code text-xs text-muted2">0{i + 1}</span>
+              {l.label}
             </button>
+          ))}
+          <div className="mt-5 flex items-center gap-2 font-code text-[11px] uppercase tracking-[0.18em] text-muted2">
+            <span className="led" /> {profile.availability}
           </div>
-        )}
-      </header>
-    </>
+          <button
+            onClick={() => {
+              setOpen(false);
+              onResume();
+            }}
+            className="cut-sm mt-5 flex w-full items-center justify-center gap-2 bg-signal py-3.5 font-display font-semibold uppercase tracking-wide text-paper"
+          >
+            <Download className="h-4 w-4" /> Download résumé
+          </button>
+        </div>
+      )}
+    </header>
   );
 }
