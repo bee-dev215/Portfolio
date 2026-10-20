@@ -141,7 +141,7 @@ export default function Hero({ onResume }: { onResume: () => void }) {
           <div className="fade-up" style={{ animationDelay: ".9s" }}>
             <RobotArm />
             <p className="mt-3 hidden font-code text-[10px] uppercase tracking-[0.2em] text-muted2 lg:block">
-              Move the cursor to steer · hold click to grip
+              Move the cursor to steer · hold click to grab the crate, release to throw
             </p>
           </div>
         </div>
