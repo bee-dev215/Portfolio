@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Code2, ExternalLink } from "lucide-react";
 import { Project } from "@/data/portfolio";
 import { useTilt } from "@/hooks/use-motion";
 
@@ -11,15 +11,21 @@ export default function ProjectCard({
   index: number;
   onOpen: (p: Project) => void;
 }) {
-  const tilt = useTilt<HTMLButtonElement>(6);
+  const tilt = useTilt<HTMLDivElement>(6);
 
   return (
-    <button
+    <div
       ref={tilt}
-      onClick={() => onOpen(project)}
-      data-cursor="view"
       className="tilt hud group relative flex h-full w-full flex-col border border-line bg-paper-2/80 text-left hover:border-signal/50 hover:shadow-[0_30px_70px_-30px_rgba(217, 88, 13,0.45)]"
     >
+      {/* Stretched button opens the details modal; the project links sit above it */}
+      <button
+        onClick={() => onOpen(project)}
+        data-cursor="view"
+        aria-label={`View ${project.title} details`}
+        className="absolute inset-0 z-[1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+      />
+
       <div className="img-wipe relative aspect-[16/10] overflow-hidden border-b border-line bg-paper-3">
         {project.image && (
           <div className="img-zoom h-full w-full">
@@ -52,8 +58,33 @@ export default function ProjectCard({
             </span>
           ))}
         </div>
+
+        {(project.liveUrl || project.repoUrl) && (
+          <div className="relative z-[2] mt-5 flex gap-2 border-t border-line pt-5">
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cut-sm flex items-center gap-2 bg-signal px-4 py-2 font-display text-sm font-semibold uppercase tracking-wide text-paper transition-colors hover:bg-signal-hi"
+              >
+                <ExternalLink className="h-4 w-4" /> Live site
+              </a>
+            )}
+            {project.repoUrl && (
+              <a
+                href={project.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 border border-line px-4 py-2 font-display text-sm font-semibold uppercase tracking-wide transition-colors hover:border-signal hover:text-signal"
+              >
+                <Code2 className="h-4 w-4" /> Code
+              </a>
+            )}
+          </div>
+        )}
       </div>
       <span className="absolute inset-x-0 bottom-0 h-[2px] origin-left scale-x-0 bg-signal shadow-[0_0_12px_rgba(217, 88, 13,.8)] transition-transform duration-500 group-hover:scale-x-100" />
-    </button>
+    </div>
   );
 }
