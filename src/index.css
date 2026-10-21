@@ -46,42 +46,42 @@
   }
 
   .dark {
-    --background: 225 15% 5%;
-    --foreground: 37 18% 90%;
+    --background: 24 44% 4%;
+    --foreground: 29 62% 91%;
 
-    --card: 225 17% 8%;
-    --card-foreground: 37 18% 90%;
+    --card: 22 47% 6%;
+    --card-foreground: 29 62% 91%;
 
-    --popover: 225 17% 8%;
-    --popover-foreground: 37 18% 90%;
+    --popover: 22 47% 6%;
+    --popover-foreground: 29 62% 91%;
 
-    --primary: 22 89% 45%;
-    --primary-foreground: 225 15% 5%;
+    --primary: 21 84% 36%;
+    --primary-foreground: 29 62% 91%;
 
-    --secondary: 222 15% 12%;
-    --secondary-foreground: 37 18% 90%;
+    --secondary: 24 46% 9%;
+    --secondary-foreground: 29 62% 91%;
 
-    --muted: 222 15% 12%;
-    --muted-foreground: 220 8% 59%;
+    --muted: 24 46% 9%;
+    --muted-foreground: 26 18% 57%;
 
-    --accent: 222 15% 12%;
-    --accent-foreground: 37 18% 90%;
+    --accent: 24 46% 9%;
+    --accent-foreground: 29 62% 91%;
 
     --destructive: 0 62.8% 45%;
-    --destructive-foreground: 37 18% 90%;
+    --destructive-foreground: 29 62% 91%;
 
-    --border: 222 12% 16%;
-    --input: 222 12% 16%;
-    --ring: 22 89% 45%;
+    --border: 24 20% 13%;
+    --input: 24 20% 13%;
+    --ring: 21 84% 36%;
 
-    --sidebar-background: 225 17% 8%;
-    --sidebar-foreground: 37 18% 90%;
-    --sidebar-primary: 22 89% 45%;
-    --sidebar-primary-foreground: 225 15% 5%;
-    --sidebar-accent: 222 15% 12%;
-    --sidebar-accent-foreground: 37 18% 90%;
-    --sidebar-border: 222 12% 16%;
-    --sidebar-ring: 22 89% 45%;
+    --sidebar-background: 22 47% 6%;
+    --sidebar-foreground: 29 62% 91%;
+    --sidebar-primary: 21 84% 36%;
+    --sidebar-primary-foreground: 29 62% 91%;
+    --sidebar-accent: 24 46% 9%;
+    --sidebar-accent-foreground: 29 62% 91%;
+    --sidebar-border: 24 20% 13%;
+    --sidebar-ring: 21 84% 36%;
   }
 }
 
@@ -178,18 +178,34 @@
 /* ============================================================
    PUBLIC SITE — "Robotics" design system (dark gunmetal / industrial orange)
    (the admin keeps the .pf-* styles above)
+
+   Motion language — machines, not mobiles: things travel on one axis, accelerate and brake
+   firmly, and stop dead on their mark. No overshoot, drift, float, tilt or lag. Continuous
+   motion is either constant-speed (conveyors, scanners) or stepped (dials, LEDs).
+
+   Depth — solid hardware lit from above by a furnace glow: plates have a bevelled top edge,
+   an orange-brown side face and a cast shadow; keys travel when pressed; display type is
+   extruded. 3D is rigid: nothing tilts after the cursor.
    ============================================================ */
 .site-root {
-  --paper: #0b0c0f;
-  --paper-2: #111319;
-  --paper-3: #181b22;
-  --ink: #ece8e1;
-  --muted: #8d939f;
-  --line: rgba(236, 232, 225, 0.12);
-  --line-2: rgba(236, 232, 225, 0.24);
-  --signal: #d9580d;
-  --signal-deep: #b4460a;
-  --signal-hi: #ef6a1c;
+  --paper: #0d0805;
+  --paper-2: #160d08;
+  --paper-3: #20130b;
+  --ink: #f6e7d8;
+  --muted: #a8907d;
+  --line: rgba(246, 231, 216, 0.11);
+  --line-2: rgba(246, 231, 216, 0.22);
+  /* dark burnt orange for fills, bars and borders (light text sits on it); copper for orange text on dark */
+  --signal: #a8440f;
+  --signal-deep: #7c300a;
+  --signal-hi: #b9511a;
+  --signal-hot: #c4561a;
+  --copper: #bd5f26;
+  --copper-hi: #cc7139;
+  --ember: #2c1307; /* plate side faces */
+  --edge: #050201; /* the line where a plate meets its seat */
+  --ease-servo: cubic-bezier(.7, 0, .2, 1); /* firm acceleration, firm braking */
+  --ease-lock: cubic-bezier(.2, 0, 0, 1); /* fast travel, hard stop */
   color: var(--ink);
   font-family: 'IBM Plex Sans', system-ui, sans-serif;
   color-scheme: dark;
@@ -200,44 +216,49 @@
 }
 .site-bg { background: var(--paper); }
 
-/* Ambient backdrop: furnace glow, machine grid, CRT scanlines and a vignette.
-   Fixed, so it stays put while content scrolls. */
+/* Boot hand-off: index.html's boot screen sets <html data-boot="pending">; nothing moves behind the closed doors */
+html[data-boot="pending"] .site-root * { animation-play-state: paused; }
+
+/* Ambient backdrop: furnace glow, heat rising off the floor, machine grid, CRT scanlines and a vignette.
+   Fixed and still, so it stays put while content scrolls. */
 .atmos { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
-.atmos-glow { position: absolute; border-radius: 9999px; will-change: transform; }
-.atmos-glow.g1 { width: 70vmax; height: 70vmax; right: -24vmax; top: -30vmax; background: radial-gradient(closest-side, rgba(217, 88, 13, .16), rgba(217, 88, 13, .06) 45%, transparent); animation: drift-a 30s ease-in-out infinite alternate; }
-.atmos-glow.g2 { width: 60vmax; height: 60vmax; left: -24vmax; bottom: -30vmax; background: radial-gradient(closest-side, rgba(217, 88, 13, .09), rgba(217, 88, 13, .03) 45%, transparent); animation: drift-b 36s ease-in-out infinite alternate; }
-@keyframes drift-a { to { transform: translate3d(-10vw, 10vh, 0) scale(1.1); } }
-@keyframes drift-b { to { transform: translate3d(12vw, -8vh, 0) scale(.9); } }
+.atmos-glow { position: absolute; border-radius: 9999px; }
+.atmos-glow.g1 { width: 70vmax; height: 70vmax; right: -24vmax; top: -30vmax; background: radial-gradient(closest-side, rgba(168, 68, 15, .16), rgba(168, 68, 15, .05) 45%, transparent); }
+.atmos-glow.g2 { width: 60vmax; height: 60vmax; left: -24vmax; bottom: -30vmax; background: radial-gradient(closest-side, rgba(168, 68, 15, .09), rgba(168, 68, 15, .03) 45%, transparent); }
+.atmos-heat { position: absolute; inset: auto 0 0 0; height: 45vh; background: linear-gradient(to top, rgba(168, 68, 15, .07), rgba(168, 68, 15, .02) 45%, transparent); }
 .atmos-grid {
   position: absolute; inset: 0;
   background-image:
-    linear-gradient(to right, rgba(236, 232, 225, .035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(236, 232, 225, .035) 1px, transparent 1px);
+    linear-gradient(to right, rgba(246, 231, 216, .03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(246, 231, 216, .03) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 25%, transparent 90%);
   -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 25%, transparent 90%);
 }
 .atmos-scan { position: absolute; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0 3px, rgba(0, 0, 0, .18) 3px 4px); opacity: .5; }
-.atmos-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, .55)); }
+.atmos-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 50%, rgba(6, 2, 0, .72)); }
 
-/* Recessed "bay" sections (skills, contact) */
-.bay { background: linear-gradient(to bottom, rgba(17, 19, 25, .92), rgba(11, 12, 15, .92)); }
+/* Recessed "bay" sections (skills, contact): sunk below the page, shadowed under their top and bottom lips */
+.bay {
+  background: linear-gradient(to bottom, rgba(20, 13, 9, .94), rgba(13, 8, 5, .94));
+  box-shadow: inset 0 30px 40px -28px rgba(0, 0, 0, .95), inset 0 -30px 40px -28px rgba(0, 0, 0, .95);
+}
 .bay-glow {
   background:
-    radial-gradient(55% 65% at 90% 0%, rgba(217, 88, 13, .14), transparent 70%),
-    radial-gradient(45% 55% at 0% 100%, rgba(217, 88, 13, .07), transparent 70%);
+    radial-gradient(55% 65% at 90% 0%, rgba(168, 68, 15, .11), transparent 70%),
+    radial-gradient(45% 55% at 0% 100%, rgba(168, 68, 15, .05), transparent 70%);
 }
 
 .site-root section[id] { scroll-margin-top: 4rem; }
-.site-root ::selection { background: var(--signal); color: var(--paper); }
-.site-root :focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+.site-root ::selection { background: var(--signal); color: var(--ink); }
+.site-root :focus-visible { outline: 2px solid var(--copper); outline-offset: 3px; }
 
 /* Cut corners (machined silhouette) */
 .cut { clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px)); }
 .cut-sm { clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }
 .cut-tr { clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%); }
 
-/* HUD frame: orange corner brackets that spread out on hover ("target lock") */
+/* HUD frame: orange corner brackets that snap outward on hover ("target lock") */
 .hud { position: relative; }
 .hud::after {
   content: ""; position: absolute; inset: -1px; pointer-events: none;
@@ -252,24 +273,87 @@
     linear-gradient(var(--c), var(--c)) right bottom / var(--l) var(--w),
     linear-gradient(var(--c), var(--c)) right bottom / var(--w) var(--l);
   background-repeat: no-repeat;
-  transition: inset .35s cubic-bezier(.2,.8,.2,1);
+  transition: inset .2s var(--ease-lock);
 }
 .hud:hover::after, .hud:focus-within::after { inset: -6px; }
+
+/* ---------- Depth ---------- */
+/* Machined plate: bevelled top edge, a solid orange-brown side face (its thickness) and a cast shadow.
+   Sets only background-image, so a bg-* colour utility still applies. */
+.plate {
+  --side: 3px;
+  background-image: linear-gradient(to bottom, rgba(246, 231, 216, .035), transparent 40%);
+  box-shadow:
+    inset 0 1px 0 rgba(246, 231, 216, .09),
+    inset 0 -1px 0 rgba(0, 0, 0, .55),
+    0 var(--side) 0 var(--ember),
+    0 calc(var(--side) + 1px) 0 var(--edge),
+    0 calc(var(--side) + 24px) 40px -18px rgba(0, 0, 0, .9),
+    0 26px 60px -34px rgba(168, 68, 15, .18);
+}
+/* Actuated plate (clickable cards): rises a fixed 4px out of its seat on hover, showing more side face.
+   The base edge stays put, so it reads as a block extending, not a card floating */
+.plate-lift { --rise: 0px; transform: translateY(calc(var(--rise) * -1)); transition: transform .22s var(--ease-lock), box-shadow .22s var(--ease-lock), border-color .2s; }
+.plate-lift:hover { --rise: 4px; --side: 7px; }
+
+/* Keycaps. Inset shadows only: the cut-corner clip-path would clip anything drawn outside the key */
+.bevel, .btn-signal {
+  background-image: linear-gradient(to bottom, rgba(255, 190, 140, .11), rgba(255, 255, 255, 0) 48%, rgba(30, 10, 2, .25));
+  box-shadow: inset 0 1px 0 rgba(255, 200, 160, .26), inset 0 -4px 0 rgba(36, 12, 3, .75);
+}
+.btn-signal { text-shadow: 0 1px 0 rgba(36, 12, 3, .5); }
+.btn-signal:hover { box-shadow: inset 0 1px 0 rgba(255, 200, 160, .34), inset 0 -4px 0 rgba(36, 12, 3, .75), inset 0 0 18px rgba(255, 150, 80, .12); }
+.key-dark {
+  background-image: linear-gradient(to bottom, rgba(246, 231, 216, .05), transparent 55%);
+  box-shadow: inset 0 1px 0 rgba(246, 231, 216, .09), inset 0 -3px 0 rgba(0, 0, 0, .6);
+}
+/* Flush cells in a shared grid: a hairline bevel so each reads as its own panel */
+.bevel-cell { box-shadow: inset 0 1px 0 rgba(246, 231, 216, .05), inset 0 -1px 0 rgba(0, 0, 0, .45); }
+
+/* Extruded display type: stacked hard drop-shadows build a dark burnt-orange block under the face, then a
+   cast shadow. Sits on the line/heading wrapper so the reveal masks don't clip it; em steps scale with the type */
+.extrude { filter: drop-shadow(.012em .012em 0 #5e2508) drop-shadow(.012em .012em 0 #4a1d07) drop-shadow(.012em .012em 0 #381605) drop-shadow(.012em .012em 0 #271004) drop-shadow(.012em .012em 0 #1a0b03) drop-shadow(.03em .08em .1em rgba(0, 0, 0, .7)); }
+.extrude-sm { filter: drop-shadow(0 .02em 0 #4a1d07) drop-shadow(0 .02em 0 #331405) drop-shadow(0 .02em 0 #1f0c03) drop-shadow(0 .14em .16em rgba(0, 0, 0, .6)); }
+
+/* Hero factory floor: a perspective grid receding to a lit horizon, running toward the viewer at a constant rate.
+   The plane only ever moves by transform (compositor, no repaint); the fade is a flat mask on the viewport around it */
+/* Anchored to the telemetry strip: the horizon sits just under the hero content, the floor runs full-bleed
+   under the strip and on past the hero's bottom edge (clipped there) */
+.floor3d { position: absolute; top: -36px; bottom: -220px; left: calc(50% - 50vw); width: 100vw; pointer-events: none; }
+.floor3d > div {
+  position: absolute; inset: 0; overflow: hidden; perspective: 380px; perspective-origin: 50% 0;
+  mask-image: linear-gradient(to bottom, transparent, #000 80px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 80px);
+}
+.floor3d > div::before {
+  content: ""; position: absolute; left: -70%; right: -70%; bottom: 0; height: 1600px;
+  transform-origin: 50% 100%; transform: rotateX(90deg);
+  background-image:
+    linear-gradient(to right, rgba(168, 68, 15, .42) 1.5px, transparent 1.5px),
+    linear-gradient(to bottom, rgba(168, 68, 15, .42) 1.5px, transparent 1.5px);
+  background-size: 72px 72px;
+  background-position: 50% 0;
+  animation: floor-run 2.6s linear infinite;
+  will-change: transform;
+}
+.floor3d::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: linear-gradient(to right, transparent, rgba(185, 81, 26, .45) 30%, rgba(185, 81, 26, .45) 70%, transparent); box-shadow: 0 0 24px 6px rgba(168, 68, 15, .12); }
+@keyframes floor-run { from { transform: rotateX(90deg) translateY(0); } to { transform: rotateX(90deg) translateY(72px); } }
 
 /* Caution stripes */
 .hazard { background: repeating-linear-gradient(-45deg, var(--signal) 0 8px, transparent 8px 16px); }
 .hazard-dark { background: repeating-linear-gradient(-45deg, var(--paper) 0 8px, transparent 8px 16px); }
 
-/* Status LED */
-.led { position: relative; display: inline-flex; width: 8px; height: 8px; border-radius: 9999px; background: var(--signal); box-shadow: 0 0 10px var(--signal); }
-.led::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--signal); animation: pulse-ring 2s ease-out infinite; }
+/* Status LED: a domed lamp with a hard double-blink heartbeat, like a controller's run light */
+.led { position: relative; display: inline-flex; width: 8px; height: 8px; border-radius: 9999px; background: radial-gradient(circle at 35% 30%, #e0a47a, var(--signal-hi) 35%, var(--signal) 62%, #4a1c05); box-shadow: 0 0 6px rgba(168, 68, 15, .8); animation: led-beat 2.4s step-end infinite; }
+.led-sm { width: 6px; height: 6px; box-shadow: 0 0 4px rgba(168, 68, 15, .8); }
+@keyframes led-beat { 0%, 100% { opacity: 1; } 84% { opacity: .25; } 88% { opacity: 1; } 92% { opacity: .25; } 96% { opacity: 1; } }
 
 /* Segmented gauge (set --on to the number of lit cells) */
 .gauge { display: flex; gap: 3px; }
-.gauge > i { display: block; width: 7px; height: 12px; background: var(--line); transform: skewX(-18deg); }
-.gauge > i.on { background: var(--signal); box-shadow: 0 0 6px rgba(217, 88, 13, .55); }
+.gauge > i { display: block; width: 7px; height: 12px; background: var(--line); transform: skewX(-18deg); box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .4); }
+.gauge > i.on { background: linear-gradient(to bottom, var(--signal-hi), var(--signal)); box-shadow: inset 0 -2px 0 rgba(36, 12, 3, .7), 0 0 6px rgba(168, 68, 15, .4); }
 
-.glow-text { text-shadow: 0 0 22px rgba(217, 88, 13, .45); }
+.glow-text { text-shadow: 0 0 18px rgba(168, 68, 15, .3); }
 
 /* Machine grid backdrop */
 .bp-grid {
@@ -278,13 +362,14 @@
     linear-gradient(to bottom, var(--line) 1px, transparent 1px);
   background-size: 56px 56px;
   opacity: .55;
-  mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
+  /* the back wall: fades out where the hero's floor (.floor3d) meets the horizon */
+  mask-image: linear-gradient(to bottom, black 0%, transparent 72%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 72%);
 }
 .bp-grid-dark {
   background-image:
-    linear-gradient(to right, rgba(236, 232, 225, .06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(236, 232, 225, .06) 1px, transparent 1px);
+    linear-gradient(to right, rgba(246, 231, 216, .045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(246, 231, 216, .045) 1px, transparent 1px);
   background-size: 56px 56px;
 }
 
@@ -292,150 +377,144 @@
 .text-outline { color: transparent; -webkit-text-stroke: 2px var(--ink); }
 @media (min-width: 1024px) { .text-outline { -webkit-text-stroke-width: 2.5px; } }
 
-/* Scroll reveal (variants: up · left · right · scale · clip) */
-.rv { opacity: 0; transform: translateY(18px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
-.rv-left { transform: translateX(-32px); }
-.rv-right { transform: translateX(32px); }
-.rv-scale { transform: scale(.94); }
+/* Scroll reveal, as rigid 3D hinges that stop hard: up = stands up off its bottom edge,
+   left/right = swings shut on a side hinge, scale = docks forward from depth, clip = shutter wipe */
+.rv { opacity: 0; transform: perspective(1200px) translateY(18px) rotateX(16deg); transform-origin: 50% 100%; transition: opacity .5s var(--ease-lock), transform .6s var(--ease-lock); }
+.rv-left { transform: perspective(1200px) rotateY(16deg); transform-origin: 0 50%; }
+.rv-right { transform: perspective(1200px) rotateY(-16deg); transform-origin: 100% 50%; }
+.rv-scale { transform: perspective(1200px) translateZ(-120px); transform-origin: 50% 50%; }
 /* clip the child, not the observed wrapper: IntersectionObserver ignores fully clipped targets */
 .rv-clip { opacity: 1; transform: none; }
-.rv-clip > * { clip-path: inset(0 0 100% 0); transition: clip-path 1s cubic-bezier(.7,0,.2,1); transition-delay: var(--rv-delay, 0ms); }
+.rv-clip > * { clip-path: inset(0 0 100% 0); transition: clip-path .7s var(--ease-servo); transition-delay: var(--rv-delay, 0ms); }
 .rv.rv-in { opacity: 1; transform: none; }
 .rv-clip.rv-in > * { clip-path: inset(-24px); }
 
 /* Section heading: hairline draws in, title rises out of a mask */
-.rv-line { transform-origin: left; transform: scaleX(0); transition: transform 1.1s .25s cubic-bezier(.2,.8,.2,1); }
+.rv-line { transform-origin: left; transform: scaleX(0); transition: transform .7s .2s var(--ease-servo); }
 .rv-in .rv-line { transform: scaleX(1); }
 .rv-mask { overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
-.rv-mask > span { display: block; transform: translateY(105%); transition: transform 1s .1s cubic-bezier(.2,.8,.2,1); }
+.rv-mask > span { display: block; transform: translateY(105%); transition: transform .65s .1s var(--ease-lock); }
 .rv-in .rv-mask > span { transform: none; }
 
+/* Navbar docks in from above once the boot doors part */
+.dock-in { animation: dock .5s .25s var(--ease-lock) both; }
+@keyframes dock { from { transform: translateY(-100%); } }
+
 /* Hero entrance */
-.mask-line { display: block; overflow: hidden; }
-.mask-line > .ch { display: inline-block; transform: translateY(110%); animation: rise .9s cubic-bezier(.2,.8,.2,1) forwards; }
+/* (padding leaves room inside the mask for the extruded face's descent) */
+.mask-line { display: block; overflow: hidden; padding-bottom: .04em; margin-bottom: -.04em; }
+.mask-line > .ch { display: inline-block; transform: translateY(110%); animation: rise .6s var(--ease-lock) forwards; }
 @keyframes rise { to { transform: none; } }
-.draw-x { transform-origin: left; transform: scaleX(0); animation: draw 1s .5s cubic-bezier(.2,.8,.2,1) forwards; }
+.draw-x { transform-origin: left; transform: scaleX(0); animation: draw .6s .5s var(--ease-servo) forwards; }
 @keyframes draw { to { transform: scaleX(1); } }
-.fade-up { opacity: 0; transform: translateY(14px); animation: fadeup .8s cubic-bezier(.2,.8,.2,1) forwards; }
+.fade-up { opacity: 0; transform: translateY(12px); animation: fadeup .55s var(--ease-lock) forwards; }
 @keyframes fadeup { to { opacity: 1; transform: none; } }
-.spec-row { opacity: 0; transform: translateX(-10px); animation: fadeup .6s cubic-bezier(.2,.8,.2,1) forwards; }
+.spec-row { opacity: 0; transform: translateX(-10px); animation: fadeup .4s var(--ease-lock) forwards; }
 
 /* Outlined surname charges up letter by letter on hover */
 .wave-fill .ch { transition: color .35s ease, text-shadow .35s ease; transition-delay: calc(var(--i, 0) * 45ms); }
-.wave-fill:hover .ch { color: var(--signal); text-shadow: 0 0 24px rgba(217, 88, 13, .5); }
+.wave-fill:hover .ch { color: var(--copper); text-shadow: 0 0 18px rgba(168, 68, 15, .3); }
 
-/* Hero parallax: --mx/--my (-1..1) and --scroll are set on .hero from JS */
-.parallax {
-  transform: translate3d(
-    calc(var(--mx, 0) * var(--depth, 0) * 1px),
-    calc(var(--my, 0) * var(--depth, 0) * 1px + var(--scroll, 0px) * var(--scroll-rate, 0)),
-    0
-  );
-  transition: transform .7s cubic-bezier(.2,.8,.2,1);
-  will-change: transform;
-}
 .crosshair { position: relative; display: inline-block; width: 22px; height: 22px; vertical-align: middle; }
 .crosshair::before, .crosshair::after { content: ""; position: absolute; background: var(--signal); opacity: .6; }
 .crosshair::before { left: 50%; top: 0; bottom: 0; width: 1px; }
 .crosshair::after { top: 50%; left: 0; right: 0; height: 1px; }
-.spin-slow { animation: spin-slow 28s linear infinite; }
-@keyframes spin-slow { to { transform: rotate(360deg); } }
-.float-y { animation: float-y 5s ease-in-out infinite; }
-@keyframes float-y { 50% { transform: translateY(-12px); } }
+/* Hero crosshair: snaps to the machine-grid node nearest the pointer (positioned from Hero) */
+.crosshair.hero-snap { position: absolute; left: -11px; top: -11px; opacity: 0; transition: transform .14s var(--ease-lock), opacity .2s; }
+.crosshair.hero-snap::before, .crosshair.hero-snap::after { opacity: .9; }
+
+/* Stepper rotation: indexes in discrete ticks like a motor — never a smooth spin */
+.spin-step { animation: spin 30s steps(60) infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .blink { animation: pf-blink 1.1s step-end infinite; }
 
 /* Scanner sweep across HUD panels */
-.scan-line { background: linear-gradient(to bottom, transparent, rgba(217, 88, 13, .12), transparent); transform: translateY(-100%); animation: scan 5s 2s cubic-bezier(.6,0,.4,1) infinite; }
+.scan-line { background: linear-gradient(to bottom, transparent, rgba(168, 68, 15, .12), transparent); transform: translateY(-100%); animation: scan 5s 2s cubic-bezier(.6,0,.4,1) infinite; }
 @keyframes scan { 0% { transform: translateY(-100%); } 45%, 100% { transform: translateY(900%); } }
 
 /* Robot arm (hero) */
-.arm-reticle { transform-box: fill-box; transform-origin: center; animation: spin-slow 6s linear infinite; }
+.arm-reticle { transform-box: fill-box; transform-origin: center; animation: spin 6s steps(24) infinite; }
 .arm-laser { stroke-dasharray: 4 6; animation: laser 0.6s linear infinite; }
 @keyframes laser { to { stroke-dashoffset: -10; } }
 
-/* Magnetic buttons (transform is driven from JS) */
-.magnetic { transition: transform .35s cubic-bezier(.2,.8,.2,1), background-color .2s, color .2s, border-color .2s, box-shadow .2s; will-change: transform; }
-.btn-signal { box-shadow: 0 0 0 rgba(217, 88, 13, 0); }
-.btn-signal:hover { box-shadow: 0 0 28px -4px rgba(217, 88, 13, .7); }
+/* Key travel: buttons bottom out 2px while pressed and the keycap lip compresses */
+.press { transition: transform .06s linear, box-shadow .06s linear, background-color .2s, color .2s, border-color .2s; }
+.press:active { transform: translateY(2px); }
+.press.btn-signal:active { box-shadow: inset 0 1px 0 rgba(255, 200, 160, .14), inset 0 -1px 0 rgba(36, 12, 3, .75), inset 0 3px 8px rgba(36, 12, 3, .55); }
+.press.key-dark:active { box-shadow: inset 0 2px 5px rgba(0, 0, 0, .7); }
 
 /* Cursor-following glow — --sx/--sy are set by MotionLayer */
 .spotlight { position: relative; isolation: isolate; }
 .spotlight::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .4s;
-  background: radial-gradient(320px circle at var(--sx, 50%) var(--sy, 50%), var(--spot, rgba(217, 88, 13, .13)), transparent 65%);
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .25s;
+  background: radial-gradient(320px circle at var(--sx, 50%) var(--sy, 50%), var(--spot, rgba(168, 68, 15, .1)), transparent 65%);
 }
 .spotlight:hover::before { opacity: 1; }
 
-/* 3D tilt cards (--rx/--ry/--gx/--gy set by useTilt) */
-.tilt { transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px)); transition: transform .6s cubic-bezier(.2,.8,.2,1), border-color .3s, box-shadow .3s; will-change: transform; }
-.tilt:hover { --lift: -6px; transition-duration: .2s, .3s, .3s; }
-.tilt-glare { pointer-events: none; opacity: 0; transition: opacity .4s; mix-blend-mode: soft-light; background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255,255,255,.55), transparent 55%); }
-.tilt:hover .tilt-glare { opacity: 1; }
-
 /* Image reveal: a translucent signal panel wipes off the picture */
-.img-wipe::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(217, 88, 13, .42), rgba(217, 88, 13, .22)); backdrop-filter: saturate(.6); border-left: 2px solid rgba(217, 88, 13, .8); transform-origin: right; transform: scaleX(1); transition: transform 1s cubic-bezier(.7,0,.2,1); transition-delay: calc(var(--rv-delay, 0ms) + 150ms); }
+.img-wipe::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(124, 48, 10, .5), rgba(124, 48, 10, .28)); backdrop-filter: saturate(.6); border-left: 2px solid rgba(168, 68, 15, .8); transform-origin: right; transform: scaleX(1); transition: transform .7s var(--ease-servo); transition-delay: calc(var(--rv-delay, 0ms) + 150ms); }
 .rv-in .img-wipe::after { transform: scaleX(0); }
-.img-zoom { transform: scale(1.18); transition: transform 1.6s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--rv-delay, 0ms) + 150ms); }
+.img-zoom { transform: scale(1.06); transition: transform .9s var(--ease-lock); transition-delay: calc(var(--rv-delay, 0ms) + 150ms); }
 .rv-in .img-zoom { transform: none; }
+/* Hover scan: one constant-speed pass of the scanner bar down the picture */
+.img-scan { pointer-events: none; transform: translateY(-100%); background: linear-gradient(to bottom, transparent 60%, rgba(168, 68, 15, .14) calc(100% - 2px), var(--signal-hi) calc(100% - 2px)); }
+.group:hover .img-scan { animation: scan-once .6s linear; }
+@keyframes scan-once { 85% { opacity: 1; } to { transform: none; opacity: 0; } }
 
-/* Staggered children (set --i on each child) */
-.stagger > * { opacity: 0; translate: 0 10px; scale: .96; } /* translate/scale props so hover transforms still compose */
-.rv-in .stagger > *, .stagger.is-in > * { animation: pop-in .5s cubic-bezier(.2,.8,.2,1) forwards; animation-delay: calc(var(--rv-delay, 0ms) + 200ms + var(--i, 0) * 45ms); }
-@keyframes pop-in { to { opacity: 1; translate: none; scale: none; } }
-
-/* Slowly drifting grid (résumé band) */
-.grid-drift { animation: grid-drift 14s linear infinite; }
-@keyframes grid-drift { to { background-position: 40px 40px; } }
+/* Staggered children (set --i on each child): racked in one by one along a single axis */
+.stagger > * { opacity: 0; translate: -8px 0; } /* translate prop so hover transforms still compose */
+.rv-in .stagger > *, .stagger.is-in > * { animation: rack-in .3s var(--ease-lock) forwards; animation-delay: calc(var(--rv-delay, 0ms) + 200ms + var(--i, 0) * 45ms); }
+@keyframes rack-in { to { opacity: 1; translate: none; } }
 
 /* Experience timeline nodes (lit by the scroll rail) */
-.rail-node { width: 14px; height: 14px; background: var(--paper); border: 2px solid var(--muted); transform: rotate(45deg) scale(.8); transition: transform .4s cubic-bezier(.2,.8,.2,1), background-color .3s, border-color .3s, box-shadow .3s; }
-.rail-node[data-active="true"] { background: var(--signal); border-color: var(--signal); transform: rotate(45deg) scale(1); box-shadow: 0 0 0 5px rgba(217, 88, 13, .18), 0 0 16px rgba(217, 88, 13, .6); }
+.rail-node { width: 14px; height: 14px; background: var(--paper); border: 2px solid var(--muted); transform: rotate(45deg) scale(.8); transition: transform .25s var(--ease-lock), background-color .2s, border-color .2s, box-shadow .2s; }
+.rail-node[data-active="true"] { background: linear-gradient(135deg, var(--signal-hi), var(--signal) 55%, var(--signal-deep)); border-color: var(--signal); transform: rotate(45deg) scale(1); box-shadow: inset 1px 1px 0 rgba(255, 200, 160, .3), 0 0 0 5px rgba(168, 68, 15, .15), 0 0 12px rgba(168, 68, 15, .45); }
 
 /* Expanded job: achievements slide in one by one */
-.exp-open .exp-item { animation: slide-in-left .55s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(120ms + var(--i, 0) * 60ms); }
+.exp-open .exp-item { animation: slide-in-left .35s var(--ease-lock) both; animation-delay: calc(120ms + var(--i, 0) * 55ms); }
 @keyframes slide-in-left { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
 
-/* Modal entrance */
-.modal-img { animation: modal-img 1.4s cubic-bezier(.2,.8,.2,1) both; }
-@keyframes modal-img { from { transform: scale(1.12); filter: blur(6px); } to { transform: none; filter: none; } }
-.modal-in > * { animation: fadeup .6s cubic-bezier(.2,.8,.2,1) both; }
-.modal-in > *:nth-child(2) { animation-delay: .08s; }
-.modal-in > *:nth-child(3) { animation-delay: .16s; }
+/* Modal: the panel deploys from its centre line, the image opens like a shutter, content follows */
+.deploy { animation: deploy .42s var(--ease-servo) both; }
+@keyframes deploy { from { clip-path: polygon(0 50%, calc(100% - 14px) 50%, 100% 50%, 100% 50%, 14px 50%, 0 50%); } }
+.modal-img { animation: shutter .6s .12s var(--ease-servo) both; }
+@keyframes shutter { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
+.modal-in > * { animation: fadeup .4s .18s var(--ease-lock) both; }
+.modal-in > *:nth-child(2) { animation-delay: .24s; }
+.modal-in > *:nth-child(3) { animation-delay: .3s; }
 
-/* Custom targeting cursor (desktop only — rendered by MotionLayer) */
-.cursor-layer > * { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 300; opacity: 0; transition: opacity .3s; }
+/* Custom targeting cursor (desktop only — rendered and positioned by MotionLayer).
+   The dot is the pointer; the four brackets frame it, lock onto the target under it, and clamp on press. */
+.cursor-layer > * { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 300; opacity: 0; transition: opacity .2s; }
 .cursor-layer[data-visible="true"] > * { opacity: 1; }
 .cursor-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; }
-.cursor-dot::before { content: ""; position: absolute; inset: 0; background: var(--signal); transform: rotate(45deg); box-shadow: 0 0 8px var(--signal); transition: transform .25s; }
-.cursor-ring { width: 34px; height: 34px; margin: -17px 0 0 -17px; color: var(--signal); }
-.cursor-ring > svg { transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.cursor-dot::before { content: ""; position: absolute; inset: 0; background: var(--copper); transform: rotate(45deg); box-shadow: 0 0 6px rgba(168, 68, 15, .8); transition: transform .15s var(--ease-lock); }
+.cursor-ring { color: var(--copper); }
+.cursor-ring > i { position: absolute; left: 0; top: 0; width: 8px; height: 8px; border: 0 solid currentColor; transition: opacity .15s; }
+.cursor-ring > i:nth-child(1) { border-width: 1.5px 0 0 1.5px; }
+.cursor-ring > i:nth-child(2) { border-width: 1.5px 1.5px 0 0; }
+.cursor-ring > i:nth-child(3) { border-width: 0 1.5px 1.5px 0; }
+.cursor-ring > i:nth-child(4) { border-width: 0 0 1.5px 1.5px; }
+.cursor-layer[data-state="lock"] .cursor-ring { color: var(--copper-hi); filter: drop-shadow(0 0 3px rgba(168, 68, 15, .5)); }
 .cursor-badge { width: 84px; height: 34px; margin: -17px 0 0 -42px; }
-.cursor-badge > span { transform: scale(0); transition: transform .35s cubic-bezier(.2,.8,.2,1); }
-.cursor-layer[data-state="hover"] .cursor-ring > svg { transform: scale(1.55) rotate(90deg); }
-.cursor-layer[data-state="hover"] .cursor-dot::before { transform: rotate(45deg) scale(0); }
-.cursor-layer[data-state="view"] .cursor-ring > svg { transform: scale(0); }
+.cursor-badge > span { transform: scale(0); transition: transform .18s var(--ease-lock); }
+.cursor-layer[data-state="view"] .cursor-ring > i { opacity: 0; }
 .cursor-layer[data-state="view"] .cursor-dot::before { transform: rotate(45deg) scale(0); }
 .cursor-layer[data-state="view"] .cursor-badge > span { transform: scale(1); }
-.cursor-layer[data-down="true"] .cursor-ring > svg { transform: scale(.75); }
 
 /* Sliding underline link */
-.u-link { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .3s ease; }
+.u-link { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .25s var(--ease-lock); }
 .u-link:hover { background-size: 100% 1px; }
-
-/* Status pulse */
-@keyframes pulse-ring { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(2.6); opacity: 0; } }
-.pulse-ring { animation: pulse-ring 2s ease-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   .rv, .rv-clip { opacity: 1; transform: none; transition: none; }
   .rv-clip > * { clip-path: none; transition: none; }
   .rv-line, .rv-mask > span, .img-zoom { transform: none; transition: none; }
-  .img-wipe::after { display: none; }
-  .stagger > * { opacity: 1; translate: none; scale: none; animation: none !important; }
+  .img-wipe::after, .img-scan, .scan-line, .crosshair.hero-snap { display: none; }
+  .stagger > * { opacity: 1; translate: none; animation: none !important; }
   .mask-line > .ch, .draw-x, .fade-up, .spec-row { animation: none; transform: none; opacity: 1; }
-  .exp-open .exp-item, .modal-img, .modal-in > * { animation: none; }
-  .pulse-ring, .led::before, .spin-slow, .float-y, .blink, .scan-line, .grid-drift, .atmos-glow, .arm-reticle, .arm-laser { animation: none; }
-  .scan-line { display: none; }
-  .parallax, .tilt, .magnetic { transform: none !important; transition: none; }
+  .exp-open .exp-item, .deploy, .modal-img, .modal-in > *, .dock-in { animation: none; }
+  .led, .spin-step, .blink, .arm-reticle, .arm-laser, .floor3d > div::before { animation: none; }
+  .press:active, .plate-lift { transform: none; }
   html { scroll-behavior: auto; }
 }

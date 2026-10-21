@@ -62,7 +62,7 @@ export default function Experience() {
           label="Experience"
           title={
             <>
-              Employment <span className="glow-text text-signal">history.</span>
+              Employment <span className="glow-text text-copper">history.</span>
             </>
           }
         >
@@ -76,7 +76,7 @@ export default function Experience() {
           <span className="absolute bottom-0 left-[7px] top-0 w-px bg-ink/15 sm:left-[11px]" aria-hidden="true" />
           <span
             ref={fill}
-            className="absolute bottom-0 left-[6px] top-0 w-[3px] origin-top bg-signal shadow-[0_0_10px_rgba(217, 88, 13,.7)] transition-transform duration-200 ease-out sm:left-[10px]"
+            className="absolute bottom-0 left-[6px] top-0 w-[3px] origin-top bg-signal shadow-[0_0_10px_rgba(168,68,15,.7)] transition-transform duration-200 ease-out sm:left-[10px]"
             style={{ transform: "scaleY(0)" }}
             aria-hidden="true"
           />
@@ -94,15 +94,12 @@ export default function Experience() {
                     className="group grid w-full grid-cols-[1fr_auto] items-start gap-4 py-7 text-left sm:grid-cols-[11rem_1fr_auto] sm:gap-8 sm:py-9"
                   >
                     <div className="col-span-2 flex flex-wrap items-center gap-3 font-code text-sm sm:col-span-1 sm:block">
-                      <span className={isOpen ? "text-signal" : "text-muted2"}>
+                      <span className={isOpen ? "text-copper" : "text-muted2"}>
                         {job.start} — {job.end}
                       </span>
                       {isCurrent && (
-                        <span className="inline-flex items-center gap-1.5 border border-signal/40 bg-signal/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-signal sm:mt-2 sm:flex sm:w-fit">
-                          <span className="relative flex h-1.5 w-1.5">
-                            <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-signal" />
-                            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-signal" />
-                          </span>
+                        <span className="inline-flex items-center gap-1.5 border border-signal/40 bg-signal/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-copper sm:mt-2 sm:flex sm:w-fit">
+                          <span className="led led-sm" />
                           Now
                         </span>
                       )}
@@ -118,8 +115,8 @@ export default function Experience() {
                       </p>
                     </div>
                     <span
-                      className={`grid h-10 w-10 shrink-0 place-items-center border transition-all duration-300 ${
-                        isOpen ? "rotate-45 border-signal bg-signal text-paper" : "border-line group-hover:border-signal group-hover:text-signal"
+                      className={`key-dark grid h-10 w-10 shrink-0 place-items-center border transition-all duration-300 ${
+                        isOpen ? "rotate-45 border-signal bg-signal text-ink" : "border-line group-hover:border-signal group-hover:text-copper"
                       }`}
                     >
                       <Plus className="h-5 w-5" />
@@ -146,7 +143,7 @@ export default function Experience() {
                             {job.tech.map((t, ti) => (
                               <span
                                 key={t}
-                                className="exp-item cut-sm border border-line bg-paper px-3 py-1.5 font-code text-xs text-ink/90"
+                                className="exp-item key-dark cut-sm border border-line bg-paper px-3 py-1.5 font-code text-xs text-ink/90"
                                 style={{ ["--i" as string]: job.achievements.length + ti * 0.5 }}
                               >
                                 {t}

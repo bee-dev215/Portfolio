@@ -33,10 +33,10 @@ export default function ProjectModal({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-label={project.title}>
       <div className="absolute inset-0 animate-fade-in bg-black/80 backdrop-blur-sm" onClick={onClose} />
-      <div className="cut relative flex max-h-[92vh] w-full max-w-4xl animate-slide-in flex-col overflow-hidden border border-line bg-paper-2">
+      <div className="cut deploy relative flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden border border-line bg-paper-2">
         <button
           onClick={onClose}
-          className="absolute right-3 top-3 z-10 grid h-10 w-10 place-items-center bg-signal text-paper transition-colors hover:bg-signal-hi"
+          className="absolute right-3 top-3 z-10 grid h-10 w-10 place-items-center bg-signal text-ink transition-colors hover:bg-signal-hi"
           aria-label="Close"
         >
           <X className="h-5 w-5" />
@@ -52,19 +52,19 @@ export default function ProjectModal({
 
           <div className="modal-in p-6 sm:p-10">
             <div className="flex flex-wrap gap-2 font-code text-xs uppercase tracking-wider">
-              <span className="bg-signal px-3 py-1 text-paper">{project.category}</span>
+              <span className="bevel bg-signal px-3 py-1 text-ink">{project.category}</span>
               <span className="border border-line px-3 py-1 text-muted2">{project.year}</span>
             </div>
-            <h3 className="mt-5 font-display text-4xl font-bold uppercase leading-none tracking-tight sm:text-5xl">{project.title}</h3>
+            <h3 className="extrude-sm mt-5 font-display text-4xl font-bold uppercase leading-none tracking-tight sm:text-5xl">{project.title}</h3>
 
             <div className="mt-10 grid gap-10 md:grid-cols-[1.5fr_1fr]">
               <div>
-                <p className="font-code text-xs uppercase tracking-[0.2em] text-signal">// Overview</p>
+                <p className="font-code text-xs uppercase tracking-[0.2em] text-copper">// Overview</p>
                 <p className="mt-3 leading-relaxed text-muted2">{project.description}</p>
 
                 {project.highlights.length > 0 && (
                   <>
-                    <p className="mt-8 font-code text-xs uppercase tracking-[0.2em] text-signal">// Key outcomes</p>
+                    <p className="mt-8 font-code text-xs uppercase tracking-[0.2em] text-copper">// Key outcomes</p>
                     <ul className="mt-3 space-y-3">
                       {project.highlights.map((h) => (
                         <li key={h} className="flex items-start gap-3">
@@ -99,7 +99,7 @@ export default function ProjectModal({
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-signal cut-sm flex items-center justify-center gap-2 bg-signal py-3 font-display text-sm font-semibold uppercase tracking-wide text-paper transition-colors hover:bg-signal-hi"
+                        className="btn-signal press cut-sm flex items-center justify-center gap-2 bg-signal py-3 font-display text-sm font-semibold uppercase tracking-wide text-ink transition-colors hover:bg-signal-hi"
                       >
                         <ExternalLink className="h-4 w-4" /> Live preview
                       </a>
@@ -109,7 +109,7 @@ export default function ProjectModal({
                         href={project.repoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 border border-line py-3 font-display text-sm font-semibold uppercase tracking-wide transition-colors hover:border-signal hover:text-signal"
+                        className="flex items-center justify-center gap-2 border border-line py-3 font-display text-sm font-semibold uppercase tracking-wide transition-colors hover:border-signal hover:text-copper"
                       >
                         Source code
                       </a>
@@ -122,11 +122,11 @@ export default function ProjectModal({
         </div>
 
         <div className="flex items-center justify-between border-t border-line px-6 py-4">
-          <button onClick={onPrev} className="flex items-center gap-2 font-display text-sm font-medium uppercase tracking-wide text-muted2 transition-colors hover:text-signal">
+          <button onClick={onPrev} className="flex items-center gap-2 font-display text-sm font-medium uppercase tracking-wide text-muted2 transition-colors hover:text-copper">
             <ArrowLeft className="h-4 w-4" /> Previous
           </button>
           <span className="hidden font-code text-[11px] uppercase tracking-wider text-muted2 sm:block">Esc to close · ← → to navigate</span>
-          <button onClick={onNext} className="flex items-center gap-2 font-display text-sm font-medium uppercase tracking-wide text-muted2 transition-colors hover:text-signal">
+          <button onClick={onNext} className="flex items-center gap-2 font-display text-sm font-medium uppercase tracking-wide text-muted2 transition-colors hover:text-copper">
             Next <ArrowRight className="h-4 w-4" />
           </button>
         </div>

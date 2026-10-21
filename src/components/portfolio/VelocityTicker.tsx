@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/hooks/use-motion";
 
 /**
- * Infinite marquee that reacts to scrolling: it speeds up and skews with scroll
- * velocity, follows the scroll direction, and slows down while hovered.
+ * Conveyor-belt marquee: runs at a constant rate in one direction, spins up briefly
+ * while the page scrolls, and slows down while hovered. It never skews or reverses.
  */
 export default function VelocityTicker({ items }: { items: string[] }) {
   const wrap = useRef<HTMLDivElement>(null);
@@ -17,33 +17,27 @@ export default function VelocityTicker({ items }: { items: string[] }) {
     const BASE = 45; // px per second
     let x = 0,
       boost = 0,
-      dir = -1,
       hovering = false,
       lastY = window.scrollY,
       last = performance.now(),
       raf = 0;
 
     const tick = (now: number) => {
-      const dt = Math.min(64, now - last) / 1000;
+      const dt = Math.min(64, Math.max(0, now - last)) / 1000; // the first frame can be stamped before `last`
       last = now;
       boost *= 0.92;
       const speed = hovering ? BASE * 0.3 : BASE + boost;
-      x += dir * speed * dt;
+      x -= speed * dt;
       const half = el.scrollWidth / 2;
-      if (half > 0) {
-        if (x <= -half) x += half;
-        if (x > 0) x -= half;
-      }
-      const skew = Math.max(-8, Math.min(8, (boost / 120) * -dir));
-      el.style.transform = `translate3d(${x}px, 0, 0) skewX(${skew.toFixed(2)}deg)`;
+      if (half > 0 && x <= -half) x += half;
+      el.style.transform = `translate3d(${x}px, 0, 0)`;
       raf = requestAnimationFrame(tick);
     };
 
     const onScroll = () => {
-      const dy = window.scrollY - lastY;
+      const dy = Math.abs(window.scrollY - lastY);
       lastY = window.scrollY;
-      if (dy !== 0) dir = dy > 0 ? -1 : 1;
-      boost = Math.min(900, boost + Math.abs(dy) * 6);
+      boost = Math.min(240, boost + dy * 3);
     };
     const enter = () => (hovering = true);
     const leave = () => (hovering = false);
@@ -70,14 +64,14 @@ export default function VelocityTicker({ items }: { items: string[] }) {
   }, []);
 
   return (
-    <div ref={wrap} className="relative overflow-hidden border-y border-signal bg-signal py-3.5 text-paper" aria-hidden="true">
+    <div ref={wrap} className="key-dark relative overflow-hidden border-y border-line bg-paper-2 py-3.5 text-ink/85" aria-hidden="true">
       <div ref={track} className="flex w-max will-change-transform">
         {[0, 1].map((n) => (
           <div key={n} className="flex shrink-0 items-center gap-8 pr-8">
             {items.map((t, i) => (
               <span key={i} className="flex items-center gap-8 whitespace-nowrap font-display text-lg font-semibold uppercase tracking-wider">
                 {t}
-                <span className="h-2 w-2 rotate-45 bg-paper" />
+                <span className="h-2 w-2 rotate-45 bg-signal" />
               </span>
             ))}
           </div>

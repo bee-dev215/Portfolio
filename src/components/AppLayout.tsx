@@ -15,6 +15,7 @@ export default function AppLayout() {
       <div className="atmos" aria-hidden="true">
         <div className="atmos-glow g1" />
         <div className="atmos-glow g2" />
+        <div className="atmos-heat" />
         <div className="atmos-grid" />
         <div className="atmos-scan" />
         <div className="atmos-vignette" />

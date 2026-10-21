@@ -23,7 +23,7 @@ export default function Projects() {
           label="Selected work"
           title={
             <>
-              Featured <span className="glow-text text-signal">projects.</span>
+              Featured <span className="glow-text text-copper">projects.</span>
             </>
           }
         />
@@ -38,7 +38,7 @@ export default function Projects() {
                   aria-selected={filter === c}
                   onClick={() => setFilter(c)}
                   className={`cut-sm relative shrink-0 overflow-hidden whitespace-nowrap border px-4 py-2 font-display text-sm font-medium uppercase tracking-wide transition-colors duration-300 ${
-                    filter === c ? "border-signal text-paper" : "border-line text-muted2 hover:border-signal/60 hover:text-ink"
+                    filter === c ? "border-signal text-ink" : "border-line text-muted2 hover:border-signal/60 hover:text-ink"
                   }`}
                 >
                   <span

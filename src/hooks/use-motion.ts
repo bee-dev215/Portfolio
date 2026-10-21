@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 // ---------- Environment checks ----------
 export const prefersReducedMotion = () =>
@@ -7,6 +7,31 @@ export const prefersReducedMotion = () =>
 /** True on devices with a precise pointer that can hover (mouse / trackpad). */
 export const hasFinePointer = () =>
   typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+// ---------- Boot hand-off ----------
+// index.html paints the boot screen and sets <html data-boot="pending">; src/boot.ts flips it to
+// "done" and fires BOOT_EVENT as the bay doors part. Pages without a boot screen never set it.
+export const BOOT_EVENT = "boot:done";
+
+export const isBooted = () => typeof document === "undefined" || document.documentElement.dataset.boot !== "pending";
+
+/** Calls `cb` once the boot screen opens (right away if it already has). Returns an unsubscribe. */
+export function onBooted(cb: () => void) {
+  if (isBooted()) {
+    cb();
+    return () => {};
+  }
+  window.addEventListener(BOOT_EVENT, cb, { once: true });
+  return () => window.removeEventListener(BOOT_EVENT, cb);
+}
+
+const subscribeBoot = (cb: () => void) => {
+  window.addEventListener(BOOT_EVENT, cb);
+  return () => window.removeEventListener(BOOT_EVENT, cb);
+};
+
+/** True once the boot screen has opened, so entrances can wait for the doors. */
+export const useBooted = () => useSyncExternalStore(subscribeBoot, isBooted, () => true);
 
 // ---------- Hooks ----------
 
@@ -39,69 +64,4 @@ export function useInView<T extends Element>({
   }, [threshold, rootMargin]);
 
   return [ref, inView] as const;
-}
-
-/** Pulls the element toward the cursor while hovered. Pair with the `.magnetic` class. */
-export function useMagnetic<T extends HTMLElement>(strength = 0.3) {
-  const ref = useRef<T>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !hasFinePointer() || prefersReducedMotion()) return;
-    const move = (e: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - (r.left + r.width / 2)) * strength;
-      const y = (e.clientY - (r.top + r.height / 2)) * strength;
-      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    };
-    const leave = () => {
-      el.style.transform = "";
-    };
-    el.addEventListener("pointermove", move);
-    el.addEventListener("pointerleave", leave);
-    return () => {
-      el.removeEventListener("pointermove", move);
-      el.removeEventListener("pointerleave", leave);
-      el.style.transform = "";
-    };
-  }, [strength]);
-
-  return ref;
-}
-
-/** 3D tilt toward the cursor. Sets --rx/--ry (rotation) and --gx/--gy (glare position); pair with `.tilt`. */
-export function useTilt<T extends HTMLElement>(max = 7) {
-  const ref = useRef<T>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !hasFinePointer() || prefersReducedMotion()) return;
-    let raf = 0;
-    const move = (e: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width;
-      const py = (e.clientY - r.top) / r.height;
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        el.style.setProperty("--rx", `${((0.5 - py) * max).toFixed(2)}deg`);
-        el.style.setProperty("--ry", `${((px - 0.5) * max).toFixed(2)}deg`);
-        el.style.setProperty("--gx", `${(px * 100).toFixed(1)}%`);
-        el.style.setProperty("--gy", `${(py * 100).toFixed(1)}%`);
-      });
-    };
-    const leave = () => {
-      cancelAnimationFrame(raf);
-      el.style.setProperty("--rx", "0deg");
-      el.style.setProperty("--ry", "0deg");
-    };
-    el.addEventListener("pointermove", move);
-    el.addEventListener("pointerleave", leave);
-    return () => {
-      cancelAnimationFrame(raf);
-      el.removeEventListener("pointermove", move);
-      el.removeEventListener("pointerleave", leave);
-    };
-  }, [max]);
-
-  return ref;
 }

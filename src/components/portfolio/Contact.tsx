@@ -71,7 +71,7 @@ export default function Contact() {
   };
 
   const field =
-    "w-full border bg-paper/60 px-4 py-3 text-ink placeholder:text-ink/30 outline-none transition-colors focus:border-signal focus:bg-paper focus:shadow-[0_0_0_3px_rgba(217, 88, 13,.15)]";
+    "w-full border bg-paper/60 px-4 py-3 text-ink shadow-[inset_0_2px_5px_rgba(0,0,0,.65),inset_0_-1px_0_rgba(255,150,80,.08)] placeholder:text-ink/30 outline-none transition-colors focus:border-signal focus:bg-paper focus:shadow-[inset_0_2px_5px_rgba(0,0,0,.65),0_0_0_3px_rgba(168,68,15,.28)]";
   const label = "mb-2 block font-code text-[11px] uppercase tracking-[0.18em] text-muted2";
 
   return (
@@ -85,7 +85,7 @@ export default function Contact() {
           label="Contact"
           title={
             <>
-              Let's build something <span className="glow-text text-signal">great.</span>
+              Let's build something <span className="glow-text text-copper">great.</span>
             </>
           }
         >
@@ -98,8 +98,8 @@ export default function Contact() {
           <div className="space-y-4">
             {socials.map((s, i) => (
               <Reveal key={s.key} delay={i * 80} variant="left">
-                <div className="spotlight hud group relative flex items-center gap-5 border border-line bg-paper/50 p-5 transition-colors hover:border-signal/50">
-                  <span className="cut-sm grid h-12 w-12 shrink-0 place-items-center bg-signal text-paper transition-transform duration-300 group-hover:rotate-[-8deg] group-hover:scale-110">
+                <div className="spotlight plate hud group relative flex items-center gap-5 border border-line bg-paper/50 p-5 transition-colors hover:border-signal/50">
+                  <span className="bevel cut-sm grid h-12 w-12 shrink-0 place-items-center bg-signal text-ink transition-colors group-hover:bg-signal-hi">
                     <SocialIcon name={s.key} className="h-5 w-5" />
                   </span>
                   <div className="min-w-0 flex-1">
@@ -110,12 +110,12 @@ export default function Contact() {
                   </div>
                   <button
                     onClick={() => copy(s.key, s.handle)}
-                    className="grid h-9 w-9 place-items-center text-muted2 transition-colors hover:bg-paper-3 hover:text-signal"
+                    className="grid h-9 w-9 place-items-center text-muted2 transition-colors hover:bg-paper-3 hover:text-copper"
                     aria-label={`Copy ${s.label}`}
                   >
-                    {copied === s.key ? <Check className="h-4 w-4 text-signal" /> : <Copy className="h-4 w-4" />}
+                    {copied === s.key ? <Check className="h-4 w-4 text-copper" /> : <Copy className="h-4 w-4" />}
                   </button>
-                  <a href={s.href} className="grid h-9 w-9 place-items-center text-muted2 transition-colors hover:bg-paper-3 hover:text-signal" aria-label={`Open ${s.label}`}>
+                  <a href={s.href} className="grid h-9 w-9 place-items-center text-muted2 transition-colors hover:bg-paper-3 hover:text-copper" aria-label={`Open ${s.label}`}>
                     <ArrowUpRight className="h-4 w-4" />
                   </a>
                 </div>
@@ -124,10 +124,10 @@ export default function Contact() {
           </div>
 
           <Reveal delay={150} variant="right">
-            <form onSubmit={submit} noValidate className="spotlight hud border border-line bg-paper-2/70 p-6 sm:p-8">
+            <form onSubmit={submit} noValidate className="spotlight plate hud border border-line bg-paper-2/70 p-6 sm:p-8">
               <div className="-mx-6 -mt-6 mb-6 flex items-center justify-between border-b border-line px-6 py-2.5 font-code text-[10px] uppercase tracking-[0.2em] text-muted2 sm:-mx-8 sm:-mt-8 sm:px-8">
                 <span>
-                  <span className="text-signal">TX</span> // Open channel
+                  <span className="text-copper">TX</span> // Open channel
                 </span>
                 <span className="flex items-center gap-2 text-ink">
                   <span className="led" /> Ready
@@ -135,12 +135,12 @@ export default function Contact() {
               </div>
               {sent ? (
                 <div className="flex min-h-[420px] flex-col items-center justify-center text-center">
-                  <div className="cut-sm grid h-16 w-16 place-items-center bg-signal text-paper">
+                  <div className="bevel cut-sm grid h-16 w-16 place-items-center bg-signal text-ink">
                     <Check className="h-8 w-8" />
                   </div>
                   <h3 className="mt-6 font-display text-3xl font-bold uppercase">Message received</h3>
                   <p className="mt-3 max-w-sm text-muted2">Thanks for reaching out to {profile.firstName}. I'll get back to you shortly.</p>
-                  <button type="button" onClick={() => setSent(false)} className="u-link mt-6 font-display text-sm font-medium uppercase tracking-wide text-signal">
+                  <button type="button" onClick={() => setSent(false)} className="u-link mt-6 font-display text-sm font-medium uppercase tracking-wide text-copper">
                     Send another message
                   </button>
                 </div>
@@ -187,13 +187,13 @@ export default function Contact() {
                     {errors.message && <p className="mt-1.5 text-xs text-red-300">{errors.message}</p>}
                   </div>
                   <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-muted2">
-                    <input type="checkbox" checked={smsOptIn} onChange={(e) => setSmsOptIn(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#d9580d]" />
+                    <input type="checkbox" checked={smsOptIn} onChange={(e) => setSmsOptIn(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#a8440f]" />
                     Text me updates. Msg & data rates may apply. Reply STOP to unsubscribe.
                   </label>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="btn-signal cut-sm flex w-full items-center justify-center gap-2 bg-signal py-4 font-display text-sm font-semibold uppercase tracking-wide text-paper transition-colors hover:bg-signal-hi disabled:opacity-60"
+                    className="btn-signal press cut-sm flex w-full items-center justify-center gap-2 bg-signal py-4 font-display text-sm font-semibold uppercase tracking-wide text-ink transition-colors hover:bg-signal-hi disabled:opacity-60"
                   >
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                     {loading ? "Sending..." : "Send message"}

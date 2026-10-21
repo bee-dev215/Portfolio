@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { prefersReducedMotion } from "@/hooks/use-motion";
+import { prefersReducedMotion, useBooted } from "@/hooks/use-motion";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*+=/<>";
 
 /**
  * Decodes text from random glyphs, left to right.
- * Runs when `start` becomes true (after `delay` ms) and, with `replayOnHover`,
+ * Runs when `start` becomes true and the boot screen has opened (after `delay` ms) and, with `replayOnHover`,
  * again whenever the nearest link/button (or the text itself) is hovered.
  */
 export default function ScrambleText({
@@ -25,6 +25,7 @@ export default function ScrambleText({
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const frame = useRef(0);
+  const booted = useBooted();
   const [out, setOut] = useState(text);
 
   const run = useCallback(() => {
@@ -49,13 +50,13 @@ export default function ScrambleText({
   }, [text, duration]);
 
   useEffect(() => {
-    if (!start) return;
+    if (!start || !booted) return;
     const id = window.setTimeout(run, delay);
     return () => {
       window.clearTimeout(id);
       cancelAnimationFrame(frame.current);
     };
-  }, [start, delay, run]);
+  }, [start, booted, delay, run]);
 
   useEffect(() => {
     if (!replayOnHover) return;

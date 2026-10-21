@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { hasFinePointer, prefersReducedMotion } from "@/hooks/use-motion";
+import { hasFinePointer, onBooted, prefersReducedMotion } from "@/hooks/use-motion";
 
 // Scene geometry (SVG user units)
 const W = 480;
@@ -14,6 +14,7 @@ const CRATE = 12; // half size of the payload
 const X_MIN = BASE.x + 66; // pedestal face (payload can't pass it)
 const X_MAX = 349; // end-stop face
 const BAYS = [200, 320];
+const PARK = { x: BASE.x + 84, y: 150 }; // folded standby pose, gripper raised above the pedestal
 const SPARKS = 28;
 const TRAIL = 36;
 const DEG = 180 / Math.PI;
@@ -56,11 +57,11 @@ const p = (n: number) => n.toFixed(1);
 function Piston({ g, rod, pin, barrel }: { g: React.Ref<SVGGElement>; rod: React.Ref<SVGRectElement>; pin: React.Ref<SVGCircleElement>; barrel: number }) {
   return (
     <g ref={g}>
-      <rect ref={rod} x="12" y="-2" width="40" height="4" fill="#aeb4bf" />
-      <rect x="-5" y="-5.5" width={barrel} height="11" rx="2" fill="url(#arm-metal)" stroke="rgba(236,232,225,.35)" />
-      <rect x={barrel - 12} y="-5.5" width="4" height="11" fill="#d9580d" opacity=".8" />
-      <circle r="4" fill="#0b0c0f" stroke="#d9580d" strokeWidth="1.5" />
-      <circle ref={pin} cx="52" r="3.5" fill="#0b0c0f" stroke="rgba(236,232,225,.6)" strokeWidth="1.5" />
+      <rect ref={rod} x="12" y="-2" width="40" height="4" fill="#c9b8a8" />
+      <rect x="-5" y="-5.5" width={barrel} height="11" rx="2" fill="url(#arm-metal)" stroke="rgba(246,231,216,.35)" />
+      <rect x={barrel - 12} y="-5.5" width="4" height="11" fill="#a8440f" opacity=".8" />
+      <circle r="4" fill="#0d0805" stroke="#a8440f" strokeWidth="1.5" />
+      <circle ref={pin} cx="52" r="3.5" fill="#0d0805" stroke="rgba(246,231,216,.6)" strokeWidth="1.5" />
     </g>
   );
 }
@@ -69,6 +70,8 @@ function Piston({ g, rod, pin, barrel }: { g: React.Ref<SVGGElement>; rod: React
  * A three-axis industrial arm with hydraulics, cable hoses and a payload crate.
  * With a mouse it tracks the pointer; holding the button closes the gripper, so you can grab
  * the crate, carry it and fling it. Left alone it runs a pick-and-place cycle between two bays.
+ * It powers up parked and homes to bay A once the boot screen has opened, and moves like a servo:
+ * accelerate, cruise, brake and stop dead on target, never overshooting.
  * Everything is driven through refs in a rAF loop — no React re-renders per frame.
  */
 export default function RobotArm() {
@@ -113,9 +116,9 @@ export default function RobotArm() {
     const tracking = hasFinePointer();
     const start0 = { x: BAYS[0], y: hoverY(BAYS[0]) };
     const target = { ...start0 }; // raw pointer target (reticle)
-    const ret = { ...start0 }; // smoothed reticle
-    const goal = { ...start0 }; // where the gripper is heading
-    const cur = { ...start0 };
+    const ret = { ...PARK }; // smoothed reticle
+    const goal = { ...PARK }; // where the gripper is heading
+    const cur = { ...PARK };
     const vel = { x: 0, y: 0 };
     const tip = { ...start0 };
     const prevTip = { ...start0 };
@@ -124,6 +127,9 @@ export default function RobotArm() {
     let grip = 0; // 0 open … 1 closed
     let gripTarget = 0;
     let lastPointer = -Infinity;
+    let homeAt = Infinity; // set once the boot screen opens
+    let homed = false;
+    let autoMode = true;
     let wasAuto = false;
     let cycles = 0;
     let raf = 0;
@@ -229,7 +235,7 @@ export default function RobotArm() {
       const open = crate.held ? Math.max(CRATE + 0.5, 21 - grip * 18) : 21 - grip * 18;
       jawA.current?.setAttribute("transform", `translate(0 ${p(-open)})`);
       jawB.current?.setAttribute("transform", `translate(0 ${p(open)})`);
-      if (beam.current) beam.current.style.opacity = crate.held ? "0" : String(0.55 + 0.25 * Math.sin(performance.now() / 160));
+      if (beam.current) beam.current.style.opacity = crate.held ? "0" : "0.7";
 
       // hydraulics: boom cylinder from the pedestal, stick cylinder working the elbow lever
       const [sx, sy] = on1(66, 16);
@@ -300,7 +306,8 @@ export default function RobotArm() {
         laser.current.setAttribute("y2", p(ret.y));
         laser.current.style.opacity = far ? "1" : "0";
       }
-      if (warn.current) warn.current.style.opacity = far ? "1" : "0";
+      // only a pointer target can be out of reach; planned moves always are reachable
+      if (warn.current) warn.current.style.opacity = far && !autoMode ? "1" : "0";
       if (cycleTxt.current) cycleTxt.current.textContent = `CYCLES ${String(cycles).padStart(3, "0")}`;
 
       // readouts
@@ -322,33 +329,57 @@ export default function RobotArm() {
 
     const step = (now: number, dt: number) => {
       const f = clamp(dt / 16.67, 0.2, 3);
-      const auto = !tracking || now - lastPointer > 2600;
-      if (auto && !wasAuto) startPlan();
-      wasAuto = auto;
-
-      if (auto) runPlan(dt);
-      else {
-        goal.x = clamp(target.x, X_MIN - 10, W - 16);
-        goal.y = clamp(target.y, 16, FLOOR - CRATE);
+      // power-on: hold the parked pose, then home to bay A before taking any commands
+      const auto = !homed || !tracking || now - lastPointer > 2600;
+      autoMode = auto;
+      if (!homed) {
+        Object.assign(goal, now < homeAt ? PARK : start0);
+        gripTarget = 0;
+        if (cur.x === start0.x && cur.y === start0.y) homed = true;
+      } else {
+        if (auto && !wasAuto) startPlan();
+        if (auto) runPlan(dt);
+        else {
+          goal.x = clamp(target.x, X_MIN - 10, W - 16);
+          goal.y = clamp(target.y, 16, FLOOR - CRATE);
+        }
       }
+      wasAuto = auto;
       if (mode.current) {
-        const label = auto ? "Auto · Pick & Place" : "Tracking";
+        const label = !homed ? (now < homeAt ? "Standby" : "Homing") : auto ? "Auto · Pick & Place" : "Tracking";
         if (mode.current.textContent !== label) mode.current.textContent = label;
       }
 
-      // spring-damped servo motion (slightly underdamped for a mechanical settle)
-      const K = auto ? 0.03 : 0.07;
-      const D = auto ? 0.3 : 0.42;
+      // servo motion profile: accelerate at a fixed rate up to a speed limit, brake at the same
+      // rate so the gripper stops dead on target (v = √(2·a·d)), and never step past it
+      const amax = auto ? 0.3 : 1.1;
       const vmax = auto ? 6 : 14;
-      vel.x += ((goal.x - cur.x) * K - vel.x * D) * f;
-      vel.y += ((goal.y - cur.y) * K - vel.y * D) * f;
-      const sp = Math.hypot(vel.x, vel.y);
-      if (sp > vmax) {
-        vel.x *= vmax / sp;
-        vel.y *= vmax / sp;
+      const dx = goal.x - cur.x;
+      const dy = goal.y - cur.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 0.3) {
+        cur.x = goal.x;
+        cur.y = goal.y;
+        vel.x = vel.y = 0;
+      } else {
+        const want = Math.min(vmax, Math.sqrt(2 * amax * dist));
+        let ax = (dx / dist) * want - vel.x;
+        let ay = (dy / dist) * want - vel.y;
+        const acc = Math.hypot(ax, ay);
+        if (acc > amax * f) {
+          ax *= (amax * f) / acc;
+          ay *= (amax * f) / acc;
+        }
+        vel.x += ax;
+        vel.y += ay;
+        const sp = Math.hypot(vel.x, vel.y) * f;
+        if (sp > dist) {
+          vel.x *= dist / sp;
+          vel.y *= dist / sp;
+        }
+        cur.x += vel.x * f;
+        cur.y = Math.min(FLOOR - CRATE, cur.y + vel.y * f);
       }
-      cur.x += vel.x * f;
-      cur.y = Math.min(FLOOR - CRATE, cur.y + vel.y * f);
 
       const ang = Math.atan2(cur.y - BASE.y, cur.x - BASE.x);
       const phiGoal = auto ? Math.PI / 2 : ang + wrap(Math.PI / 2 - ang) * clamp((cur.y - 110) / 180, 0, 1);
@@ -389,13 +420,13 @@ export default function RobotArm() {
         crate.r += crate.vr * f;
         if (crate.x < X_MIN || crate.x > X_MAX) {
           if (Math.abs(crate.vx) > 3) burst(crate.x < X_MIN ? X_MIN - CRATE : X_MAX + CRATE, crate.y, 5, Math.abs(crate.vx) * 0.4);
-          crate.vx = (crate.x < X_MIN ? 1 : -1) * Math.abs(crate.vx) * 0.4;
+          crate.vx = (crate.x < X_MIN ? 1 : -1) * Math.abs(crate.vx) * 0.3;
           crate.x = clamp(crate.x, X_MIN, X_MAX);
         }
         if (crate.y >= FLOOR - CRATE) {
           crate.y = FLOOR - CRATE;
           if (crate.vy > 2.5) burst(crate.x, FLOOR, Math.min(14, Math.round(crate.vy * 2)), crate.vy * 0.5);
-          crate.vy = crate.vy > 1.2 ? -crate.vy * 0.3 : 0;
+          crate.vy = crate.vy > 1.2 ? -crate.vy * 0.2 : 0;
           crate.vx *= 0.82 ** f;
           if (Math.abs(crate.vx) < 0.02) crate.vx = 0;
           crate.vr *= 0.5;
@@ -416,8 +447,10 @@ export default function RobotArm() {
       }
     };
 
-    pose();
     if (prefersReducedMotion()) {
+      Object.assign(cur, start0);
+      Object.assign(ret, start0);
+      pose();
       render();
       if (mode.current) mode.current.textContent = "Standby";
       return;
@@ -458,6 +491,9 @@ export default function RobotArm() {
       if (performance.now() - lastPointer < 2600) gripTarget = 0;
     };
 
+    pose();
+    // home once the hero panel has faded in behind the opening doors
+    const offBoot = onBooted(() => (homeAt = performance.now() + 1100));
     const obs = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()));
     obs.observe(el);
     window.addEventListener("pointermove", onMove, { passive: true });
@@ -466,6 +502,7 @@ export default function RobotArm() {
     render();
     return () => {
       stop();
+      offBoot();
       obs.disconnect();
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerdown", onDown);
@@ -476,152 +513,166 @@ export default function RobotArm() {
   const mono = { fontFamily: "IBM Plex Mono, monospace", fontSize: 10, letterSpacing: 2 };
 
   return (
-    <figure className="hud relative border border-line bg-paper-2/80 backdrop-blur" aria-label="Animated robot arm that follows the cursor and picks up a crate">
+    <figure className="plate hud relative border border-line bg-paper-2/80 backdrop-blur" aria-label="Animated robot arm that follows the cursor and picks up a crate">
       <span className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
         <span className="scan-line absolute inset-x-0 top-0 h-16" />
       </span>
       <div className="flex items-center justify-between border-b border-line px-4 py-2.5 font-code text-[10px] uppercase tracking-[0.2em] text-muted2">
         <span>
-          <span className="text-signal">ARM-01</span> // Kinematics
+          <span className="text-copper">ARM-01</span> // Kinematics
         </span>
         <span className="flex items-center gap-2 text-ink">
           <span className="led" />
-          <span ref={mode}>Tracking</span>
+          <span ref={mode}>Standby</span>
         </span>
       </div>
 
       <svg ref={svg} viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" aria-hidden="true">
         <defs>
           <pattern id="arm-grid" width="24" height="24" patternUnits="userSpaceOnUse">
-            <path d="M24 0H0V24" fill="none" stroke="rgba(236,232,225,.06)" strokeWidth="1" />
+            <path d="M24 0H0V24" fill="none" stroke="rgba(246,231,216,.05)" strokeWidth="1" />
           </pattern>
           <pattern id="arm-hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <rect width="5" height="10" fill="#d9580d" />
+            <rect width="5" height="10" fill="#a8440f" />
           </pattern>
           <linearGradient id="arm-metal" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#323844" />
-            <stop offset=".5" stopColor="#1f232b" />
-            <stop offset="1" stopColor="#14171c" />
+            <stop offset="0" stopColor="#3d322b" />
+            <stop offset=".5" stopColor="#241c17" />
+            <stop offset="1" stopColor="#17110d" />
           </linearGradient>
           <radialGradient id="arm-glow">
-            <stop offset="0" stopColor="rgba(217, 88, 13,.4)" />
-            <stop offset="1" stopColor="rgba(217, 88, 13,0)" />
+            <stop offset="0" stopColor="rgba(168, 68, 15,.4)" />
+            <stop offset="1" stopColor="rgba(168, 68, 15,0)" />
           </radialGradient>
           <radialGradient id="arm-shadow">
             <stop offset="0" stopColor="rgba(0,0,0,.75)" />
             <stop offset="1" stopColor="rgba(0,0,0,0)" />
           </radialGradient>
+          {/* solid hardware: a hard offset gives each part its thickness, then a cast shadow onto the back wall.
+              Applied to untransformed wrapper groups so the light stays put as the links rotate */}
+          <filter id="arm-depth" x="-15%" y="-15%" width="135%" height="150%">
+            <feDropShadow dx="2.5" dy="3.5" stdDeviation="0" floodColor="#1e0e06" floodOpacity="1" />
+            <feDropShadow dx="0" dy="12" stdDeviation="6" floodColor="#000" floodOpacity=".55" />
+          </filter>
           <linearGradient id="arm-beam" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stopColor="rgba(217, 88, 13,.32)" />
-            <stop offset="1" stopColor="rgba(217, 88, 13,0)" />
+            <stop offset="0" stopColor="rgba(168, 68, 15,.32)" />
+            <stop offset="1" stopColor="rgba(168, 68, 15,0)" />
           </linearGradient>
         </defs>
 
         <rect width={W} height={H} fill="url(#arm-grid)" />
         {/* reach envelope */}
-        <circle cx={BASE.x} cy={BASE.y} r={REACH + L3} fill="none" stroke="rgba(217, 88, 13,.18)" strokeDasharray="2 6" />
-        <circle cx={BASE.x} cy={BASE.y} r={L1} fill="none" stroke="rgba(236,232,225,.07)" strokeDasharray="2 6" />
+        <circle cx={BASE.x} cy={BASE.y} r={REACH + L3} fill="none" stroke="rgba(168, 68, 15,.18)" strokeDasharray="2 6" />
+        <circle cx={BASE.x} cy={BASE.y} r={L1} fill="none" stroke="rgba(246,231,216,.07)" strokeDasharray="2 6" />
 
         {/* drop bays */}
         {BAYS.map((x, i) => (
           <g key={x}>
-            <path d={`M${x - 20} ${FLOOR - 6}v6h8M${x + 20} ${FLOOR - 6}v6h-8`} fill="none" stroke="rgba(217, 88, 13,.6)" strokeWidth="1.5" />
-            <text x={x} y={FLOOR + 26} textAnchor="middle" fill="rgba(236,232,225,.4)" {...mono} fontSize={9}>
+            <path d={`M${x - 20} ${FLOOR - 6}v6h8M${x + 20} ${FLOOR - 6}v6h-8`} fill="none" stroke="rgba(168, 68, 15,.6)" strokeWidth="1.5" />
+            <text x={x} y={FLOOR + 26} textAnchor="middle" fill="rgba(246,231,216,.4)" {...mono} fontSize={9}>
               BAY {"AB"[i]}
             </text>
           </g>
         ))}
 
-        <polyline ref={trail} fill="none" stroke="rgba(217, 88, 13,.45)" strokeWidth="1.5" strokeDasharray="1 4" strokeLinecap="round" />
-        <line ref={plumb} y2={FLOOR} stroke="rgba(236,232,225,.18)" strokeDasharray="3 4" />
+        <polyline ref={trail} fill="none" stroke="rgba(168, 68, 15,.45)" strokeWidth="1.5" strokeDasharray="1 4" strokeLinecap="round" />
+        <line ref={plumb} y2={FLOOR} stroke="rgba(246,231,216,.18)" strokeDasharray="3 4" />
         <ellipse ref={spot} cy={FLOOR} rx="20" ry="4" fill="url(#arm-glow)" />
 
         {/* cable hose (behind the arm) */}
-        <path ref={cableA} fill="none" stroke="rgba(236,232,225,.22)" strokeWidth="6" strokeLinecap="round" />
-        <path ref={cableB} fill="none" stroke="#0b0c0f" strokeWidth="3.5" strokeLinecap="round" />
+        <path ref={cableA} fill="none" stroke="rgba(246,231,216,.22)" strokeWidth="6" strokeLinecap="round" />
+        <path ref={cableB} fill="none" stroke="#0d0805" strokeWidth="3.5" strokeLinecap="round" />
 
         {/* pedestal + shoulder housing */}
         <ellipse cx={BASE.x} cy={FLOOR} rx="66" ry="5" fill="url(#arm-shadow)" />
-        <path d={`M${BASE.x - 54} ${FLOOR} L${BASE.x - 40} ${BASE.y + 14} H${BASE.x + 40} L${BASE.x + 54} ${FLOOR} Z`} fill="url(#arm-metal)" stroke="rgba(236,232,225,.3)" />
-        <rect x={BASE.x - 32} y={BASE.y + 20} width="64" height="6" fill="url(#arm-hatch)" />
-        {[0, 1, 2, 3].map((i) => (
-          <line key={i} x1={BASE.x - 34 + i * 4} y1={FLOOR - 16} x2={BASE.x - 34 + i * 4} y2={FLOOR - 6} stroke="rgba(236,232,225,.18)" />
-        ))}
-        {[0, 1, 2].map((i) => (
-          <circle key={i} className="blink" cx={BASE.x + 14 + i * 9} cy={FLOOR - 11} r="2" fill={i === 1 ? "#7bd88f" : "#d9580d"} style={{ animationDelay: `${i * 0.37}s` }} />
-        ))}
-        <path d={`M${BASE.x - 30} ${BASE.y + 15} V${BASE.y - 2} A30 30 0 0 1 ${BASE.x + 30} ${BASE.y - 2} V${BASE.y + 15} Z`} fill="#1a1d23" stroke="rgba(236,232,225,.3)" />
-        <path ref={gearS} d={GEAR_S} fill="#262a33" stroke="rgba(217, 88, 13,.55)" strokeWidth="1" transform={`translate(${BASE.x} ${BASE.y})`} />
+        <g filter="url(#arm-depth)">
+          <path d={`M${BASE.x - 54} ${FLOOR} L${BASE.x - 40} ${BASE.y + 14} H${BASE.x + 40} L${BASE.x + 54} ${FLOOR} Z`} fill="url(#arm-metal)" stroke="rgba(246,231,216,.3)" />
+          <rect x={BASE.x - 32} y={BASE.y + 20} width="64" height="6" fill="url(#arm-hatch)" />
+          {[0, 1, 2, 3].map((i) => (
+            <line key={i} x1={BASE.x - 34 + i * 4} y1={FLOOR - 16} x2={BASE.x - 34 + i * 4} y2={FLOOR - 6} stroke="rgba(246,231,216,.18)" />
+          ))}
+          {[0, 1, 2].map((i) => (
+            <circle key={i} className="blink" cx={BASE.x + 14 + i * 9} cy={FLOOR - 11} r="2" fill={i === 1 ? "#7bd88f" : "#a8440f"} style={{ animationDelay: `${i * 0.37}s` }} />
+          ))}
+          <path d={`M${BASE.x - 30} ${BASE.y + 15} V${BASE.y - 2} A30 30 0 0 1 ${BASE.x + 30} ${BASE.y - 2} V${BASE.y + 15} Z`} fill="#1e1712" stroke="rgba(246,231,216,.3)" />
+          <path ref={gearS} d={GEAR_S} fill="#2b211b" stroke="rgba(168, 68, 15,.55)" strokeWidth="1" transform={`translate(${BASE.x} ${BASE.y})`} />
+        </g>
 
         {/* end stop */}
-        <rect x={X_MAX + CRATE} y={FLOOR - 22} width="12" height="22" fill="url(#arm-metal)" stroke="rgba(236,232,225,.3)" />
-        <rect x={X_MAX + CRATE} y={FLOOR - 22} width="12" height="5" fill="url(#arm-hatch)" />
+        <g filter="url(#arm-depth)">
+          <rect x={X_MAX + CRATE} y={FLOOR - 22} width="12" height="22" fill="url(#arm-metal)" stroke="rgba(246,231,216,.3)" />
+          <rect x={X_MAX + CRATE} y={FLOOR - 22} width="12" height="5" fill="url(#arm-hatch)" />
+        </g>
 
         {/* payload */}
         <ellipse ref={crateShadow} cy={FLOOR} rx="16" ry="3.5" fill="url(#arm-shadow)" />
-        <g ref={crateG}>
-          <rect ref={crateGlow} x={-CRATE - 4} y={-CRATE - 4} width={CRATE * 2 + 8} height={CRATE * 2 + 8} rx="4" fill="url(#arm-glow)" style={{ opacity: 0, transition: "opacity .3s" }} />
-          <rect x={-CRATE} y={-CRATE} width={CRATE * 2} height={CRATE * 2} rx="2" fill="url(#arm-metal)" stroke="rgba(236,232,225,.5)" />
-          <rect x={-CRATE} y="-3.5" width={CRATE * 2} height="7" fill="url(#arm-hatch)" opacity=".9" />
-          <path d={`M${-CRATE + 4} ${-CRATE + 4}h3M${CRATE - 7} ${-CRATE + 4}h3M${-CRATE + 4} ${CRATE - 4}h3M${CRATE - 7} ${CRATE - 4}h3`} stroke="rgba(236,232,225,.45)" strokeWidth="1.5" />
+        <g filter="url(#arm-depth)">
+          <g ref={crateG}>
+            <rect ref={crateGlow} x={-CRATE - 4} y={-CRATE - 4} width={CRATE * 2 + 8} height={CRATE * 2 + 8} rx="4" fill="url(#arm-glow)" style={{ opacity: 0, transition: "opacity .3s" }} />
+            <rect x={-CRATE} y={-CRATE} width={CRATE * 2} height={CRATE * 2} rx="2" fill="url(#arm-metal)" stroke="rgba(246,231,216,.5)" />
+            <rect x={-CRATE} y="-3.5" width={CRATE * 2} height="7" fill="url(#arm-hatch)" opacity=".9" />
+            <path d={`M${-CRATE + 4} ${-CRATE + 4}h3M${CRATE - 7} ${-CRATE + 4}h3M${-CRATE + 4} ${CRATE - 4}h3M${CRATE - 7} ${CRATE - 4}h3`} stroke="rgba(246,231,216,.45)" strokeWidth="1.5" />
+          </g>
         </g>
 
-        {/* boom cylinder */}
-        <Piston g={pistS} rod={rodS} pin={pinS} barrel={40} />
+        <g filter="url(#arm-depth)">
+          {/* boom cylinder */}
+          <Piston g={pistS} rod={rodS} pin={pinS} barrel={40} />
 
-        {/* link 1 (shoulder → elbow) */}
-        <g ref={link1} transform={`translate(${BASE.x} ${BASE.y})`}>
-          <path d={`M0 -18 L${L1} -13 A13 13 0 0 1 ${L1} 13 L0 18 A18 18 0 0 1 0 -18 Z`} fill="url(#arm-metal)" stroke="rgba(236,232,225,.35)" />
-          <path d={`M24 -11 L${L1 - 20} -8`} stroke="rgba(236,232,225,.12)" />
-          <line x1="28" y1="3" x2={L1 - 24} y2="3" stroke="#d9580d" strokeWidth="3" strokeLinecap="round" />
-          {[40, 70, 100].map((x) => (
-            <circle key={x} cx={x} cy="-8" r="1.6" fill="rgba(236,232,225,.5)" />
-          ))}
-          {/* stick cylinder */}
-          <Piston g={pistE} rod={rodE} pin={pinE} barrel={36} />
-          <path ref={gearE} d={GEAR_E} fill="#262a33" stroke="rgba(217, 88, 13,.55)" strokeWidth="1" transform={`translate(${L1} 0)`} />
-          {/* shoulder joint */}
-          <circle r="21" fill="#0b0c0f" stroke="#d9580d" strokeWidth="2.5" />
-          <circle r="8" fill="#d9580d" />
-          <circle cx="15" r="1.8" fill="rgba(236,232,225,.7)" />
+          {/* link 1 (shoulder → elbow) */}
+          <g ref={link1} transform={`translate(${BASE.x} ${BASE.y})`}>
+            <path d={`M0 -18 L${L1} -13 A13 13 0 0 1 ${L1} 13 L0 18 A18 18 0 0 1 0 -18 Z`} fill="url(#arm-metal)" stroke="rgba(246,231,216,.35)" />
+            <path d={`M24 -11 L${L1 - 20} -8`} stroke="rgba(246,231,216,.12)" />
+            <line x1="28" y1="3" x2={L1 - 24} y2="3" stroke="#a8440f" strokeWidth="3" strokeLinecap="round" />
+            {[40, 70, 100].map((x) => (
+              <circle key={x} cx={x} cy="-8" r="1.6" fill="rgba(246,231,216,.5)" />
+            ))}
+            {/* stick cylinder */}
+            <Piston g={pistE} rod={rodE} pin={pinE} barrel={36} />
+            <path ref={gearE} d={GEAR_E} fill="#2b211b" stroke="rgba(168, 68, 15,.55)" strokeWidth="1" transform={`translate(${L1} 0)`} />
+            {/* shoulder joint */}
+            <circle r="21" fill="#0d0805" stroke="#a8440f" strokeWidth="2.5" />
+            <circle r="8" fill="#a8440f" />
+            <circle cx="15" r="1.8" fill="rgba(246,231,216,.7)" />
 
-          {/* link 2 (elbow → wrist) */}
-          <g ref={link2} transform={`translate(${L1} 0)`}>
-            <path d="M-2 -12 L-22 -21 A8 8 0 0 0 -30 -9 L-6 10 Z" fill="url(#arm-metal)" stroke="rgba(236,232,225,.35)" />
-            <path d={`M0 -13 L${L2} -9 A9 9 0 0 1 ${L2} 9 L0 13 A13 13 0 0 1 0 -13 Z`} fill="url(#arm-metal)" stroke="rgba(236,232,225,.35)" />
-            <rect x="24" y="-3" width={L2 - 52} height="6" fill="url(#arm-hatch)" opacity=".85" />
-            <path ref={gearW} d={GEAR_W} fill="#262a33" stroke="rgba(217, 88, 13,.55)" strokeWidth="1" transform={`translate(${L2} 0)`} />
-            {/* elbow joint */}
-            <circle r="16" fill="#0b0c0f" stroke="#d9580d" strokeWidth="2.5" />
-            <circle r="5.5" fill="#d9580d" />
-            <circle cx="11" r="1.5" fill="rgba(236,232,225,.7)" />
+            {/* link 2 (elbow → wrist) */}
+            <g ref={link2} transform={`translate(${L1} 0)`}>
+              <path d="M-2 -12 L-22 -21 A8 8 0 0 0 -30 -9 L-6 10 Z" fill="url(#arm-metal)" stroke="rgba(246,231,216,.35)" />
+              <path d={`M0 -13 L${L2} -9 A9 9 0 0 1 ${L2} 9 L0 13 A13 13 0 0 1 0 -13 Z`} fill="url(#arm-metal)" stroke="rgba(246,231,216,.35)" />
+              <rect x="24" y="-3" width={L2 - 52} height="6" fill="url(#arm-hatch)" opacity=".85" />
+              <path ref={gearW} d={GEAR_W} fill="#2b211b" stroke="rgba(168, 68, 15,.55)" strokeWidth="1" transform={`translate(${L2} 0)`} />
+              {/* elbow joint */}
+              <circle r="16" fill="#0d0805" stroke="#a8440f" strokeWidth="2.5" />
+              <circle r="5.5" fill="#a8440f" />
+              <circle cx="11" r="1.5" fill="rgba(246,231,216,.7)" />
 
-            {/* wrist + gripper */}
-            <g ref={wrist} transform={`translate(${L2} 0)`}>
-              <polygon ref={beam} points={`${L3 - 16},-5 ${L3 + 80},-26 ${L3 + 80},26 ${L3 - 16},5`} fill="url(#arm-beam)" />
-              <rect x="0" y="-9" width={L3 - 20} height="18" rx="3" fill="url(#arm-metal)" stroke="rgba(236,232,225,.35)" />
-              <circle cx={L3 - 30} r="2.6" fill="#f08a4b" />
-              <circle r="11" fill="#0b0c0f" stroke="#d9580d" strokeWidth="2" />
-              <circle r="3.5" fill="#d9580d" />
-              <rect x={L3 - 24} y="-28" width="6" height="56" rx="1.5" fill="#1d212a" stroke="#d9580d" strokeWidth="1.5" />
-              <g ref={jawA}>
-                <rect x={L3 - 22} y="-8" width="8" height="8" fill="#2a2f39" stroke="#d9580d" strokeWidth="1" />
-                <path d={`M${L3 - 16} 0 H${L3 + 10} L${L3 + 6} -6 H${L3 - 16} Z`} fill="#d9580d" />
-              </g>
-              <g ref={jawB}>
-                <rect x={L3 - 22} y="0" width="8" height="8" fill="#2a2f39" stroke="#d9580d" strokeWidth="1" />
-                <path d={`M${L3 - 16} 0 H${L3 + 10} L${L3 + 6} 6 H${L3 - 16} Z`} fill="#d9580d" />
+              {/* wrist + gripper */}
+              <g ref={wrist} transform={`translate(${L2} 0)`}>
+                <polygon ref={beam} points={`${L3 - 16},-5 ${L3 + 80},-26 ${L3 + 80},26 ${L3 - 16},5`} fill="url(#arm-beam)" />
+                <rect x="0" y="-9" width={L3 - 20} height="18" rx="3" fill="url(#arm-metal)" stroke="rgba(246,231,216,.35)" />
+                <circle cx={L3 - 30} r="2.6" fill="#c4561a" />
+                <circle r="11" fill="#0d0805" stroke="#a8440f" strokeWidth="2" />
+                <circle r="3.5" fill="#a8440f" />
+                <rect x={L3 - 24} y="-28" width="6" height="56" rx="1.5" fill="#231a14" stroke="#a8440f" strokeWidth="1.5" />
+                <g ref={jawA}>
+                  <rect x={L3 - 22} y="-8" width="8" height="8" fill="#30251d" stroke="#a8440f" strokeWidth="1" />
+                  <path d={`M${L3 - 16} 0 H${L3 + 10} L${L3 + 6} -6 H${L3 - 16} Z`} fill="#a8440f" />
+                </g>
+                <g ref={jawB}>
+                  <rect x={L3 - 22} y="0" width="8" height="8" fill="#30251d" stroke="#a8440f" strokeWidth="1" />
+                  <path d={`M${L3 - 16} 0 H${L3 + 10} L${L3 + 6} 6 H${L3 - 16} Z`} fill="#a8440f" />
+                </g>
               </g>
             </g>
           </g>
         </g>
 
         {/* floor */}
-        <line x1="0" y1={FLOOR} x2={W} y2={FLOOR} stroke="rgba(236,232,225,.25)" />
+        <line x1="0" y1={FLOOR} x2={W} y2={FLOOR} stroke="rgba(246,231,216,.25)" />
         <rect x="0" y={FLOOR} width={W} height="8" fill="url(#arm-hatch)" opacity=".35" />
 
         {/* sparks */}
-        <g stroke="#f08a4b" strokeWidth="1.5" strokeLinecap="round">
+        <g stroke="#c4561a" strokeWidth="1.5" strokeLinecap="round">
           {Array.from({ length: SPARKS }, (_, i) => (
             <line key={i} ref={(n) => (sparkEls.current[i] = n)} style={{ opacity: 0 }} />
           ))}
@@ -631,24 +682,24 @@ export default function RobotArm() {
         <g ref={reticle}>
           <circle r="22" fill="url(#arm-glow)" />
           <g className="arm-reticle">
-            <circle r="13" fill="none" stroke="#d9580d" strokeWidth="1.5" strokeDasharray="6 4" />
+            <circle r="13" fill="none" stroke="#a8440f" strokeWidth="1.5" strokeDasharray="6 4" />
           </g>
-          <path d="M-20 0h8M12 0h8M0 -20v8M0 12v8" stroke="#d9580d" strokeWidth="1.5" />
+          <path d="M-20 0h8M12 0h8M0 -20v8M0 12v8" stroke="#a8440f" strokeWidth="1.5" />
         </g>
-        <line ref={laser} className="arm-laser" stroke="#d9580d" strokeWidth="1.5" style={{ opacity: 0, transition: "opacity .2s" }} />
+        <line ref={laser} className="arm-laser" stroke="#a8440f" strokeWidth="1.5" style={{ opacity: 0, transition: "opacity .2s" }} />
 
         {/* corner labels */}
-        <text x="14" y="22" fill="rgba(236,232,225,.4)" {...mono}>
+        <text x="14" y="22" fill="rgba(246,231,216,.4)" {...mono}>
           ENVELOPE R{REACH + L3}
         </text>
-        <text ref={cycleTxt} x="14" y="38" fill="rgba(236,232,225,.4)" {...mono}>
+        <text ref={cycleTxt} x="14" y="38" fill="rgba(246,231,216,.4)" {...mono}>
           CYCLES 000
         </text>
-        <text x={W - 14} y="22" textAnchor="end" fill="rgba(217, 88, 13,.8)" {...mono}>
+        <text x={W - 14} y="22" textAnchor="end" fill="#bd5f26" {...mono}>
           DOF 3 + GRIP
         </text>
         <g ref={warn} style={{ opacity: 0, transition: "opacity .2s" }}>
-          <text className="blink" x={W - 14} y="38" textAnchor="end" fill="#d9580d" {...mono}>
+          <text className="blink" x={W - 14} y="38" textAnchor="end" fill="#bd5f26" {...mono}>
             ⚠ OUT OF REACH
           </text>
         </g>

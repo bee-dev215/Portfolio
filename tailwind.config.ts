@@ -54,12 +54,15 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
-        // Robotics theme: "paper" = gunmetal surfaces, "ink" = light text, "signal" = industrial orange
-        paper: { DEFAULT: '#0b0c0f', 2: '#111319', 3: '#181b22' },
-        ink: { DEFAULT: '#ece8e1', 2: '#c8c3ba' },
-        signal: { DEFAULT: '#d9580d', deep: '#b4460a', hi: '#ef6a1c' },
-        muted2: '#8d939f',
-        line: 'rgba(236, 232, 225, 0.12)',
+        // Robotics theme: "paper" = forge-black surfaces, "ink" = warm light text, "signal" = industrial orange
+        paper: { DEFAULT: '#0d0805', 2: '#160d08', 3: '#20130b' },
+        ink: { DEFAULT: '#f6e7d8', 2: '#d9c3ae' },
+        // dark burnt orange for fills, bars and borders (light text sits on it); copper for orange text on dark
+        signal: { DEFAULT: '#a8440f', deep: '#7c300a', hi: '#b9511a', hot: '#c4561a' },
+        copper: { DEFAULT: '#bd5f26', hi: '#cc7139' },
+        ember: '#2c1307',
+        muted2: '#a8907d',
+        line: 'rgba(246, 231, 216, 0.11)',
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',

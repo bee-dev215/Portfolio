@@ -1,10 +1,13 @@
 import { useEffect, useRef } from "react";
 import { ArrowDownRight, Download } from "lucide-react";
 import { experience, profile, scrollToId, skillGroups } from "@/data/portfolio";
-import { prefersReducedMotion, useMagnetic } from "@/hooks/use-motion";
+import { prefersReducedMotion } from "@/hooks/use-motion";
 import RobotArm from "./RobotArm";
 import ScrambleText from "./ScrambleText";
 import VelocityTicker from "./VelocityTicker";
+
+const GRID = 56; // matches .bp-grid's cell size
+const pad4 = (n: number) => String(Math.round(n)).padStart(4, "0");
 
 const current = experience.find((j) => j.end === "Present");
 
@@ -35,39 +38,37 @@ export default function Hero({ onResume }: { onResume: () => void }) {
   const ticker = skillGroups.flatMap((g) => g.items);
   const section = useRef<HTMLElement>(null);
   const coords = useRef<HTMLSpanElement>(null);
-  const primary = useMagnetic<HTMLButtonElement>(0.25);
-  const secondary = useMagnetic<HTMLButtonElement>(0.25);
+  const snap = useRef<HTMLSpanElement>(null);
   const [firstName, ...rest] = profile.name.split(" ");
 
-  // Mouse + scroll parallax via CSS variables (--mx, --my in -1..1, --scroll in px)
+  // Pointer coordinate readout, plus a crosshair that snaps to the nearest node of the machine grid
   useEffect(() => {
     const el = section.current;
     if (!el || prefersReducedMotion()) return;
     let raf = 0;
     const onMove = (e: PointerEvent) => {
       const r = el.getBoundingClientRect();
-      const mx = ((e.clientX - r.left) / r.width) * 2 - 1;
-      const my = ((e.clientY - r.top) / r.height) * 2 - 1;
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        el.style.setProperty("--mx", mx.toFixed(3));
-        el.style.setProperty("--my", my.toFixed(3));
-        if (coords.current) {
-          const x = String(Math.round(e.clientX - r.left)).padStart(4, "0");
-          const y = String(Math.round(e.clientY - r.top)).padStart(4, "0");
-          coords.current.textContent = `X ${x} · Y ${y}`;
+        if (coords.current) coords.current.textContent = `X ${pad4(x)} · Y ${pad4(y)}`;
+        if (snap.current) {
+          snap.current.style.transform = `translate3d(${Math.round(x / GRID) * GRID}px, ${Math.round(y / GRID) * GRID}px, 0)`;
+          snap.current.style.opacity = "1";
         }
       });
     };
-    const onScroll = () => {
-      if (window.scrollY < el.offsetHeight) el.style.setProperty("--scroll", `${window.scrollY}px`);
+    const onLeave = () => {
+      cancelAnimationFrame(raf);
+      if (snap.current) snap.current.style.opacity = "0";
     };
     el.addEventListener("pointermove", onMove);
-    window.addEventListener("scroll", onScroll, { passive: true });
+    el.addEventListener("pointerleave", onLeave);
     return () => {
       cancelAnimationFrame(raf);
       el.removeEventListener("pointermove", onMove);
-      window.removeEventListener("scroll", onScroll);
+      el.removeEventListener("pointerleave", onLeave);
     };
   }, []);
 
@@ -77,15 +78,11 @@ export default function Hero({ onResume }: { onResume: () => void }) {
 
       {/* machine-shop decor */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden md:block">
-        <div className="parallax absolute left-[44%] top-[10%]" style={{ ["--depth" as string]: 26 }}>
-          <div className="spin-slow relative h-20 w-20 rounded-full border border-dashed border-signal/30">
-            <div className="absolute inset-3 rounded-full border border-ink/15" />
-            <span className="absolute left-1/2 top-0 h-2 w-px -translate-x-1/2 bg-signal" />
-          </div>
+        <div className="spin-step absolute left-[44%] top-[10%] h-20 w-20 rounded-full border border-dashed border-signal/30">
+          <div className="absolute inset-3 rounded-full border border-ink/15" />
+          <span className="absolute left-1/2 top-0 h-2 w-px -translate-x-1/2 bg-signal" />
         </div>
-        <div className="parallax absolute left-[40%] top-[70%]" style={{ ["--depth" as string]: -32 }}>
-          <span className="crosshair" />
-        </div>
+        <span ref={snap} className="crosshair hero-snap" />
       </div>
 
       <div className="relative mx-auto max-w-[1320px] px-5 pb-14 pt-10 sm:px-10 lg:px-14 lg:pb-16 lg:pt-14">
@@ -99,16 +96,16 @@ export default function Hero({ onResume }: { onResume: () => void }) {
 
         <div className="mt-10 grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14">
           <div>
-            <p className="fade-up font-code text-sm text-signal" style={{ animationDelay: ".15s" }}>
+            <p className="fade-up font-code text-sm text-copper" style={{ animationDelay: ".15s" }}>
               &gt; hello_world --operator<span className="blink">_</span>
             </p>
             <h1 className="mt-5 font-display font-bold uppercase leading-[0.88] tracking-tight text-[clamp(3.2rem,9vw,8rem)]">
-              <Letters text={firstName} delay={0.15} />
-              <Letters text={rest.join(" ")} delay={0.35} className="text-outline wave-fill" />
+              <Letters text={firstName} delay={0.15} className="extrude" />
+              <Letters text={rest.join(" ")} delay={0.35} className="text-outline wave-fill extrude" />
             </h1>
 
             <div className="mt-8 flex items-center gap-3">
-              <div className="draw-x h-1.5 w-32 bg-signal shadow-[0_0_14px_rgba(217, 88, 13,.7)] sm:w-44" />
+              <div className="draw-x h-1.5 w-32 bg-signal shadow-[0_0_14px_rgba(168,68,15,.7)] sm:w-44" />
               <div className="draw-x hazard h-1.5 w-20 opacity-60" style={{ animationDelay: ".7s" }} />
             </div>
 
@@ -121,17 +118,15 @@ export default function Hero({ onResume }: { onResume: () => void }) {
 
             <div className="fade-up mt-9 flex flex-wrap gap-3" style={{ animationDelay: ".85s" }}>
               <button
-                ref={primary}
                 onClick={() => scrollToId("work")}
-                className="magnetic btn-signal cut-sm group inline-flex items-center gap-2 bg-signal px-6 py-3.5 font-display text-sm font-semibold uppercase tracking-wide text-paper hover:bg-signal-hi"
+                className="press btn-signal cut-sm group inline-flex items-center gap-2 bg-signal px-6 py-3.5 font-display text-sm font-semibold uppercase tracking-wide text-ink hover:bg-signal-hi"
               >
                 View my work
                 <ArrowDownRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
               </button>
               <button
-                ref={secondary}
                 onClick={onResume}
-                className="magnetic group inline-flex items-center gap-2 border border-line bg-paper/40 px-6 py-3.5 font-display text-sm font-semibold uppercase tracking-wide hover:border-signal hover:text-signal"
+                className="press key-dark group inline-flex items-center gap-2 border border-line bg-paper/40 px-6 py-3.5 font-display text-sm font-semibold uppercase tracking-wide hover:border-signal hover:text-copper"
               >
                 <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" /> Download résumé
               </button>
@@ -146,18 +141,23 @@ export default function Hero({ onResume }: { onResume: () => void }) {
           </div>
         </div>
 
-        {/* Telemetry strip */}
-        <dl className="fade-up mt-14 grid grid-cols-1 border-l border-t border-line bg-paper-2/50 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6" style={{ animationDelay: "1.05s" }}>
-          {specs.map((s, i) => (
-            <div key={s.k} className="spec-row group border-b border-r border-line px-5 py-4 transition-colors hover:bg-paper-3" style={{ animationDelay: `${1.15 + i * 0.08}s` }}>
-              <dt className="flex items-center gap-2 font-code text-[10px] uppercase tracking-[0.2em] text-muted2">
-                <span className="text-signal">{String(i + 1).padStart(2, "0")}</span>
-                {s.k}
-              </dt>
-              <dd className="mt-1.5 text-sm font-medium transition-colors group-hover:text-signal-hi">{s.v}</dd>
-            </div>
-          ))}
-        </dl>
+        {/* Telemetry strip, standing on the factory floor */}
+        <div className="relative mt-14">
+          <div className="floor3d" aria-hidden="true">
+            <div />
+          </div>
+          <dl className="fade-up plate relative grid grid-cols-1 border-l border-t border-line bg-paper-2/80 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6" style={{ animationDelay: "1.05s" }}>
+            {specs.map((s, i) => (
+              <div key={s.k} className="spec-row group border-b border-r border-line px-5 py-4 transition-colors hover:bg-paper-3" style={{ animationDelay: `${1.15 + i * 0.08}s` }}>
+                <dt className="flex items-center gap-2 font-code text-[10px] uppercase tracking-[0.2em] text-muted2">
+                  <span className="text-copper">{String(i + 1).padStart(2, "0")}</span>
+                  {s.k}
+                </dt>
+                <dd className="mt-1.5 text-sm font-medium transition-colors group-hover:text-copper-hi">{s.v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
 
       <VelocityTicker items={ticker} />

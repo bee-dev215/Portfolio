@@ -1,11 +1,9 @@
 import { ArrowUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { navLinks, profile, scrollToId } from "@/data/portfolio";
-import { useMagnetic } from "@/hooks/use-motion";
 
 export default function Footer({ onResume }: { onResume: () => void }) {
   const year = new Date().getFullYear();
-  const backToTop = useMagnetic<HTMLButtonElement>(0.3);
   return (
     <footer className="relative border-t border-line bg-paper px-5 pb-8 pt-14 sm:px-10 lg:px-14">
       <div className="hazard pointer-events-none absolute inset-x-0 top-0 h-1 opacity-40" />
@@ -14,7 +12,7 @@ export default function Footer({ onResume }: { onResume: () => void }) {
           <div>
             <p className="font-display text-2xl font-bold uppercase tracking-wide">
               {profile.name}
-              <span className="text-signal">.</span>
+              <span className="text-copper">.</span>
             </p>
             <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted2">{profile.title} — building fast, scalable and well-crafted web applications.</p>
             <p className="mt-5 flex items-center gap-2 font-code text-[10px] uppercase tracking-[0.2em] text-muted2">
@@ -24,13 +22,13 @@ export default function Footer({ onResume }: { onResume: () => void }) {
           <ul className="flex flex-wrap gap-x-8 gap-y-3 md:max-w-md md:justify-end">
             {navLinks.map((l) => (
               <li key={l.id}>
-                <button onClick={() => scrollToId(l.id)} className="u-link font-display text-sm font-medium uppercase tracking-wide text-ink/75 hover:text-signal">
+                <button onClick={() => scrollToId(l.id)} className="u-link font-display text-sm font-medium uppercase tracking-wide text-ink/75 hover:text-copper">
                   {l.label}
                 </button>
               </li>
             ))}
             <li>
-              <button onClick={onResume} className="u-link font-display text-sm font-medium uppercase tracking-wide text-signal">
+              <button onClick={onResume} className="u-link font-display text-sm font-medium uppercase tracking-wide text-copper">
                 Résumé
               </button>
             </li>
@@ -43,14 +41,13 @@ export default function Footer({ onResume }: { onResume: () => void }) {
           </p>
           <p className="font-code uppercase tracking-wider">
             // End of transmission ·{" "}
-            <Link to="/admin" className="transition-colors hover:text-signal">
+            <Link to="/admin" className="transition-colors hover:text-copper">
               Admin
             </Link>
           </p>
           <button
-            ref={backToTop}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="magnetic group flex items-center gap-2 border border-line px-4 py-2 font-display text-xs font-medium uppercase tracking-wide text-ink/80 hover:border-signal hover:text-signal"
+            className="press key-dark group flex items-center gap-2 border border-line px-4 py-2 font-display text-xs font-medium uppercase tracking-wide text-ink/80 hover:border-signal hover:text-copper"
           >
             Back to top <ArrowUp className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-y-1" />
           </button>
