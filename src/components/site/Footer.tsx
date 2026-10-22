@@ -133,19 +133,14 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
           <p className="inline-flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-sun" /> Built to help people learn better.
           </p>
-          <div className="flex items-center gap-5">
-            <Link to="/admin" className="transition-colors hover:text-ink">
-              Admin
-            </Link>
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="group grid h-11 w-11 place-items-center rounded-full border border-line bg-surface/70 text-ink transition-colors hover:border-brand/60 hover:bg-brand hover:text-white"
-              aria-label="Back to top"
-              title="Back to top"
-            >
-              <ArrowUp className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" />
-            </button>
-          </div>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="group grid h-11 w-11 place-items-center rounded-full border border-line bg-surface/70 text-ink transition-colors hover:border-brand/60 hover:bg-brand hover:text-white"
+            aria-label="Back to top"
+            title="Back to top"
+          >
+            <ArrowUp className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" />
+          </button>
         </div>
       </div>
 
