@@ -1,6 +1,6 @@
-# GKT — company website
+# GSedu International — company website
 
-The public website of GKT LLC, an AI engineering company for education: services, solution blueprints, audiences served, delivery process, technology stack, company profile, FAQ, a project enquiry form, and privacy / terms pages. A small admin panel manages project records in the database.
+The public website of GSedu International LLC, an AI engineering company for education: services, solution blueprints, audiences served, delivery process, technology stack, company profile, FAQ, a project enquiry form, and privacy / terms pages. A small admin panel manages project records in the database.
 
 Built with React 18, TypeScript, Vite, Tailwind CSS and shadcn/ui.
 

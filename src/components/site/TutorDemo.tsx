@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BookOpen, CheckCircle2, Lightbulb, Send, Sparkles } from "lucide-react";
 import { prefersReducedMotion, useInView } from "@/hooks/use-motion";
+import { company } from "@/data/company";
 
 // Sample conversations for the hero demo (illustrative, not real users)
 const SCENES = [
@@ -74,7 +75,7 @@ export default function TutorDemo() {
             <i className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
           </span>
           <span className="flex items-center gap-2 text-sm font-semibold">
-            <Sparkles className="h-4 w-4 text-brand-text" /> GKT Tutor
+            <Sparkles className="h-4 w-4 text-brand-text" /> {company.shortName} Tutor
           </span>
           <span key={scene} className="msg-in ml-auto rounded-full bg-surface px-2.5 py-1 text-[11px] font-medium text-subtle ring-1 ring-line">
             {s.subject}

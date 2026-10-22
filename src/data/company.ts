@@ -1,13 +1,14 @@
 // ============================================================
-//  SITE CONTENT — GKT LLC, AI engineering for education.
+//  SITE CONTENT — GSedu International, AI engineering for education.
 //  Edit this single file to update the public site
 //  (company details, services, solutions, audiences, process, stack, team).
 // ============================================================
 
 export const company = {
-  name: "GKT",
-  legalName: "GKT LLC",
-  initials: "GKT",
+  name: "GSedu International",
+  shortName: "GSedu",
+  legalName: "GSedu International LLC",
+  initials: "GS",
   entity: "Limited liability company",
   discipline: "AI engineering for education",
   email: "welcome.devs@gmail.com",
@@ -17,11 +18,11 @@ export const company = {
   responseTime: "one business day",
   engagements: "Fixed-scope projects · Retainers · Team training",
   tagline:
-    "GKT designs, builds and ships AI for learning — tutors, assessment, analytics and knowledge assistants — for schools, universities and the companies that teach.",
+    "GSedu International designs, builds and ships AI for learning — tutors, assessment, analytics and knowledge assistants — for schools, universities and the companies that teach.",
   intro:
     "One team from idea to production: product strategy, AI engineering, learning design, and the training your people need to run it with confidence.",
   about: [
-    "GKT is an AI engineering company built around one mission: helping people learn better. We design and build the AI products that sit behind modern learning — tutors that explain instead of answering, feedback that teachers trust, and analytics that spot a struggling learner before the exam does.",
+    "GSedu International is an AI engineering company built around one mission: helping people learn better. We design and build the AI products that sit behind modern learning — tutors that explain instead of answering, feedback that teachers trust, and analytics that spot a struggling learner before the exam does.",
     "We are model-agnostic and evidence-driven. Every feature is grounded in your own content, tested against evaluation sets before it ships, and measured on learning outcomes afterwards — not just on usage.",
     "And we teach as we build. Engagements end with your engineers, educators and staff able to run, extend and question the system themselves, through hands-on workshops and documentation written for people, not just for machines.",
   ],
@@ -522,14 +523,16 @@ export const stats = [
 
 // ------------------------------------------------------------
 //  Photography credits. Freepik's (now Magnific) free licence requires attribution, so every
-//  photo used on the site is listed here and shown at /terms#credits.
+//  photo used on the site is listed here and shown at /terms#credits. Pexels photos don't
+//  require it, but are credited alongside for consistency.
 // ------------------------------------------------------------
 
 export interface ImageCredit {
   file: string;
   subject: string;
   author: string;
-  href: string; // the photo's Freepik page
+  href: string; // the photo's page on its source site
+  source?: "Magnific" | "Pexels"; // defaults to Magnific
 }
 
 export const imageCredits: ImageCredit[] = [
@@ -543,17 +546,17 @@ export const imageCredits: ImageCredit[] = [
   { file: "aud-universities.webp", subject: "Universities — students in a library", author: "garetsvisual", href: "https://www.magnific.com/free-photo/group-young-cheerful-students-joyfully-talking-while-studying-together-library-university_23177325.htm" },
   { file: "aud-edtech.webp", subject: "EdTech — software engineers brainstorming", author: "DC Studio", href: "https://www.magnific.com/free-photo/team-software-engineers-doing-brainstorming-office_417798983.htm" },
   { file: "aud-corporate.webp", subject: "Corporate learning — training workshop", author: "Freepik", href: "https://www.magnific.com/free-photo/medium-shot-people-learning-office_23404611.htm" },
-  { file: "company-team.webp", subject: "Company — team planning a project", author: "fabrikasimf", href: "https://www.magnific.com/free-photo/team-diverse-coworkers-modern-office-discuss-their-project-together_21130991.htm" },
-  { file: "company-learning.webp", subject: "Company — students with a laptop", author: "Freepik", href: "https://www.magnific.com/free-photo/students-with-laptop-medium-shot_13819167.htm" },
+  { file: "company-team.webp", subject: "Company — team mapping ideas on a whiteboard", author: "Thirdman", href: "https://www.pexels.com/photo/colleagues-planning-a-business-5257576/", source: "Pexels" },
+  { file: "company-learning.webp", subject: "Company — student joining an online class", author: "Julia M Cameron", href: "https://www.pexels.com/photo/4145153/", source: "Pexels" },
   { file: "cta-backdrop.webp", subject: "Solutions banner — engineers and AI", author: "DC Studio", href: "https://www.magnific.com/free-photo/engineers-brainstorming-ways-use-ai_190325729.htm" },
-  { file: "team/martin.webp", subject: "Team portrait — Martin Keller (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/closeup-happy-middle-aged-business-leader_1304420.htm" },
-  { file: "team/kenji.webp", subject: "Team portrait — Kenji Watanabe (placeholder)", author: "DC Studio", href: "https://www.magnific.com/free-photo/portrait-happy-cto-manager-using-pc-startup-office-implement-algorithms_416761681.htm" },
-  { file: "team/mei.webp", subject: "Team portrait — Mei Lin Chen (placeholder)", author: "DC Studio", href: "https://www.magnific.com/free-photo/portrait-smiling-asian-software-developer-looking-camera-cloud-computing-development-agency-confident-programer-posing-happy-colleagues-working-big-data-office_26367495.htm" },
-  { file: "team/marcus.webp", subject: "Team portrait — Marcus Bello (placeholder)", author: "DC Studio", href: "https://www.magnific.com/free-photo/portrait-african-american-programer-sitting-down-working-laptop-arranging-glasses-looking-up-smiling-camera-system-engineer-using-portable-computer-computing-big-data_25498839.htm" },
-  { file: "team/sofia.webp", subject: "Team portrait — Sofia Marín (placeholder)", author: "wayhomestudio", href: "https://www.magnific.com/free-photo/young-woman-wearing-grey-turtleneck-eyeglasses_10228105.htm" },
-  { file: "team/hannah.webp", subject: "Team portrait — Hannah Lindqvist (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/young-businesswoman-portrait-office_993616.htm" },
-  { file: "team/amara.webp", subject: "Team portrait — Amara Nwosu (placeholder)", author: "partystock", href: "https://www.magnific.com/free-photo/portrait-woman-business-embrace-confidence-posing-beauty-black-african-american-isolated-gray-background_25767305.htm" },
-  { file: "team/owen.webp", subject: "Team portrait — Owen Brady (placeholder)", author: "drobotdean", href: "https://www.magnific.com/free-photo/cheerful-readhead-bearded-man-glasses-white-tshirt-holding-laptop-hands_7339019.htm" },
+  { file: "team/martin.webp", subject: "Team portrait — Martin Keller (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/portrait-positive-confident-businessman_3584960.htm" },
+  { file: "team/kenji.webp", subject: "Team portrait — Kenji Watanabe (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/content-confident-handsome-asian-businessman-looking-camera_3583387.htm" },
+  { file: "team/mei.webp", subject: "Team portrait — Mei Lin Chen (placeholder)", author: "benzoix", href: "https://www.magnific.com/free-photo/young-asian-woman-professional-entrepreneur-standing-office-clothing-smiling-looking-confident-white-background_23649170.htm" },
+  { file: "team/marcus.webp", subject: "Team portrait — Marcus Bello (placeholder)", author: "wayhomestudio", href: "https://www.magnific.com/free-photo/prosperous-businessman-keeps-hands-crossed-has-satisfied-expression_10521289.htm" },
+  { file: "team/sofia.webp", subject: "Team portrait — Sofia Marín (placeholder)", author: "tonodiaz", href: "https://www.magnific.com/free-photo/portrait-attractive-hispanic-businesswoman-with-her-arms-crossed-against-white-background-with-lot-copy-space_27507512.htm" },
+  { file: "team/hannah.webp", subject: "Team portrait — Hannah Lindqvist (placeholder)", author: "wayhomestudio", href: "https://www.magnific.com/free-photo/cheerful-beautiful-european-female-with-pleasant-smile_12086582.htm" },
+  { file: "team/amara.webp", subject: "Team portrait — Amara Nwosu (placeholder)", author: "pch.vector", href: "https://www.magnific.com/free-photo/happy-successful-female-agent_6101390.htm" },
+  { file: "team/owen.webp", subject: "Team portrait — Owen Brady (placeholder)", author: "cookie_studio", href: "https://www.magnific.com/free-photo/handsome-bearded-redhead-guy-posing-against-white-wall-with-glasses_11104169.htm" },
 ];
 
 // Suggested categories offered in the admin project form (you can type any category)
@@ -592,7 +595,7 @@ export const scrollToId = (id: string) => {
 };
 
 /** Fired on window to open a solution's details; detail is the solution title. */
-export const OPEN_SOLUTION_EVENT = "gkt:open-solution";
+export const OPEN_SOLUTION_EVENT = "gsedu:open-solution";
 
 /** Opens one solution's details in place (the modal overlays wherever the reader is). */
 export const openSolution = (title: string) => {
@@ -600,7 +603,7 @@ export const openSolution = (title: string) => {
 };
 
 /** Fired on window to pre-fill the contact form; detail is the solution of interest, if any. */
-export const ENQUIRE_EVENT = "gkt:enquire";
+export const ENQUIRE_EVENT = "gsedu:enquire";
 
 /** Scrolls to the contact form, optionally pre-filling it for a specific solution. */
 export const startEnquiry = (topic?: string) => {

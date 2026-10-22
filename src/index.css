@@ -257,6 +257,7 @@ html[data-theme="dark"] .site-root, .on-dark {
 .site-root section[id] { scroll-margin-top: 5rem; }
 .site-root ::selection { background: rgb(var(--brand-rgb) / .2); }
 .site-root :focus-visible { outline: 2px solid rgb(var(--brand-rgb)); outline-offset: 3px; border-radius: 8px; }
+.site-root .rounded-full:focus-visible { border-radius: 9999px; } /* pills and round buttons keep their shape */
 .site-root main:focus-visible { outline: none; } /* skip-link target */
 
 /* Component classes live in Tailwind's components layer so utilities (hidden, rounded-3xl, px-3…) can override them */
@@ -280,7 +281,12 @@ html[data-theme="dark"] .site-root, .on-dark {
 .band { background: linear-gradient(to bottom, rgb(var(--raised-rgb) / .7), rgb(var(--raised-rgb) / .35)); }
 
 /* ---------- Brand ---------- */
-.gradient-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* The gradient only paints inside the box, so pad it past the glyphs (descenders, overhangs) and cancel the padding with
+   negative margins to keep the layout unchanged; matters for tight line-heights and inline-block (.word) titles */
+.gradient-text {
+  background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  padding: .12em .06em .18em; margin: -.12em -.06em -.18em; -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
 .bg-grad { background: var(--grad); }
 /* 1px gradient border on a rounded element (set a background on the element itself) */
 .grad-border { position: relative; }
@@ -349,6 +355,52 @@ html[data-theme="dark"] .site-root, .on-dark {
 .rv-clip { transform: none; }
 .rv.rv-in { opacity: 1; transform: none; }
 
+/* Section titles: words rise out of a soft blur one after another; the gradient phrase lands last */
+.word { display: inline-block; opacity: 0; transform: translateY(.4em); filter: blur(6px); transition: opacity .7s var(--ease), transform .8s var(--ease), filter .7s var(--ease); transition-delay: calc(var(--rv-delay, 0ms) + 80ms + var(--w, 0) * 60ms); }
+.rv-in .word { opacity: 1; transform: none; filter: blur(0); }
+
+/* Photo unveil: a curtain wipes up while the photo settles from a slight zoom (`scale` leaves the hover transform free) */
+.unveil { clip-path: inset(100% 0 0 0); transition: clip-path 1s cubic-bezier(.65, 0, .35, 1) calc(var(--rv-delay, 0ms) + var(--unveil-delay, 120ms)); }
+.unveil img { scale: 1.15; transition: scale 1.6s var(--ease) calc(var(--rv-delay, 0ms) + var(--unveil-delay, 120ms)), transform .7s var(--ease); }
+.rv-in .unveil { clip-path: inset(-100px); } /* ends past the edges so drop shadows aren't cut off */
+.rv-in .unveil img { scale: 1; }
+
+/* Scroll-linked depth: layers drift at different speeds as the section passes (--p from useScrollProgress) */
+.drift { translate: 0 calc((var(--p, .5) - .5) * var(--drift, 60px)); }
+
+/* Scroll progress line along the bottom of the navbar */
+.scroll-line { transform: scaleX(var(--progress, 0)); transform-origin: left; }
+
+/* Footer wordmark: an outline, oversized and fading out as it bleeds off the bottom edge. Once in view, a gradient fill
+   flows out from the centre to both ends behind a soft edge (the mask widens), then keeps drifting slowly */
+.wordmark-host {
+  container-type: inline-size; position: relative; margin-top: 1.5rem; height: 7.4cqw; overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 35%, transparent 95%); -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 95%);
+}
+.wordmark { font-size: 10.2cqw; color: transparent; -webkit-text-stroke: 1px rgb(var(--brand-text-rgb) / .28); }
+.wordmark-fill {
+  position: absolute; inset: 0 0 auto; -webkit-text-stroke: 0;
+  background: linear-gradient(90deg, rgb(var(--brand-rgb)), rgb(var(--iris-rgb)), rgb(var(--sky-rgb)), rgb(var(--iris-rgb)), rgb(var(--brand-rgb))) 0 0 / 200% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  --fill-mask: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
+  mask: var(--fill-mask) 50% 0 / 0% 100% no-repeat; -webkit-mask: var(--fill-mask) 50% 0 / 0% 100% no-repeat;
+  transition: mask-size 2.4s cubic-bezier(.5, 0, .2, 1), -webkit-mask-size 2.4s cubic-bezier(.5, 0, .2, 1);
+}
+.wordmark-host.is-filled .wordmark-fill { mask-size: 160% 100%; -webkit-mask-size: 160% 100%; animation: wordmark-flow 12s linear infinite; }
+@keyframes wordmark-flow { to { background-position: 200% 0; } }
+
+/* Footer details */
+.foot-cta { box-shadow: 0 40px 80px -40px rgb(var(--brand-rgb) / .8), inset 0 1px 0 rgb(255 255 255 / .2); }
+.foot-cta-glow {
+  background:
+    radial-gradient(45% 80% at 100% 0%, rgb(255 255 255 / .22), transparent 70%),
+    radial-gradient(40% 70% at 0% 100%, rgb(var(--sky-rgb) / .35), transparent 70%),
+    radial-gradient(rgb(255 255 255 / .14) 1px, transparent 1px) 0 0 / 18px 18px;
+  -webkit-mask-image: linear-gradient(105deg, transparent 30%, #000); mask-image: linear-gradient(105deg, transparent 30%, #000);
+}
+.foot-link { background: linear-gradient(rgb(var(--brand-text-rgb)), rgb(var(--brand-text-rgb))) 0 100% / 0 1px no-repeat; transition: background-size .25s var(--ease), color .2s; padding-bottom: 1px; }
+.foot-link:hover { background-size: 100% 1px; }
+
 /* Hero entrance */
 .fade-up { opacity: 0; transform: translateY(16px); animation: fadeup .8s var(--ease) forwards; }
 @keyframes fadeup { to { opacity: 1; transform: none; } }
@@ -377,10 +429,78 @@ html[data-theme="dark"] .site-root, .on-dark {
 .modal-in { animation: modal-in .35s var(--ease) both; }
 @keyframes modal-in { from { opacity: 0; transform: translateY(16px) scale(.98); } }
 
+/* Process: stacking cards. Each card shrinks and fades back as the next slides over it (--cover from useCardStack) */
+.stack-inner {
+  transform: translateY(calc(var(--cover, 0) * -6px)) scale(calc(1 - var(--cover, 0) * .07)); transform-origin: 50% 0;
+  box-shadow: 0 -18px 40px -24px rgb(var(--shadow-rgb) / calc(.4 * var(--shadow-k))), 0 24px 48px -28px rgb(var(--shadow-rgb) / calc(.35 * var(--shadow-k)));
+  will-change: transform;
+}
+.stack-shade { background: rgb(var(--raised-rgb)); opacity: calc(var(--cover, 0) * .7); }
+.stack-num {
+  color: transparent; -webkit-text-stroke: 1.5px rgb(var(--brand-rgb) / .22);
+  translate: 0 calc(var(--cover, 0) * 40px); transition: -webkit-text-stroke-color .6s var(--ease);
+}
+.is-reached .stack-num { -webkit-text-stroke-color: rgb(var(--brand-rgb) / .38); }
+.stack-item { opacity: .35; transform: translateX(-10px); transition: opacity .6s var(--ease), transform .6s var(--ease); transition-delay: calc(var(--i, 0) * 80ms); }
+.is-reached .stack-item { opacity: 1; transform: none; }
+.stack-node { transition: background-color .4s, color .4s, box-shadow .4s; }
+.stack-node.is-now { box-shadow: 0 0 0 6px rgb(var(--brand-rgb) / .14), 0 8px 18px -8px rgb(var(--brand-rgb) / .8); }
+
+/* Solutions: expanding photo panels. Collapsed ones show a tinted, numbered spine; the active one opens wide (tall on
+   phones) and its text rises in once it has room. On scroll-in the panels wipe up one after another (--n = index) */
+.sol-panel {
+  flex: none; height: 5.5rem; clip-path: inset(100% 0 0 0);
+  transition: flex-grow .8s var(--ease), height .8s var(--ease), box-shadow .5s var(--ease), clip-path 1s cubic-bezier(.65, 0, .35, 1) calc(100ms + var(--n, 0) * 90ms);
+}
+.rv-in .sol-panel { clip-path: inset(-80px); } /* past the edges so the active glow isn't cut off */
+.sol-panel.is-active { height: 27rem; box-shadow: 0 30px 60px -28px rgb(var(--brand-rgb) / calc(.6 * var(--shadow-k))); }
+@media (min-width: 1024px) {
+  .sol-panel, .sol-panel.is-active { flex: 1 1 0; min-width: 0; height: auto; }
+  .sol-panel.is-active { flex-grow: 5; }
+}
+.sol-panel-img { transform: scale(1.12); filter: saturate(.55); transition: transform 1.2s var(--ease), filter .8s var(--ease); }
+.sol-panel.is-active .sol-panel-img { transform: none; filter: none; }
+.sol-panel.is-active:hover .sol-panel-img { transform: scale(1.04); }
+.sol-panel-tint { pointer-events: none; background: linear-gradient(to top, rgb(8 11 24 / .8), rgb(var(--brand-rgb) / .35)); transition: opacity .6s var(--ease); }
+.sol-panel.is-active .sol-panel-tint { opacity: 0; }
+.sol-panel-spine { transition: opacity .4s var(--ease) .35s; }
+.sol-panel.is-active .sol-panel-spine { opacity: 0; transition-delay: 0s; transition-duration: .2s; }
+.sol-panel-body > * { opacity: 0; transform: translateY(14px); transition: opacity .2s, transform .2s; }
+.sol-panel.is-active .sol-panel-body > * { opacity: 1; transform: none; transition: opacity .5s var(--ease), transform .6s var(--ease); transition-delay: calc(.3s + var(--i, 0) * 60ms); }
+.sol-panel-cta { box-shadow: 0 10px 24px -12px rgb(0 0 0 / .6); }
+.sol-panel:hover .sol-panel-cta { transform: translateY(-1px); }
+
+/* Viewer: the open photo breathes slowly */
+.kenburns { animation: kenburns 14s ease-in-out infinite alternate; }
+@keyframes kenburns { from { transform: none; } to { transform: scale(1.12) translate(-1.5%, -1%); } }
+.viewer-rise > * { opacity: 0; transform: translateY(14px); animation: fadeup .6s var(--ease) forwards; animation-delay: calc(var(--d, 0ms) + var(--i, 0) * 70ms); }
+
+/* Viewer transitions (View Transitions API, see viewTransition in use-motion). Opening and closing morph the panel photo
+   into the viewer photo; next/prev wipe the new photo in over the old one as it recedes. The pseudo-elements live on
+   <html>, outside .site-root, so they spell out the easing instead of using var(--ease) */
+::view-transition-group(solution-photo) { animation-duration: .7s; animation-timing-function: cubic-bezier(.22, .61, .36, 1); }
+::view-transition-old(solution-photo), ::view-transition-new(solution-photo) { height: 100%; object-fit: cover; overflow: clip; }
+html[data-vt]::view-transition-old(root), html[data-vt]::view-transition-new(root) { animation-duration: .45s; }
+html[data-vt="next"]::view-transition-new(solution-photo) { mix-blend-mode: normal; animation: vt-wipe-next .8s cubic-bezier(.65, 0, .35, 1) both; }
+html[data-vt="prev"]::view-transition-new(solution-photo) { mix-blend-mode: normal; animation: vt-wipe-prev .8s cubic-bezier(.65, 0, .35, 1) both; }
+html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]::view-transition-old(solution-photo) { mix-blend-mode: normal; animation: vt-recede .8s cubic-bezier(.22, .61, .36, 1) both; }
+@keyframes vt-wipe-next { from { clip-path: inset(0 0 0 100%); transform: scale(1.08); } to { clip-path: inset(0); transform: none; } }
+@keyframes vt-wipe-prev { from { clip-path: inset(0 100% 0 0); transform: scale(1.08); } to { clip-path: inset(0); transform: none; } }
+@keyframes vt-recede { to { transform: scale(.92); filter: brightness(.5); } }
+
 @media (prefers-reduced-motion: reduce) {
-  .rv, .fade-up, .stagger > * { opacity: 1; transform: none; transition: none; animation: none !important; }
+  .rv, .fade-up, .stagger > *, .word { opacity: 1; transform: none; filter: none; transition: none; animation: none !important; }
+  .unveil { clip-path: none; transition: none; }
+  .unveil img { scale: none; }
+  .drift { translate: none; }
+  .scroll-line { display: none; }
+  .wordmark-fill { mask-size: 160% 100%; -webkit-mask-size: 160% 100%; transition: none; animation: none !important; }
   .img-zoom, .card-hover, .btn { transition: none; }
   .group:hover .img-zoom, .card-hover:hover { transform: none; }
-  .marquee, .live-dot::after, .caret::after, .typing > i, .msg-in, .bar-grow, .modal-in { animation: none; }
+  .marquee, .live-dot::after, .caret::after, .typing > i, .msg-in, .bar-grow, .modal-in, .kenburns { animation: none; }
+  .viewer-rise > * { opacity: 1; transform: none; animation: none; }
+  .stack-inner, .stack-num, .stack-item { transform: none; translate: none; opacity: 1; transition: none; }
+  .sol-panel, .sol-panel-img, .sol-panel-tint, .sol-panel-spine, .sol-panel-body > * { clip-path: none; transition: none; }
+  .sol-panel-img, .sol-panel.is-active:hover .sol-panel-img { transform: none; }
   html { scroll-behavior: auto; }
 }

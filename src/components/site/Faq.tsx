@@ -26,7 +26,7 @@ export default function Faq() {
               </>
             }
           >
-            <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">Straight answers on how {company.name} works. If yours isn't here, ask us directly.</p>
+            <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">Straight answers on how {company.shortName} works. If yours isn't here, ask us directly.</p>
             <button onClick={() => startEnquiry()} className="btn btn-secondary mt-8 px-6 py-3 text-sm">
               Ask a question <ArrowUpRight className="h-4 w-4" />
             </button>

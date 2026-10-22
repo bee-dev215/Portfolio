@@ -10,6 +10,8 @@ function useScrollState() {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 8);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      document.documentElement.style.setProperty("--progress", max > 0 ? (window.scrollY / max).toFixed(4) : "0");
       let current = "";
       for (const l of navLinks) {
         const el = document.getElementById(l.id);
@@ -94,6 +96,7 @@ export default function Navbar() {
           </button>
         </div>
       </div>
+      <span className={`scroll-line bg-grad absolute inset-x-0 bottom-[-1px] h-[2px] transition-opacity duration-300 ${scrolled ? "opacity-100" : "opacity-0"}`} aria-hidden="true" />
 
       {open && (
         <div className="fade-up border-t border-line px-5 pb-6 pt-2 sm:px-8 lg:hidden" style={{ animationDuration: ".3s" }}>

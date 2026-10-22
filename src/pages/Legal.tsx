@@ -103,13 +103,13 @@ export default function Legal({ doc }: { doc: LegalDocKey }) {
             {doc === "terms" && (
               <section id={CREDITS.id} className="mt-12 scroll-mt-24 border-t border-line pt-8">
                 <h2 className="font-display text-2xl font-bold">{CREDITS.heading}</h2>
-                <p className="mt-4 leading-relaxed text-ink-2">Photography on this site is used under the free licence of Freepik (now Magnific). Thank you to the creators:</p>
+                <p className="mt-4 leading-relaxed text-ink-2">Photography on this site is used under the free licences of Freepik (now Magnific) and Pexels. Thank you to the creators:</p>
                 <ul className="mt-5 divide-y divide-line rounded-2xl border border-line bg-surface">
                   {imageCredits.map((c) => (
                     <li key={c.file} className="flex flex-col gap-1 px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
                       <span className="text-sm text-subtle">{c.subject}</span>
                       <a href={c.href} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-1.5 text-sm font-medium text-ink hover:text-brand-text">
-                        Image by {c.author} on Magnific
+                        Image by {c.author} on {c.source ?? "Magnific"}
                         <ArrowUpRight className="h-3.5 w-3.5 text-subtle group-hover:text-brand-text" />
                       </a>
                     </li>

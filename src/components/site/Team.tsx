@@ -39,7 +39,7 @@ export default function Team() {
             }
           >
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-              AI engineers, learning designers and product specialists — working side by side on every {company.name} project, from discovery to support.
+              AI engineers, learning designers and product specialists — working side by side on every {company.shortName} project, from discovery to support.
             </p>
           </SectionHeading>
           <Reveal delay={100}>
@@ -53,7 +53,7 @@ export default function Team() {
           {team.map((m, i) => (
             <Reveal key={m.name} delay={(i % 4) * 80} className="h-full">
               <article className="card card-hover group flex h-full flex-col overflow-hidden">
-                <div className="relative aspect-[4/5] overflow-hidden bg-raised">
+                <div className="unveil relative aspect-[4/5] overflow-hidden bg-raised">
                   <Portrait member={m} />
                   {m.linkedin && (
                     <a
