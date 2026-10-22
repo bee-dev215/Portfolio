@@ -12,7 +12,6 @@ import ProjectStrip from "@/components/projects/ProjectStrip";
 import { serviceIcons } from "@/components/site/icons";
 import { scrollToId, servicePath, services, stackGroups, startEnquiry } from "@/data/company";
 import { serviceDetails, serviceGroups } from "@/data/service-details";
-import { projectsForService } from "@/data/projects";
 import NotFound from "./NotFound";
 
 export default function ServiceDetail() {
@@ -271,7 +270,7 @@ export default function ServiceDetail() {
       </section>
 
       <ProjectStrip
-        list={projectsForService(service.key)}
+        match={(p) => p.services.includes(service.key)}
         title={
           <>
             {service.title} <span className="gradient-text">in practice.</span>

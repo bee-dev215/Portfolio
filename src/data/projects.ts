@@ -2,6 +2,10 @@
 //  PROJECTS — case studies shown on the home page, /projects and /projects/<slug>,
 //  and linked from the solution, service and audience pages they relate to.
 //
+//  Once the database is connected (src/lib/supabase.ts), projects are edited at /admin and
+//  this list is only the starting content (supabase/setup.sql loads it) and the fallback the
+//  site shows while the database can't be reached. Pages read projects through useProjects().
+//
 //  PLACEHOLDER CASE STUDIES: drafted for the site to show the kind of work the company does.
 //  Replace them with your real projects (or confirm each detail) before launch — visitors will
 //  read these as work you delivered. Clients are described, never named (see "Confidentiality"
@@ -47,7 +51,7 @@ export interface Project {
   featured?: boolean; // shown first on the home page
 }
 
-export const projects: Project[] = [
+export const builtInProjects: Project[] = [
   {
     slug: "socratic-math-coach",
     title: "Socratic Math Coach",
@@ -587,8 +591,3 @@ export const projectPath = (p: Pick<Project, "slug">) => `/projects/${p.slug}`;
 
 /** The title of the audience a project was built for, e.g. "K-12 schools". */
 export const audienceTitle = (p: Pick<Project, "audience">) => industries.find((i) => i.key === p.audience)?.title ?? "";
-
-/** Projects that started from a solution blueprint, used a service, or were built for an audience. */
-export const projectsForSolution = (slug: string) => projects.filter((p) => p.solution === slug);
-export const projectsForService = (key: ServiceKey) => projects.filter((p) => p.services.includes(key));
-export const projectsForAudience = (key: string) => projects.filter((p) => p.audience === key);

@@ -1,12 +1,12 @@
 import { DragEvent, useRef, useState } from "react";
 import { ImagePlus, Loader2, Trash2, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
-import { uploadProjectImage } from "@/lib/portfolioApi";
+import { uploadProjectImage } from "@/lib/projectsApi";
 import { inputCls } from "./fields";
 
-const MAX_MB = 5;
+const MAX_MB = 5; // matches the bucket's limit in supabase/setup.sql
 
-export default function ImageUpload({ value, onChange }: { value: string; onChange: (url: string) => void }) {
+export default function ImageUpload({ id, value, onChange }: { id?: string; value: string; onChange: (url: string) => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -14,12 +14,11 @@ export default function ImageUpload({ value, onChange }: { value: string; onChan
   const handleFile = async (file?: File | null) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) return toast.error("Please choose an image file");
-    if (file.size > MAX_MB * 1024 * 1024) return toast.error(`Image must be under ${MAX_MB} MB`);
+    if (file.size > MAX_MB * 1024 * 1024) return toast.error(`Images must be under ${MAX_MB} MB`);
     setUploading(true);
     try {
-      const url = await uploadProjectImage(file);
-      onChange(url);
-      toast.success("Image uploaded");
+      onChange(await uploadProjectImage(file));
+      toast.success("Photo uploaded");
     } catch (e) {
       toast.error("Upload failed", { description: (e as Error).message });
     } finally {
@@ -43,41 +42,35 @@ export default function ImageUpload({ value, onChange }: { value: string; onChan
         }}
         onDragLeave={() => setDragOver(false)}
         onDrop={onDrop}
-        className={`relative overflow-hidden rounded-xl border-2 border-dashed transition ${
-          dragOver ? "border-emerald-400 bg-emerald-400/5" : "border-white/10 bg-zinc-900/60"
-        }`}
+        className={`relative overflow-hidden rounded-2xl border-2 border-dashed transition-colors ${dragOver ? "border-brand bg-brand-soft" : "border-line bg-raised/50"}`}
       >
         {value ? (
-          <div className="group relative aspect-[16/9]">
-            <img src={value} alt="Project cover" className="h-full w-full object-cover" />
-            <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/60 opacity-0 transition group-hover:opacity-100">
-              <button type="button" onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-medium text-zinc-950">
+          <div className="group relative aspect-[16/10]">
+            <img src={value} alt="" className="h-full w-full object-cover" />
+            <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/55 opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
+              <button type="button" onClick={() => fileRef.current?.click()} className="btn bg-white px-4 py-2 text-sm text-[#0f172a]">
                 <ImagePlus className="h-4 w-4" /> Replace
               </button>
-              <button type="button" onClick={() => onChange("")} className="inline-flex items-center gap-1.5 rounded-lg bg-red-500 px-3 py-2 text-sm font-medium text-white">
+              <button type="button" onClick={() => onChange("")} className="btn bg-red-600 px-4 py-2 text-sm text-white">
                 <Trash2 className="h-4 w-4" /> Remove
               </button>
             </div>
           </div>
         ) : (
-          <button
-            type="button"
-            onClick={() => fileRef.current?.click()}
-            className="flex aspect-[16/9] w-full flex-col items-center justify-center gap-2 text-zinc-500 hover:text-zinc-300"
-          >
+          <button type="button" onClick={() => fileRef.current?.click()} className="flex aspect-[16/10] w-full flex-col items-center justify-center gap-2 text-subtle transition-colors hover:text-ink">
             <UploadCloud className="h-8 w-8" />
-            <span className="text-sm">Click or drag an image here</span>
-            <span className="text-xs text-zinc-600">PNG, JPG, WebP · max {MAX_MB} MB</span>
+            <span className="text-sm font-semibold">Click or drag a photo here</span>
+            <span className="text-xs">JPG, PNG or WebP · landscape (16:10) works best · up to {MAX_MB} MB</span>
           </button>
         )}
         {uploading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/80">
-            <Loader2 className="h-6 w-6 animate-spin text-emerald-400" />
+          <div className="absolute inset-0 grid place-items-center bg-canvas/80">
+            <Loader2 className="h-6 w-6 animate-spin text-brand-text" />
           </div>
         )}
       </div>
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFile(e.target.files?.[0])} />
-      <input value={value} onChange={(e) => onChange(e.target.value)} placeholder="…or paste an image URL" className={inputCls} />
+      <input id={id} value={value} onChange={(e) => onChange(e.target.value)} placeholder="…or paste an image link" className={inputCls} />
     </div>
   );
 }

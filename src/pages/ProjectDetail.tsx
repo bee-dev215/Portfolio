@@ -8,9 +8,11 @@ import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import SectionNav, { NavSection, SECTION_OFFSET } from "@/components/solutions/SectionNav";
 import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectFlow from "@/components/projects/ProjectFlow";
+import ProjectsLoading from "@/components/projects/ProjectsLoading";
 import { serviceIcons } from "@/components/site/icons";
 import { industries, industryPath, servicePath, services, solutionPath, solutions, startEnquiry } from "@/data/company";
-import { audienceTitle, Project, projectPath, projects } from "@/data/projects";
+import { audienceTitle, Project, projectPath } from "@/data/projects";
+import { useProjects } from "@/hooks/use-projects";
 import NotFound from "./NotFound";
 
 const SECTIONS: NavSection[] = [
@@ -25,7 +27,7 @@ const SECTIONS: NavSection[] = [
 const anchor: CSSProperties = { scrollMarginTop: SECTION_OFFSET };
 
 /** Up to three other projects: same audience first, then those sharing the most services. */
-function relatedTo(project: Project) {
+function relatedTo(project: Project, projects: Project[]) {
   const shared = (p: Project) => p.services.filter((k) => project.services.includes(k)).length;
   return projects
     .filter((p) => p !== project)
@@ -35,19 +37,21 @@ function relatedTo(project: Project) {
 
 export default function ProjectDetail() {
   const { slug } = useParams();
+  const { projects, ready } = useProjects();
+  if (!ready) return <ProjectsLoading title="Projects" />;
   const index = projects.findIndex((p) => p.slug === slug);
   if (index === -1) return <NotFound />;
-  return <ProjectPage key={projects[index].slug} index={index} />;
+  return <ProjectPage key={projects[index].slug} projects={projects} index={index} />;
 }
 
-function ProjectPage({ index }: { index: number }) {
+function ProjectPage({ projects, index }: { projects: Project[]; index: number }) {
   const project = projects[index];
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
   const audience = industries.find((i) => i.key === project.audience);
   const solution = solutions.find((s) => s.slug === project.solution);
   const used = project.services.map((k) => services.find((s) => s.key === k)).filter((s): s is (typeof services)[number] => Boolean(s));
-  const related = relatedTo(project);
+  const related = relatedTo(project, projects);
 
   const facts = [
     { k: "Client", v: project.client },
@@ -244,12 +248,22 @@ function ProjectPage({ index }: { index: number }) {
             <Reveal variant="left" className="lg:sticky lg:top-44 lg:self-start">
               <figure>
                 <div className="unveil shadow-soft overflow-hidden rounded-[2rem] bg-raised">
-                  <img src={project.gallery.src} alt={project.gallery.alt} loading="lazy" width={1280} height={800} className="aspect-[4/3] w-full object-cover" />
+                  {/* Projects added at /admin may skip the second photo: the cover stands in */}
+                  <img
+                    src={project.gallery.src || project.image}
+                    alt={project.gallery.src ? project.gallery.alt : project.imageAlt}
+                    loading="lazy"
+                    width={1280}
+                    height={800}
+                    className="aspect-[4/3] w-full object-cover"
+                  />
                 </div>
-                <figcaption className="mt-4 flex gap-3 text-sm leading-relaxed text-ink-2">
-                  <span className="bg-grad mt-2 h-px w-6 shrink-0" aria-hidden="true" />
-                  {project.gallery.caption}
-                </figcaption>
+                {project.gallery.caption && (
+                  <figcaption className="mt-4 flex gap-3 text-sm leading-relaxed text-ink-2">
+                    <span className="bg-grad mt-2 h-px w-6 shrink-0" aria-hidden="true" />
+                    {project.gallery.caption}
+                  </figcaption>
+                )}
               </figure>
             </Reveal>
             <ol className="grid gap-4 sm:grid-cols-2">

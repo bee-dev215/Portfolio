@@ -1,10 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
+// The Supabase project behind /admin (Project Settings → API keys: the project URL and the publishable/anon key).
+// Both are meant to be public: the row-level security in supabase/setup.sql decides what visitors and admins can do.
+const SUPABASE_URL = "";
+const SUPABASE_KEY = "";
 
-// Initialize database client
-const supabaseUrl = 'https://wlpripxhdnpfitczjsfx.databasepad.com';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1YmU1Y2VmLWQ2M2YtNDIxMC04N2QwLTI2OGNiNTZhNjI2ZiJ9.eyJwcm9qZWN0SWQiOiJ3bHByaXB4aGRucGZpdGN6anNmeCIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzkyMzk3ODQxLCJleHAiOjIxMDc3NTc4NDEsImlzcyI6ImZhbW91cy5kYXRhYmFzZXBhZCIsImF1ZCI6ImZhbW91cy5jbGllbnRzIn0.4Kv3BcGfWMdVxEEC3WauVti8nx5fIJNgXIzGtSEIwVE';
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-
-export { supabase };
+/** The database client, or null until the project details above are filled in (the site then shows the built-in projects). */
+export const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;

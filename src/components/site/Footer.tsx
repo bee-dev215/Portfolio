@@ -1,8 +1,9 @@
 import { ArrowUp, ArrowUpRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { company, industries, industryPath, legalLinks, servicePath, services, sitePages, socials, solutionPath, solutions, startEnquiry } from "@/data/company";
-import { projectPath, projects } from "@/data/projects";
+import { projectPath } from "@/data/projects";
 import { useInView } from "@/hooks/use-motion";
+import { useProjects } from "@/hooks/use-projects";
 import { Monogram } from "./Navbar";
 import SocialIcon from "./SocialIcon";
 
@@ -11,8 +12,6 @@ const headCls = "text-xs font-semibold uppercase tracking-[0.14em] text-subtle";
 
 // Company column: every page that isn't a solution, project, service or audience
 const companyPages = sitePages.filter((p) => !["/solutions", "/projects", "/services", "/industries"].includes(p.to));
-// Projects column: the featured ones, then a link to the rest
-const footerProjects = [...projects.filter((p) => p.featured).map((p) => ({ to: projectPath(p), label: p.title })), { to: "/projects", label: `All ${projects.length} projects` }];
 
 function LinkColumn({ title, to, links, className = "" }: { title: string; to?: string; links: { to: string; label: string }[]; className?: string }) {
   return (
@@ -35,6 +34,12 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
   const year = new Date().getFullYear();
   // Fills the wordmark once it is well into view at the end of the page
   const [mark, filled] = useInView<HTMLDivElement>({ threshold: 0.6, rootMargin: "0px" });
+  const { projects, ready } = useProjects();
+  // Projects column: the featured ones, then a link to the rest
+  const footerProjects = [
+    ...projects.filter((p) => p.featured).map((p) => ({ to: projectPath(p), label: p.title })),
+    { to: "/projects", label: ready ? `All ${projects.length} projects` : "All projects" },
+  ];
 
   return (
     <footer className="on-dark relative isolate overflow-hidden bg-canvas px-5 pt-20 sm:px-8 sm:pt-24">

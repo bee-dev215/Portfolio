@@ -628,9 +628,6 @@ export const imageCredits: ImageCredit[] = [
   { file: "team/owen.webp", subject: "Team portrait — Owen Brady (placeholder)", author: "cookie_studio", href: "https://www.magnific.com/free-photo/handsome-bearded-redhead-guy-posing-against-white-wall-with-glasses_11104169.htm" },
 ];
 
-// Suggested categories offered in the admin project form (you can type any category)
-export const suggestedCategories = ["Schools & universities", "EdTech", "Corporate learning", "Healthcare education", "Government"];
-
 // ------------------------------------------------------------
 //  Top-bar menus. Solutions, Services and Who we serve list the data above;
 //  the Company menu is set here. Hovering an item previews it on the right.

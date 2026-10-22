@@ -7,12 +7,10 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import PageSection from "@/components/company/PageSection";
 import ProjectCard from "@/components/projects/ProjectCard";
+import ProjectsLoading from "@/components/projects/ProjectsLoading";
 import { industries, services, solutionPath, solutions, startEnquiry } from "@/data/company";
-import { audienceTitle, Project, projectPath, projects } from "@/data/projects";
-
-// Audience filter: "all" plus every audience with at least one project
-const audiences = [{ key: "all", title: "All" }, ...industries.filter((i) => projects.some((p) => p.audience === i.key))];
-const featured = projects.find((p) => p.featured) ?? projects[0];
+import { audienceTitle, Project, projectPath } from "@/data/projects";
+import { useProjects } from "@/hooks/use-projects";
 
 // Lower-cased text each project is searched by
 const haystack = (p: Project) =>
@@ -38,7 +36,7 @@ const common: { icon: LucideIcon; title: string; desc: string }[] = [
 ];
 
 /** Four project photos, staggered, for the page hero. */
-function HeroMosaic() {
+function HeroMosaic({ projects }: { projects: Project[] }) {
   const tiles = projects.slice(0, 4);
   return (
     <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -103,13 +101,20 @@ function FeaturedProject({ project }: { project: Project }) {
 }
 
 export default function ProjectsIndex() {
+  const { projects, ready } = useProjects();
   const [audience, setAudience] = useState("all");
   const [query, setQuery] = useState("");
+
+  // Audience filter: "all" plus every audience with at least one project
+  const audiences = useMemo(() => [{ key: "all", title: "All" }, ...industries.filter((i) => projects.some((p) => p.audience === i.key))], [projects]);
+  const featured = projects.find((p) => p.featured) ?? projects[0];
 
   const list = useMemo(() => {
     const words = query.toLowerCase().split(/\s+/).filter(Boolean);
     return projects.filter((p) => (audience === "all" || p.audience === audience) && words.every((w) => haystack(p).includes(w)));
-  }, [audience, query]);
+  }, [projects, audience, query]);
+
+  if (!ready) return <ProjectsLoading title="Projects" />;
 
   const browsing = audience === "all" && !query;
   // While browsing everything, the featured project gets its own card above the grid
@@ -145,7 +150,7 @@ export default function ProjectsIndex() {
             </button>
           </>
         }
-        aside={<HeroMosaic />}
+        aside={<HeroMosaic projects={projects} />}
       >
         <p className="flex items-center gap-2 text-sm text-subtle">
           <Lock className="h-4 w-4 shrink-0" /> Clients are described, not named — their learners' data comes first.
@@ -200,7 +205,7 @@ export default function ProjectsIndex() {
             {query && ` matching “${query}”`}
           </p>
 
-          {browsing && (
+          {browsing && featured && (
             <div className="mt-6">
               <FeaturedProject project={featured} />
             </div>

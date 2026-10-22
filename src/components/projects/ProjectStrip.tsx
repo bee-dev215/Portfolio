@@ -1,12 +1,15 @@
 import { ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Project, projects } from "@/data/projects";
+import { Project } from "@/data/projects";
+import { useProjects } from "@/hooks/use-projects";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import ProjectCard from "./ProjectCard";
 
-/** "Projects" section for the solution, service and audience pages: up to three related projects. Renders nothing without any. */
-export default function ProjectStrip({ list, title, lead, band = false }: { list: Project[]; title: ReactNode; lead?: ReactNode; band?: boolean }) {
+/** "Projects" section for the solution, service and audience pages: up to three projects that `match`. Renders nothing without any. */
+export default function ProjectStrip({ match, title, lead, band = false }: { match: (p: Project) => boolean; title: ReactNode; lead?: ReactNode; band?: boolean }) {
+  const { projects } = useProjects();
+  const list = projects.filter(match);
   if (list.length === 0) return null;
   return (
     <section className={`px-5 py-20 sm:px-8 lg:py-28 ${band ? "band" : ""}`}>

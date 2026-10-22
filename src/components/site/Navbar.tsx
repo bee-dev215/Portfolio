@@ -1,4 +1,4 @@
-import { FocusEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { FocusEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Building2, ChevronDown, Cpu, LucideIcon, Mail, Menu, Phone, Route, ShieldCheck, Users, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -15,7 +15,8 @@ import {
   startEnquiry,
   team,
 } from "@/data/company";
-import { projectPath, projects } from "@/data/projects";
+import { Project, projectPath } from "@/data/projects";
+import { useProjects } from "@/hooks/use-projects";
 import { serviceIcons } from "./icons";
 import ThemeToggle from "./ThemeToggle";
 
@@ -85,7 +86,25 @@ interface MenuGroup {
   items: MenuItem[];
 }
 
-const menus: MenuGroup[] = [
+/** The Projects menu, built from the projects once they've loaded. */
+const projectsMenu = (projects: Project[], ready: boolean): MenuGroup => ({
+  key: "projects",
+  label: "Projects",
+  paths: ["/projects"],
+  sections: ["projects"],
+  all: { label: ready ? `All ${projects.length} projects` : "All projects", to: "/projects" },
+  items: projects.map((p) => ({
+    key: `project-${p.slug}`,
+    label: p.title,
+    desc: p.client,
+    blurb: p.summary,
+    image: p.image,
+    to: projectPath(p),
+  })),
+});
+
+// The menus in order; the Projects menu goes second, once the projects are known
+const [solutionsMenu, ...otherMenus]: MenuGroup[] = [
   {
     key: "solutions",
     label: "Solutions",
@@ -99,21 +118,6 @@ const menus: MenuGroup[] = [
       blurb: s.summary,
       image: s.image,
       to: solutionPath(s),
-    })),
-  },
-  {
-    key: "projects",
-    label: "Projects",
-    paths: ["/projects"],
-    sections: ["projects"],
-    all: { label: `All ${projects.length} projects`, to: "/projects" },
-    items: projects.map((p) => ({
-      key: `project-${p.slug}`,
-      label: p.title,
-      desc: p.client,
-      blurb: p.summary,
-      image: p.image,
-      to: projectPath(p),
     })),
   },
   {
@@ -170,9 +174,11 @@ const preloaded = new Set<string>();
 
 /** Warms the browser cache for a menu's preview photos, so hovering never shows an empty frame. */
 function preload(group: MenuGroup) {
-  if (preloaded.has(group.key)) return;
-  preloaded.add(group.key);
-  for (const it of group.items) if (it.image) new Image().src = it.image;
+  for (const it of group.items) {
+    if (!it.image || preloaded.has(it.image)) continue;
+    preloaded.add(it.image);
+    new Image().src = it.image;
+  }
 }
 
 // ------------------------------------------------------------
@@ -262,6 +268,8 @@ export default function Navbar() {
   const [menu, setMenu] = useState<string | null>(null); // desktop: the open group
   const [peek, setPeek] = useState(0); // desktop: the previewed item
   const [fresh, setFresh] = useState(false); // the panel drops in only when opening from closed
+  const { projects, ready } = useProjects();
+  const menus = useMemo(() => [solutionsMenu, projectsMenu(projects, ready), ...otherMenus], [projects, ready]);
 
   const headerRef = useRef<HTMLElement>(null);
   const triggers = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -435,7 +443,7 @@ export default function Navbar() {
                         </div>
                       </div>
                       <aside className="border-l border-line bg-raised/40 p-5" aria-hidden="true">
-                        <Preview item={current} />
+                        {current && <Preview item={current} />}
                       </aside>
                     </div>
                   </div>

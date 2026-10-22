@@ -11,7 +11,6 @@ import DayToggle from "@/components/industries/DayToggle";
 import ProjectStrip from "@/components/projects/ProjectStrip";
 import { industries, industryPath, scrollToId, services, startEnquiry } from "@/data/company";
 import { industryDetails } from "@/data/industry-details";
-import { projectsForAudience } from "@/data/projects";
 import NotFound from "./NotFound";
 
 // Lower-cases a title's first word for use mid-sentence, leaving names like "K-12" and "EdTech" alone
@@ -230,7 +229,7 @@ export default function IndustryDetail() {
       </section>
 
       <ProjectStrip
-        list={projectsForAudience(industry.key)}
+        match={(p) => p.audience === industry.key}
         title={
           <>
             Built for {midSentence(industry.title)}, <span className="gradient-text">in use today.</span>

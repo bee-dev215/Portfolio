@@ -1,93 +1,84 @@
 import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Loader2, Lock, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { claimAdmin } from "@/lib/portfolioApi";
+import { Monogram } from "@/components/site/Navbar";
 import { Field, inputCls } from "./fields";
 
-export default function AdminLogin({ setupMode, onAuthed }: { setupMode: boolean; onAuthed: () => void }) {
+/** Supabase's sign-in errors, reworded for the person at the keyboard. */
+function explain(message: string) {
+  if (/invalid login credentials/i.test(message)) return "Wrong email or password.";
+  if (/email not confirmed/i.test(message)) return "This account's email isn't confirmed yet. In Supabase, open Authentication → Users and confirm it.";
+  return message;
+}
+
+export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [info, setInfo] = useState("");
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
-    setInfo("");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Enter a valid email");
-    if (password.length < 8) return setError("Password must be at least 8 characters");
-    if (setupMode && password !== confirm) return setError("Passwords do not match");
-
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return setError("Enter a valid email.");
+    if (!password) return setError("Enter your password.");
     setLoading(true);
-    try {
-      if (setupMode) {
-        const { data, error: err } = await supabase.auth.signUp({ email, password });
-        if (err) throw err;
-        if (!data.session) {
-          // Email confirmation may be required; try signing in directly
-          const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
-          if (signInErr) {
-            setInfo("Account created. Please confirm your email, then sign in here to finish setup.");
-            return;
-          }
-        }
-        const ok = await claimAdmin();
-        if (!ok) throw new Error("An admin account already exists.");
-      } else {
-        const { error: err } = await supabase.auth.signInWithPassword({ email, password });
-        if (err) throw err;
-      }
-      onAuthed();
-    } catch (err) {
-      setError((err as Error).message || "Authentication failed");
-    } finally {
-      setLoading(false);
-    }
+    // The admin page follows the session, so success needs nothing more here
+    const { error: err } = await supabase!.auth.signInWithPassword({ email: email.trim(), password });
+    if (err) setError(explain(err.message));
+    setLoading(false);
   };
 
   return (
-    <div className="pf-root relative flex min-h-screen items-center justify-center overflow-hidden px-6">
-      <div className="pf-grid-bg pointer-events-none absolute inset-0" />
-      <div className="pointer-events-none absolute left-1/2 top-1/4 h-80 w-[600px] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-[120px]" />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-16">
+      <div className="mesh pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div className="dot-grid pointer-events-none absolute inset-0" aria-hidden="true" />
 
       <div className="relative w-full max-w-md">
-        <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-white">
+        <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-subtle transition-colors hover:text-ink">
           <ArrowLeft className="h-4 w-4" /> Back to site
         </Link>
-        <form onSubmit={submit} noValidate className="rounded-2xl border border-white/10 bg-zinc-950/80 p-8 backdrop-blur">
-          <div className="mb-6 grid h-12 w-12 place-items-center rounded-xl bg-emerald-400/10 text-emerald-300">
-            {setupMode ? <ShieldCheck className="h-6 w-6" /> : <Lock className="h-6 w-6" />}
-          </div>
-          <h1 className="text-2xl font-semibold text-white">{setupMode ? "Create admin account" : "Admin sign in"}</h1>
-          <p className="mt-1.5 text-sm text-zinc-500">
-            {setupMode
-              ? "No admin exists yet. The first account created here becomes the only admin."
-              : "Sign in to manage project records."}
-          </p>
+        <form onSubmit={submit} noValidate className="card shadow-soft rounded-3xl p-7 sm:p-9">
+          <Monogram className="h-11 w-11" />
+          <h1 className="mt-6 font-display text-2xl font-bold tracking-tight">Admin sign in</h1>
+          <p className="mt-1.5 text-sm text-subtle">Sign in to manage the projects on the site.</p>
 
-          <div className="mt-6 space-y-4">
-            <Field label="Email">
-              <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} placeholder="you@example.com" />
+          <div className="mt-7 space-y-5">
+            <Field label="Email" htmlFor="admin-email">
+              <input id="admin-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" autoFocus className={inputCls} />
             </Field>
-            <Field label="Password">
-              <input type="password" autoComplete={setupMode ? "new-password" : "current-password"} value={password} onChange={(e) => setPassword(e.target.value)} className={inputCls} placeholder="••••••••" />
+            <Field label="Password" htmlFor="admin-password">
+              <div className="relative">
+                <input
+                  id="admin-password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  className={`${inputCls} pr-12`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((s) => !s)}
+                  className="absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-subtle hover:text-ink"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </Field>
-            {setupMode && (
-              <Field label="Confirm password">
-                <input type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className={inputCls} placeholder="••••••••" />
-              </Field>
-            )}
           </div>
 
-          {error && <p className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">{error}</p>}
-          {info && <p className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">{info}</p>}
+          {error && (
+            <p role="alert" className="mt-5 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
+              {error}
+            </p>
+          )}
 
-          <button type="submit" disabled={loading} className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-400 py-3 text-sm font-medium text-zinc-950 hover:bg-emerald-300 disabled:opacity-60">
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {setupMode ? "Create account & continue" : "Sign in"}
+          <button type="submit" disabled={loading} className="btn btn-primary mt-7 w-full py-3.5 disabled:opacity-60">
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />} Sign in
           </button>
         </form>
       </div>

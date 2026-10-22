@@ -1,14 +1,12 @@
 import { ReactNode, useEffect, useState } from "react";
 import { ArrowDown, ArrowUp, GripVertical, Pencil, Trash2 } from "lucide-react";
+import { iconBtn } from "./fields";
 
-interface Item {
-  id: number;
-  sort_order: number;
-}
-
-export default function SortableList<T extends Item>({
+/** Rows that can be dragged (or moved with the arrows) into a new order, each with its own actions. */
+export default function SortableList<T extends { id: number }>({
   rows,
   render,
+  actions,
   onEdit,
   onDelete,
   onReorder,
@@ -16,6 +14,7 @@ export default function SortableList<T extends Item>({
 }: {
   rows: T[];
   render: (row: T) => ReactNode;
+  actions?: (row: T) => ReactNode; // extra buttons before Edit and Delete
   onEdit: (row: T) => void;
   onDelete: (row: T) => void;
   onReorder: (ids: number[]) => void;
@@ -51,7 +50,7 @@ export default function SortableList<T extends Item>({
   };
 
   return (
-    <ul className="space-y-2">
+    <ul className="space-y-2.5">
       {order.map((row, i) => (
         <li
           key={row.id}
@@ -72,26 +71,27 @@ export default function SortableList<T extends Item>({
             setDragId(null);
             setOverId(null);
           }}
-          className={`group flex items-center gap-3 rounded-xl border bg-zinc-900/50 p-3 transition ${
-            overId === row.id && dragId !== row.id ? "border-emerald-400/60 bg-emerald-400/5" : "border-white/10 hover:border-white/20"
-          } ${dragId === row.id ? "opacity-40" : ""}`}
+          className={`card flex flex-wrap items-center gap-3 p-3 transition-colors sm:flex-nowrap ${overId === row.id && dragId !== row.id ? "border-brand/60 bg-brand-soft" : ""} ${
+            dragId === row.id ? "opacity-40" : ""
+          }`}
         >
-          <span className="cursor-grab text-zinc-600 active:cursor-grabbing" title="Drag to reorder">
+          <span className="hidden cursor-grab text-subtle active:cursor-grabbing sm:block" title="Drag to reorder">
             <GripVertical className="h-5 w-5" />
           </span>
-          <span className="w-6 shrink-0 text-center font-mono text-xs text-zinc-600">{String(i + 1).padStart(2, "0")}</span>
+          <span className="w-6 shrink-0 text-center font-code text-xs text-subtle">{String(i + 1).padStart(2, "0")}</span>
           <div className="min-w-0 flex-1">{render(row)}</div>
-          <div className="flex shrink-0 items-center gap-0.5">
-            <button onClick={() => move(i, -1)} disabled={disabled || i === 0} className="grid h-8 w-8 place-items-center rounded-lg text-zinc-500 hover:bg-white/5 hover:text-white disabled:opacity-30" aria-label="Move up">
+          <div className="flex w-full shrink-0 items-center justify-end gap-0.5 sm:w-auto">
+            <button onClick={() => move(i, -1)} disabled={disabled || i === 0} className={iconBtn} aria-label="Move up">
               <ArrowUp className="h-4 w-4" />
             </button>
-            <button onClick={() => move(i, 1)} disabled={disabled || i === order.length - 1} className="grid h-8 w-8 place-items-center rounded-lg text-zinc-500 hover:bg-white/5 hover:text-white disabled:opacity-30" aria-label="Move down">
+            <button onClick={() => move(i, 1)} disabled={disabled || i === order.length - 1} className={iconBtn} aria-label="Move down">
               <ArrowDown className="h-4 w-4" />
             </button>
-            <button onClick={() => onEdit(row)} className="grid h-8 w-8 place-items-center rounded-lg text-zinc-400 hover:bg-white/5 hover:text-emerald-300" aria-label="Edit">
+            {actions?.(row)}
+            <button onClick={() => onEdit(row)} className={`${iconBtn} hover:text-brand-text`} aria-label="Edit" title="Edit">
               <Pencil className="h-4 w-4" />
             </button>
-            <button onClick={() => onDelete(row)} className="grid h-8 w-8 place-items-center rounded-lg text-zinc-400 hover:bg-red-500/10 hover:text-red-400" aria-label="Delete">
+            <button onClick={() => onDelete(row)} className={`${iconBtn} hover:bg-red-500/10 hover:text-red-500`} aria-label="Delete" title="Delete">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>

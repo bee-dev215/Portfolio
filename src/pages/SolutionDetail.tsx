@@ -11,7 +11,6 @@ import SolutionCard from "@/components/solutions/SolutionCard";
 import ProjectStrip from "@/components/projects/ProjectStrip";
 import { industries, industryPath, solutionPath, solutions, startEnquiry } from "@/data/company";
 import { SolutionFaq, solutionDetails } from "@/data/solution-details";
-import { projectsForSolution } from "@/data/projects";
 import NotFound from "@/pages/NotFound";
 
 const SECTIONS: NavSection[] = [
@@ -409,7 +408,7 @@ function SolutionPage({ index }: { index: number }) {
       </section>
 
       <ProjectStrip
-        list={projectsForSolution(solution.slug)}
+        match={(p) => p.solution === solution.slug}
         title={
           <>
             Built on <span className="gradient-text">{solution.title}.</span>

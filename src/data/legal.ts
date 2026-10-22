@@ -38,7 +38,7 @@ const privacy: LegalDoc = {
         [
           "Contact form: your name, email address, company and phone number (both optional), the type of enquiry, your message, and whether you opted in to text messages.",
           "Email and phone: whatever you include when you contact us directly.",
-          "Technical data: like any website, our hosting provider receives standard request data such as your IP address, browser type and the pages requested. This site loads its fonts from Google Fonts, so Google also receives your IP address when your browser requests them.",
+          "Technical data: like any website, our hosting provider receives standard request data such as your IP address, browser type and the pages requested. This site loads its fonts from Google Fonts, so Google also receives your IP address when your browser requests them. Project case studies load from our database provider (Supabase), which receives the same standard request data.",
         ],
       ],
     },

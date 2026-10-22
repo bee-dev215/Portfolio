@@ -2,15 +2,17 @@ import { CSSProperties } from "react";
 import { ArrowRight, ArrowUpRight, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { industries } from "@/data/company";
-import { audienceTitle, projectPath, projects } from "@/data/projects";
+import { audienceTitle, projectPath } from "@/data/projects";
+import { useProjects } from "@/hooks/use-projects";
 import Reveal, { SectionHeading } from "./Reveal";
-
-// Featured projects lead; the first takes the large tile
-const shown = [...projects.filter((p) => p.featured), ...projects.filter((p) => !p.featured)].slice(0, 5);
-const audiencesCovered = industries.filter((i) => projects.some((p) => p.audience === i.key)).length;
 
 /** Home-page selection of projects as a photo bento: one large tile and four smaller ones. */
 export default function Projects() {
+  const { projects, ready } = useProjects();
+  // Featured projects lead; the first takes the large tile
+  const shown = [...projects.filter((p) => p.featured), ...projects.filter((p) => !p.featured)].slice(0, 5);
+  const audiencesCovered = industries.filter((i) => projects.some((p) => p.audience === i.key)).length;
+
   return (
     <section id="projects" className="px-5 py-24 sm:px-8 lg:py-32">
       <div className="mx-auto max-w-[1240px]">
@@ -24,17 +26,24 @@ export default function Projects() {
             }
           >
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-              Tutors, feedback, analytics, voice and training — {projects.length} projects across {audiencesCovered} kinds of learning organisation. Client names stay private; the engineering doesn't.
+              Tutors, feedback, analytics, voice and training{ready && <> — {projects.length} projects across {audiencesCovered} kinds of learning organisation</>}. Client names stay private; the engineering doesn't.
             </p>
           </SectionHeading>
           <Reveal delay={100}>
             <Link to="/projects" className="btn btn-primary shrink-0 px-6 py-3 text-sm">
-              All {projects.length} projects <ArrowRight className="h-4 w-4" />
+              All {ready && `${projects.length} `}projects <ArrowRight className="h-4 w-4" />
             </Link>
           </Reveal>
         </div>
 
         <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[repeat(2,18rem)]">
+          {/* Placeholder tiles hold the layout while the projects load */}
+          {!ready &&
+            Array.from({ length: 5 }, (_, i) => (
+              <li key={i} className={i === 0 ? "sm:col-span-2 lg:row-span-2" : ""} aria-hidden="true">
+                <div className={`h-full animate-pulse rounded-3xl bg-raised ${i === 0 ? "aspect-[4/3] sm:aspect-[16/9] lg:aspect-auto" : "aspect-[4/3] lg:aspect-auto"}`} />
+              </li>
+            ))}
           {shown.map((p, i) => {
             const big = i === 0;
             return (
