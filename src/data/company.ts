@@ -536,11 +536,11 @@ export interface ImageCredit {
 }
 
 export const imageCredits: ImageCredit[] = [
-  { file: "sol-ai-tutor.webp", subject: "AI Tutor — a girl learning on a tablet", author: "Ryan Delfin", href: "https://www.pexels.com/photo/a-girl-using-a-tablet-computer-7548729/", source: "Pexels" },
+  { file: "sol-ai-tutor.webp", subject: "AI Tutor — a student learning online with headphones", author: "Karola G", href: "https://www.pexels.com/photo/teenage-boy-in-headphones-working-on-computer-6345307/", source: "Pexels" },
   { file: "sol-assessment.webp", subject: "Assessment Assistant — a teacher marking work in class", author: "RDNE Stock project", href: "https://www.pexels.com/photo/a-woman-in-green-long-sleeve-shirt-sitting-at-the-table-holding-a-pencil-on-paper-8363162/", source: "Pexels" },
   { file: "sol-analytics.webp", subject: "Learning Analytics — a team reviewing a dashboard", author: "Muhammad Jawadur Rahman", href: "https://www.pexels.com/photo/brainstorming-during-presentation-15096572/", source: "Pexels" },
   { file: "sol-content-studio.webp", subject: "Content Studio — a creator recording a lesson", author: "Alena Darmel", href: "https://www.pexels.com/photo/woman-in-white-long-sleeve-shirt-wearing-black-framed-eyeglasses-holding-white-notepad-9040531/", source: "Pexels" },
-  { file: "sol-knowledge.webp", subject: "Knowledge Assistant — a staff member working at a laptop", author: "Kampus Production", href: "https://www.pexels.com/photo/woman-in-white-blazer-sitting-at-table-using-laptop-8636622/", source: "Pexels" },
+  { file: "sol-knowledge.webp", subject: "Knowledge Assistant — colleagues reviewing work on screen", author: "Apunto Group", href: "https://www.pexels.com/photo/focused-colleagues-working-on-project-in-office-7752873/", source: "Pexels" },
   { file: "sol-academy.webp", subject: "AI Academy — a workshop on AI and data", author: "Mikael Blomkvist", href: "https://www.pexels.com/photo/a-woman-in-red-long-sleeve-shirt-6476783/", source: "Pexels" },
   { file: "aud-schools.webp", subject: "K-12 schools — students in class", author: "pressfoto", href: "https://www.magnific.com/free-photo/students-working-laptop-school_857862.htm" },
   { file: "aud-universities.webp", subject: "Universities — students in a library", author: "garetsvisual", href: "https://www.magnific.com/free-photo/group-young-cheerful-students-joyfully-talking-while-studying-together-library-university_23177325.htm" },
