@@ -17,9 +17,9 @@ npm run lint
 
 | What | Where |
 | --- | --- |
-| Company details, contact info, services, industries, solutions, process, technology stack, principles, FAQ, stats, image credits | [`src/data/company.ts`](src/data/company.ts) |
+| Company details, contact info, services, industries, solutions, process, technology stack, principles, team, FAQ, stats, image credits | [`src/data/company.ts`](src/data/company.ts) |
 | Privacy policy and terms of use (`/privacy`, `/terms`) | [`src/data/legal.ts`](src/data/legal.ts) |
-| Photography | [`public/images/`](public/images/) (WebP; solutions 16:10, industries 4:5, bands 16:9) |
+| Photography | [`public/images/`](public/images/) (WebP; solutions 16:10, industries 4:5, bands 16:9; team headshots in `team/`, 4:5) |
 | Page title and social preview tags, boot screen | [`index.html`](index.html) |
 | Colour theme (steel / signal cyan / safety amber) | tokens in [`tailwind.config.ts`](tailwind.config.ts) and `.site-root` in [`src/index.css`](src/index.css) |
 

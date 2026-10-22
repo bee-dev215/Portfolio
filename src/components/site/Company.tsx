@@ -1,5 +1,6 @@
 import { company, companyFile, principles } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
+import Team from "./Team";
 
 export default function Company() {
   return (
@@ -83,6 +84,8 @@ export default function Company() {
             </Reveal>
           ))}
         </div>
+
+        <Team />
       </div>
     </section>
   );

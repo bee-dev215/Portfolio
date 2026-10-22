@@ -377,6 +377,23 @@ export const phases: Phase[] = [
 ];
 
 // ------------------------------------------------------------
+//  Team. Real people only. The section stays hidden until this list has entries.
+//  photo: optional headshot in public/images/team/ (portrait, 4:5); without one the
+//  card shows the person's initials. linkedin: optional full profile URL.
+// ------------------------------------------------------------
+
+export interface TeamMember {
+  name: string;
+  role: string;
+  bio: string;
+  photo?: string;
+  linkedin?: string;
+  focus?: string[]; // up to three specialities, shown as tags
+}
+
+export const team: TeamMember[] = [];
+
+// ------------------------------------------------------------
 //  Company
 // ------------------------------------------------------------
 
