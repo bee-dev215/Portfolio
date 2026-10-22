@@ -1,0 +1,1 @@
+.day-swap{animation:day-swap .4s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i, 0) * 60ms)}@keyframes day-swap{0%{opacity:0;transform:translateY(6px)}}@media (prefers-reduced-motion: reduce){.day-swap{animation:none}}

@@ -1,0 +1,7 @@
+/* Project planner: each step fades in as it replaces the last */
+.scoper-step { animation: scoper-in .35s var(--ease) both; }
+@keyframes scoper-in { from { opacity: 0; transform: translateY(8px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .scoper-step { animation: none; }
+}

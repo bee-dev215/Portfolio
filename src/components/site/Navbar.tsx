@@ -1,14 +1,16 @@
 import { FocusEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
-import { ArrowRight, Building2, ChevronDown, Cpu, HelpCircle, LucideIcon, Mail, Menu, Phone, Route, Users, X } from "lucide-react";
+import { ArrowRight, Building2, ChevronDown, Cpu, LucideIcon, Mail, Menu, Phone, Route, ShieldCheck, Users, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import {
   company,
   companyMenu,
   CompanyMenuKey,
-  footerLinks,
+  homeSections,
   industries,
-  openSolution,
-  scrollToId,
+  industryPath,
+  servicePath,
   services,
+  solutionPath,
   solutions,
   startEnquiry,
   team,
@@ -26,9 +28,9 @@ function useScrollState() {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       document.documentElement.style.setProperty("--progress", max > 0 ? (window.scrollY / max).toFixed(4) : "0");
       let current = "";
-      for (const l of footerLinks) {
-        const el = document.getElementById(l.id);
-        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.35) current = l.id;
+      for (const id of homeSections) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.35) current = id;
       }
       setActive(current);
     };
@@ -58,7 +60,7 @@ export const Monogram = ({ className = "h-9 w-9" }: { className?: string }) => (
 //  Menus, built from the site data
 // ------------------------------------------------------------
 
-const companyIcons: Record<CompanyMenuKey, LucideIcon> = { about: Building2, process: Route, technology: Cpu, team: Users, faq: HelpCircle, contact: Mail };
+const companyIcons: Record<CompanyMenuKey, LucideIcon> = { about: Building2, approach: Route, technology: Cpu, team: Users, responsible: ShieldCheck, contact: Mail };
 
 interface MenuItem {
   key: string;
@@ -68,14 +70,15 @@ interface MenuItem {
   image?: string;
   preview?: "team" | "contact"; // drawn previews for items without a photo
   icon?: LucideIcon;
-  run: () => void;
+  to: string;
 }
 
 interface MenuGroup {
   key: string;
   label: string;
-  sections: string[]; // the trigger lights up while one of these is in view
-  all: { label: string; section: string };
+  paths: string[]; // the trigger lights up on these pages…
+  sections: string[]; // …and while one of these home sections is in view
+  all: { label: string; to: string };
   items: MenuItem[];
 }
 
@@ -83,22 +86,24 @@ const menus: MenuGroup[] = [
   {
     key: "solutions",
     label: "Solutions",
+    paths: ["/solutions"],
     sections: ["solutions"],
-    all: { label: `All ${solutions.length} solutions`, section: "solutions" },
+    all: { label: `All ${solutions.length} solutions`, to: "/solutions" },
     items: solutions.map((s) => ({
       key: `solution-${s.id}`,
       label: s.title,
       desc: s.domain,
       blurb: s.summary,
       image: s.image,
-      run: () => openSolution(s.title),
+      to: solutionPath(s),
     })),
   },
   {
     key: "services",
     label: "Services",
+    paths: ["/services"],
     sections: ["services"],
-    all: { label: `All ${services.length} services`, section: "services" },
+    all: { label: `All ${services.length} services`, to: "/services" },
     items: services.map((s) => ({
       key: `service-${s.key}`,
       label: s.title,
@@ -106,28 +111,30 @@ const menus: MenuGroup[] = [
       blurb: s.desc,
       image: s.image,
       icon: serviceIcons[s.key],
-      run: () => scrollToId("services"),
+      to: servicePath(s),
     })),
   },
   {
     key: "audiences",
     label: "Who we serve",
-    sections: ["industries"],
-    all: { label: `All ${industries.length} audiences`, section: "industries" },
+    paths: ["/industries"],
+    sections: ["industries", "outcomes"],
+    all: { label: `All ${industries.length} audiences`, to: "/industries" },
     items: industries.map((ind) => ({
       key: `audience-${ind.key}`,
       label: ind.title,
       desc: ind.focus,
       blurb: ind.desc,
       image: ind.image,
-      run: () => scrollToId(`audience-${ind.key}`),
+      to: industryPath(ind),
     })),
   },
   {
     key: "company",
     label: "Company",
-    sections: companyMenu.map((c) => c.section),
-    all: { label: "About the company", section: "company" },
+    paths: [...companyMenu.map((c) => c.to), "/faq"],
+    sections: ["process", "technology", "company", "team", "faq", "contact"],
+    all: { label: "Questions & answers", to: "/faq" },
     items: companyMenu.map((c) => ({
       key: `company-${c.key}`,
       label: c.label,
@@ -136,7 +143,7 @@ const menus: MenuGroup[] = [
       image: c.image,
       preview: c.key === "team" || c.key === "contact" ? c.key : undefined,
       icon: companyIcons[c.key],
-      run: () => (c.key === "contact" ? startEnquiry() : scrollToId(c.section)),
+      to: c.to,
     })),
   },
 ];
@@ -194,6 +201,17 @@ function ContactPreview() {
   );
 }
 
+function IconPreview({ icon: Icon }: { icon: LucideIcon }) {
+  return (
+    <div className={`${frame} bg-brand-soft`}>
+      <div className="mesh absolute inset-0 opacity-70" />
+      <span className="icon-tile relative h-16 w-16 rounded-2xl">
+        <Icon className="h-8 w-8" />
+      </span>
+    </div>
+  );
+}
+
 function Preview({ item }: { item: MenuItem }) {
   return (
     // Keyed by item so each change cross-fades
@@ -202,8 +220,10 @@ function Preview({ item }: { item: MenuItem }) {
         <TeamPreview />
       ) : item.preview === "contact" ? (
         <ContactPreview />
+      ) : item.image ? (
+        <img src={item.image} alt="" width={300} height={169} className={`${frame} bg-raised object-cover`} />
       ) : (
-        item.image && <img src={item.image} alt="" width={300} height={169} className={`${frame} bg-raised object-cover`} />
+        item.icon && <IconPreview icon={item.icon} />
       )}
       <p className="mt-3.5 font-display text-lg font-bold tracking-tight">{item.label}</p>
       <p className="mt-1.5 line-clamp-4 text-sm leading-relaxed text-ink-2">{item.blurb}</p>
@@ -217,6 +237,8 @@ function Preview({ item }: { item: MenuItem }) {
 
 export default function Navbar() {
   const { active, scrolled } = useScrollState();
+  const { pathname } = useLocation();
+  const home = pathname === "/";
   const [open, setOpen] = useState(false); // phone menu
   const [expanded, setExpanded] = useState<string | null>(null); // phone menu: the group shown
   const [menu, setMenu] = useState<string | null>(null); // desktop: the open group
@@ -281,13 +303,23 @@ export default function Navbar() {
 
   useEffect(() => cancelClose, []);
 
-  const pick = (run: () => void) => {
+  // Close every menu when the page changes
+  useEffect(() => {
+    setMenu(null);
+    setOpen(false);
+  }, [pathname]);
+
+  const close = () => {
     hide();
     setOpen(false);
-    run();
   };
 
-  const isActive = (g: MenuGroup) => g.sections.includes(active);
+  const enquire = () => {
+    close();
+    startEnquiry();
+  };
+
+  const isActive = (g: MenuGroup) => (home ? g.sections.includes(active) : g.paths.some((p) => pathname === p || pathname.startsWith(`${p}/`)));
 
   return (
     <header
@@ -301,18 +333,23 @@ export default function Navbar() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-[1240px] items-center gap-4 px-5 sm:px-8 lg:h-[72px]">
-        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex shrink-0 items-center gap-2.5 text-left" aria-label={`${company.legalName} — back to top`}>
+        <Link
+          to="/"
+          onClick={() => home && window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="flex shrink-0 items-center gap-2.5 text-left"
+          aria-label={`${company.legalName} — home`}
+        >
           <Monogram />
           <span className="leading-tight">
             <span className="block font-display text-lg font-extrabold tracking-tight">{company.name}</span>
             <span className="hidden text-[11px] font-medium text-subtle sm:block">AI for education</span>
           </span>
-        </button>
+        </Link>
 
         <nav className="mx-auto hidden items-center gap-1 rounded-full border border-line bg-surface/60 p-1 lg:flex" aria-label="Primary">
           {menus.map((g) => {
             const isOpen = menu === g.key;
-            const cols = g.items.length > 4 ? "xl:grid-cols-3" : "";
+            const cols = g.items.length % 3 === 0 ? "xl:grid-cols-3" : "";
             const current = g.items[Math.min(peek, g.items.length - 1)];
             return (
               <div key={g.key}>
@@ -344,10 +381,11 @@ export default function Navbar() {
                             const Icon = it.icon;
                             return (
                               <li key={it.key}>
-                                <button
+                                <Link
+                                  to={it.to}
                                   onPointerEnter={() => setPeek(i)}
                                   onFocus={() => setPeek(i)}
-                                  onClick={() => pick(it.run)}
+                                  onClick={close}
                                   className={`flex h-full w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left transition-colors ${peek === i ? "bg-raised" : ""}`}
                                 >
                                   {Icon ? (
@@ -361,18 +399,18 @@ export default function Navbar() {
                                     <span className={`block font-display text-[15px] font-bold leading-snug transition-colors ${peek === i ? "text-brand-text" : ""}`}>{it.label}</span>
                                     <span className="mt-0.5 line-clamp-2 block text-[13px] leading-snug text-subtle">{it.desc}</span>
                                   </span>
-                                </button>
+                                </Link>
                               </li>
                             );
                           })}
                         </ul>
                         <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-line px-3 pt-4">
-                          <button onClick={() => pick(() => scrollToId(g.all.section))} className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
+                          <Link to={g.all.to} onClick={close} className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
                             {g.all.label} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                          </button>
+                          </Link>
                           <p className="text-sm text-subtle">
                             Not sure where to start?{" "}
-                            <button onClick={() => pick(() => startEnquiry())} className="u-link font-semibold text-ink">
+                            <button onClick={enquire} className="u-link font-semibold text-ink">
                               Talk to an engineer
                             </button>
                           </p>
@@ -426,7 +464,7 @@ export default function Navbar() {
                       const Icon = it.icon;
                       return (
                         <li key={it.key}>
-                          <button onClick={() => pick(it.run)} className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-raised">
+                          <Link to={it.to} onClick={close} className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-raised">
                             {Icon ? (
                               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand-text">
                                 <Icon className="h-[18px] w-[18px]" />
@@ -438,14 +476,14 @@ export default function Navbar() {
                               <span className="block font-semibold">{it.label}</span>
                               <span className="block truncate text-[13px] text-subtle">{it.desc}</span>
                             </span>
-                          </button>
+                          </Link>
                         </li>
                       );
                     })}
                     <li>
-                      <button onClick={() => pick(() => scrollToId(g.all.section))} className="inline-flex items-center gap-1.5 px-2 pt-2 text-sm font-semibold text-brand-text">
+                      <Link to={g.all.to} onClick={close} className="inline-flex items-center gap-1.5 px-2 pt-2 text-sm font-semibold text-brand-text">
                         {g.all.label} <ArrowRight className="h-4 w-4" />
-                      </button>
+                      </Link>
                     </li>
                   </ul>
                 )}
@@ -455,7 +493,7 @@ export default function Navbar() {
           <div className="mt-5 flex items-center gap-2 text-sm text-subtle">
             <span className="live-dot" /> {company.availability}
           </div>
-          <button onClick={() => pick(() => startEnquiry())} className="btn btn-primary mt-5 w-full py-3.5">
+          <button onClick={enquire} className="btn btn-primary mt-5 w-full py-3.5">
             Start a project <ArrowRight className="h-4 w-4" />
           </button>
         </div>

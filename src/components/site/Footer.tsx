@@ -1,7 +1,6 @@
-import { ReactNode } from "react";
 import { ArrowUp, ArrowUpRight, Sparkles } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import { company, footerLinks, legalLinks, openSolution, scrollToId, socials, solutions, startEnquiry } from "@/data/company";
+import { Link } from "react-router-dom";
+import { company, industries, industryPath, legalLinks, servicePath, services, sitePages, socials, solutionPath, solutions, startEnquiry } from "@/data/company";
 import { useInView } from "@/hooks/use-motion";
 import { Monogram } from "./Navbar";
 import SocialIcon from "./SocialIcon";
@@ -9,21 +8,27 @@ import SocialIcon from "./SocialIcon";
 const linkCls = "foot-link text-sm text-ink-2 transition-colors hover:text-ink";
 const headCls = "text-xs font-semibold uppercase tracking-[0.14em] text-subtle";
 
-/** On the home page, acts in place; elsewhere (legal pages), navigates home to the section. */
-function HomeAction({ section, onHome, className, children }: { section: string; onHome: () => void; className: string; children: ReactNode }) {
-  const home = useLocation().pathname === "/";
-  return home ? (
-    <button onClick={onHome} className={className}>
-      {children}
-    </button>
-  ) : (
-    <Link to={`/#${section}`} className={className}>
-      {children}
-    </Link>
+// Company column: every page that isn't a solution, service or audience
+const companyPages = sitePages.filter((p) => !["/solutions", "/services", "/industries"].includes(p.to));
+
+function LinkColumn({ title, to, links, className = "" }: { title: string; to?: string; links: { to: string; label: string }[]; className?: string }) {
+  return (
+    <div className={className}>
+      <p className={headCls}>{to ? <Link to={to} className="transition-colors hover:text-ink">{title}</Link> : title}</p>
+      <ul className="mt-5 space-y-3">
+        {links.map((l) => (
+          <li key={l.to}>
+            <Link to={l.to} className={linkCls}>
+              {l.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
-export default function Footer() {
+export default function Footer({ cta = true }: { cta?: boolean }) {
   const year = new Date().getFullYear();
   // Fills the wordmark once it is well into view at the end of the page
   const [mark, filled] = useInView<HTMLDivElement>({ threshold: 0.6, rootMargin: "0px" });
@@ -37,38 +42,39 @@ export default function Footer() {
 
       <div className="mx-auto max-w-[1240px]">
         {/* CTA card */}
-        <div className="foot-cta bg-grad relative overflow-hidden rounded-[2rem] p-8 text-white sm:p-12 lg:p-14">
-          <div className="foot-cta-glow pointer-events-none absolute inset-0" aria-hidden="true" />
-          <div className="relative grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur">
-                <span className="live-dot" /> {company.availability}
-              </span>
-              <h2 className="mt-5 max-w-xl font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem]">
-                Ready to bring AI into your learning experience?
-              </h2>
-              <p className="mt-4 max-w-lg text-white/80">
-                Book a free discovery call. Tell us what your learners need — we reply within {company.responseTime}.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
-              <HomeAction
-                section="contact"
-                onHome={() => startEnquiry()}
-                className="btn group bg-white px-6 py-3.5 font-semibold text-[#3730a3] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
-              >
-                Start a project
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </HomeAction>
-              <a href={`mailto:${company.email}`} className="btn border border-white/30 bg-white/10 px-6 py-3.5 text-white backdrop-blur hover:bg-white/20">
-                Email us
-              </a>
+        {cta && (
+          <div className="foot-cta bg-grad relative overflow-hidden rounded-[2rem] p-8 text-white sm:p-12 lg:p-14">
+            <div className="foot-cta-glow pointer-events-none absolute inset-0" aria-hidden="true" />
+            <div className="relative grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
+              <div>
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur">
+                  <span className="live-dot" /> {company.availability}
+                </span>
+                <h2 className="mt-5 max-w-xl font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem]">
+                  Ready to bring AI into your learning experience?
+                </h2>
+                <p className="mt-4 max-w-lg text-white/80">
+                  Book a free discovery call. Tell us what your learners need — we reply within {company.responseTime}.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+                <button
+                  onClick={() => startEnquiry()}
+                  className="btn group bg-white px-6 py-3.5 font-semibold text-[#3730a3] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
+                >
+                  Start a project
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </button>
+                <a href={`mailto:${company.email}`} className="btn border border-white/30 bg-white/10 px-6 py-3.5 text-white backdrop-blur hover:bg-white/20">
+                  Email us
+                </a>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-12 lg:mt-20 lg:grid-cols-[1.6fr_1.1fr_1fr_0.8fr]">
-          <div className="col-span-2 sm:col-span-1">
+        <div className={`${cta ? "mt-16 lg:mt-20" : ""} grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:grid-cols-[1.5fr_1fr_1.15fr_.9fr_.9fr]`}>
+          <div className="col-span-2 sm:col-span-3 lg:col-span-1">
             <div className="flex items-center gap-3">
               <Monogram className="h-10 w-10" />
               <span className="leading-tight">
@@ -100,54 +106,12 @@ export default function Footer() {
             </ul>
           </div>
 
-          <nav aria-label="Footer" className="col-span-2 sm:col-span-1">
-            <p className={headCls}>Explore</p>
-            <ul className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3">
-              {footerLinks.map((l) => (
-                <li key={l.id}>
-                  <HomeAction section={l.id} onHome={() => scrollToId(l.id)} className={linkCls}>
-                    {l.label}
-                  </HomeAction>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div>
-            <p className={headCls}>Solutions</p>
-            <ul className="mt-5 space-y-3">
-              {solutions.map((s) => (
-                <li key={s.id}>
-                  <HomeAction section="solutions" onHome={() => openSolution(s.title)} className={linkCls}>
-                    {s.title}
-                  </HomeAction>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p className={headCls}>Legal</p>
-            <ul className="mt-5 space-y-3">
-              {legalLinks.map((l) => (
-                <li key={l.to}>
-                  <Link to={l.to} className={linkCls}>
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link to="/terms#credits" className={linkCls}>
-                  Image credits
-                </Link>
-              </li>
-            </ul>
-            <p className={`${headCls} mt-9`}>Engagements</p>
-            <ul className="mt-5 space-y-3 text-sm text-ink-2">
-              {company.engagements.split(" · ").map((e) => (
-                <li key={e}>{e}</li>
-              ))}
-            </ul>
+          <LinkColumn title="Solutions" to="/solutions" links={solutions.map((x) => ({ to: solutionPath(x), label: x.title }))} />
+          <LinkColumn title="Services" to="/services" links={services.map((x) => ({ to: servicePath(x), label: x.title }))} />
+          <LinkColumn title="Company" links={companyPages} />
+          <div className="space-y-9">
+            <LinkColumn title="Who we serve" to="/industries" links={industries.map((x) => ({ to: industryPath(x), label: x.title }))} />
+            <LinkColumn title="Legal" links={[...legalLinks, { to: "/terms#credits", label: "Image credits" }]} />
           </div>
         </div>
 

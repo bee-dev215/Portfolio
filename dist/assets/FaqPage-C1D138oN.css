@@ -1,0 +1,1 @@
+.faq-target{animation:faq-target 2.4s var(--ease) both}@keyframes faq-target{0%,60%{border-color:rgb(var(--brand-rgb) / .6);box-shadow:0 0 0 4px rgb(var(--brand-rgb) / .16)}}@media (prefers-reduced-motion: reduce){.faq-target{animation:none;border-color:rgb(var(--brand-rgb) / .6)}}

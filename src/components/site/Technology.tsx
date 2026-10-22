@@ -1,11 +1,13 @@
-import { BrainCircuit, Cloud, Code2, Database, GraduationCap, Layers, LucideIcon } from "lucide-react";
+import { ArrowRight, BrainCircuit, Cloud, Code2, Database, GraduationCap, Layers, LucideIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 import { stackGroups } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
 
 // One icon per stack group, in the same order as stackGroups
 const icons: LucideIcon[] = [BrainCircuit, Layers, Database, Code2, GraduationCap, Cloud];
 
-export default function Technology() {
+/** The stack, by group. `more` adds a link to the technology page (off on that page itself). */
+export default function Technology({ more = true }: { more?: boolean }) {
   return (
     <section id="technology" className="px-5 py-24 sm:px-8 lg:py-32">
       <div className="mx-auto max-w-[1240px]">
@@ -48,6 +50,14 @@ export default function Technology() {
             );
           })}
         </div>
+
+        {more && (
+          <Reveal delay={100} className="mt-12 flex justify-center">
+            <Link to="/technology" className="btn btn-secondary px-6 py-3 text-sm">
+              How we choose models and evaluate them <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Reveal>
+        )}
       </div>
     </section>
   );

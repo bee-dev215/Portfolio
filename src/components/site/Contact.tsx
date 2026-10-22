@@ -1,17 +1,23 @@
 import { FormEvent, useEffect, useState } from "react";
 import { ArrowUpRight, Check, Copy, Loader2, Send } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { company, ENQUIRE_EVENT, nextSteps, socials } from "@/data/company";
+import { CONTACT_SUBJECTS, ContactPrefill, PREFILL_EVENT } from "@/components/contact/form";
 import SocialIcon from "./SocialIcon";
 import Reveal, { SectionHeading } from "./Reveal";
 
 const CRM_URL = "https://famous.ai/api/crm/6ad5d2059d9fe46e4e2f09d9/subscribe";
 
-const SUBJECTS = ["New AI product", "AI tutor or assistant", "Learning analytics", "LMS integration", "AI training for our team", "Partnership", "Something else"];
-const EMPTY = { name: "", email: "", company: "", phone: "", subject: SUBJECTS[0], message: "" };
+const EMPTY = { name: "", email: "", company: "", phone: "", subject: CONTACT_SUBJECTS[0] as string, message: "" };
+type Form = typeof EMPTY;
 
-export default function Contact() {
+// Pre-fills the message for a topic, unless the visitor has already started writing
+const forTopic = (topic: string) => (f: Form) =>
+  f.message.trim() ? f : { ...f, subject: CONTACT_SUBJECTS[0], message: `We'd like to discuss ${topic} for our organisation. ` };
+
+/** The enquiry form with direct contact details. On /contact the page hero introduces it, so it can drop its own heading. */
+export default function Contact({ showHeading = true }: { showHeading?: boolean }) {
   const [form, setForm] = useState(EMPTY);
   // SMS consent must be an explicit opt-in, so this starts unchecked
   const [smsOptIn, setSmsOptIn] = useState(false);
@@ -19,21 +25,48 @@ export default function Contact() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  // Honeypot: hidden from people, so anything typed here came from a bot
+  const [trap, setTrap] = useState("");
+  const [params] = useSearchParams();
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  // "Start a project" / "Discuss this solution" buttons elsewhere on the page open a fresh form, pre-filled for that solution
+  // "Start a project" / "Discuss this solution" buttons elsewhere on the page open a fresh form, pre-filled for that solution.
+  // preventDefault tells them the form is here, so they scroll to it instead of opening /contact.
   useEffect(() => {
     const onEnquire = (e: Event) => {
+      e.preventDefault();
       const topic = (e as CustomEvent<string | undefined>).detail;
       setSent(false);
-      if (!topic) return;
-      setForm((f) => (f.message.trim() ? f : { ...f, subject: SUBJECTS[0], message: `We'd like to discuss ${topic} for our organisation. ` }));
+      if (topic) setForm(forTopic(topic));
     };
     window.addEventListener(ENQUIRE_EVENT, onEnquire);
     return () => window.removeEventListener(ENQUIRE_EVENT, onEnquire);
   }, []);
+
+  // The project planner on /contact writes a complete brief, so it replaces the subject and message
+  useEffect(() => {
+    const onPrefill = (e: Event) => {
+      const { subject, message } = (e as CustomEvent<ContactPrefill>).detail;
+      setSent(false);
+      setForm((f) => ({ ...f, subject, message }));
+      setErrors((er) => ({ ...er, message: "" }));
+      // Hand focus to the first field still empty, once the scroll has started
+      window.setTimeout(() => {
+        const empty = ["c-name", "c-email"].map((id) => document.getElementById(id) as HTMLInputElement | null).find((el) => el && !el.value);
+        (empty ?? document.getElementById("c-message"))?.focus({ preventScroll: true });
+      }, 50);
+    };
+    window.addEventListener(PREFILL_EVENT, onPrefill);
+    return () => window.removeEventListener(PREFILL_EVENT, onPrefill);
+  }, []);
+
+  // Arriving from another page as /contact?topic=…
+  const topicParam = params.get("topic");
+  useEffect(() => {
+    if (topicParam) setForm(forTopic(topicParam));
+  }, [topicParam]);
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -47,6 +80,12 @@ export default function Contact() {
   const submit = async (ev: FormEvent) => {
     ev.preventDefault();
     if (!validate()) return;
+    if (trap) {
+      // A bot filled the hidden field: show the usual confirmation, send nothing
+      setSent(true);
+      setForm(EMPTY);
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch(CRM_URL, {
@@ -90,23 +129,25 @@ export default function Contact() {
   const err = "border-red-400 focus:border-red-400";
 
   return (
-    <section id="contact" className="relative overflow-hidden px-5 py-24 sm:px-8 lg:py-32">
+    <section id="contact" className={`relative overflow-hidden px-5 sm:px-8 ${showHeading ? "py-24 lg:py-32" : "py-16 lg:py-24"}`}>
       <div className="mesh pointer-events-none absolute inset-0 opacity-70" aria-hidden="true" />
       <div className="relative mx-auto max-w-[1240px]">
-        <SectionHeading
-          label="Contact"
-          title={
-            <>
-              Let's build something <span className="gradient-text">learners love.</span>
-            </>
-          }
-        >
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-2">
-            Planning an AI tutor, modernising a platform or training your team? Tell us about it — an engineer, not a salesperson, will reply within {company.responseTime}.
-          </p>
-        </SectionHeading>
+        {showHeading && (
+          <SectionHeading
+            label="Contact"
+            title={
+              <>
+                Let's build something <span className="gradient-text">learners love.</span>
+              </>
+            }
+          >
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-2">
+              Planning an AI tutor, modernising a platform or training your team? Tell us about it — an engineer, not a salesperson, will reply within {company.responseTime}.
+            </p>
+          </SectionHeading>
+        )}
 
-        <div className="mt-14 grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
+        <div className={`grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12 ${showHeading ? "mt-14" : ""}`}>
           <div className="space-y-4">
             {socials.map((s, i) => (
               <Reveal key={s.key} delay={i * 80} variant="left">
@@ -194,7 +235,7 @@ export default function Contact() {
                   <div>
                     <label htmlFor="c-subject" className={label}>What can we help with?</label>
                     <select id="c-subject" value={form.subject} onChange={set("subject")} className="field">
-                      {SUBJECTS.map((s) => (
+                      {CONTACT_SUBJECTS.map((s) => (
                         <option key={s}>{s}</option>
                       ))}
                     </select>
@@ -210,6 +251,11 @@ export default function Contact() {
                       className={`field resize-none ${errors.message ? err : ""}`}
                     />
                     {errors.message && <p className="mt-1.5 text-xs text-red-500">{errors.message}</p>}
+                  </div>
+                  {/* Honeypot — off-screen and skipped by keyboard and screen readers */}
+                  <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+                    <label htmlFor="c-website">Website</label>
+                    <input id="c-website" name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
                   </div>
                   <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-subtle">
                     <input type="checkbox" checked={smsOptIn} onChange={(e) => setSmsOptIn(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 rounded accent-brand" />

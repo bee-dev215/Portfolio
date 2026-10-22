@@ -1,6 +1,7 @@
 import { CSSProperties, useEffect, useRef } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, X } from "lucide-react";
-import { Solution, startEnquiry } from "@/data/company";
+import { Link } from "react-router-dom";
+import { Solution, solutionPath, startEnquiry } from "@/data/company";
 import { supportsViewTransitions } from "@/hooks/use-motion";
 
 /** view-transition-name shared by the viewer photo and the panel photo it opens from (see index.css) */
@@ -181,10 +182,14 @@ export default function SolutionViewer({
             </div>
           </div>
 
-          <div className="viewer-rise mt-10" style={rise(540)}>
+          <div className="viewer-rise mt-10 flex flex-wrap gap-3" style={rise(540)}>
             <button onClick={enquire} className="btn btn-primary px-6 py-3.5 text-sm">
               Discuss this solution <ArrowUpRight className="h-4 w-4" />
             </button>
+            {/* Leaving the page unmounts the viewer, which releases the scroll lock */}
+            <Link to={solutionPath(solution)} className="btn btn-secondary px-6 py-3.5 text-sm" style={{ "--i": 1 } as CSSProperties}>
+              Read the full page <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
 

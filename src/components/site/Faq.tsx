@@ -1,6 +1,11 @@
 import { useState } from "react";
-import { ArrowUpRight, Plus } from "lucide-react";
-import { company, faqs, startEnquiry } from "@/data/company";
+import { ArrowRight, ArrowUpRight, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
+import { company, startEnquiry } from "@/data/company";
+import { faqs as allFaqs } from "@/data/faq";
+
+// The home page shows the featured questions; /faq has them all
+const faqs = allFaqs.filter((f) => f.featured);
 import Reveal, { SectionHeading } from "./Reveal";
 
 // FAQPage structured data, so search results can show the answers
@@ -27,9 +32,14 @@ export default function Faq() {
             }
           >
             <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">Straight answers on how {company.shortName} works. If yours isn't here, ask us directly.</p>
-            <button onClick={() => startEnquiry()} className="btn btn-secondary mt-8 px-6 py-3 text-sm">
-              Ask a question <ArrowUpRight className="h-4 w-4" />
-            </button>
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <button onClick={() => startEnquiry()} className="btn btn-secondary px-6 py-3 text-sm">
+                Ask a question <ArrowUpRight className="h-4 w-4" />
+              </button>
+              <Link to="/faq" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
+                All {allFaqs.length} questions <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </div>
           </SectionHeading>
         </div>
 
@@ -37,7 +47,7 @@ export default function Faq() {
           {faqs.map((f, i) => {
             const isOpen = open === i;
             return (
-              <li key={f.q}>
+              <li key={f.id}>
                 <Reveal delay={i * 50}>
                   <div className={`card overflow-hidden transition-colors ${isOpen ? "border-brand/30" : ""}`}>
                     <h3>

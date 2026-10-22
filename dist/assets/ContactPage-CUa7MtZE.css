@@ -1,0 +1,1 @@
+.scoper-step{animation:scoper-in .35s var(--ease) both}@keyframes scoper-in{0%{opacity:0;transform:translateY(8px)}}@media (prefers-reduced-motion: reduce){.scoper-step{animation:none}}

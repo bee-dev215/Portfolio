@@ -1,5 +1,6 @@
 import { CSSProperties } from "react";
-import { Compass, FlaskConical, HeartHandshake, ShieldCheck, LucideIcon } from "lucide-react";
+import { ArrowRight, Compass, FlaskConical, HeartHandshake, ShieldCheck, LucideIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 import { company, companyFile, principles } from "@/data/company";
 import { useScrollProgress } from "@/hooks/use-motion";
 import Reveal, { SectionHeading } from "./Reveal";
@@ -72,6 +73,17 @@ export default function Company() {
               );
             })}
           </div>
+
+          <Reveal delay={120}>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link to="/about" className="btn btn-secondary px-6 py-3 text-sm">
+                About {company.shortName} <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link to="/responsible-ai" className="btn px-4 py-3 text-sm text-brand-text hover:bg-brand-soft">
+                Our responsible-AI commitments <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

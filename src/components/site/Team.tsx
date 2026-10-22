@@ -1,4 +1,5 @@
-import { Linkedin } from "lucide-react";
+import { ArrowRight, Linkedin } from "lucide-react";
+import { Link } from "react-router-dom";
 import { company, team, TeamMember } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
 
@@ -19,6 +20,42 @@ function Portrait({ member }: { member: TeamMember }) {
     <div className="bg-grad grid h-full w-full place-items-center" aria-hidden="true">
       <span className="font-display text-6xl font-extrabold tracking-tight text-white/90">{initials(member.name)}</span>
     </div>
+  );
+}
+
+/** One person: portrait, name, role, bio and focus tags. */
+export function TeamCard({ member: m }: { member: TeamMember }) {
+  return (
+    <article className="card card-hover group flex h-full flex-col overflow-hidden">
+      <div className="unveil relative aspect-[4/5] overflow-hidden bg-raised">
+        <Portrait member={m} />
+        {m.linkedin && (
+          <a
+            href={m.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${m.name} on LinkedIn`}
+            className="glass absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full text-ink transition-colors hover:text-brand-text"
+          >
+            <Linkedin className="h-4 w-4" />
+          </a>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="font-display text-lg font-bold leading-tight">{m.name}</h3>
+        <p className="mt-0.5 text-sm font-semibold text-brand-text">{m.role}</p>
+        <p className="mt-3 text-sm leading-relaxed text-ink-2">{m.bio}</p>
+        {m.focus && m.focus.length > 0 && (
+          <ul className="mt-auto flex flex-wrap gap-1.5 pt-4">
+            {m.focus.slice(0, 3).map((f) => (
+              <li key={f} className="chip text-[11px]">
+                {f}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </article>
   );
 }
 
@@ -43,45 +80,21 @@ export default function Team() {
             </p>
           </SectionHeading>
           <Reveal delay={100}>
-            <p className="flex items-center gap-2 text-sm font-medium text-subtle">
-              <span className="live-dot" /> {team.length} people · {company.availability.toLowerCase()}
-            </p>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+              <p className="flex items-center gap-2 text-sm font-medium text-subtle">
+                <span className="live-dot" /> {team.length} people · {company.availability.toLowerCase()}
+              </p>
+              <Link to="/team" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
+                Meet the team <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </div>
           </Reveal>
         </div>
 
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {team.map((m, i) => (
             <Reveal key={m.name} delay={(i % 4) * 80} className="h-full">
-              <article className="card card-hover group flex h-full flex-col overflow-hidden">
-                <div className="unveil relative aspect-[4/5] overflow-hidden bg-raised">
-                  <Portrait member={m} />
-                  {m.linkedin && (
-                    <a
-                      href={m.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${m.name} on LinkedIn`}
-                      className="glass absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full text-ink transition-colors hover:text-brand-text"
-                    >
-                      <Linkedin className="h-4 w-4" />
-                    </a>
-                  )}
-                </div>
-                <div className="flex flex-1 flex-col p-5">
-                  <h3 className="font-display text-lg font-bold leading-tight">{m.name}</h3>
-                  <p className="mt-0.5 text-sm font-semibold text-brand-text">{m.role}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-ink-2">{m.bio}</p>
-                  {m.focus && m.focus.length > 0 && (
-                    <ul className="mt-auto flex flex-wrap gap-1.5 pt-4">
-                      {m.focus.slice(0, 3).map((f) => (
-                        <li key={f} className="chip text-[11px]">
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </article>
+              <TeamCard member={m} />
             </Reveal>
           ))}
         </div>

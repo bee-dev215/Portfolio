@@ -1,0 +1,211 @@
+// ============================================================
+//  AUDIENCE PAGES — extra content for /industries/<key>, keyed by the industry key in company.ts.
+//  Copy drafted for review: no client names, results or certifications are claimed here.
+//  Privacy & policy items describe what we design for, not compliance certifications.
+// ============================================================
+
+import { ServiceKey } from "./company";
+
+export interface IndustryDetail {
+  intro: string;
+  challenges: { title: string; desc: string }[];
+  services: ServiceKey[]; // the most relevant services
+  useCases: { title: string; desc: string }[];
+  integrations: { name: string; desc: string }[];
+  policies: { name: string; desc: string }[];
+  // An illustrative day for one role, before and after — qualitative, no figures
+  day: { role: string; moments: { time: string; before: string; after: string }[] };
+  faqs: { q: string; a: string }[];
+}
+
+export const industryDetails: Record<string, IndustryDetail> = {
+  schools: {
+    intro:
+      "Schools need AI that is safe for young people, aligned to the curriculum and genuinely saves teachers time. We design with safeguarding leads and teachers from the start, keep a teacher in control of anything that reaches a student, and fit into the tools the school already uses.",
+    challenges: [
+      { title: "Teacher workload", desc: "Marking, feedback and planning take evenings and weekends that should be spent elsewhere." },
+      { title: "Mixed-ability classes", desc: "One teacher, thirty learners at different points — and little time for one-to-one help." },
+      { title: "Safety and trust", desc: "Families and leaders need confidence that AI tools are age-appropriate and supervised." },
+      { title: "Too many systems", desc: "New tools that don't fit Google Classroom or the MIS rarely survive the first term." },
+    ],
+    services: ["build", "design", "platform", "academy"],
+    useCases: [
+      { title: "Homework help that hints", desc: "A tutor that guides with questions instead of handing out answers." },
+      { title: "Feedback drafting", desc: "Rubric-aligned feedback drafts that the teacher reviews before release." },
+      { title: "Differentiated practice", desc: "Practice questions generated at the right level for each group." },
+      { title: "Lesson resources", desc: "Worksheets, examples and quizzes drafted from the scheme of work." },
+      { title: "Parent communication", desc: "Clear, translated updates drafted for teachers to check and send." },
+      { title: "Staff AI literacy", desc: "Workshops that help staff use AI confidently and within policy." },
+    ],
+    integrations: [
+      { name: "Google Classroom", desc: "Assignments, rosters and launch from the class stream." },
+      { name: "OneRoster", desc: "Standard roster and class data from the MIS." },
+      { name: "Clever / ClassLink", desc: "Single sign-on and rostering for districts that use them." },
+      { name: "Microsoft 365 / Google SSO", desc: "Log in with the accounts students already have." },
+    ],
+    policies: [
+      { name: "FERPA", desc: "Student records handled only for the school's educational purpose." },
+      { name: "COPPA", desc: "Designed for under-13 users: minimal data, school consent, no advertising." },
+      { name: "Safeguarding", desc: "Topic filters, escalation rules and staff visibility agreed with your safeguarding lead." },
+      { name: "Accessibility (WCAG)", desc: "Interfaces designed to WCAG 2.2 AA guidance for learners with additional needs." },
+    ],
+    day: {
+      role: "A Year 9 maths teacher",
+      moments: [
+        { time: "Before school", before: "Writes three versions of the same worksheet by hand for different groups.", after: "Reviews differentiated practice sets drafted from the lesson objective and tweaks one question." },
+        { time: "In class", before: "Can only reach a few students who are stuck on the same step.", after: "Students who are stuck get a hint-first tutor; the teacher sees which step is causing trouble." },
+        { time: "After school", before: "Marks a stack of written answers late into the evening.", after: "Checks rubric-aligned feedback drafts, edits where needed and releases them." },
+        { time: "End of week", before: "Guesses which topics need reteaching from memory.", after: "Reads a short summary of where the class struggled, with examples." },
+      ],
+    },
+    faqs: [
+      { q: "Is it safe for children to use?", a: "Tools for students are scoped to learning, filter unsafe topics, follow escalation rules agreed with your safeguarding lead, and let staff review conversations." },
+      { q: "Do teachers stay in control?", a: "Yes. Anything that affects a student's record — feedback, grades, messages home — is drafted for a teacher to review, never sent automatically." },
+      { q: "Can we pilot with one year group?", a: "Yes, and we recommend it. A small pilot shows what helps before anything is rolled out across a school or district." },
+    ],
+  },
+  universities: {
+    intro:
+      "Universities run teaching, advising and student services at scale, across many platforms and departments. We build AI that integrates with your LMS, student systems and identity provider, respects academic integrity, and gives faculty and advisers better information without adding work.",
+    challenges: [
+      { title: "Large cohorts", desc: "Big first-year modules make timely, individual support hard to provide." },
+      { title: "Late warning signs", desc: "Struggling students are often spotted only after a failed assessment." },
+      { title: "Fragmented systems", desc: "LMS, SIS, library and service desks each hold part of the picture." },
+      { title: "Academic integrity", desc: "AI support must help students learn without undermining assessment." },
+    ],
+    services: ["llm", "analytics", "platform", "evaluation"],
+    useCases: [
+      { title: "Course assistants", desc: "Module-specific assistants grounded in lecture notes and readings, with citations." },
+      { title: "Early-warning analytics", desc: "Explainable signals that help advisers reach students sooner." },
+      { title: "Student-services chat", desc: "Cited answers on enrolment, finance and policies, with hand-off to staff." },
+      { title: "Feedback at scale", desc: "Rubric-aligned feedback drafts that markers review and moderate." },
+      { title: "Research support", desc: "Assistants that help students navigate library resources and methods." },
+      { title: "Faculty development", desc: "Workshops on designing assessment and teaching in the age of AI." },
+    ],
+    integrations: [
+      { name: "Canvas, Moodle, Blackboard, Brightspace", desc: "Launched as LTI 1.3 tools with deep linking and grade pass-back." },
+      { name: "Student information system", desc: "Enrolment and programme data through APIs or scheduled exports." },
+      { name: "SSO (SAML / OIDC)", desc: "Single sign-on through your identity provider." },
+      { name: "xAPI / Caliper", desc: "Learning activity captured in open formats for analytics." },
+    ],
+    policies: [
+      { name: "FERPA / GDPR", desc: "Data minimisation, clear purposes and retention rules mapped with your data protection team." },
+      { name: "Academic integrity", desc: "Behaviour aligned to your assessment policy — guidance, not ghost-writing." },
+      { name: "Accessibility (WCAG)", desc: "Designed to WCAG 2.2 AA guidance and tested with assistive technology." },
+      { name: "Research ethics", desc: "Analytics and pilots planned to fit your ethics and governance processes." },
+    ],
+    day: {
+      role: "A personal academic adviser",
+      moments: [
+        { time: "Monday", before: "Starts the week with no view of which advisees are struggling.", after: "Opens a short list of advisees flagged for attention, each with the reasons behind it." },
+        { time: "Midweek", before: "Answers the same enrolment and deadline questions by email again and again.", after: "Routine questions are answered by student-services chat with links to policy; complex ones arrive with context." },
+        { time: "Meeting a student", before: "Pieces together grades and attendance from several systems.", after: "Sees a single, plain-language summary of recent activity before the meeting." },
+        { time: "End of term", before: "Discovers some problems only when results are published.", after: "Has already reached students who were falling behind mid-term." },
+      ],
+    },
+    faqs: [
+      { q: "Will it work with our LMS?", a: "Yes, through LTI 1.3 and the platform's APIs. We test against your own sandbox before anything reaches students." },
+      { q: "How do you handle academic integrity?", a: "Course assistants are configured to your assessment policy — explaining and guiding rather than producing graded work — and faculty decide the rules per module." },
+      { q: "Who sees early-warning data?", a: "Only the roles you decide, such as advisers and programme leads. Access follows your existing permissions and every alert shows its evidence." },
+    ],
+  },
+  edtech: {
+    intro:
+      "EdTech teams need AI features that ship without derailing the roadmap. We work as an embedded AI engineering team — prototyping fast, building production features into your product, and setting up the evaluation pipelines that keep quality high as you scale.",
+    challenges: [
+      { title: "Roadmap pressure", desc: "Customers expect AI features now, while the core roadmap still has to ship." },
+      { title: "Quality at scale", desc: "A demo that works on ten questions can fail on ten thousand." },
+      { title: "Model churn", desc: "Models, prices and APIs change quickly; architecture has to absorb it." },
+      { title: "Customer trust", desc: "School and enterprise buyers ask hard questions about data and safety." },
+    ],
+    services: ["build", "evaluation", "analytics", "voice"],
+    useCases: [
+      { title: "AI features in your product", desc: "Tutoring, feedback, search or authoring features built into your app." },
+      { title: "Content generation", desc: "Pipelines that draft courses, questions and translations for expert review." },
+      { title: "Evaluation pipelines", desc: "Automated tests that score AI quality on every release." },
+      { title: "Model routing", desc: "Architecture that picks the right model per task and swaps models safely." },
+      { title: "Speech features", desc: "Pronunciation feedback, read-aloud and captions for language and literacy products." },
+      { title: "Buyer documentation", desc: "Model cards and evaluation reports that answer procurement questions." },
+    ],
+    integrations: [
+      { name: "Your product APIs", desc: "We build inside your codebase and conventions, alongside your engineers." },
+      { name: "Model providers", desc: "OpenAI, Anthropic, Google and open models behind one interface." },
+      { name: "CI/CD", desc: "Evaluation suites wired into your release pipeline." },
+      { name: "LTI 1.3 / OneRoster", desc: "Standards that make your product easier for schools to adopt." },
+    ],
+    policies: [
+      { name: "Customer data agreements", desc: "Designed to honour the data terms you have with schools and companies." },
+      { name: "COPPA / FERPA / GDPR", desc: "Data flows reviewed for the markets and age groups you serve." },
+      { name: "Model provider terms", desc: "Enterprise API terms that exclude customer data from training." },
+      { name: "Accessibility (WCAG)", desc: "AI features designed to the same accessibility standard as your product." },
+    ],
+    day: {
+      role: "A product manager",
+      moments: [
+        { time: "Planning", before: "Pushes the AI feature back another quarter for lack of specialists.", after: "Plans it with an embedded AI team that works in the same sprints." },
+        { time: "Before release", before: "Spot-checks a handful of AI answers by hand and hopes.", after: "Reviews an evaluation report from the CI pipeline before approving the release." },
+        { time: "A new model launches", before: "Faces a risky rewrite to try it.", after: "Compares it on the existing evaluation set and switches only if it is better." },
+        { time: "Sales call", before: "Struggles to answer a buyer's questions about AI safety.", after: "Shares the model card and evaluation summary." },
+      ],
+    },
+    faqs: [
+      { q: "Can you work in our codebase?", a: "Yes. We follow your conventions, review process and release cadence, and pair with your engineers so knowledge stays in the team." },
+      { q: "Do you build white-label products?", a: "We build features for your product under your brand. The code and IP belong to you." },
+      { q: "How do you keep model costs under control?", a: "By measuring cost alongside quality in evaluation, routing tasks to the smallest model that does the job well, and caching where it is safe." },
+    ],
+  },
+  corporate: {
+    intro:
+      "Corporate learning teams are asked to onboard faster, upskill continuously and prove impact. We build knowledge assistants and onboarding copilots on your own content, connect them to your HR and learning systems, and run AI upskilling programmes for every level of the organisation.",
+    challenges: [
+      { title: "Slow onboarding", desc: "New starters spend weeks finding answers spread across wikis, drives and inboxes." },
+      { title: "Knowledge silos", desc: "Expertise lives with a few people and leaves when they do." },
+      { title: "AI skills gap", desc: "Teams want to use AI but lack the skills and policies to do so safely." },
+      { title: "Proving impact", desc: "L&D needs evidence that learning changes how work gets done." },
+    ],
+    services: ["llm", "academy", "platform", "analytics"],
+    useCases: [
+      { title: "Knowledge assistant", desc: "Cited answers from handbooks, policies and process documents." },
+      { title: "Onboarding copilot", desc: "A guide through a new starter's first weeks, tailored to their role." },
+      { title: "AI upskilling", desc: "Programmes for engineers, managers and every team." },
+      { title: "Course production", desc: "Training material drafted from existing documents for expert review." },
+      { title: "Skills insight", desc: "A view of which questions are asked and where content is missing." },
+    ],
+    integrations: [
+      { name: "SCORM / xAPI", desc: "Works with your LMS or LXP and reports learning activity." },
+      { name: "HRIS", desc: "Role and department data for tailored onboarding." },
+      { name: "SSO", desc: "Okta, Entra ID or Google Workspace sign-in with existing permissions." },
+      { name: "SharePoint, Confluence, Drive", desc: "Content ingested where it already lives, with access respected." },
+    ],
+    policies: [
+      { name: "GDPR / employee data", desc: "Minimal personal data and clear purposes, agreed with HR and data protection." },
+      { name: "Information security", desc: "Document-level permissions and logging aligned to your security policies." },
+      { name: "Responsible-use policy", desc: "Clear guidance for staff on approved AI tools and data." },
+      { name: "Accessibility (WCAG)", desc: "Designed so every employee can use it, including with assistive technology." },
+    ],
+    day: {
+      role: "A new starter in operations",
+      moments: [
+        { time: "Day one", before: "Receives a long list of links and a folder of PDFs.", after: "Gets a role-specific onboarding plan and an assistant to ask about anything in it." },
+        { time: "First week", before: "Interrupts colleagues for every process question.", after: "Gets cited answers from the process docs, and knows who to ask when the answer isn't there." },
+        { time: "First month", before: "Finds out about a policy only after getting it wrong.", after: "Is pointed to the relevant policy at the moment it matters." },
+        { time: "L&D review", before: "Can only report course completions.", after: "Sees which questions new starters ask most and where content needs improving." },
+      ],
+    },
+    faqs: [
+      { q: "Will it expose confidential documents?", a: "No. The assistant only answers from documents the person asking already has permission to read, using your existing access controls." },
+      { q: "Does it work with our LMS?", a: "Yes. Learning content and activity can flow through SCORM or xAPI to the LMS or LXP you already use." },
+      { q: "Can you train non-technical staff?", a: "Yes. AI literacy and responsible-use sessions are designed for people with no technical background." },
+    ],
+  },
+};
+
+// Other settings we build for — shown on /industries as a compact list (no separate pages)
+export const otherSettings = [
+  { name: "Healthcare & clinical education", desc: "Case-based practice and guideline assistants for clinicians in training." },
+  { name: "Government & workforce training", desc: "Accessible skills programmes and assistants for public-sector learners." },
+  { name: "Language learning", desc: "Speaking practice, pronunciation feedback and conversation partners." },
+  { name: "Test prep & certification", desc: "Adaptive practice and explanations aligned to an exam specification." },
+  { name: "Nonprofits & NGOs", desc: "Low-cost, multilingual learning tools for programmes in the field." },
+  { name: "Online course creators", desc: "Course assistants and content workflows for independent educators." },
+];

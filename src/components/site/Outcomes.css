@@ -1,0 +1,11 @@
+/* Before/after switch: the thumb slides between the two options */
+.outcome-thumb { transition: transform .4s var(--ease), background-color .3s; }
+
+/* Each moment of the week rises in, one after another, when the role or the mode changes */
+.outcome-swap > li { animation: outcome-in .45s var(--ease) both; }
+@keyframes outcome-in { from { opacity: 0; transform: translateY(8px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .outcome-thumb { transition: none; }
+  .outcome-swap > li { animation: none; }
+}

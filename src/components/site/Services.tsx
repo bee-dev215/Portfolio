@@ -1,7 +1,8 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { company, services, startEnquiry, stats } from "@/data/company";
+import ServiceCard from "@/components/services/ServiceCard";
 import CountUp from "./CountUp";
-import { serviceIcons } from "./icons";
 import Reveal, { SectionHeading } from "./Reveal";
 
 export default function Services() {
@@ -20,35 +21,23 @@ export default function Services() {
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">{company.intro}</p>
           </SectionHeading>
           <Reveal delay={100}>
-            <button onClick={() => startEnquiry()} className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-              Talk to an engineer <ArrowUpRight className="h-4 w-4" />
-            </button>
+            <div className="flex shrink-0 flex-wrap gap-3">
+              <Link to="/services" className="btn btn-primary px-6 py-3 text-sm">
+                All {services.length} services <ArrowRight className="h-4 w-4" />
+              </Link>
+              <button onClick={() => startEnquiry()} className="btn btn-secondary px-6 py-3 text-sm">
+                Talk to an engineer <ArrowUpRight className="h-4 w-4" />
+              </button>
+            </div>
           </Reveal>
         </div>
 
-        <div className="mt-14 grid gap-5 md:grid-cols-2">
-          {services.map((s, i) => {
-            const Icon = serviceIcons[s.key];
-            return (
-              <Reveal key={s.key} delay={i * 80} className="h-full">
-                <article className="card card-hover group relative flex h-full flex-col overflow-hidden p-7 sm:p-9">
-                  <div className="bg-grad pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-20" />
-                  <span className="icon-tile h-12 w-12">
-                    <Icon className="h-6 w-6" />
-                  </span>
-                  <h3 className="mt-6 font-display text-2xl font-bold tracking-tight">{s.title}</h3>
-                  <p className="mt-3 max-w-md leading-relaxed text-ink-2">{s.desc}</p>
-                  <ul className="mt-auto flex flex-wrap gap-2 pt-7">
-                    {s.includes.map((it) => (
-                      <li key={it} className="chip">
-                        {it}
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-              </Reveal>
-            );
-          })}
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {services.map((s, i) => (
+            <Reveal key={s.key} delay={(i % 4) * 70} className="h-full">
+              <ServiceCard service={s} compact />
+            </Reveal>
+          ))}
         </div>
 
         {/* Stats */}

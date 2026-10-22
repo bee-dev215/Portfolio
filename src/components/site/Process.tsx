@@ -1,5 +1,6 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
-import { Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
+import { Link } from "react-router-dom";
 import { phases } from "@/data/company";
 import { prefersReducedMotion } from "@/hooks/use-motion";
 import Reveal, { SectionHeading } from "./Reveal";
@@ -72,7 +73,8 @@ function useCardStack(count: number) {
   return { cards, active, progress };
 }
 
-export default function Process() {
+/** The five delivery phases. `more` adds a link to the full approach page (off on that page itself). */
+export default function Process({ more = true }: { more?: boolean }) {
   const { cards, active, progress } = useCardStack(phases.length);
 
   return (
@@ -91,6 +93,11 @@ export default function Process() {
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-2">
               Every engagement moves through {phases.length} phases, each with clear outputs and a decision point — so you always know what is done, what is next and what you will receive.
             </p>
+            {more && (
+              <Link to="/approach" className="btn btn-secondary mt-8 px-6 py-3 text-sm">
+                How we engage <ArrowRight className="h-4 w-4" />
+              </Link>
+            )}
           </SectionHeading>
 
           <Reveal delay={120} className="hidden lg:block">

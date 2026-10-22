@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { OPEN_SOLUTION_EVENT, scrollToId, solutions, startEnquiry } from "@/data/company";
+import { Link } from "react-router-dom";
+import { OPEN_SOLUTION_EVENT, solutions, startEnquiry } from "@/data/company";
 import SolutionPanel from "./SolutionPanel";
 import SolutionViewer, { PHOTO_VT, panelPhoto } from "./SolutionViewer";
 import { useScrollProgress, viewTransition } from "@/hooks/use-motion";
@@ -22,6 +23,7 @@ export default function Solutions() {
     const onOpen = (e: Event) => {
       const i = solutions.findIndex((s) => s.title === (e as CustomEvent<string>).detail);
       if (i === -1) return;
+      e.preventDefault(); // handled here, so the solution's page doesn't open instead
       viewTransition(() => {
         setFilter("All");
         setActive(i);
@@ -110,6 +112,14 @@ export default function Solutions() {
           </div>
         </Reveal>
 
+        <Reveal delay={60}>
+          <div className="mt-6 flex justify-center">
+            <Link to="/solutions" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
+              Compare all {solutions.length} solutions <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </div>
+        </Reveal>
+
         {open && list[active] && <SolutionViewer list={list} index={active} onClose={closeViewer} onGo={goTo} />}
 
         {/* Call-to-action band */}
@@ -127,9 +137,9 @@ export default function Solutions() {
                 <button onClick={() => startEnquiry()} className="btn bg-white px-6 py-3.5 text-[#3730a3] shadow-lg hover:-translate-y-px">
                   Start a project <ArrowUpRight className="h-4 w-4" />
                 </button>
-                <button onClick={() => scrollToId("process")} className="btn border border-white/40 px-6 py-3.5 text-white hover:bg-white/10">
+                <Link to="/approach" className="btn border border-white/40 px-6 py-3.5 text-white hover:bg-white/10">
                   How we work <ArrowRight className="h-4 w-4" />
-                </button>
+                </Link>
               </div>
             </div>
           </div>

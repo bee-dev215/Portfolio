@@ -46,19 +46,21 @@ export const socials: SocialLink[] = [
 //  Services — the four ways we work with clients
 // ------------------------------------------------------------
 
-export type ServiceKey = "build" | "llm" | "platform" | "academy";
+export type ServiceKey = "build" | "llm" | "platform" | "academy" | "analytics" | "evaluation" | "voice" | "design";
 
 export interface Service {
   key: ServiceKey;
+  slug: string; // URL: /services/<slug>
   title: string;
   desc: string;
   includes: string[];
-  image: string; // preview photo in the top-bar menu
+  image?: string; // photo for the menu preview and the service page; without one they show the icon
 }
 
 export const services: Service[] = [
   {
     key: "build",
+    slug: "ai-product-engineering",
     title: "AI product engineering",
     desc: "Full-stack AI products from first prototype to production — web and mobile apps, APIs, and the evaluation pipelines that keep models honest.",
     includes: ["Rapid prototyping", "Full-stack apps", "Evals & monitoring"],
@@ -66,6 +68,7 @@ export const services: Service[] = [
   },
   {
     key: "llm",
+    slug: "llm-rag-solutions",
     title: "LLM & RAG solutions",
     desc: "Assistants grounded in your own content — curricula, course material, policies — with citations, guardrails and role-based access.",
     includes: ["Retrieval (RAG)", "Agents & tools", "Guardrails"],
@@ -73,17 +76,50 @@ export const services: Service[] = [
   },
   {
     key: "platform",
+    slug: "learning-platform-integration",
     title: "Learning platform integration",
     desc: "AI features inside the systems you already use — Canvas, Moodle, Google Classroom or your own platform — connected through LTI and open standards.",
     includes: ["LTI 1.3", "LMS plugins", "Data pipelines"],
-    image: "/images/sol-analytics.webp",
+    image: "/images/aud-edtech.webp",
   },
   {
     key: "academy",
+    slug: "ai-training-upskilling",
     title: "AI training & upskilling",
     desc: "Hands-on courses and workshops that teach your engineers, educators and staff to build with AI and to use it responsibly.",
     includes: ["Engineering bootcamps", "Educator workshops", "AI literacy"],
     image: "/images/sol-academy.webp",
+  },
+  {
+    key: "analytics",
+    slug: "learning-analytics-data",
+    title: "Learning analytics & data engineering",
+    desc: "One trustworthy record of learning — pipelines from your LMS, SIS and apps into a warehouse, with dashboards and explainable models on top.",
+    includes: ["xAPI & LRS", "Data pipelines", "Explainable models"],
+    image: "/images/sol-analytics.webp",
+  },
+  {
+    key: "evaluation",
+    slug: "ai-evaluation-safety",
+    title: "AI evaluation & safety",
+    desc: "Independent testing of AI features before and after launch — accuracy, grounding, bias and safeguarding — with evaluation suites your team can keep running.",
+    includes: ["Evaluation suites", "Red-teaming", "Bias reviews"],
+  },
+  {
+    key: "voice",
+    slug: "speech-voice-ai",
+    title: "Speech & voice AI",
+    desc: "Listening, speaking and reading support — transcription, pronunciation feedback and voice tutors — for language learning and accessibility.",
+    includes: ["Speech-to-text", "Pronunciation feedback", "Voice tutors"],
+    image: "/images/sol-content-studio.webp",
+  },
+  {
+    key: "design",
+    slug: "learning-experience-design",
+    title: "Learning experience design",
+    desc: "Research-led product and learning design that makes AI genuinely useful in a classroom or a workday — tested with real learners and educators.",
+    includes: ["UX research", "Learning design", "Accessibility"],
+    image: "/images/company-team.webp",
   },
 ];
 
@@ -123,6 +159,7 @@ export const ticker = [
 
 export interface Solution {
   id: number;
+  slug: string; // URL: /solutions/<slug>
   title: string;
   category: string; // audience, used by the filter
   domain: string;
@@ -137,6 +174,7 @@ export interface Solution {
 export const solutions: Solution[] = [
   {
     id: 1,
+    slug: "ai-tutor",
     title: "AI Tutor",
     category: "Schools & universities",
     domain: "Conversational learning · Socratic tutoring",
@@ -155,6 +193,7 @@ export const solutions: Solution[] = [
   },
   {
     id: 2,
+    slug: "assessment-assistant",
     title: "Assessment Assistant",
     category: "Schools & universities",
     domain: "Feedback · Rubrics · Question generation",
@@ -173,6 +212,7 @@ export const solutions: Solution[] = [
   },
   {
     id: 3,
+    slug: "learning-analytics",
     title: "Learning Analytics",
     category: "EdTech",
     domain: "Data · Early warning · Insight",
@@ -191,6 +231,7 @@ export const solutions: Solution[] = [
   },
   {
     id: 4,
+    slug: "content-studio",
     title: "Content Studio",
     category: "EdTech",
     domain: "Course creation · Localisation",
@@ -209,6 +250,7 @@ export const solutions: Solution[] = [
   },
   {
     id: 5,
+    slug: "knowledge-assistant",
     title: "Knowledge Assistant",
     category: "Corporate learning",
     domain: "RAG · Policies · Onboarding",
@@ -227,6 +269,7 @@ export const solutions: Solution[] = [
   },
   {
     id: 6,
+    slug: "ai-academy",
     title: "AI Academy",
     category: "Corporate learning",
     domain: "Training · Upskilling · AI literacy",
@@ -250,7 +293,7 @@ export const solutions: Solution[] = [
 // ------------------------------------------------------------
 
 export interface Industry {
-  key: string;
+  key: string; // also the URL: /industries/<key>
   title: string;
   focus: string;
   desc: string;
@@ -477,34 +520,6 @@ export const team: TeamMember[] = [
   },
 ];
 
-// Frequently asked questions (shown above the contact form)
-export const faqs = [
-  {
-    q: "Which AI models do you use?",
-    a: "We are model-agnostic. We choose between commercial models such as GPT, Claude and Gemini and open models such as Llama or Mistral for each task, based on quality, cost and privacy — and we can run open models inside your own cloud when data must stay there.",
-  },
-  {
-    q: "How do you protect student and staff data?",
-    a: "We collect only the data a feature needs, use enterprise API terms that exclude your data from model training, encrypt data in transit and at rest, and respect your existing permissions. Privacy requirements such as FERPA or GDPR are mapped with your compliance team during discovery.",
-  },
-  {
-    q: "How do you stop the AI from giving wrong answers?",
-    a: "Answers are grounded in your approved content and cite their sources. Every release is tested against an evaluation set of real questions, guardrails catch off-topic or unsafe requests, and high-stakes outputs such as grades go to a person for review.",
-  },
-  {
-    q: "Can it work inside our LMS?",
-    a: "Yes. We integrate with platforms such as Canvas, Moodle, Blackboard and Google Classroom through LTI 1.3 and open standards like xAPI and OneRoster, so learners and educators use AI where they already work.",
-  },
-  {
-    q: "How are projects priced?",
-    a: "Most work starts with a short discovery phase, followed by a fixed-scope proposal with milestones and acceptance criteria agreed up front. Ongoing improvement and support run on a retainer, and training programmes are priced per cohort.",
-  },
-  {
-    q: "Do you train our own team?",
-    a: "Yes — it is part of every engagement. We also run standalone AI Academy programmes: engineering bootcamps, educator workshops and AI-literacy sessions for leadership and staff.",
-  },
-];
-
 // Shown beside the contact form
 export const nextSteps = [
   { title: "Reply from an expert", desc: `An AI engineer reads your message and replies within ${company.responseTime}.` },
@@ -572,37 +587,46 @@ export const suggestedCategories = ["Schools & universities", "EdTech", "Corpora
 //  the Company menu is set here. Hovering an item previews it on the right.
 // ------------------------------------------------------------
 
-export type CompanyMenuKey = "about" | "process" | "technology" | "team" | "faq" | "contact";
+export type CompanyMenuKey = "about" | "approach" | "technology" | "team" | "responsible" | "contact";
 
 export interface CompanyMenuItem {
   key: CompanyMenuKey;
   label: string;
   desc: string;
-  section: string; // id of the section it scrolls to
-  image?: string; // preview photo; Team and Contact draw their own preview
+  to: string; // page route
+  image?: string; // preview photo; Team and Contact draw their own preview, others fall back to the icon
 }
 
 export const companyMenu: CompanyMenuItem[] = [
-  { key: "about", label: "About", desc: "Who we are and what we stand for.", section: "company", image: "/images/company-team.webp" },
-  { key: "process", label: "How we work", desc: "Five phases, from discovery to long-term support.", section: "process", image: "/images/aud-edtech.webp" },
-  { key: "technology", label: "Technology", desc: "The models, frameworks and learning standards we build with.", section: "technology", image: "/images/cta-backdrop.webp" },
-  { key: "team", label: "Team", desc: "The engineers and educators who design and build it.", section: "team" },
-  { key: "faq", label: "Questions", desc: "Answers for anyone deciding whether to get in touch.", section: "faq", image: "/images/company-learning.webp" },
-  { key: "contact", label: "Contact", desc: `Tell us about your learners — we reply within ${company.responseTime}.`, section: "contact" },
+  { key: "about", label: "About", desc: "Who we are, what we stand for and how the company is organised.", to: "/about", image: "/images/company-team.webp" },
+  { key: "approach", label: "How we work", desc: "Five phases and three ways to engage, from discovery to long-term support.", to: "/approach", image: "/images/aud-edtech.webp" },
+  { key: "technology", label: "Technology", desc: "The models, frameworks and learning standards we build with — and how we choose.", to: "/technology", image: "/images/cta-backdrop.webp" },
+  { key: "team", label: "Team", desc: "The engineers and educators who design and build it.", to: "/team" },
+  { key: "responsible", label: "Responsible AI", desc: "How we protect learners, data and client confidentiality.", to: "/responsible-ai" },
+  { key: "contact", label: "Contact", desc: `Tell us about your learners — we reply within ${company.responseTime}.`, to: "/contact" },
 ];
 
-// Footer site map (every section, including the ones not in the top bar)
-export const footerLinks = [
-  { id: "services", label: "Services" },
-  { id: "solutions", label: "Solutions" },
-  { id: "industries", label: "Who we serve" },
-  { id: "process", label: "Process" },
-  { id: "technology", label: "Technology" },
-  { id: "company", label: "Company" },
-  { id: "team", label: "Team" },
-  { id: "faq", label: "FAQ" },
-  { id: "contact", label: "Contact" },
+// Home page sections, in order (the navbar highlights the menu that covers the one in view)
+export const homeSections = ["services", "solutions", "industries", "outcomes", "process", "technology", "company", "team", "faq", "contact"];
+
+// Every page, for the footer site map
+export const sitePages = [
+  { to: "/solutions", label: "Solutions" },
+  { to: "/services", label: "Services" },
+  { to: "/industries", label: "Who we serve" },
+  { to: "/approach", label: "How we work" },
+  { to: "/technology", label: "Technology" },
+  { to: "/about", label: "About" },
+  { to: "/team", label: "Team" },
+  { to: "/responsible-ai", label: "Responsible AI" },
+  { to: "/faq", label: "Questions" },
+  { to: "/contact", label: "Contact" },
 ];
+
+// Page URLs, so every link to a solution, service or audience agrees
+export const solutionPath = (s: Pick<Solution, "slug">) => `/solutions/${s.slug}`;
+export const servicePath = (s: Pick<Service, "slug">) => `/services/${s.slug}`;
+export const industryPath = (i: Pick<Industry, "key">) => `/industries/${i.key}`;
 
 export const legalLinks = [
   { to: "/privacy", label: "Privacy policy" },
@@ -614,19 +638,33 @@ export const scrollToId = (id: string) => {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 };
 
-/** Fired on window to open a solution's details; detail is the solution title. */
+// The router's navigate function, registered by PageShell, so the helpers below can change page.
+let navigateTo: ((to: string) => void) | null = null;
+export const setNavigator = (fn: ((to: string) => void) | null) => {
+  navigateTo = fn;
+};
+const go = (to: string) => (navigateTo ? navigateTo(to) : window.location.assign(to));
+
+/**
+ * Fired on window to open a solution's details in place; detail is the solution title.
+ * The Solutions section handles it by calling preventDefault(); on pages without it, the solution's page opens instead.
+ */
 export const OPEN_SOLUTION_EVENT = "gsedu:open-solution";
 
-/** Opens one solution's details in place (the modal overlays wherever the reader is). */
 export const openSolution = (title: string) => {
-  window.dispatchEvent(new CustomEvent<string>(OPEN_SOLUTION_EVENT, { detail: title }));
+  const handled = !window.dispatchEvent(new CustomEvent<string>(OPEN_SOLUTION_EVENT, { detail: title, cancelable: true }));
+  const s = solutions.find((x) => x.title === title);
+  if (!handled && s) go(solutionPath(s));
 };
 
-/** Fired on window to pre-fill the contact form; detail is the solution of interest, if any. */
+/**
+ * Fired on window to pre-fill the contact form; detail is the topic of interest, if any.
+ * A contact form on the page handles it (preventDefault) and is scrolled to; otherwise /contact opens, pre-filled.
+ */
 export const ENQUIRE_EVENT = "gsedu:enquire";
 
-/** Scrolls to the contact form, optionally pre-filling it for a specific solution. */
 export const startEnquiry = (topic?: string) => {
-  window.dispatchEvent(new CustomEvent<string | undefined>(ENQUIRE_EVENT, { detail: topic }));
-  scrollToId("contact");
+  const handled = !window.dispatchEvent(new CustomEvent<string | undefined>(ENQUIRE_EVENT, { detail: topic, cancelable: true }));
+  if (handled) scrollToId("contact");
+  else go(topic ? `/contact?topic=${encodeURIComponent(topic)}` : "/contact");
 };

@@ -1,52 +1,19 @@
-import { useEffect } from "react";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import { company, imageCredits } from "@/data/company";
+import { ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { imageCredits } from "@/data/company";
 import { LegalDocKey, legalDocs } from "@/data/legal";
-import { Monogram } from "@/components/site/Navbar";
-import Footer from "@/components/site/Footer";
-import ThemeToggle from "@/components/site/ThemeToggle";
+import PageShell from "@/components/site/PageShell";
+import { Breadcrumbs } from "@/components/site/PageHero";
 
 const CREDITS = { id: "credits", heading: "Image credits" };
 
 export default function Legal({ doc }: { doc: LegalDocKey }) {
   const d = legalDocs[doc];
-  const { hash } = useLocation();
   const toc = doc === "terms" ? [...d.sections, CREDITS] : d.sections;
 
-  useEffect(() => {
-    const prev = document.title;
-    document.title = `${d.title} — ${company.legalName}`;
-    return () => {
-      document.title = prev;
-    };
-  }, [d.title]);
-
-  // Open at the top, or at the requested section
-  useEffect(() => {
-    const target = hash ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
-    if (target) target.scrollIntoView({ block: "start" });
-    else window.scrollTo(0, 0);
-  }, [doc, hash]);
-
   return (
-    <div className="site-root site-bg min-h-screen">
-      <header className="glass sticky top-0 z-50 border-b border-line px-5 sm:px-8">
-        <div className="mx-auto flex h-16 max-w-[1240px] items-center justify-between gap-4">
-          <Link to="/" className="flex items-center gap-2.5" aria-label={`${company.legalName} — home`}>
-            <Monogram />
-            <span className="font-display text-lg font-extrabold tracking-tight">{company.name}</span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <Link to="/" className="btn btn-secondary px-4 py-2.5 text-sm">
-              <ArrowLeft className="h-4 w-4" /> Back to site
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <main className="px-5 py-16 sm:px-8 lg:py-24">
+    <PageShell title={d.title} footerCta>
+      <div className="px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:pb-24 lg:pt-36">
         <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-[15rem_1fr] lg:gap-20">
           <aside className="lg:sticky lg:top-28 lg:self-start">
             <nav aria-label="Legal documents" className="flex gap-2 lg:flex-col">
@@ -74,7 +41,8 @@ export default function Legal({ doc }: { doc: LegalDocKey }) {
           </aside>
 
           <article className="max-w-3xl">
-            <span className="eyebrow">Legal · Last updated {d.updated}</span>
+            <Breadcrumbs crumbs={[{ label: d.title }]} />
+            <span className="eyebrow mt-8">Legal · Last updated {d.updated}</span>
             <h1 className="mt-6 font-display text-5xl font-extrabold tracking-tight sm:text-6xl">{d.title}</h1>
             <p className="mt-6 text-lg leading-relaxed text-ink-2">{d.intro}</p>
 
@@ -119,9 +87,7 @@ export default function Legal({ doc }: { doc: LegalDocKey }) {
             )}
           </article>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }
