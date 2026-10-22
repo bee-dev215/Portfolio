@@ -1,0 +1,1 @@
+import{j as s,P as a,E as r}from"./index-DmBk5KKg.js";function n({title:e}){return s.jsx(a,{title:e,children:s.jsxs("div",{className:"grid min-h-[70vh] place-items-center",role:"status",children:[s.jsx(r,{className:"h-7 w-7 animate-spin text-brand-text"}),s.jsx("span",{className:"sr-only",children:"Loading projects…"})]})})}export{n as P};

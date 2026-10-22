@@ -1227,3 +1227,31 @@ create policy "Admins delete site photos" on public.site_photos
 
 grant select on public.site_photos to anon, authenticated;
 grant insert, update, delete on public.site_photos to authenticated;
+
+
+-- ---------- 8. Replies to messages ----------
+-- Replies written in the admin. The send-reply function (supabase/functions/send-reply) emails each one from the
+-- company's Gmail and records it here, so the admin can show the conversation. Deleting a message deletes its replies.
+
+create table if not exists public.message_replies (
+  id bigint generated always as identity primary key,
+  message_id bigint not null references public.messages (id) on delete cascade,
+  subject text not null check (char_length(subject) between 1 and 200),
+  body text not null check (char_length(body) between 1 and 20000),
+  sent_by text not null, -- the admin who sent it
+  created_at timestamptz not null default now()
+);
+
+create index if not exists message_replies_message_id_idx on public.message_replies (message_id);
+
+alter table public.message_replies enable row level security;
+
+drop policy if exists "Admins read replies" on public.message_replies;
+create policy "Admins read replies" on public.message_replies
+  for select to authenticated using (public.is_admin());
+
+drop policy if exists "Admins record replies" on public.message_replies;
+create policy "Admins record replies" on public.message_replies
+  for insert to authenticated with check (public.is_admin());
+
+grant select, insert on public.message_replies to authenticated;

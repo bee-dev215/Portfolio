@@ -1,12 +1,12 @@
-import { ReactNode, useEffect, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format, formatDistanceToNow, isThisYear, isToday } from "date-fns";
-import { Archive, ArrowDown, ArrowLeft, ArrowUp, ArrowUpDown, Copy, Download, Inbox, LayoutList, LucideIcon, Mail, MailOpen, MessageSquare, Phone, Reply, Search, Table2, Tag, Trash2, X } from "lucide-react";
+import { Archive, ArrowDown, ArrowLeft, ArrowUp, ArrowUpDown, Copy, Download, Inbox, LayoutList, Loader2, LucideIcon, Mail, MailOpen, MessageSquare, Phone, Reply, Search, Send, Table2, Tag, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { company } from "@/data/company";
 import { explain } from "@/lib/adminApi";
 import { downloadCsv } from "@/lib/csv";
-import { deleteMessage, fetchMessages, MESSAGES_KEY, MessageRow, MessageStatus, setMessageStatus } from "@/lib/messagesApi";
+import { deleteMessage, fetchMessages, MESSAGES_KEY, MessageRow, MessageStatus, ReplyRow, sendReply, setMessageStatus } from "@/lib/messagesApi";
 import ConfirmDelete from "./ConfirmDelete";
 
 type View = "inbox" | "archived";
@@ -39,8 +39,23 @@ function shortDate(iso: string) {
 function exportCsv(rows: MessageRow[], view: View) {
   downloadCsv(
     `${company.shortName.toLowerCase()}-messages${view === "archived" ? "-archived" : ""}-${format(new Date(), "yyyy-MM-dd")}.csv`,
-    ["Received", "Name", "Email", "Organisation", "Phone", "Topic", "Message", "SMS updates", "Status"],
-    rows.map((m) => [format(new Date(m.created_at), "yyyy-MM-dd HH:mm"), m.name, m.email, m.organisation, m.phone, m.topic, m.message, m.sms_opt_in ? "Yes" : "No", STATUS_LABEL[m.status]]),
+    ["Received", "Name", "Email", "Organisation", "Phone", "Topic", "Message", "SMS updates", "Status", "Replies", "Last reply"],
+    rows.map((m) => {
+      const last = m.replies[m.replies.length - 1];
+      return [
+        format(new Date(m.created_at), "yyyy-MM-dd HH:mm"),
+        m.name,
+        m.email,
+        m.organisation,
+        m.phone,
+        m.topic,
+        m.message,
+        m.sms_opt_in ? "Yes" : "No",
+        STATUS_LABEL[m.status],
+        m.replies.length,
+        last ? format(new Date(last.created_at), "yyyy-MM-dd HH:mm") : "",
+      ];
+    }),
   );
 }
 
@@ -54,10 +69,118 @@ function Detail({ icon: Icon, label, children }: { icon: LucideIcon; label: stri
   );
 }
 
-function MessageView({ m, onBack, onStatus, onDelete }: { m: MessageRow; onBack?: () => void; onStatus: (s: MessageStatus) => void; onDelete: () => void }) {
+// Where a reply can be finished by hand if sending from here fails: Gmail for a Gmail address, else the email app
+const composeLink = (to: string, subject: string, body: string) =>
+  company.email.endsWith("@gmail.com")
+    ? `https://mail.google.com/mail/?authuser=${encodeURIComponent(company.email)}&view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    : `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+/** Writes and sends a reply by email; it goes from the company's address, with their message quoted underneath. */
+function ReplyBox({ m, onSent, onClose }: { m: MessageRow; onSent: (reply?: ReplyRow) => void; onClose: () => void }) {
+  const greeting = `Hi ${m.name.split(/\s+/)[0]},\n\n`;
+  const draft = `${greeting}\n\nBest regards,\n${company.name}`;
+  const [subject, setSubject] = useState(`Re: ${m.topic ?? "Your enquiry"} — ${company.shortName}`);
+  const [body, setBody] = useState(draft);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
+  const textRef = useRef<HTMLTextAreaElement>(null);
+
+  // Start typing right after the greeting
+  useEffect(() => {
+    textRef.current?.focus();
+    textRef.current?.setSelectionRange(greeting.length, greeting.length);
+  }, [greeting]);
+
+  const send = async (e?: FormEvent) => {
+    e?.preventDefault();
+    if (sending) return;
+    if (!subject.trim() || body.trim() === draft.trim() || !body.trim()) return setError("Write your reply first.");
+    setSending(true);
+    setError("");
+    try {
+      const { reply, warning } = await sendReply(m.id, subject.trim(), body.trim());
+      toast.success(`Reply sent to ${m.email}`, warning ? { description: warning } : undefined);
+      onSent(reply);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const cancel = () => {
+    if (body !== draft && !window.confirm("Discard this reply?")) return;
+    onClose();
+  };
+
+  return (
+    <form
+      onSubmit={send}
+      onKeyDown={(e) => {
+        // Escape leaves the reply, not the panel around it
+        if (e.key !== "Escape") return;
+        e.stopPropagation();
+        if (!sending) cancel();
+      }}
+      className="border-t border-line p-5 sm:p-6"
+    >
+      <h3 className="font-display text-base font-bold">Reply</h3>
+      <p className="mt-1 truncate text-sm text-subtle">
+        To <span className="font-semibold text-ink">{m.name}</span> &lt;{m.email}&gt; · from {company.email}
+      </p>
+      <label htmlFor={`reply-subject-${m.id}`} className="sr-only">
+        Subject
+      </label>
+      <input id={`reply-subject-${m.id}`} value={subject} onChange={(e) => setSubject(e.target.value)} maxLength={200} className="field mt-4 text-sm" />
+      <label htmlFor={`reply-body-${m.id}`} className="sr-only">
+        Your reply
+      </label>
+      <textarea
+        id={`reply-body-${m.id}`}
+        ref={textRef}
+        rows={8}
+        value={body}
+        onChange={(e) => setBody(e.target.value)}
+        onKeyDown={(e) => (e.metaKey || e.ctrlKey) && e.key === "Enter" && send()}
+        className="field mt-2 resize-y text-sm leading-relaxed"
+      />
+      <p className="mt-2 text-xs text-subtle">Their message is quoted underneath your reply. Ctrl + Enter sends.</p>
+      {error && (
+        <div role="alert" className="mt-3 rounded-xl border border-red-500/30 bg-red-500/5 p-3 text-sm text-red-500">
+          {error}{" "}
+          <a href={composeLink(m.email, subject, body)} target="_blank" rel="noreferrer" className="font-semibold underline underline-offset-2">
+            Finish it in {company.email.endsWith("@gmail.com") ? "Gmail" : "your email app"} instead
+          </a>
+        </div>
+      )}
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button type="submit" disabled={sending} className="btn btn-primary px-5 py-2.5 text-sm disabled:opacity-60">
+          {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />} {sending ? "Sending…" : "Send reply"}
+        </button>
+        <button type="button" onClick={cancel} disabled={sending} className="btn btn-secondary px-4 py-2.5 text-sm">
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function MessageView({
+  m,
+  onBack,
+  onStatus,
+  onDelete,
+  onReplied,
+}: {
+  m: MessageRow;
+  onBack?: () => void;
+  onStatus: (s: MessageStatus) => void;
+  onDelete: () => void;
+  onReplied: (reply?: ReplyRow) => void;
+}) {
   const archived = m.status === "archived";
   const sent = new Date(m.created_at);
-  const reply = `mailto:${m.email}?subject=${encodeURIComponent(`Re: ${m.topic ?? "Your enquiry"} — ${company.shortName}`)}&body=${encodeURIComponent(`Hi ${m.name.split(/\s+/)[0]},\n\n`)}`;
+  const [replying, setReplying] = useState(false);
 
   const copyEmail = async () => {
     try {
@@ -114,10 +237,40 @@ function MessageView({ m, onBack, onStatus, onDelete }: { m: MessageRow; onBack?
 
       <p className="whitespace-pre-wrap break-words p-5 text-[15px] leading-relaxed sm:p-6">{m.message}</p>
 
+      {m.replies.length > 0 && (
+        <ol aria-label="Your replies" className="space-y-3 border-t border-line bg-raised/30 p-5 sm:p-6">
+          {m.replies.map((r) => (
+            <li key={r.id} className="rounded-2xl border border-line bg-surface p-4">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-xs text-subtle">
+                <span className="inline-flex items-center gap-1.5 font-semibold text-brand-text">
+                  <Reply className="h-3.5 w-3.5" /> Replied by {r.sent_by}
+                </span>
+                <time dateTime={r.created_at}>{format(new Date(r.created_at), "d MMM yyyy, HH:mm")}</time>
+              </div>
+              <p className="mt-2 text-sm font-semibold">{r.subject}</p>
+              <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-relaxed text-ink-2">{r.body}</p>
+            </li>
+          ))}
+        </ol>
+      )}
+
+      {replying && (
+        <ReplyBox
+          m={m}
+          onClose={() => setReplying(false)}
+          onSent={(reply) => {
+            setReplying(false);
+            onReplied(reply);
+          }}
+        />
+      )}
+
       <footer className="flex flex-wrap items-center gap-2 border-t border-line bg-raised/40 p-4 sm:px-6">
-        <a href={reply} className="btn btn-primary px-5 py-2.5 text-sm">
-          <Reply className="h-4 w-4" /> Reply by email
-        </a>
+        {!replying && (
+          <button onClick={() => setReplying(true)} className="btn btn-primary px-5 py-2.5 text-sm">
+            <Reply className="h-4 w-4" /> {m.replies.length ? "Reply again" : "Reply"}
+          </button>
+        )}
         <button onClick={() => onStatus("new")} className="btn btn-secondary px-4 py-2.5 text-sm">
           <Mail className="h-4 w-4" /> Mark as unread
         </button>
@@ -166,6 +319,9 @@ function MessagesTable({ rows, sort, onSort, openId, onOpen }: { rows: MessageRo
               SMS
             </th>
             <th scope="col" className={th}>
+              Replied
+            </th>
+            <th scope="col" className={th}>
               Message
             </th>
           </tr>
@@ -198,6 +354,15 @@ function MessagesTable({ rows, sort, onSort, openId, onOpen }: { rows: MessageRo
                 <td className="whitespace-nowrap px-4 py-3 text-ink-2">{m.phone || none}</td>
                 <td className="whitespace-nowrap px-4 py-3 text-ink-2">{m.topic || none}</td>
                 <td className="px-4 py-3 text-ink-2">{m.sms_opt_in ? "Yes" : "No"}</td>
+                <td className="whitespace-nowrap px-4 py-3">
+                  {m.replies.length ? (
+                    <span className="inline-flex items-center gap-1 font-medium text-brand-text">
+                      <Reply className="h-3.5 w-3.5" /> {shortDate(m.replies[m.replies.length - 1].created_at)}
+                    </span>
+                  ) : (
+                    none
+                  )}
+                </td>
                 {/* Takes the width left over and cuts the text to one line */}
                 <td className={`w-full max-w-0 truncate px-4 py-3 ${isNew ? "text-ink-2" : "text-subtle"}`}>{m.message}</td>
               </tr>
@@ -301,6 +466,12 @@ export default function MessagesInbox() {
     if (!(await setStatus(m, status))) return;
     if (status === "archived") toast.success("Message archived", { action: { label: "Undo", onClick: () => setStatus(m, m.status) } });
     else if (m.status === "archived") toast.success("Moved to the inbox");
+  };
+
+  // Shows a sent reply under its message straight away; the refetch confirms it
+  const addReply = (m: MessageRow, reply?: ReplyRow) => {
+    if (reply) qc.setQueryData<MessageRow[]>(MESSAGES_KEY, (rows) => rows?.map((r) => (r.id === m.id ? { ...r, replies: [...r.replies, reply] } : r)));
+    qc.invalidateQueries({ queryKey: MESSAGES_KEY });
   };
 
   const confirmDelete = async () => {
@@ -448,7 +619,15 @@ export default function MessagesInbox() {
                             {shortDate(m.created_at)}
                           </time>
                         </span>
-                        <span className="mt-0.5 block truncate text-xs text-subtle">{[m.topic, m.organisation].filter(Boolean).join(" · ") || m.email}</span>
+                        <span className="mt-0.5 block truncate text-xs text-subtle">
+                          {m.replies.length > 0 && (
+                            <span className="font-semibold text-brand-text">
+                              <Reply className="mb-px mr-1 inline h-3 w-3" />
+                              Replied ·{" "}
+                            </span>
+                          )}
+                          {[m.topic, m.organisation].filter(Boolean).join(" · ") || m.email}
+                        </span>
                         <span className={`mt-1.5 line-clamp-2 text-sm ${isNew ? "text-ink-2" : "text-subtle"}`}>{m.message}</span>
                       </button>
                     </li>
@@ -460,7 +639,14 @@ export default function MessagesInbox() {
 
           <div className={`lg:sticky lg:top-36 ${open ? "" : "hidden lg:block"}`}>
             {open ? (
-              <MessageView m={open} onBack={() => setOpenId(null)} onStatus={(s) => changeStatus(open, s)} onDelete={() => setToDelete(open)} />
+              <MessageView
+                key={open.id}
+                m={open}
+                onBack={() => setOpenId(null)}
+                onStatus={(s) => changeStatus(open, s)}
+                onDelete={() => setToDelete(open)}
+                onReplied={(reply) => addReply(open, reply)}
+              />
             ) : (
               <div className="card flex flex-col items-center justify-center p-12 text-center text-subtle">
                 <MailOpen className="h-8 w-8" />
@@ -473,12 +659,13 @@ export default function MessagesInbox() {
 
       {layout === "table" && open && (
         <MessageDrawer paused={!!toDelete} onClose={() => setOpenId(null)}>
-          <MessageView m={open} onStatus={(s) => changeStatus(open, s)} onDelete={() => setToDelete(open)} />
+          <MessageView key={open.id} m={open} onStatus={(s) => changeStatus(open, s)} onDelete={() => setToDelete(open)} onReplied={(reply) => addReply(open, reply)} />
         </MessageDrawer>
       )}
 
       <ConfirmDelete open={!!toDelete} title="Delete this message?" onCancel={() => setToDelete(null)} onConfirm={confirmDelete}>
-        The message from {toDelete?.name} will be deleted from the database. This can't be undone — to keep it out of the inbox, archive it instead.
+        The message from {toDelete?.name}
+        {toDelete?.replies.length ? " and your replies to it" : ""} will be deleted from the database. This can't be undone — to keep it out of the inbox, archive it instead.
       </ConfirmDelete>
     </div>
   );

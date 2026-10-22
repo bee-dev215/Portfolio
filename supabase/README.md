@@ -48,6 +48,35 @@ Both values are meant to be public. Never use the **secret** or **service_role**
 
 Then open `/admin` on the site and sign in.
 
+## Replying from the admin
+
+The **Reply** box under a message emails your reply from your Gmail, with their message quoted underneath, and keeps it in the conversation in the admin. A small Supabase function, [`functions/send-reply`](functions/send-reply/index.ts), does the sending, using a Gmail *app password*. You set it up once, which takes about 10 minutes.
+
+1. **Run the setup script again** ([step 2](#2-run-the-setup-script)). It adds the table that keeps your replies.
+2. **Create a Gmail app password.**
+   1. Signed in as terabyte5050@gmail.com, open [Google Account → Security](https://myaccount.google.com/security) and turn on **2-Step Verification** if it's off. Google only offers app passwords when it's on.
+   2. Open [App passwords](https://myaccount.google.com/apppasswords), name it *GSedu admin* and click **Create**.
+   3. Copy the 16-letter password. Google shows it only once. It lets the function send email as you, so never put it in the site's code.
+3. **Give it to Supabase.** In the dashboard, open **Edge Functions → Secrets** and add two secrets:
+   - `SMTP_USER`: `terabyte5050@gmail.com`
+   - `SMTP_PASSWORD`: the app password (spaces or not, either works)
+4. **Deploy the function.**
+   1. Open **Edge Functions**, click **Deploy a new function** and choose **Via Editor**.
+   2. Name the function `send-reply`, exactly.
+   3. Replace all the sample code with the whole of [`functions/send-reply/index.ts`](functions/send-reply/index.ts) and click **Deploy function**.
+   4. Leave JWT verification on (the default). Only signed-in users get through, and the function also checks that they're an admin.
+
+   *With the Supabase CLI instead:* `npx supabase login`, then `npx supabase functions deploy send-reply --project-ref vmfbimauliwhbrvmfhal`.
+5. **Test it.** Send a message through the site's contact form from another email address you own, open it in `/admin` and reply.
+
+Good to know:
+
+- Replies go out through Gmail, so they also appear in Gmail's **Sent** folder. When someone answers, their answer arrives in your Gmail inbox, not in the admin.
+- A reply only ever goes to the address the message came from, and the function refuses anyone who isn't an admin.
+- Gmail allows about 500 emails a day, far more than a contact form needs.
+- If you revoke the app password or change your Google password, create a new app password and update `SMTP_PASSWORD`.
+- Until this is set up, **Send reply** explains what's missing and offers to open your reply in Gmail, so nothing you typed is lost.
+
 ## If you forget the password
 
 Supabase's dashboard can't show or set a password. Instead:
@@ -57,7 +86,7 @@ Supabase's dashboard can't show or set a password. Instead:
 
 ## Good to know
 
-- **Messages:** every contact-form message is saved here, as well as being emailed to you and sent to the CRM. Messages sent before the inbox was set up are only in your email and the CRM. *Archive* moves a message out of the inbox, and *Delete* removes it for good. Visitors can send messages but can never read them.
+- **Messages:** every contact-form message is saved here, as well as being emailed to you and sent to the CRM. You can answer from the admin once [replying is set up](#replying-from-the-admin). Messages sent before the inbox was set up are only in your email and the CRM. *Archive* moves a message out of the inbox, and *Delete* removes it for good. Visitors can send messages but can never read them.
 - **Hidden projects and people:** a project or team member switched to "hidden" stays in the admin but disappears from the site, so you can prepare one before publishing.
 - **Site photos:** a replacement shows everywhere the original did. The originals stay in `public/images/`, so *Use the original* always brings one back. The photo credits at `/terms#credits` list only photos the site still shows, so add a credit in `src/data/company.ts` if a new photo needs one.
 - **Uploads:** photos uploaded in the admin go to the database's `project-images` storage, in `projects/`, `team/` and `site/` folders.
