@@ -11,7 +11,7 @@ export const company = {
   initials: "GS",
   entity: "Limited liability company",
   discipline: "AI engineering for education",
-  email: "welcome.devs@gmail.com",
+  email: "terabyte5050@gmail.com",
   phone: "+1 (480) 271 8467",
   phoneHref: "tel:+14802718467",
   availability: "Booking new projects",

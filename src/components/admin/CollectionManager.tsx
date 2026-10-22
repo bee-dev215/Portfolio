@@ -140,7 +140,7 @@ export default function CollectionManager<Row extends { id: number; sort_order: 
           </button>
         </div>
       ) : (
-        <SortableList
+        <SortableList<Row>
           rows={rows}
           render={render}
           disabled={reordering}
