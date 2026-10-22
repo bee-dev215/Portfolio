@@ -63,7 +63,7 @@ export default function Hero() {
 
         <div className="fade-up relative" style={{ animationDelay: ".3s" }}>
           {/* Photo tiles tucked behind the demo window */}
-          <div className="hero-tile shadow-soft pointer-events-none absolute -left-6 -top-14 hidden w-32 -rotate-6 overflow-hidden rounded-2xl border-4 border-surface lg:block xl:-left-12 xl:w-36" aria-hidden="true">
+          <div className="hero-tile shadow-soft pointer-events-none absolute -left-8 -top-20 hidden w-44 -rotate-6 overflow-hidden rounded-2xl border-4 border-surface lg:block xl:-left-16 xl:w-52" aria-hidden="true">
             <img src={photos.src("/images/hero-student.webp")} alt="" width={600} height={750} className="aspect-[4/5] w-full object-cover" />
           </div>
           <div
