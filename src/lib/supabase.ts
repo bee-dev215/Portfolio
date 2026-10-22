@@ -7,3 +7,9 @@ const SUPABASE_KEY = "sb_publishable_dUhnj_3yfIIT6fd99qsMVA_Jnp0e1l1";
 
 /** The database client, or null until the project details above are filled in (the site then shows the built-in projects). */
 export const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+/** The client, for code that only runs once the database is connected (the admin). */
+export function db() {
+  if (!supabase) throw new Error("The database isn't connected yet (src/lib/supabase.ts).");
+  return supabase;
+}

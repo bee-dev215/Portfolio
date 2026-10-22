@@ -2,31 +2,15 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ExternalLink, Eye, EyeOff, Loader2, Plus } from "lucide-react";
 import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { audienceTitle, projectPath } from "@/data/projects";
-import { createProject, deleteProject, fetchProjectRows, PROJECTS_KEY, ProjectInput, ProjectRow, saveOrder, updateProject } from "@/lib/projectsApi";
+import { explain as explainError, saveOrder } from "@/lib/adminApi";
+import { createProject, deleteProject, fetchProjectRows, PROJECTS_KEY, PROJECTS_TABLE, ProjectInput, ProjectRow, updateProject } from "@/lib/projectsApi";
+import ConfirmDelete from "./ConfirmDelete";
 import ProjectForm from "./ProjectForm";
 import SortableList from "./SortableList";
 import { iconBtn } from "./fields";
 
-/** Database errors in words the admin can act on. */
-function explain(e: unknown) {
-  const err = e as { code?: string; message?: string };
-  if (err.code === "23505") return "Another project already uses this web address.";
-  if (err.code === "42P01" || err.code === "PGRST205" || /does not exist|could not find the table/i.test(err.message ?? ""))
-    return "The projects table doesn't exist yet. Run supabase/setup.sql in Supabase's SQL Editor (see supabase/README.md).";
-  if (err.code === "42501" || /row-level security/i.test(err.message ?? "")) return "This account isn't allowed to make changes.";
-  return err.message ?? "Something went wrong.";
-}
+const explain = (e: unknown) => explainError(e, "Another project already uses this web address.");
 
 export default function ProjectsManager() {
   const qc = useQueryClient();
@@ -66,7 +50,7 @@ export default function ProjectsManager() {
   const reorder = async (ids: number[]) => {
     setBusy(true);
     try {
-      await saveOrder(ids, rows);
+      await saveOrder(PROJECTS_TABLE, ids, rows);
       toast.success("New order saved");
     } catch (e) {
       toast.error("Could not save the order", { description: explain(e) });
@@ -184,28 +168,9 @@ export default function ProjectsManager() {
         onSave={save}
       />
 
-      <AlertDialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
-        <AlertDialogContent className="site-root rounded-[1.25rem] border-line bg-surface text-ink">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="font-display text-ink">Delete this project?</AlertDialogTitle>
-            <AlertDialogDescription className="text-ink-2">
-              “{toDelete?.data.title}” will be removed from the site and the database. This can't be undone — to take it off the site for now, hide it instead.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            {/* These build on the shared button styles, so their colours are set here to match the site */}
-            <AlertDialogCancel className="btn h-auto rounded-full border-line bg-surface px-5 py-2.5 text-sm text-ink hover:bg-raised hover:text-ink focus-visible:ring-brand focus-visible:ring-offset-surface">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDelete}
-              className="btn h-auto rounded-full bg-red-600 px-5 py-2.5 text-sm text-white hover:bg-red-700 focus-visible:ring-red-600 focus-visible:ring-offset-surface"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDelete open={!!toDelete} title="Delete this project?" onCancel={() => setToDelete(null)} onConfirm={confirmDelete}>
+        “{toDelete?.data.title}” will be removed from the site and the database. This can't be undone — to take it off the site for now, hide it instead.
+      </ConfirmDelete>
     </div>
   );
 }

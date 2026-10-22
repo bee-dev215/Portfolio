@@ -4,6 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { company, ENQUIRE_EVENT, nextSteps, socials } from "@/data/company";
 import { CONTACT_SUBJECTS, ContactPrefill, PREFILL_EVENT } from "@/components/contact/form";
+import { saveMessage } from "@/lib/messagesApi";
 import SocialIcon from "./SocialIcon";
 import Reveal, { SectionHeading } from "./Reveal";
 
@@ -98,8 +99,10 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
     const organisation = form.company.trim() || undefined;
     const message = form.message.trim();
     try {
-      // The CRM keeps the lead and the SMS consent; the email reaches the inbox. Either one getting through counts as sent.
+      // The CRM keeps the lead and the SMS consent, the email reaches the inbox, and the database keeps it for /admin → Messages.
+      // Any one getting through counts as sent.
       const results = await Promise.allSettled([
+        saveMessage({ name, email, organisation: organisation ?? null, phone: phone ?? null, topic: form.subject, message, sms_opt_in: smsOptIn }),
         postJson(CRM_URL, {
           email,
           name,

@@ -1,8 +1,10 @@
 # Setting up the admin page
 
-The admin page (`/admin`) edits the projects on the site. They're stored in a free Supabase database that you own. You set it up once, which takes about 10 minutes.
+The admin page (`/admin`) is where you read the messages people send through the contact form, and edit the site's projects, team and photos. Everything is stored in a free Supabase database that you own. You set it up once, which takes about 10 minutes.
 
-Until it's set up, the site shows the projects built into the code (`src/data/projects.ts`), and `/admin` says it isn't connected.
+Until it's set up, the site shows the projects, team and photos built into the code (`src/data/`), and `/admin` says it isn't connected.
+
+**Already set up?** If your database was created before the admin had Messages, Team and Site photos, run the setup script again ([step 2](#2-run-the-setup-script)). It adds what's new and leaves your projects as they are.
 
 ## 1. Create the database
 
@@ -16,9 +18,9 @@ Until it's set up, the site shows the projects built into the code (`src/data/pr
 1. In the left sidebar, open **SQL Editor**.
 2. Start a new query, paste the whole of [`setup.sql`](setup.sql), and click **Run**.
 3. If Supabase warns that the query has "destructive operations", click to run it anyway. That warning is about the lines that replace the script's own access rules, and no data is deleted.
-4. It should end with *Success. No rows returned*. This creates the projects table, its access rules and the photo storage, and loads the site's 9 current projects.
+4. It should end with *Success. No rows returned*. This creates the tables for projects, messages, the team and site photos, their access rules and the photo storage. It also loads the site's 9 current projects and 8 team members.
 
-It's safe to run again later: it never overwrites or re-adds projects once the table has any.
+It's safe to run again later: it never overwrites anything, and never re-adds projects or team members once those tables have any.
 
 ## 3. Create your admin login
 
@@ -55,6 +57,8 @@ Supabase's dashboard can't show or set a password. Instead:
 
 ## Good to know
 
-- **Hidden projects:** a project switched to "hidden" stays in the admin but disappears from the site, so you can draft new case studies before publishing.
-- **Photos:** photos uploaded in the admin go to the database's `project-images` storage. Photos already on the site stay in `public/images/`.
-- **Pausing:** Supabase may pause a free project after about a week without activity. While it's paused, the site falls back to the built-in projects. Restore it from the Supabase dashboard.
+- **Messages:** every contact-form message is saved here, as well as being emailed to you and sent to the CRM. Messages sent before the inbox was set up are only in your email and the CRM. *Archive* moves a message out of the inbox, and *Delete* removes it for good. Visitors can send messages but can never read them.
+- **Hidden projects and people:** a project or team member switched to "hidden" stays in the admin but disappears from the site, so you can prepare one before publishing.
+- **Site photos:** a replacement shows everywhere the original did. The originals stay in `public/images/`, so *Use the original* always brings one back. The photo credits at `/terms#credits` list only photos the site still shows, so add a credit in `src/data/company.ts` if a new photo needs one.
+- **Uploads:** photos uploaded in the admin go to the database's `project-images` storage, in `projects/`, `team/` and `site/` folders.
+- **Pausing:** Supabase may pause a free project after about a week without activity. While it's paused, the site falls back to the built-in projects, team and photos, and the contact form still reaches your email. Restore it from the Supabase dashboard.

@@ -1,6 +1,7 @@
 import { Accessibility, ArrowRight, BookCheck, LockKeyhole, ShieldCheck, UserCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import Reveal from "./Reveal";
+import { usePhotos } from "@/hooks/use-photos";
 
 const commitments = [
   { icon: BookCheck, title: "Grounded answers, with sources", desc: "Assistants answer from your approved content and show where each answer came from." },
@@ -11,6 +12,8 @@ const commitments = [
 
 /** Home-page band: the four commitments behind every build, linking to /responsible-ai. */
 export default function TrustBand() {
+  const photos = usePhotos();
+
   return (
     <section aria-labelledby="trust-title" className="px-5 pb-24 sm:px-8 lg:pb-32">
       <Reveal variant="scale" className="mx-auto max-w-[1240px]">
@@ -28,7 +31,7 @@ export default function TrustBand() {
                 Learners, parents and staff need to trust what AI tells them. These commitments are part of every project — planned with your safeguarding and compliance teams, not added at the end.
               </p>
               <div className="unveil shadow-soft mt-7 overflow-hidden rounded-2xl bg-raised">
-                <img src="/images/trust-classroom.webp" alt="Primary pupils working on tablets at their desks while their teacher kneels beside one of them" loading="lazy" width={640} height={400} className="aspect-[16/9] w-full object-cover" />
+                <img src={photos.src("/images/trust-classroom.webp")} alt={photos.alt("/images/trust-classroom.webp")} loading="lazy" width={640} height={400} className="aspect-[16/9] w-full object-cover" />
               </div>
               <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 lg:mt-auto lg:pt-8">
                 <Link to="/responsible-ai" className="btn btn-primary px-6 py-3 text-sm">

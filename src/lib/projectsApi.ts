@@ -1,8 +1,7 @@
-import { supabase } from "@/lib/supabase";
+import { db, supabase } from "@/lib/supabase";
 import { builtInProjects, Project } from "@/data/projects";
 
 export const PROJECTS_TABLE = "projects";
-export const IMAGE_BUCKET = "project-images";
 
 // Everything under this key refetches after an admin edit: the site's list and the admin's
 export const PROJECTS_KEY = ["projects"] as const;
@@ -20,11 +19,6 @@ export interface ProjectRow {
 }
 
 export type ProjectInput = Pick<ProjectRow, "slug" | "published" | "data">;
-
-function db() {
-  if (!supabase) throw new Error("The database isn't connected yet (src/lib/supabase.ts).");
-  return supabase;
-}
 
 // Rows edited by hand in Supabase's Table Editor may miss a list; default them so a page never crashes on one
 const list = <T>(v: T[] | undefined) => (Array.isArray(v) ? v : []);
@@ -85,29 +79,4 @@ export async function updateProject(id: number, values: Partial<ProjectInput>) {
 export async function deleteProject(id: number) {
   const { error } = await db().from(PROJECTS_TABLE).delete().eq("id", id);
   if (error) throw error;
-}
-
-/** Persist a new order: ids[0] gets sort_order 0, etc. Only changed rows are written. */
-export async function saveOrder(ids: number[], previous: Pick<ProjectRow, "id" | "sort_order">[]) {
-  const prev = new Map(previous.map((p) => [p.id, p.sort_order]));
-  const changed = ids.map((id, idx) => ({ id, idx })).filter(({ id, idx }) => prev.get(id) !== idx);
-  const results = await Promise.all(changed.map(({ id, idx }) => db().from(PROJECTS_TABLE).update({ sort_order: idx }).eq("id", id)));
-  const failed = results.find((r) => r.error);
-  if (failed?.error) throw failed.error;
-}
-
-export async function uploadProjectImage(file: File): Promise<string> {
-  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-  const path = `projects/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const storage = db().storage.from(IMAGE_BUCKET);
-  const { error } = await storage.upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type });
-  if (error) throw error;
-  return storage.getPublicUrl(path).data.publicUrl;
-}
-
-/** Whether the signed-in account is listed in the database's admins table. */
-export async function isAdmin(): Promise<boolean> {
-  const { data, error } = await db().rpc("is_admin");
-  if (error) throw error;
-  return Boolean(data);
 }

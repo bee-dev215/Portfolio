@@ -2,15 +2,17 @@ import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Service, servicePath } from "@/data/company";
 import { serviceIcons } from "@/components/site/icons";
+import { usePhotos } from "@/hooks/use-photos";
 
 /** A service as a linked card: photo (when it has one), icon, title, description and (optionally) what's included. */
 export default function ServiceCard({ service, compact = false }: { service: Service; compact?: boolean }) {
+  const photos = usePhotos();
   const Icon = serviceIcons[service.key];
   return (
     <Link to={servicePath(service)} className="card card-hover group relative flex h-full flex-col overflow-hidden">
       {service.image && (
         <div className={`relative overflow-hidden bg-raised ${compact ? "aspect-[16/9]" : "aspect-[16/8]"}`}>
-          <img src={service.image} alt="" loading="lazy" width={640} height={400} className="img-zoom h-full w-full object-cover" />
+          <img src={photos.src(service.image)} alt="" loading="lazy" width={640} height={400} className="img-zoom h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-[rgb(8_11_24/.35)] to-transparent" aria-hidden="true" />
           <span className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-black/30 text-white backdrop-blur transition-colors group-hover:bg-white group-hover:text-[#3730a3]">
             <ArrowUpRight className="h-4 w-4" />

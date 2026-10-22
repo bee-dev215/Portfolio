@@ -3,6 +3,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { phases } from "@/data/company";
 import { prefersReducedMotion } from "@/hooks/use-motion";
+import { usePhotos } from "@/hooks/use-photos";
 import Reveal, { SectionHeading } from "./Reveal";
 
 // Cards pin below the navbar, each a little lower than the last so the stack shows its edges
@@ -75,6 +76,7 @@ function useCardStack(count: number) {
 
 /** The five delivery phases. `more` adds a link to the full approach page (off on that page itself). */
 export default function Process({ more = true }: { more?: boolean }) {
+  const photos = usePhotos();
   const { cards, active, progress } = useCardStack(phases.length);
 
   return (
@@ -146,7 +148,7 @@ export default function Process({ more = true }: { more?: boolean }) {
               <article className="stack-inner card relative overflow-hidden">
                 {/* Photo banner, with the phase number outlined over it */}
                 <div className="relative h-36 overflow-hidden bg-raised sm:h-44">
-                  <img src={p.image} alt="" loading="lazy" width={1280} height={800} className="stack-photo h-full w-full object-cover" />
+                  <img src={photos.src(p.image)} alt="" loading="lazy" width={1280} height={800} className="stack-photo h-full w-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[rgb(8_11_24/.7)] via-[rgb(8_11_24/.15)] to-transparent" aria-hidden="true" />
                   <span className="stack-num pointer-events-none absolute -bottom-7 right-3 select-none font-display text-[7rem] font-extrabold leading-none sm:-bottom-9 sm:text-[9rem]" aria-hidden="true">
                     {String(i + 1).padStart(2, "0")}

@@ -6,41 +6,50 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import PageSection from "@/components/company/PageSection";
 import { serviceIcons } from "@/components/site/icons";
-import { company, companyFile, principles, servicePath, services, startEnquiry, team } from "@/data/company";
+import { company, companyFile, principles, servicePath, services, startEnquiry } from "@/data/company";
 import { confidentiality, practices, studioGallery } from "@/data/company-pages";
+import { usePhotos } from "@/hooks/use-photos";
+import { useTeam } from "@/hooks/use-team";
 
 const principleIcons: LucideIcon[] = [HeartHandshake, ShieldCheck, FlaskConical, Compass];
 const confidentialityIcons: LucideIcon[] = [Lock, ScrollText, EyeOff];
 
 function HeroCollage() {
+  const photos = usePhotos();
+  const { team } = useTeam();
   return (
     <div className="relative pb-14 pr-6 sm:pr-14">
       <div className="shadow-soft overflow-hidden rounded-[2rem]">
-        <img src="/images/company-team.webp" alt="A product team mapping ideas on a whiteboard with sticky notes" width={740} height={555} className="aspect-[4/3] w-full object-cover" />
+        <img src={photos.src("/images/company-team.webp")} alt={photos.alt("/images/company-team.webp")} width={740} height={555} className="aspect-[4/3] w-full object-cover" />
       </div>
       <div className="absolute bottom-0 right-0 w-[48%] overflow-hidden rounded-3xl border-4 border-canvas shadow-soft">
-        <img src="/images/company-learning.webp" alt="A student joining a live online class with their teacher on screen" width={480} height={360} className="aspect-[4/3] w-full object-cover" />
+        <img src={photos.src("/images/company-learning.webp")} alt={photos.alt("/images/company-learning.webp")} width={480} height={360} className="aspect-[4/3] w-full object-cover" />
       </div>
-      <div className="glass shadow-soft absolute -left-2 bottom-6 hidden items-center gap-3 rounded-2xl border border-line p-3 pr-4 sm:flex">
-        <div className="flex">
-          {team
-            .filter((m) => m.photo)
-            .slice(0, 4)
-            .map((m, i) => (
-              <img key={m.name} src={m.photo} alt="" width={36} height={36} className={`h-9 w-9 rounded-full border-2 border-surface object-cover ${i ? "-ml-3" : ""}`} />
-            ))}
+      {/* Shown once the team has loaded */}
+      {team.length > 0 && (
+        <div className="glass shadow-soft absolute -left-2 bottom-6 hidden items-center gap-3 rounded-2xl border border-line p-3 pr-4 sm:flex">
+          <div className="flex">
+            {team
+              .filter((m) => m.photo)
+              .slice(0, 4)
+              .map((m, i) => (
+                <img key={m.name} src={m.photo} alt="" width={36} height={36} className={`h-9 w-9 rounded-full border-2 border-surface object-cover ${i ? "-ml-3" : ""}`} />
+              ))}
+          </div>
+          <span className="text-sm font-semibold leading-tight">
+            {team.length} engineers
+            <br />
+            <span className="font-medium text-subtle">and educators</span>
+          </span>
         </div>
-        <span className="text-sm font-semibold leading-tight">
-          {team.length} engineers
-          <br />
-          <span className="font-medium text-subtle">and educators</span>
-        </span>
-      </div>
+      )}
     </div>
   );
 }
 
 export default function About() {
+  const photos = usePhotos();
+
   return (
     <PageShell title="About" description={`${company.name}: ${company.discipline}. Who we are, what we stand for and how the company is organised.`}>
       <PageHero
@@ -131,7 +140,7 @@ export default function About() {
               <Reveal delay={i * 80} variant={i === 0 ? "scale" : "up"} className="h-full">
                 <figure className="shadow-soft group relative h-full overflow-hidden rounded-3xl bg-raised">
                   <div className="unveil h-full">
-                    <img src={g.src} alt={g.alt} loading="lazy" width={1280} height={800} className={`img-zoom h-full w-full object-cover ${i === 0 ? "aspect-[4/3] lg:aspect-auto" : "aspect-[16/10] lg:aspect-auto"}`} />
+                    <img src={photos.src(g.src)} alt={photos.alt(g.src, g.alt)} loading="lazy" width={1280} height={800} className={`img-zoom h-full w-full object-cover ${i === 0 ? "aspect-[4/3] lg:aspect-auto" : "aspect-[16/10] lg:aspect-auto"}`} />
                   </div>
                   <div className="photo-fade absolute inset-0" aria-hidden="true" />
                   <figcaption className={`absolute inset-x-0 bottom-0 p-5 font-medium text-white ${i === 0 ? "text-base sm:p-7" : "text-sm"}`}>{g.caption}</figcaption>

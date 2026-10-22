@@ -11,12 +11,14 @@ import DayToggle from "@/components/industries/DayToggle";
 import ProjectStrip from "@/components/projects/ProjectStrip";
 import { industries, industryPath, scrollToId, services, startEnquiry } from "@/data/company";
 import { industryDetails } from "@/data/industry-details";
+import { usePhotos } from "@/hooks/use-photos";
 import NotFound from "./NotFound";
 
 // Lower-cases a title's first word for use mid-sentence, leaving names like "K-12" and "EdTech" alone
 const midSentence = (t: string) => (/^[A-Z][a-z]*\s/.test(t) ? t[0].toLowerCase() + t.slice(1) : t);
 
 export default function IndustryDetail() {
+  const photos = usePhotos();
   const { slug = "" } = useParams();
   const industry = industries.find((i) => i.key === slug);
   const detail = industryDetails[slug];
@@ -45,7 +47,7 @@ export default function IndustryDetail() {
         aside={
           <div className="relative pb-10 sm:pb-0">
             <div className="shadow-soft overflow-hidden rounded-[2rem] border border-line bg-raised">
-              <img src={industry.image} alt={industry.imageAlt} width={740} height={555} className="aspect-[4/3] w-full object-cover" />
+              <img src={photos.src(industry.image)} alt={photos.alt(industry.image, industry.imageAlt)} width={740} height={555} className="aspect-[4/3] w-full object-cover" />
             </div>
             <div className="glass shadow-soft absolute -bottom-2 right-4 max-w-[16rem] rounded-2xl border border-line p-4 sm:-bottom-8 sm:-left-6 sm:right-auto">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-subtle">Where teams often start</p>
@@ -261,7 +263,7 @@ export default function IndustryDetail() {
               <Reveal key={o.key} delay={i * 80} className="h-full">
                 <Link to={industryPath(o)} className="card card-hover group relative block overflow-hidden">
                   <div className="relative aspect-[4/3] overflow-hidden bg-raised">
-                    <img src={o.image} alt="" loading="lazy" width={400} height={300} className="img-zoom h-full w-full object-cover" />
+                    <img src={photos.src(o.image)} alt="" loading="lazy" width={400} height={300} className="img-zoom h-full w-full object-cover" />
                     <div className="photo-fade absolute inset-0" />
                     <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5 text-white">
                       <div>

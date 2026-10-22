@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { startEnquiry } from "@/data/company";
+import { usePhotos } from "@/hooks/use-photos";
 import Reveal from "./Reveal";
 
 /** Closing call to action for inner pages: a gradient card with "Start a project" and an optional second link. */
@@ -18,11 +19,12 @@ export default function CtaBand({
   primaryLabel?: string;
   secondary?: { label: string; to: string };
 }) {
+  const photos = usePhotos();
   return (
     <section className="px-5 pb-24 sm:px-8 lg:pb-32">
       <Reveal variant="scale" className="mx-auto max-w-[1240px]">
         <div className="relative overflow-hidden rounded-[2rem] bg-grad p-8 text-white sm:p-12 lg:p-14">
-          <img src="/images/cta-backdrop.webp" alt="" loading="lazy" width={740} height={416} className="absolute inset-0 h-full w-full object-cover opacity-20 mix-blend-luminosity" />
+          <img src={photos.src("/images/cta-backdrop.webp")} alt="" loading="lazy" width={740} height={416} className="absolute inset-0 h-full w-full object-cover opacity-20 mix-blend-luminosity" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#312e81]/80 via-[#5b21b6]/50 to-transparent" />
           <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/20 blur-3xl" />
           <div className="relative flex flex-col justify-between gap-8 lg:flex-row lg:items-end">

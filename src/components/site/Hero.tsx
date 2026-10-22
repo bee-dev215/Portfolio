@@ -1,5 +1,6 @@
 import { ArrowRight, CheckCircle2, PlayCircle, Sparkles } from "lucide-react";
 import { company, scrollToId, startEnquiry, ticker } from "@/data/company";
+import { usePhotos } from "@/hooks/use-photos";
 import TutorDemo from "./TutorDemo";
 
 const promises = ["Model-agnostic", "Privacy-first", "LMS-ready"];
@@ -21,6 +22,10 @@ const tickerPhotos = [
 ];
 
 export default function Hero() {
+  const photos = usePhotos();
+  // A replaced photo stands in for its own thumbnail
+  const thumb = (name: string) => photos.src(photos.replaced(`${name}.webp`) ? `/images/${name}.webp` : `/images/thumbs/${name}.webp`);
+
   return (
     <section className="relative overflow-hidden pb-10 pt-28 sm:pt-32 lg:pt-40">
       <div className="mesh pointer-events-none absolute inset-0" aria-hidden="true" />
@@ -59,14 +64,14 @@ export default function Hero() {
         <div className="fade-up relative" style={{ animationDelay: ".3s" }}>
           {/* Photo tiles tucked behind the demo window */}
           <div className="hero-tile shadow-soft pointer-events-none absolute -left-6 -top-14 hidden w-32 -rotate-6 overflow-hidden rounded-2xl border-4 border-surface lg:block xl:-left-12 xl:w-36" aria-hidden="true">
-            <img src="/images/hero-student.webp" alt="" width={600} height={750} className="aspect-[4/5] w-full object-cover" />
+            <img src={photos.src("/images/hero-student.webp")} alt="" width={600} height={750} className="aspect-[4/5] w-full object-cover" />
           </div>
           <div
             className="hero-tile shadow-soft pointer-events-none absolute -bottom-14 -right-4 hidden w-28 rotate-6 overflow-hidden rounded-2xl border-4 border-surface lg:block xl:-right-10 xl:w-32"
             style={{ animationDelay: ".9s, 1.8s" }}
             aria-hidden="true"
           >
-            <img src="/images/hero-ai.webp" alt="" width={800} height={800} className="aspect-square w-full object-cover" />
+            <img src={photos.src("/images/hero-ai.webp")} alt="" width={800} height={800} className="aspect-square w-full object-cover" />
           </div>
           <TutorDemo />
         </div>
@@ -80,7 +85,7 @@ export default function Hero() {
               {ticker.map((t, i) => (
                 <span key={t} className="flex items-center gap-10 whitespace-nowrap font-display text-base font-semibold text-ink-2">
                   {t}
-                  <img src={`/images/thumbs/${tickerPhotos[i % tickerPhotos.length]}.webp`} alt="" loading="lazy" width={160} height={100} className="h-9 w-14 rounded-full object-cover ring-1 ring-line" />
+                  <img src={thumb(tickerPhotos[i % tickerPhotos.length])} alt="" loading="lazy" width={160} height={100} className="h-9 w-14 rounded-full object-cover ring-1 ring-line" />
                 </span>
               ))}
             </div>

@@ -529,3 +529,6 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
   .sol-panel-img, .sol-panel.is-active:hover .sol-panel-img { transform: none; }
   html { scroll-behavior: auto; }
 }
+
+/* A site photo has no src while its replacement (if any) loads: see usePhotos() */
+img:not([src]) { visibility: hidden; }

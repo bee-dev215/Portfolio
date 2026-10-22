@@ -5,12 +5,14 @@ import { OPEN_SOLUTION_EVENT, solutions, startEnquiry } from "@/data/company";
 import SolutionPanel from "./SolutionPanel";
 import SolutionViewer, { PHOTO_VT, panelPhoto } from "./SolutionViewer";
 import { useScrollProgress, viewTransition } from "@/hooks/use-motion";
+import { usePhotos } from "@/hooks/use-photos";
 import Reveal, { SectionHeading } from "./Reveal";
 
 // "All" is the "no filter" value
 const categories = ["All", ...Array.from(new Set(solutions.map((s) => s.category).filter(Boolean)))];
 
 export default function Solutions() {
+  const photos = usePhotos();
   const [filter, setFilter] = useState("All");
   const [active, setActive] = useState(0); // the expanded panel, and the one the viewer shows
   const [open, setOpen] = useState(false);
@@ -125,7 +127,7 @@ export default function Solutions() {
         {/* Call-to-action band */}
         <Reveal delay={100} variant="scale">
           <div ref={ctaRef} className="relative mt-20 overflow-hidden rounded-[2rem] bg-grad p-8 text-white sm:p-12 lg:p-14">
-            <img src="/images/cta-backdrop.webp" alt="" loading="lazy" width={740} height={416} className="drift absolute inset-0 h-full w-full scale-[1.2] object-cover opacity-25 mix-blend-luminosity" />
+            <img src={photos.src("/images/cta-backdrop.webp")} alt="" loading="lazy" width={740} height={416} className="drift absolute inset-0 h-full w-full scale-[1.2] object-cover opacity-25 mix-blend-luminosity" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#312e81]/80 via-[#5b21b6]/50 to-transparent" />
             <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/20 blur-3xl" />
             <div className="relative flex flex-col justify-between gap-8 lg:flex-row lg:items-end">

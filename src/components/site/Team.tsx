@@ -1,9 +1,10 @@
 import { ArrowRight, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { company, team, TeamMember } from "@/data/company";
+import { company, TeamMember } from "@/data/company";
+import { useTeam } from "@/hooks/use-team";
 import Reveal, { SectionHeading } from "./Reveal";
 
-const initials = (name: string) =>
+export const initials = (name: string) =>
   name
     .split(/\s+/)
     .filter(Boolean)
@@ -59,8 +60,10 @@ export function TeamCard({ member: m }: { member: TeamMember }) {
   );
 }
 
-/** Team section. Renders nothing until team members are listed in src/data/company.ts. */
+/** Team section. Renders nothing while the team loads, or if nobody is listed (in /admin → Team). */
 export default function Team() {
+  const { team } = useTeam();
+
   if (team.length === 0) return null;
 
   return (

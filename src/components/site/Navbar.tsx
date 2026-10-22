@@ -13,10 +13,11 @@ import {
   solutionPath,
   solutions,
   startEnquiry,
-  team,
 } from "@/data/company";
 import { Project, projectPath } from "@/data/projects";
 import { useProjects } from "@/hooks/use-projects";
+import { usePhotos } from "@/hooks/use-photos";
+import { useTeam } from "@/hooks/use-team";
 import { serviceIcons } from "./icons";
 import ThemeToggle from "./ThemeToggle";
 
@@ -194,6 +195,7 @@ function preload(group: MenuGroup) {
 const frame = "relative grid aspect-[16/9] w-full place-items-center overflow-hidden rounded-2xl border border-line";
 
 function TeamPreview() {
+  const { team } = useTeam();
   const faces = team.filter((m) => m.photo).slice(0, 5);
   const more = team.length - faces.length;
   return (
@@ -275,7 +277,12 @@ export default function Navbar() {
   const [peek, setPeek] = useState(0); // desktop: the previewed item
   const [fresh, setFresh] = useState(false); // the panel drops in only when opening from closed
   const { projects, ready } = useProjects();
-  const menus = useMemo(() => [solutionsMenu, projectsMenu(projects, ready), ...otherMenus], [projects, ready]);
+  const photos = usePhotos();
+  // Built-in photos swapped for any replacements chosen in the admin
+  const menus = useMemo(
+    () => [solutionsMenu, projectsMenu(projects, ready), ...otherMenus].map((g) => ({ ...g, items: g.items.map((it) => ({ ...it, image: photos.src(it.image) })) })),
+    [projects, ready, photos],
+  );
 
   const headerRef = useRef<HTMLElement>(null);
   const triggers = useRef<Record<string, HTMLButtonElement | null>>({});

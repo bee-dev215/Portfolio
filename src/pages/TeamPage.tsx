@@ -6,16 +6,19 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import PageSection from "@/components/company/PageSection";
 import TeamDirectory from "@/components/company/TeamDirectory";
-import { company, startEnquiry, team } from "@/data/company";
+import { company, startEnquiry } from "@/data/company";
 import { projectRoles, workingValues } from "@/data/company-pages";
+import { useTeam } from "@/hooks/use-team";
 
 function Mosaic() {
-  const faces = team.filter((m) => m.photo).slice(0, 8);
+  const { team, ready } = useTeam();
+  // Empty frames hold the space while the team loads
+  const faces = ready ? team.filter((m) => m.photo).slice(0, 8).map((m) => m.photo) : Array<undefined>(8).fill(undefined);
   return (
     <div className="grid grid-cols-4 gap-3" aria-hidden="true">
-      {faces.map((m, i) => (
-        <div key={m.name} className={`shadow-soft overflow-hidden rounded-2xl bg-raised ${i % 2 ? "translate-y-6" : ""}`}>
-          <img src={m.photo} alt="" width={160} height={200} className="aspect-[4/5] w-full object-cover" />
+      {faces.map((photo, i) => (
+        <div key={i} className={`shadow-soft overflow-hidden rounded-2xl bg-raised ${i % 2 ? "translate-y-6" : ""}`}>
+          <img src={photo} alt="" width={160} height={200} className="aspect-[4/5] w-full object-cover" />
         </div>
       ))}
     </div>
@@ -23,6 +26,8 @@ function Mosaic() {
 }
 
 export default function TeamPage() {
+  const { team, ready } = useTeam();
+
   return (
     <PageShell title="Team" description={`The engineers, data scientists, designers and educators at ${company.name}.`}>
       <PageHero
@@ -44,15 +49,17 @@ export default function TeamPage() {
             </Link>
           </>
         }
-        aside={team.some((m) => m.photo) ? <Mosaic /> : undefined}
+        aside={!ready || team.some((m) => m.photo) ? <Mosaic /> : undefined}
       />
 
       <PageSection>
         <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <SectionHeading label="The people" title="Who you'll work with." />
-          <p className="flex items-center gap-2 text-sm font-medium text-subtle">
-            <span className="live-dot" /> {team.length} people · {company.availability.toLowerCase()}
-          </p>
+          {ready && (
+            <p className="flex items-center gap-2 text-sm font-medium text-subtle">
+              <span className="live-dot" /> {team.length} people · {company.availability.toLowerCase()}
+            </p>
+          )}
         </div>
         <TeamDirectory />
       </PageSection>

@@ -456,6 +456,8 @@ export const principles = [
 // ------------------------------------------------------------
 //  Team. PLACEHOLDER PROFILES: fictional names on licensed stock portraits.
 //  Replace with your real team before launch — visitors will read these as your staff.
+//  The site shows the team from the database (edited at /admin → Team) and falls back to this
+//  list when it can't. supabase/setup.sql loads the same people as the database's starting team.
 //  photo: portrait in public/images/team/ (4:5); without one the card shows initials.
 // ------------------------------------------------------------
 
@@ -468,7 +470,7 @@ export interface TeamMember {
   focus?: string[]; // up to three specialities, shown as tags
 }
 
-export const team: TeamMember[] = [
+export const builtInTeam: TeamMember[] = [
   {
     name: "Martin Keller",
     role: "Founder & CEO",
@@ -547,6 +549,14 @@ export const stats = [
   { value: String(phases.length), label: "Delivery phases, discovery to support" },
   { value: String(stackGroups.reduce((n, g) => n + g.items.length, 0)), label: "Tools across the AI stack" },
 ];
+
+// Descriptions of the site photos that aren't decorative and aren't described elsewhere in this file.
+// A replacement chosen in the admin can override them (see usePhotos).
+export const photoAlts = {
+  "company-team.webp": "A product team mapping ideas on a whiteboard with sticky notes",
+  "company-learning.webp": "A student joining a live online class with their teacher on screen",
+  "trust-classroom.webp": "Primary pupils working on tablets at their desks while their teacher kneels beside one of them",
+};
 
 // ------------------------------------------------------------
 //  Photography credits. Freepik's (now Magnific) free licence requires attribution, so every

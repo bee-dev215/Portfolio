@@ -1,7 +1,7 @@
 -- ============================================================
 --  Database for the site's admin page (/admin).
 --  Run it in Supabase: SQL Editor → New query → paste this whole file → Run.
---  Safe to run again: it only adds what's missing, and loads the starting projects only into an empty table.
+--  Safe to run again: it only adds what's missing, and loads the starting projects and team only into empty tables.
 --  Step-by-step setup: supabase/README.md
 -- ============================================================
 
@@ -66,6 +66,7 @@ grant insert, update, delete on public.projects to authenticated;
 
 -- ---------- 3. Photos uploaded from the admin page ----------
 -- A public bucket, so the site can show them; only admins can upload (5 MB per image).
+-- Despite its name it holds every upload: projects/, team/ and site/ folders.
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('project-images', 'project-images', true, 5242880, array['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif'])
@@ -1101,3 +1102,128 @@ from jsonb_array_elements($seed$
 ]
 $seed$::jsonb) with ordinality as t(p, n)
 where not exists (select 1 from public.projects);
+
+
+-- ---------- 5. Messages from the contact form ----------
+-- Anyone can send one; only admins can read, file or delete them. The admin page shows them under Messages.
+
+create table if not exists public.messages (
+  id bigint generated always as identity primary key,
+  name text not null check (char_length(name) between 1 and 200),
+  email text not null check (char_length(email) between 3 and 320),
+  organisation text check (char_length(organisation) <= 200),
+  phone text check (char_length(phone) <= 50),
+  topic text check (char_length(topic) <= 100),
+  message text not null check (char_length(message) between 1 and 10000),
+  sms_opt_in boolean not null default false,
+  status text not null default 'new' check (status in ('new', 'read', 'archived')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.messages enable row level security;
+
+-- Visitors can only add a new, unread message; they can't read any back, not even their own
+drop policy if exists "Anyone sends a message" on public.messages;
+create policy "Anyone sends a message" on public.messages
+  for insert to anon, authenticated with check (status = 'new');
+
+drop policy if exists "Admins read messages" on public.messages;
+create policy "Admins read messages" on public.messages
+  for select to authenticated using (public.is_admin());
+
+drop policy if exists "Admins file messages" on public.messages;
+create policy "Admins file messages" on public.messages
+  for update to authenticated using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "Admins delete messages" on public.messages;
+create policy "Admins delete messages" on public.messages
+  for delete to authenticated using (public.is_admin());
+
+grant insert on public.messages to anon, authenticated;
+grant select, update, delete on public.messages to authenticated;
+
+
+-- ---------- 6. Team ----------
+-- The people on the Team page, the home page and /about, in the admin's order.
+
+create table if not exists public.team_members (
+  id bigint generated always as identity primary key,
+  name text not null,
+  role text not null,
+  bio text not null default '',
+  photo text not null default '',
+  linkedin text not null default '',
+  focus text[] not null default '{}',
+  sort_order integer not null default 0,
+  published boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+alter table public.team_members enable row level security;
+
+drop policy if exists "Anyone reads published team members" on public.team_members;
+create policy "Anyone reads published team members" on public.team_members
+  for select using (published or public.is_admin());
+
+drop policy if exists "Admins add team members" on public.team_members;
+create policy "Admins add team members" on public.team_members
+  for insert to authenticated with check (public.is_admin());
+
+drop policy if exists "Admins edit team members" on public.team_members;
+create policy "Admins edit team members" on public.team_members
+  for update to authenticated using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "Admins delete team members" on public.team_members;
+create policy "Admins delete team members" on public.team_members
+  for delete to authenticated using (public.is_admin());
+
+grant select on public.team_members to anon, authenticated;
+grant insert, update, delete on public.team_members to authenticated;
+
+-- The team built into the site (src/data/company.ts). Skipped once the table has anyone in it.
+insert into public.team_members (name, role, bio, photo, focus, sort_order)
+select name, role, bio, photo, focus, sort_order
+from (values
+  ('Martin Keller', 'Founder & CEO', 'Leads strategy and client partnerships, and makes sure every project starts from a real learning problem.', '/images/team/martin.webp', array['Strategy', 'EdTech', 'Partnerships'], 0),
+  ('Kenji Watanabe', 'CTO · Head of AI engineering', 'Owns the architecture and engineering standards, from retrieval pipelines to production infrastructure.', '/images/team/kenji.webp', array['LLM systems', 'Architecture', 'MLOps'], 1),
+  ('Mei Lin Chen', 'Lead ML engineer', 'Builds and evaluates the models behind our tutors and assistants, with a focus on grounding and safety.', '/images/team/mei.webp', array['RAG', 'Evaluation', 'PyTorch'], 2),
+  ('Marcus Bello', 'Senior full-stack engineer', 'Turns prototypes into fast, accessible products and connects them to the platforms schools already use.', '/images/team/marcus.webp', array['React', 'FastAPI', 'LTI 1.3'], 3),
+  ('Sofia Marín', 'Learning experience designer', 'Designs how learners and teachers work with AI, grounded in learning science and plenty of user testing.', '/images/team/sofia.webp', array['Learning design', 'UX research', 'Accessibility'], 4),
+  ('Hannah Lindqvist', 'Data scientist · Learning analytics', 'Builds the analytics and early-warning models that help educators act sooner.', '/images/team/hannah.webp', array['Analytics', 'xAPI', 'Modelling'], 5),
+  ('Amara Nwosu', 'AI education lead', 'Runs the AI Academy — engineering bootcamps, educator workshops and AI-literacy programmes.', '/images/team/amara.webp', array['Training', 'Curriculum', 'AI literacy'], 6),
+  ('Owen Brady', 'Product designer', 'Shapes interfaces that make complex AI feel simple, from first sketch to design system.', '/images/team/owen.webp', array['Product design', 'Design systems', 'Prototyping'], 7)
+) as t(name, role, bio, photo, focus, sort_order)
+where not exists (select 1 from public.team_members);
+
+
+-- ---------- 7. Site photos ----------
+-- Replacements for the photos built into the site (public/images/). A row swaps one photo everywhere it appears;
+-- deleting the row brings the original back.
+
+create table if not exists public.site_photos (
+  file text primary key, -- the original's file name in public/images/, e.g. sol-ai-tutor.webp
+  url text not null,
+  alt text not null default '', -- replaces the original's description, where the site gives it one
+  updated_at timestamptz not null default now()
+);
+
+alter table public.site_photos enable row level security;
+
+drop policy if exists "Anyone reads site photos" on public.site_photos;
+create policy "Anyone reads site photos" on public.site_photos
+  for select using (true);
+
+drop policy if exists "Admins add site photos" on public.site_photos;
+create policy "Admins add site photos" on public.site_photos
+  for insert to authenticated with check (public.is_admin());
+
+drop policy if exists "Admins edit site photos" on public.site_photos;
+create policy "Admins edit site photos" on public.site_photos
+  for update to authenticated using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "Admins delete site photos" on public.site_photos;
+create policy "Admins delete site photos" on public.site_photos
+  for delete to authenticated using (public.is_admin());
+
+grant select on public.site_photos to anon, authenticated;
+grant insert, update, delete on public.site_photos to authenticated;

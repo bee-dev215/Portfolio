@@ -7,6 +7,7 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import SolutionCard from "@/components/solutions/SolutionCard";
 import { industries, industryPath, solutionPath, solutions, startEnquiry } from "@/data/company";
+import { usePhotos } from "@/hooks/use-photos";
 
 // "All" is the "no filter" value
 const categories = ["All", ...Array.from(new Set(solutions.map((s) => s.category).filter(Boolean)))];
@@ -16,6 +17,7 @@ const haystack = (s: (typeof solutions)[number]) =>
   [s.title, s.category, s.domain, s.summary, s.description, ...s.capabilities, ...s.tech, ...s.deliverables].join(" ").toLowerCase();
 
 export default function SolutionsIndex() {
+  const photos = usePhotos();
   const [filter, setFilter] = useState("All");
   const [query, setQuery] = useState("");
 
@@ -163,7 +165,7 @@ export default function SolutionsIndex() {
                     {industries.map((ind) => (
                       <th key={ind.key} scope="col" className="px-3 py-4 text-center">
                         <Link to={industryPath(ind)} className="inline-flex flex-col items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand-text">
-                          <img src={ind.image} alt="" loading="lazy" width={40} height={40} className="h-10 w-10 rounded-full object-cover" />
+                          <img src={photos.src(ind.image)} alt="" loading="lazy" width={40} height={40} className="h-10 w-10 rounded-full object-cover" />
                           {ind.title}
                         </Link>
                       </th>
@@ -175,7 +177,7 @@ export default function SolutionsIndex() {
                     <tr key={s.slug} className="group border-b border-line last:border-0 hover:bg-raised/50">
                       <th scope="row" className="px-5 py-4 sm:px-6">
                         <Link to={solutionPath(s)} className="flex items-center gap-3">
-                          {s.image && <img src={s.image} alt="" loading="lazy" width={48} height={36} className="h-9 w-12 shrink-0 rounded-lg object-cover" />}
+                          {s.image && <img src={photos.src(s.image)} alt="" loading="lazy" width={48} height={36} className="h-9 w-12 shrink-0 rounded-lg object-cover" />}
                           <span>
                             <span className="block font-display font-bold transition-colors group-hover:text-brand-text">{s.title}</span>
                             <span className="block text-xs font-normal text-subtle">{s.domain}</span>

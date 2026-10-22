@@ -1,15 +1,50 @@
-import { ReactNode, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { ComponentType, ReactNode, useEffect, useState } from "react";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import type { Session } from "@supabase/supabase-js";
-import { DatabaseZap, ExternalLink, Loader2, LogOut, ShieldAlert } from "lucide-react";
+import { DatabaseZap, ExternalLink, FolderKanban, Images, Inbox, Loader2, LogOut, LucideIcon, ShieldAlert, Users } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { isAdmin } from "@/lib/projectsApi";
+import { isAdmin } from "@/lib/adminApi";
 import { company } from "@/data/company";
 import { Monogram } from "@/components/site/Navbar";
 import ThemeToggle from "@/components/site/ThemeToggle";
 import AdminLogin from "@/components/admin/AdminLogin";
+import MessagesInbox, { useInbox } from "@/components/admin/MessagesInbox";
+import PhotosManager from "@/components/admin/PhotosManager";
 import ProjectsManager from "@/components/admin/ProjectsManager";
+import TeamManager from "@/components/admin/TeamManager";
+
+// The admin's sections, each at /admin/<key>; the first one is /admin itself
+const SECTIONS: { key: string; label: string; icon: LucideIcon; intro: string; body: ComponentType }[] = [
+  {
+    key: "messages",
+    label: "Messages",
+    icon: Inbox,
+    intro: "What visitors sent through the contact form, newest first. Opening a message marks it as read; new ones appear here within a minute.",
+    body: MessagesInbox,
+  },
+  {
+    key: "projects",
+    label: "Projects",
+    icon: FolderKanban,
+    intro: "The case studies on the site. Saved changes show on the site straight away, in the order listed here; featured projects lead on the home page.",
+    body: ProjectsManager,
+  },
+  {
+    key: "team",
+    label: "Team",
+    icon: Users,
+    intro: "The people on the Team page, the home page and About, in the order listed here.",
+    body: TeamManager,
+  },
+  {
+    key: "photos",
+    label: "Site photos",
+    icon: Images,
+    intro: "The photos built into the site's pages. Replace one and it changes everywhere it appears; the original can always be brought back.",
+    body: PhotosManager,
+  },
+];
 
 const signOut = () => supabase?.auth.signOut();
 
@@ -34,6 +69,17 @@ function Notice({ icon, title, children }: { icon: ReactNode; title: string; chi
 }
 
 function Dashboard({ email }: { email: string }) {
+  const { section: key } = useParams();
+  const section = SECTIONS.find((sec) => sec.key === (key ?? SECTIONS[0].key));
+  const unread = useInbox().data?.filter((m) => m.status === "new").length ?? 0;
+
+  useEffect(() => {
+    document.title = `${unread ? `(${unread}) ` : ""}${section?.label ?? "Admin"} — ${company.shortName} admin`;
+  }, [unread, section]);
+
+  if (!section) return <Navigate to="/admin" replace />;
+  const Body = section.body;
+
   return (
     <Frame>
       <header className="glass sticky top-0 z-40 border-b border-line">
@@ -55,15 +101,34 @@ function Dashboard({ email }: { email: string }) {
             </button>
           </div>
         </div>
+        <nav aria-label="Admin sections" className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-3 sm:px-6">
+          {SECTIONS.map(({ key: k, label, icon: Icon }, i) => (
+            <Link
+              key={k}
+              to={i === 0 ? "/admin" : `/admin/${k}`}
+              aria-current={k === section.key ? "page" : undefined}
+              className={`relative flex shrink-0 items-center gap-2 px-3 py-3 text-sm font-semibold transition-colors ${
+                k === section.key ? "text-ink after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-grad" : "text-subtle hover:text-ink"
+              }`}
+            >
+              <Icon className="h-4 w-4" />
+              {label}
+              {k === "messages" && unread > 0 && (
+                <span className="bg-grad rounded-full px-1.5 py-px text-[11px] font-bold tabular-nums text-white">
+                  {unread}
+                  <span className="sr-only"> unread</span>
+                </span>
+              )}
+            </Link>
+          ))}
+        </nav>
       </header>
 
-      <main className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
-        <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">Projects</h1>
-        <p className="mt-2 max-w-2xl text-ink-2">
-          The case studies on the site. Saved changes show on the site straight away, in the order listed here; featured projects lead on the home page.
-        </p>
+      <main className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-12">
+        <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">{section.label}</h1>
+        <p className="mt-2 max-w-2xl text-ink-2">{section.intro}</p>
         <div className="mt-9">
-          <ProjectsManager />
+          <Body />
         </div>
       </main>
     </Frame>
@@ -75,7 +140,7 @@ export default function Admin() {
   const [session, setSession] = useState<Session | null | undefined>(supabase ? undefined : null);
 
   useEffect(() => {
-    document.title = `Admin — ${company.name}`;
+    document.title = `Admin — ${company.name}`; // the dashboard names its section instead
     if (!supabase) return;
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
     const { data } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));

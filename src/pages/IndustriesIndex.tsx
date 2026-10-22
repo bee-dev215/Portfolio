@@ -6,6 +6,7 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import { company, industries, industryPath, solutionPath, solutions, startEnquiry } from "@/data/company";
 import { otherSettings } from "@/data/industry-details";
+import { usePhotos } from "@/hooks/use-photos";
 
 // What every audience can count on, whoever they are
 const commitments = [
@@ -16,6 +17,8 @@ const commitments = [
 ];
 
 export default function IndustriesIndex() {
+  const photos = usePhotos();
+
   return (
     <PageShell
       title="Who we serve"
@@ -60,7 +63,7 @@ export default function IndustriesIndex() {
                 {/* The whole card opens the audience page; the title link is the keyboard route, the chips stay separate */}
                 <Link to={industryPath(ind)} tabIndex={-1} aria-hidden="true" className="absolute inset-0 z-[1]" />
                 <div className="relative aspect-[16/10] overflow-hidden bg-raised">
-                  <img src={ind.image} alt={ind.imageAlt} loading="lazy" width={620} height={388} className="img-zoom h-full w-full object-cover" />
+                  <img src={photos.src(ind.image)} alt={photos.alt(ind.image, ind.imageAlt)} loading="lazy" width={620} height={388} className="img-zoom h-full w-full object-cover" />
                   <div className="photo-fade absolute inset-0" aria-hidden="true" />
                   <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-7">
                     <p className="text-xs font-semibold uppercase tracking-wider text-white/80">{ind.focus}</p>

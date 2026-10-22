@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { team } from "@/data/company";
 import { Discipline, disciplines, disciplinesOf } from "@/data/company-pages";
+import { useTeam } from "@/hooks/use-team";
 import { TeamCard } from "../site/Team";
 import Reveal from "../site/Reveal";
 
@@ -8,12 +8,24 @@ type Filter = "Everyone" | Discipline;
 
 /** The whole team, filterable by discipline (read from each person's role). */
 export default function TeamDirectory() {
+  const { team, ready } = useTeam();
   const [filter, setFilter] = useState<Filter>("Everyone");
 
   // Only offer disciplines someone actually belongs to
-  const options = useMemo<Filter[]>(() => ["Everyone", ...disciplines.filter((d) => team.some((m) => disciplinesOf(m).includes(d)))], []);
+  const options = useMemo<Filter[]>(() => ["Everyone", ...disciplines.filter((d) => team.some((m) => disciplinesOf(m).includes(d)))], [team]);
   const count = (f: Filter) => (f === "Everyone" ? team.length : team.filter((m) => disciplinesOf(m).includes(f)).length);
   const list = filter === "Everyone" ? team : team.filter((m) => disciplinesOf(m).includes(filter));
+
+  if (!ready) {
+    return (
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" role="status">
+        {Array.from({ length: 4 }, (_, i) => (
+          <div key={i} className="card aspect-[4/5] animate-pulse bg-raised" />
+        ))}
+        <span className="sr-only">Loading the team…</span>
+      </div>
+    );
+  }
 
   return (
     <>

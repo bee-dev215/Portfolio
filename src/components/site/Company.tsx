@@ -3,11 +3,13 @@ import { ArrowRight, Compass, FlaskConical, HeartHandshake, ShieldCheck, LucideI
 import { Link } from "react-router-dom";
 import { company, companyFile, principles } from "@/data/company";
 import { useScrollProgress } from "@/hooks/use-motion";
+import { usePhotos } from "@/hooks/use-photos";
 import Reveal, { SectionHeading } from "./Reveal";
 
 const principleIcons: LucideIcon[] = [HeartHandshake, ShieldCheck, FlaskConical, Compass];
 
 export default function Company() {
+  const photos = usePhotos();
   // Drives the collage parallax: the inset photo and the facts card drift against the main photo
   const ref = useScrollProgress<HTMLElement>();
 
@@ -18,11 +20,11 @@ export default function Company() {
         <Reveal variant="left" className="relative order-2 lg:sticky lg:top-28 lg:order-1">
           <div className="relative pb-16 pr-6 sm:pr-16">
             <div className="unveil shadow-soft overflow-hidden rounded-[2rem]">
-              <img src="/images/company-team.webp" alt="A product team mapping ideas on a whiteboard with sticky notes" loading="lazy" width={740} height={555} className="aspect-[4/3] w-full object-cover" />
+              <img src={photos.src("/images/company-team.webp")} alt={photos.alt("/images/company-team.webp")} loading="lazy" width={740} height={555} className="aspect-[4/3] w-full object-cover" />
             </div>
             <div className="drift absolute bottom-0 right-0 w-[52%]" style={{ "--drift": "-90px" } as CSSProperties}>
               <div className="unveil shadow-soft overflow-hidden rounded-3xl border-4 border-canvas" style={{ "--unveil-delay": "420ms" } as CSSProperties}>
-              <img src="/images/company-learning.webp" alt="A student joining a live online class with their teacher on screen" loading="lazy" width={480} height={360} className="aspect-[4/3] w-full object-cover" />
+              <img src={photos.src("/images/company-learning.webp")} alt={photos.alt("/images/company-learning.webp")} loading="lazy" width={480} height={360} className="aspect-[4/3] w-full object-cover" />
               </div>
             </div>
             <div className="drift glass shadow-soft absolute -left-2 bottom-8 hidden rounded-2xl border border-line p-4 sm:block" style={{ "--drift": "50px" } as CSSProperties}>

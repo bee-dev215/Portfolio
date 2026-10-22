@@ -12,6 +12,7 @@ import ProjectStrip from "@/components/projects/ProjectStrip";
 import { industries, industryPath, solutionPath, solutions, startEnquiry } from "@/data/company";
 import { SolutionFaq, solutionDetails } from "@/data/solution-details";
 import NotFound from "@/pages/NotFound";
+import { usePhotos } from "@/hooks/use-photos";
 
 const SECTIONS: NavSection[] = [
   { id: "overview", label: "Overview" },
@@ -74,6 +75,7 @@ export default function SolutionDetail() {
 }
 
 function SolutionPage({ index }: { index: number }) {
+  const photos = usePhotos();
   const solution = solutions[index];
   const detail = solutionDetails[solution.slug];
   const prev = solutions[(index - 1 + solutions.length) % solutions.length];
@@ -113,7 +115,7 @@ function SolutionPage({ index }: { index: number }) {
         aside={
           <div className="relative pb-10 sm:pb-0 sm:pr-10">
             <div className="shadow-soft overflow-hidden rounded-[2rem] bg-raised">
-              {solution.image && <img src={solution.image} alt="" width={1280} height={800} className="aspect-[4/3] w-full object-cover" />}
+              {solution.image && <img src={photos.src(solution.image)} alt="" width={1280} height={800} className="aspect-[4/3] w-full object-cover" />}
             </div>
             <div className="glass shadow-soft absolute -bottom-2 left-4 right-4 rounded-2xl border border-line p-4 sm:-bottom-8 sm:left-auto sm:right-0 sm:w-72">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-subtle">At a glance</p>
@@ -364,7 +366,7 @@ function SolutionPage({ index }: { index: number }) {
                   <li key={a.key}>
                     <Reveal delay={i * 70} className="h-full">
                       <Link to={industryPath(a)} className="card card-hover group flex h-full items-center gap-4 p-3 pr-4">
-                        <img src={a.image} alt="" loading="lazy" width={64} height={64} className="h-16 w-16 shrink-0 rounded-xl object-cover" />
+                        <img src={photos.src(a.image)} alt="" loading="lazy" width={64} height={64} className="h-16 w-16 shrink-0 rounded-xl object-cover" />
                         <span className="min-w-0 flex-1">
                           <span className="block font-display font-bold leading-tight">{a.title}</span>
                           <span className="mt-0.5 block truncate text-xs text-subtle">{a.focus}</span>
@@ -437,7 +439,7 @@ function SolutionPage({ index }: { index: number }) {
                   <span className="block text-xs font-semibold uppercase tracking-wider text-subtle">{dir}</span>
                   <span className="block truncate font-display text-lg font-bold">{s.title}</span>
                 </span>
-                {s.image && <img src={s.image} alt="" loading="lazy" width={96} height={64} className="hidden h-14 w-20 shrink-0 rounded-xl object-cover sm:block" />}
+                {s.image && <img src={photos.src(s.image)} alt="" loading="lazy" width={96} height={64} className="hidden h-14 w-20 shrink-0 rounded-xl object-cover sm:block" />}
               </Link>
             ))}
           </nav>

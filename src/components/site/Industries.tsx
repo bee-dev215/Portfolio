@@ -1,9 +1,12 @@
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { industries, industryPath, openSolution } from "@/data/company";
+import { usePhotos } from "@/hooks/use-photos";
 import Reveal, { SectionHeading } from "./Reveal";
 
 export default function Industries() {
+  const photos = usePhotos();
+
   return (
     <section id="industries" className="px-5 py-24 sm:px-8 lg:py-32">
       <div className="mx-auto max-w-[1240px]">
@@ -32,7 +35,7 @@ export default function Industries() {
             <Reveal key={ind.key} delay={i * 90} className="h-full">
               <article id={`audience-${ind.key}`} className="card card-hover group flex h-full scroll-mt-24 flex-col overflow-hidden">
                 <div className="unveil relative aspect-[4/3] overflow-hidden bg-raised xl:aspect-[4/5]">
-                  <img src={ind.image} alt={ind.imageAlt} loading="lazy" width={392} height={490} className="img-zoom h-full w-full object-cover" />
+                  <img src={photos.src(ind.image)} alt={photos.alt(ind.image, ind.imageAlt)} loading="lazy" width={392} height={490} className="img-zoom h-full w-full object-cover" />
                   <div className="photo-fade absolute inset-0" aria-hidden="true" />
                   {/* The whole photo opens the audience page (the title link is the keyboard route) */}
                   <Link to={industryPath(ind)} tabIndex={-1} aria-hidden="true" className="absolute inset-0" />

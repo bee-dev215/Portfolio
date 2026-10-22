@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Solution, solutionPath, startEnquiry } from "@/data/company";
 import { supportsViewTransitions } from "@/hooks/use-motion";
+import { usePhotos } from "@/hooks/use-photos";
 
 /** view-transition-name shared by the viewer photo and the panel photo it opens from (see index.css) */
 export const PHOTO_VT = "solution-photo";
@@ -30,6 +31,7 @@ export default function SolutionViewer({
   onClose: (morph?: boolean) => void;
   onGo: (i: number, dir: Dir) => void;
 }) {
+  const photos = usePhotos();
   const solution = list[index];
   const closeBtn = useRef<HTMLButtonElement>(null);
   const touchX = useRef<number | null>(null);
@@ -99,7 +101,7 @@ export default function SolutionViewer({
         }}
       >
         <div className="relative h-full overflow-hidden rounded-[1.75rem] bg-raised" style={{ viewTransitionName: PHOTO_VT }}>
-          {solution.image && <img key={solution.id} src={solution.image} alt="" className="kenburns h-full w-full object-cover" />}
+          {solution.image && <img key={solution.id} src={photos.src(solution.image)} alt="" className="kenburns h-full w-full object-cover" />}
           <div className="photo-fade absolute inset-0" />
         </div>
         <div className="pointer-events-none absolute inset-x-8 bottom-8 flex items-end justify-between gap-4 text-white sm:inset-x-10 sm:bottom-10">
@@ -204,7 +206,7 @@ export default function SolutionViewer({
             </button>
             <button onClick={() => go("next")} className="group flex min-w-0 flex-1 items-center gap-4 rounded-2xl p-2 text-left transition-colors hover:bg-raised">
               <span className="h-12 w-16 shrink-0 overflow-hidden rounded-xl bg-raised">
-                {upNext.image && <img src={upNext.image} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />}
+                {upNext.image && <img src={photos.src(upNext.image)} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />}
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-xs font-semibold uppercase tracking-wider text-subtle">Next</span>

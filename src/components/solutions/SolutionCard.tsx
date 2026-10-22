@@ -1,14 +1,17 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Solution, solutionPath } from "@/data/company";
+import { usePhotos } from "@/hooks/use-photos";
 
 /** Photo card linking to a solution's page — used on the index and in "related solutions". */
 export default function SolutionCard({ solution, compact = false }: { solution: Solution; compact?: boolean }) {
+  const photos = usePhotos();
+
   return (
     <Link to={solutionPath(solution)} className="card card-hover group flex h-full flex-col overflow-hidden">
       <div className="relative aspect-[16/10] overflow-hidden bg-raised">
         {solution.image && (
-          <img src={solution.image} alt="" loading="lazy" width={640} height={400} className="img-zoom h-full w-full object-cover" />
+          <img src={photos.src(solution.image)} alt="" loading="lazy" width={640} height={400} className="img-zoom h-full w-full object-cover" />
         )}
         <div className="photo-fade absolute inset-0" aria-hidden="true" />
         <span className="absolute left-4 top-4 rounded-full bg-black/35 px-3 py-1 text-xs font-semibold text-white backdrop-blur">{solution.category}</span>
