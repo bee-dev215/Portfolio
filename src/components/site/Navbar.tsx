@@ -15,6 +15,7 @@ import {
   startEnquiry,
   team,
 } from "@/data/company";
+import { projectPath, projects } from "@/data/projects";
 import { serviceIcons } from "./icons";
 import ThemeToggle from "./ThemeToggle";
 
@@ -96,6 +97,21 @@ const menus: MenuGroup[] = [
       blurb: s.summary,
       image: s.image,
       to: solutionPath(s),
+    })),
+  },
+  {
+    key: "projects",
+    label: "Projects",
+    paths: ["/projects"],
+    sections: ["projects"],
+    all: { label: `All ${projects.length} projects`, to: "/projects" },
+    items: projects.map((p) => ({
+      key: `project-${p.slug}`,
+      label: p.title,
+      desc: p.client,
+      blurb: p.summary,
+      image: p.image,
+      to: projectPath(p),
     })),
   },
   {

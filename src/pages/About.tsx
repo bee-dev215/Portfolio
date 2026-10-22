@@ -7,7 +7,7 @@ import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import PageSection from "@/components/company/PageSection";
 import { serviceIcons } from "@/components/site/icons";
 import { company, companyFile, principles, servicePath, services, startEnquiry, team } from "@/data/company";
-import { confidentiality, practices } from "@/data/company-pages";
+import { confidentiality, practices, studioGallery } from "@/data/company-pages";
 
 const principleIcons: LucideIcon[] = [HeartHandshake, ShieldCheck, FlaskConical, Compass];
 const confidentialityIcons: LucideIcon[] = [Lock, ScrollText, EyeOff];
@@ -106,8 +106,44 @@ export default function About() {
         </div>
       </PageSection>
 
-      {/* Principles */}
+      {/* Inside the studio: a photo bento, the first photo large */}
       <PageSection>
+        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+          <SectionHeading
+            label="Inside the studio"
+            title={
+              <>
+                Engineers and educators, <span className="gradient-text">at one table.</span>
+              </>
+            }
+          >
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">How a project actually happens: pairing on the hard parts, testing with real learners, and showing working software every week.</p>
+          </SectionHeading>
+          <Reveal delay={100}>
+            <Link to="/projects" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
+              See our projects <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Reveal>
+        </div>
+        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[repeat(2,15rem)]">
+          {studioGallery.map((g, i) => (
+            <li key={g.src} className={i === 0 ? "sm:col-span-2 lg:row-span-2" : ""}>
+              <Reveal delay={i * 80} variant={i === 0 ? "scale" : "up"} className="h-full">
+                <figure className="shadow-soft group relative h-full overflow-hidden rounded-3xl bg-raised">
+                  <div className="unveil h-full">
+                    <img src={g.src} alt={g.alt} loading="lazy" width={1280} height={800} className={`img-zoom h-full w-full object-cover ${i === 0 ? "aspect-[4/3] lg:aspect-auto" : "aspect-[16/10] lg:aspect-auto"}`} />
+                  </div>
+                  <div className="photo-fade absolute inset-0" aria-hidden="true" />
+                  <figcaption className={`absolute inset-x-0 bottom-0 p-5 font-medium text-white ${i === 0 ? "text-base sm:p-7" : "text-sm"}`}>{g.caption}</figcaption>
+                </figure>
+              </Reveal>
+            </li>
+          ))}
+        </ul>
+      </PageSection>
+
+      {/* Principles */}
+      <PageSection band>
         <SectionHeading
           label="What we stand for"
           center
@@ -136,7 +172,7 @@ export default function About() {
       </PageSection>
 
       {/* Practices */}
-      <PageSection band>
+      <PageSection>
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <SectionHeading
             label="How we're organised"
@@ -184,7 +220,7 @@ export default function About() {
       </PageSection>
 
       {/* Confidentiality */}
-      <PageSection>
+      <PageSection id="confidentiality" band>
         <div className="grid gap-12 lg:grid-cols-[.85fr_1.15fr] lg:gap-20">
           <SectionHeading
             label="Confidentiality"

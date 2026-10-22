@@ -143,17 +143,21 @@ export default function Process({ more = true }: { more?: boolean }) {
               className="stack-card mb-6 last:mb-0 lg:sticky lg:mb-10"
               style={{ top: STICKY_TOP + i * STACK_STEP, zIndex: i + 1 } as CSSProperties}
             >
-              <article className="stack-inner card relative overflow-hidden p-7 sm:p-10">
-                <div className="bg-grad pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full opacity-[.14] blur-3xl" />
-                <span className="stack-num pointer-events-none absolute -right-2 -top-6 select-none font-display text-[9rem] font-extrabold leading-none sm:text-[11rem]" aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-
-                <div className="relative">
-                  <p className="text-sm font-semibold text-brand-text">
+              <article className="stack-inner card relative overflow-hidden">
+                {/* Photo banner, with the phase number outlined over it */}
+                <div className="relative h-36 overflow-hidden bg-raised sm:h-44">
+                  <img src={p.image} alt="" loading="lazy" width={1280} height={800} className="stack-photo h-full w-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[rgb(8_11_24/.7)] via-[rgb(8_11_24/.15)] to-transparent" aria-hidden="true" />
+                  <span className="stack-num pointer-events-none absolute -bottom-7 right-3 select-none font-display text-[7rem] font-extrabold leading-none sm:-bottom-9 sm:text-[9rem]" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <p className="absolute bottom-4 left-7 text-sm font-semibold text-white sm:left-10">
                     Phase {String(i + 1).padStart(2, "0")} of {String(phases.length).padStart(2, "0")} · {p.title}
                   </p>
-                  <h3 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{p.name}</h3>
+                </div>
+
+                <div className="p-7 sm:p-10">
+                  <h3 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{p.name}</h3>
                   <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-2">{p.summary}</p>
                   <ul className="mt-7 space-y-4">
                     {p.activities.map((a, k) => (

@@ -8,9 +8,11 @@ import FaqAccordion from "@/components/services/FaqAccordion";
 import ServiceArt from "@/components/services/ServiceArt";
 import ServiceCard from "@/components/services/ServiceCard";
 import SolutionCards from "@/components/services/SolutionCards";
+import ProjectStrip from "@/components/projects/ProjectStrip";
 import { serviceIcons } from "@/components/site/icons";
 import { scrollToId, servicePath, services, stackGroups, startEnquiry } from "@/data/company";
 import { serviceDetails, serviceGroups } from "@/data/service-details";
+import { projectsForService } from "@/data/projects";
 import NotFound from "./NotFound";
 
 export default function ServiceDetail() {
@@ -267,6 +269,16 @@ export default function ServiceDetail() {
           <FaqAccordion faqs={detail.faqs} />
         </div>
       </section>
+
+      <ProjectStrip
+        list={projectsForService(service.key)}
+        title={
+          <>
+            {service.title} <span className="gradient-text">in practice.</span>
+          </>
+        }
+        lead="Recent projects where this service did the heavy lifting."
+      />
 
       {/* Related services + previous / next */}
       <section className="px-5 py-20 sm:px-8 lg:py-28">

@@ -2,6 +2,7 @@ import PageShell from "@/components/site/PageShell";
 import Hero from "@/components/site/Hero";
 import Services from "@/components/site/Services";
 import Solutions from "@/components/site/Solutions";
+import Projects from "@/components/site/Projects";
 import Industries from "@/components/site/Industries";
 import Outcomes from "@/components/site/Outcomes";
 import Process from "@/components/site/Process";
@@ -32,6 +33,7 @@ export default function Home() {
       <Hero />
       <Services />
       <Solutions />
+      <Projects />
       <Industries />
       <Outcomes />
       <Process />

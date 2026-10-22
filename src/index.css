@@ -404,6 +404,10 @@ html[data-theme="dark"] .site-root, .on-dark {
 /* Hero entrance */
 .fade-up { opacity: 0; transform: translateY(16px); animation: fadeup .8s var(--ease) forwards; }
 @keyframes fadeup { to { opacity: 1; transform: none; } }
+/* Photo tiles behind the hero demo: they pop in after the window, then float very gently (`translate` leaves the tilt alone) */
+.hero-tile { opacity: 0; animation: tile-in .9s var(--ease) .7s forwards, tile-float 9s ease-in-out 1.6s infinite alternate; }
+@keyframes tile-in { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
+@keyframes tile-float { to { translate: 0 -8px; } }
 
 /* Top-bar menus: the panel drops in when opened; switching menus or items cross-fades the content */
 .mega-in { animation: mega-in .22s var(--ease) both; }
@@ -443,10 +447,13 @@ html[data-theme="dark"] .site-root, .on-dark {
 }
 .stack-shade { background: rgb(var(--raised-rgb)); opacity: calc(var(--cover, 0) * .7); }
 .stack-num {
-  color: transparent; -webkit-text-stroke: 1.5px rgb(var(--brand-rgb) / .22);
+  color: transparent; -webkit-text-stroke: 1.5px rgb(255 255 255 / .35);
   translate: 0 calc(var(--cover, 0) * 40px); transition: -webkit-text-stroke-color .6s var(--ease);
 }
-.is-reached .stack-num { -webkit-text-stroke-color: rgb(var(--brand-rgb) / .38); }
+.is-reached .stack-num { -webkit-text-stroke-color: rgb(255 255 255 / .75); }
+/* The banner photo settles from a slight zoom as its card comes into view */
+.stack-photo { scale: 1.08; transition: scale 1.4s var(--ease); }
+.is-reached .stack-photo { scale: 1; }
 .stack-item { opacity: .35; transform: translateX(-10px); transition: opacity .6s var(--ease), transform .6s var(--ease); transition-delay: calc(var(--i, 0) * 80ms); }
 .is-reached .stack-item { opacity: 1; transform: none; }
 .stack-node { transition: background-color .4s, color .4s, box-shadow .4s; }
@@ -476,6 +483,28 @@ html[data-theme="dark"] .site-root, .on-dark {
 .sol-panel-cta { box-shadow: 0 10px 24px -12px rgb(0 0 0 / .6); }
 .sol-panel:hover .sol-panel-cta { transform: translateY(-1px); }
 
+/* Projects bento: a photo tile darkens toward its caption; on hover the small tiles reveal their summary */
+.proj-tile-shade { pointer-events: none; background: linear-gradient(to bottom, rgb(8 11 24 / .15), rgb(8 11 24 / 0) 30%, rgb(8 11 24 / .25) 55%, rgb(8 11 24 / .85)); transition: background-color .5s var(--ease); }
+.proj-tile:hover .proj-tile-shade { background-color: rgb(var(--brand-rgb) / .18); }
+.proj-tile-more { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .5s var(--ease), opacity .4s var(--ease); }
+.proj-tile-more > * { overflow: hidden; }
+.proj-tile:hover .proj-tile-more, .proj-tile:focus-visible .proj-tile-more { grid-template-rows: 1fr; opacity: 1; }
+@media (hover: none) { .proj-tile-more { display: none; } }
+
+/* Project flow: the steps rise in one after another, then a pulse travels each connector (down on phones, across on desktop) */
+.flow-step { opacity: 0; transform: translateY(10px); }
+.rv-in .flow-step { animation: fadeup .55s var(--ease) forwards; animation-delay: calc(120ms + var(--i, 0) * 90ms); }
+.flow-line { left: 50%; top: 0; bottom: 0; width: 2px; translate: -50% 0; }
+.flow-pulse { left: 50%; top: 0; translate: -50% 0; opacity: 0; box-shadow: 0 0 12px rgb(var(--brand-rgb) / .8); }
+.rv-in .flow-pulse { animation: flow-y 2.6s var(--ease) var(--d, 0s) infinite; }
+@keyframes flow-y { 15%, 80% { opacity: 1; } to { top: calc(100% - 8px); opacity: 0; } }
+@keyframes flow-x { 15%, 80% { opacity: 1; } to { left: calc(100% - 8px); opacity: 0; } }
+@media (min-width: 1024px) {
+  .flow-line { inset: 50% 6px auto; width: auto; height: 2px; translate: 0 -50%; }
+  .flow-pulse { top: 50%; left: 0; translate: 0 -50%; }
+  .rv-in .flow-pulse { animation-name: flow-x; }
+}
+
 /* Viewer: the open photo breathes slowly */
 .kenburns { animation: kenburns 14s ease-in-out infinite alternate; }
 @keyframes kenburns { from { transform: none; } to { transform: scale(1.12) translate(-1.5%, -1%); } }
@@ -495,7 +524,7 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
 @keyframes vt-recede { to { transform: scale(.92); filter: brightness(.5); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .rv, .fade-up, .stagger > *, .word { opacity: 1; transform: none; filter: none; transition: none; animation: none !important; }
+  .rv, .fade-up, .stagger > *, .word, .hero-tile { opacity: 1; transform: none; filter: none; transition: none; animation: none !important; }
   .unveil { clip-path: none; transition: none; }
   .unveil img { scale: none; }
   .drift { translate: none; }
@@ -505,7 +534,11 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
   .group:hover .img-zoom, .card-hover:hover { transform: none; }
   .marquee, .live-dot::after, .caret::after, .typing > i, .msg-in, .bar-grow, .modal-in, .kenburns, .mega-in, .mega-swap { animation: none; }
   .viewer-rise > * { opacity: 1; transform: none; animation: none; }
+  .flow-step { opacity: 1; transform: none; animation: none !important; }
+  .flow-pulse { display: none; }
+  .proj-tile-shade, .proj-tile-more { transition: none; }
   .stack-inner, .stack-num, .stack-item { transform: none; translate: none; opacity: 1; transition: none; }
+  .stack-photo { scale: none; transition: none; }
   .sol-panel, .sol-panel-img, .sol-panel-tint, .sol-panel-spine, .sol-panel-body > * { clip-path: none; transition: none; }
   .sol-panel-img, .sol-panel.is-active:hover .sol-panel-img { transform: none; }
   html { scroll-behavior: auto; }

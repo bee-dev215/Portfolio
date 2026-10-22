@@ -1,6 +1,7 @@
 import { ArrowUp, ArrowUpRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { company, industries, industryPath, legalLinks, servicePath, services, sitePages, socials, solutionPath, solutions, startEnquiry } from "@/data/company";
+import { projectPath, projects } from "@/data/projects";
 import { useInView } from "@/hooks/use-motion";
 import { Monogram } from "./Navbar";
 import SocialIcon from "./SocialIcon";
@@ -8,8 +9,10 @@ import SocialIcon from "./SocialIcon";
 const linkCls = "foot-link text-sm text-ink-2 transition-colors hover:text-ink";
 const headCls = "text-xs font-semibold uppercase tracking-[0.14em] text-subtle";
 
-// Company column: every page that isn't a solution, service or audience
-const companyPages = sitePages.filter((p) => !["/solutions", "/services", "/industries"].includes(p.to));
+// Company column: every page that isn't a solution, project, service or audience
+const companyPages = sitePages.filter((p) => !["/solutions", "/projects", "/services", "/industries"].includes(p.to));
+// Projects column: the featured ones, then a link to the rest
+const footerProjects = [...projects.filter((p) => p.featured).map((p) => ({ to: projectPath(p), label: p.title })), { to: "/projects", label: `All ${projects.length} projects` }];
 
 function LinkColumn({ title, to, links, className = "" }: { title: string; to?: string; links: { to: string; label: string }[]; className?: string }) {
   return (
@@ -106,7 +109,10 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
             </ul>
           </div>
 
-          <LinkColumn title="Solutions" to="/solutions" links={solutions.map((x) => ({ to: solutionPath(x), label: x.title }))} />
+          <div className="space-y-9">
+            <LinkColumn title="Solutions" to="/solutions" links={solutions.map((x) => ({ to: solutionPath(x), label: x.title }))} />
+            <LinkColumn title="Projects" to="/projects" links={footerProjects} />
+          </div>
           <LinkColumn title="Services" to="/services" links={services.map((x) => ({ to: servicePath(x), label: x.title }))} />
           <LinkColumn title="Company" links={companyPages} />
           <div className="space-y-9">

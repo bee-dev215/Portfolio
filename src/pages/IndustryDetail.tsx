@@ -8,8 +8,10 @@ import FaqAccordion from "@/components/services/FaqAccordion";
 import ServiceCard from "@/components/services/ServiceCard";
 import SolutionCards from "@/components/services/SolutionCards";
 import DayToggle from "@/components/industries/DayToggle";
+import ProjectStrip from "@/components/projects/ProjectStrip";
 import { industries, industryPath, scrollToId, services, startEnquiry } from "@/data/company";
 import { industryDetails } from "@/data/industry-details";
+import { projectsForAudience } from "@/data/projects";
 import NotFound from "./NotFound";
 
 // Lower-cases a title's first word for use mid-sentence, leaving names like "K-12" and "EdTech" alone
@@ -226,6 +228,16 @@ export default function IndustryDetail() {
           <FaqAccordion faqs={detail.faqs} />
         </div>
       </section>
+
+      <ProjectStrip
+        list={projectsForAudience(industry.key)}
+        title={
+          <>
+            Built for {midSentence(industry.title)}, <span className="gradient-text">in use today.</span>
+          </>
+        }
+        lead="Recent projects for organisations like yours. Clients are described, not named."
+      />
 
       {/* Other audiences */}
       <section className="px-5 py-20 sm:px-8 lg:py-28">

@@ -8,8 +8,10 @@ import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import SampleExchange from "@/components/solutions/SampleExchange";
 import SectionNav, { NavSection, SECTION_OFFSET } from "@/components/solutions/SectionNav";
 import SolutionCard from "@/components/solutions/SolutionCard";
+import ProjectStrip from "@/components/projects/ProjectStrip";
 import { industries, industryPath, solutionPath, solutions, startEnquiry } from "@/data/company";
 import { SolutionFaq, solutionDetails } from "@/data/solution-details";
+import { projectsForSolution } from "@/data/projects";
 import NotFound from "@/pages/NotFound";
 
 const SECTIONS: NavSection[] = [
@@ -405,6 +407,16 @@ function SolutionPage({ index }: { index: number }) {
           </Reveal>
         </div>
       </section>
+
+      <ProjectStrip
+        list={projectsForSolution(solution.slug)}
+        title={
+          <>
+            Built on <span className="gradient-text">{solution.title}.</span>
+          </>
+        }
+        lead="Projects that started from this blueprint, then grew into something specific to the client."
+      />
 
       {/* Previous / next and related */}
       <section className="px-5 py-20 sm:px-8 lg:py-24">

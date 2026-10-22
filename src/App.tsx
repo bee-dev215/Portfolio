@@ -10,6 +10,8 @@ import Home from "./pages/Home";
 // Inner pages load on demand, so the home page stays light
 const SolutionsIndex = lazy(() => import("./pages/SolutionsIndex"));
 const SolutionDetail = lazy(() => import("./pages/SolutionDetail"));
+const ProjectsIndex = lazy(() => import("./pages/ProjectsIndex"));
+const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const ServicesIndex = lazy(() => import("./pages/ServicesIndex"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const IndustriesIndex = lazy(() => import("./pages/IndustriesIndex"));
@@ -39,6 +41,8 @@ const App = () => (
               <Route path="/" element={<Home />} />
               <Route path="/solutions" element={<SolutionsIndex />} />
               <Route path="/solutions/:slug" element={<SolutionDetail />} />
+              <Route path="/projects" element={<ProjectsIndex />} />
+              <Route path="/projects/:slug" element={<ProjectDetail />} />
               <Route path="/services" element={<ServicesIndex />} />
               <Route path="/services/:slug" element={<ServiceDetail />} />
               <Route path="/industries" element={<IndustriesIndex />} />

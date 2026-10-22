@@ -27,6 +27,9 @@ export default function TrustBand() {
               <p className="mt-4 max-w-md leading-relaxed text-ink-2">
                 Learners, parents and staff need to trust what AI tells them. These commitments are part of every project — planned with your safeguarding and compliance teams, not added at the end.
               </p>
+              <div className="unveil shadow-soft mt-7 overflow-hidden rounded-2xl bg-raised">
+                <img src="/images/trust-classroom.webp" alt="Primary pupils working on tablets at their desks while their teacher kneels beside one of them" loading="lazy" width={640} height={400} className="aspect-[16/9] w-full object-cover" />
+              </div>
               <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 lg:mt-auto lg:pt-8">
                 <Link to="/responsible-ai" className="btn btn-primary px-6 py-3 text-sm">
                   How we protect learners <ArrowRight className="h-4 w-4" />

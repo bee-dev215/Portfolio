@@ -1,0 +1,1 @@
+import{j as s}from"./index-sgjOy8ku.js";function n({id:a,band:e=!1,className:x="",children:t}){return s.jsx("section",{id:a,className:`px-5 py-20 sm:px-8 lg:py-28 ${e?"band":""} ${x}`,children:s.jsx("div",{className:"mx-auto max-w-[1240px]",children:t})})}export{n as P};

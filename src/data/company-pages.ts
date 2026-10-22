@@ -40,6 +40,15 @@ export const practices: Practice[] = [
   },
 ];
 
+/** "Inside the studio" photos on /about. The first one is shown large. */
+export const studioGallery = [
+  { src: "/images/about-office.webp", alt: "A bright studio with plants, where one person works at a laptop while two colleagues review notes by the window", caption: "The studio — engineers, designers and educators in one room" },
+  { src: "/images/about-pairing.webp", alt: "Two engineers working through code together at one laptop", caption: "Pairing on a retrieval pipeline" },
+  { src: "/images/about-research.webp", alt: "A researcher with a tablet talking through a prototype with an educator at a laptop", caption: "Testing a prototype with the people who'll use it" },
+  { src: "/images/about-remote.webp", alt: "Colleagues at a conference table on a video call with a remote teammate", caption: "Weekly demo with a client team" },
+  { src: "/images/about-celebrate.webp", alt: "Three colleagues sharing a high-five around a laptop", caption: "Shipping day" },
+];
+
 /** Why the site shows no client logos or case-study names. */
 export const confidentiality = [
   {
@@ -48,7 +57,7 @@ export const confidentiality = [
   },
   {
     title: "Described by the engineering",
-    desc: "Instead of logos, the site describes what we build and how: the solution blueprints, the process and the standards we work to. In a discovery call we can walk you through relevant work in more detail.",
+    desc: "Instead of logos, our project write-ups describe the engineering — the problem, what we built and how it was kept safe — with client names and identifying details left out. In a discovery call we can walk you through relevant work in more detail.",
   },
   {
     title: "Your project gets the same care",

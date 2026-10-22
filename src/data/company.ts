@@ -43,7 +43,7 @@ export const socials: SocialLink[] = [
 ];
 
 // ------------------------------------------------------------
-//  Services — the four ways we work with clients
+//  Services — the ways we work with clients
 // ------------------------------------------------------------
 
 export type ServiceKey = "build" | "llm" | "platform" | "academy" | "analytics" | "evaluation" | "voice" | "design";
@@ -54,7 +54,7 @@ export interface Service {
   title: string;
   desc: string;
   includes: string[];
-  image?: string; // photo for the menu preview and the service page; without one they show the icon
+  image?: string; // photo for the service card, menu preview and service page (public/images/svc-*.webp, 16:10); without one they show the icon
 }
 
 export const services: Service[] = [
@@ -64,7 +64,7 @@ export const services: Service[] = [
     title: "AI product engineering",
     desc: "Full-stack AI products from first prototype to production — web and mobile apps, APIs, and the evaluation pipelines that keep models honest.",
     includes: ["Rapid prototyping", "Full-stack apps", "Evals & monitoring"],
-    image: "/images/cta-backdrop.webp",
+    image: "/images/svc-build.webp",
   },
   {
     key: "llm",
@@ -72,7 +72,7 @@ export const services: Service[] = [
     title: "LLM & RAG solutions",
     desc: "Assistants grounded in your own content — curricula, course material, policies — with citations, guardrails and role-based access.",
     includes: ["Retrieval (RAG)", "Agents & tools", "Guardrails"],
-    image: "/images/sol-knowledge.webp",
+    image: "/images/svc-llm.webp",
   },
   {
     key: "platform",
@@ -80,7 +80,7 @@ export const services: Service[] = [
     title: "Learning platform integration",
     desc: "AI features inside the systems you already use — Canvas, Moodle, Google Classroom or your own platform — connected through LTI and open standards.",
     includes: ["LTI 1.3", "LMS plugins", "Data pipelines"],
-    image: "/images/aud-edtech.webp",
+    image: "/images/svc-platform.webp",
   },
   {
     key: "academy",
@@ -88,7 +88,7 @@ export const services: Service[] = [
     title: "AI training & upskilling",
     desc: "Hands-on courses and workshops that teach your engineers, educators and staff to build with AI and to use it responsibly.",
     includes: ["Engineering bootcamps", "Educator workshops", "AI literacy"],
-    image: "/images/sol-academy.webp",
+    image: "/images/svc-academy.webp",
   },
   {
     key: "analytics",
@@ -96,7 +96,7 @@ export const services: Service[] = [
     title: "Learning analytics & data engineering",
     desc: "One trustworthy record of learning — pipelines from your LMS, SIS and apps into a warehouse, with dashboards and explainable models on top.",
     includes: ["xAPI & LRS", "Data pipelines", "Explainable models"],
-    image: "/images/sol-analytics.webp",
+    image: "/images/svc-analytics.webp",
   },
   {
     key: "evaluation",
@@ -104,6 +104,7 @@ export const services: Service[] = [
     title: "AI evaluation & safety",
     desc: "Independent testing of AI features before and after launch — accuracy, grounding, bias and safeguarding — with evaluation suites your team can keep running.",
     includes: ["Evaluation suites", "Red-teaming", "Bias reviews"],
+    image: "/images/svc-evaluation.webp",
   },
   {
     key: "voice",
@@ -111,7 +112,7 @@ export const services: Service[] = [
     title: "Speech & voice AI",
     desc: "Listening, speaking and reading support — transcription, pronunciation feedback and voice tutors — for language learning and accessibility.",
     includes: ["Speech-to-text", "Pronunciation feedback", "Voice tutors"],
-    image: "/images/sol-content-studio.webp",
+    image: "/images/svc-voice.webp",
   },
   {
     key: "design",
@@ -119,7 +120,7 @@ export const services: Service[] = [
     title: "Learning experience design",
     desc: "Research-led product and learning design that makes AI genuinely useful in a classroom or a workday — tested with real learners and educators.",
     includes: ["UX research", "Learning design", "Accessibility"],
-    image: "/images/company-team.webp",
+    image: "/images/svc-design.webp",
   },
 ];
 
@@ -357,6 +358,7 @@ export interface Phase {
   summary: string;
   activities: string[];
   outputs: string[];
+  image: string; // banner photo on the phase card (public/images/phase-*.webp, 16:10)
 }
 
 export const phases: Phase[] = [
@@ -372,6 +374,7 @@ export const phases: Phase[] = [
       "Proposal: A fixed-scope plan with milestones, acceptance criteria and known risks.",
     ],
     outputs: ["Discovery brief", "Success metrics", "Fixed-scope proposal"],
+    image: "/images/phase-discover.webp",
   },
   {
     id: 2,
@@ -384,6 +387,7 @@ export const phases: Phase[] = [
       "Evaluation set: The first set of test questions and expected behaviours, used from here on.",
     ],
     outputs: ["Working prototype", "User-testing notes", "Evaluation set v1"],
+    image: "/images/phase-prototype.webp",
   },
   {
     id: 3,
@@ -396,6 +400,7 @@ export const phases: Phase[] = [
       "Quality: Automated tests and model evaluations on every release, plus safety and bias reviews.",
     ],
     outputs: ["Source code", "CI & eval pipeline", "Security review"],
+    image: "/images/phase-build.webp",
   },
   {
     id: 4,
@@ -408,6 +413,7 @@ export const phases: Phase[] = [
       "Rollout: Staged release with monitoring, documentation and a support handover.",
     ],
     outputs: ["Pilot report", "Training sessions", "Runbooks"],
+    image: "/images/phase-launch.webp",
   },
   {
     id: 5,
@@ -420,6 +426,7 @@ export const phases: Phase[] = [
       "Support: Support plans sized to your term calendar or business cycle.",
     ],
     outputs: ["Support plan", "Release notes", "Outcome reports"],
+    image: "/images/phase-improve.webp",
   },
 ];
 
@@ -569,6 +576,48 @@ export const imageCredits: ImageCredit[] = [
   { file: "company-team.webp", subject: "Company — team mapping ideas on a whiteboard", author: "Thirdman", href: "https://www.pexels.com/photo/colleagues-planning-a-business-5257576/", source: "Pexels" },
   { file: "company-learning.webp", subject: "Company — student joining an online class", author: "Julia M Cameron", href: "https://www.pexels.com/photo/4145153/", source: "Pexels" },
   { file: "cta-backdrop.webp", subject: "Solutions banner — engineers and AI", author: "DC Studio", href: "https://www.magnific.com/free-photo/engineers-brainstorming-ways-use-ai_190325729.htm" },
+  { file: "svc-build.webp", subject: "AI product engineering — two engineers building together at a monitor", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/young-professionals-working-with-computers-7988745/", source: "Pexels" },
+  { file: "svc-llm.webp", subject: "LLM & RAG — chat prompt to a language model (Visualising AI artwork by Wes Cockx)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-illustration-depicts-language-models-which-generate-text-it-was-created-by-wes-cockx-as-part-of-the-visualising-ai-project-l-18069695/", source: "Pexels" },
+  { file: "svc-platform.webp", subject: "Learning platform integration — student following an online lesson on a laptop", author: "Annushka Ahuja", href: "https://www.pexels.com/photo/a-girl-attending-an-online-class-8055848/", source: "Pexels" },
+  { file: "svc-academy.webp", subject: "AI training & upskilling — instructor-led workshop with adults on laptops", author: "Luis Sevilla", href: "https://www.pexels.com/photo/business-meeting-presentation-in-modern-office-34221175/", source: "Pexels" },
+  { file: "svc-analytics.webp", subject: "Learning analytics & data — analyst reviewing dashboards on two monitors", author: "Kampus Production", href: "https://www.pexels.com/photo/woman-in-yellow-long-sleeve-shirt-looking-at-computer-data-8204355/", source: "Pexels" },
+  { file: "svc-evaluation.webp", subject: "AI evaluation & safety — engineer carefully reviewing code", author: "Naboth Otieno", href: "https://www.pexels.com/photo/man-working-with-computers-19805877/", source: "Pexels" },
+  { file: "svc-voice.webp", subject: "Speech & voice AI — woman speaking into a studio microphone with headphones", author: "Karola G", href: "https://www.pexels.com/photo/a-woman-talking-on-a-microphone-6920078/", source: "Pexels" },
+  { file: "svc-design.webp", subject: "Learning experience design — designer walking through paper wireframes", author: "Christina Morillo", href: "https://www.pexels.com/photo/photo-of-woman-pointing-on-white-paper-1181487/", source: "Pexels" },
+  { file: "tech-datacenter.webp", subject: "Data centre — aisle of server racks", author: "Brett Sayles", href: "https://www.pexels.com/photo/server-racks-on-data-center-4508751/", source: "Pexels" },
+  { file: "tech-code.webp", subject: "Code on screen — developer at a dual-monitor standing desk", author: "Christina Morillo", href: "https://www.pexels.com/photo/woman-sitting-in-front-laptop-1181677/", source: "Pexels" },
+  { file: "tech-ai-abstract.webp", subject: "Abstract AI visual — iridescent glass shapes (Visualising AI artwork by Wes Cockx)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-image-visualises-artificial-general-intelligence-or-agi-it-was-created-by-wes-cockx-as-part-of-the-visualising-ai-project-l-17486102/", source: "Pexels" },
+  { file: "hero-ai.webp", subject: "Abstract AI tile — blue and violet data blocks (Visualising AI artwork by Rose Pilkington)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-image-visualises-the-input-and-output-of-neural-networks-and-how-ai-systems-perceive-data-it-was-created-by-rose-pilkington-17485706/", source: "Pexels" },
+  { file: "proj-socratic-math-coach.webp", subject: "Socratic Math Coach — middle-school student working on a laptop in class", author: "RDNE Stock project", href: "https://www.pexels.com/photo/a-young-girl-typing-on-her-laptop-while-sitting-on-the-chair-inside-the-classroom-8499501/", source: "Pexels" },
+  { file: "proj-socratic-math-coach-2.webp", subject: "Socratic Math Coach — teacher checking in on students using laptops", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/a-man-in-blazer-looking-at-the-students-work-9159042/", source: "Pexels" },
+  { file: "proj-essay-feedback-copilot.webp", subject: "Essay Feedback Copilot — teacher reviewing student work with a red pen", author: "Andy Barbour", href: "https://www.pexels.com/photo/a-man-looking-at-the-test-paper-6684374/", source: "Pexels" },
+  { file: "proj-essay-feedback-copilot-2.webp", subject: "Essay Feedback Copilot — student writing a draft by hand", author: "cottonbro studio", href: "https://www.pexels.com/photo/man-in-blue-plaid-button-up-t-shirt-writing-on-bond-paper-6209589/", source: "Pexels" },
+  { file: "proj-student-success-signals.webp", subject: "Student Success Signals — adviser meeting one-to-one with a student", author: "Kampus Production", href: "https://www.pexels.com/photo/young-black-guy-using-laptop-during-exam-preparation-with-female-tutor-in-library-5940703/", source: "Pexels" },
+  { file: "proj-student-success-signals-2.webp", subject: "Student Success Signals — reviewing an analytics dashboard", author: "RDNE Stock project", href: "https://www.pexels.com/photo/person-using-black-laptop-on-table-7948012/", source: "Pexels" },
+  { file: "proj-course-companion.webp", subject: "Course Companion — university lecture with students on laptops", author: "Yan Krukau", href: "https://www.pexels.com/photo/students-during-lecture-8199151/", source: "Pexels" },
+  { file: "proj-course-companion-2.webp", subject: "Course Companion — student writing code on a laptop", author: "Christina Morillo", href: "https://www.pexels.com/photo/woman-using-macbook-pro-1181278/", source: "Pexels" },
+  { file: "proj-voice-speaking-tutor.webp", subject: "Voice Speaking Tutor — learner speaking into a phone with earbuds", author: "Roberto Hund", href: "https://www.pexels.com/photo/woman-talking-on-the-phone-5357603/", source: "Pexels" },
+  { file: "proj-voice-speaking-tutor-2.webp", subject: "Voice Speaking Tutor — learner on a video lesson with a headset", author: "Ron Lach", href: "https://www.pexels.com/photo/a-woman-engaged-in-a-video-call-using-a-laptop-8681891/", source: "Pexels" },
+  { file: "proj-multilingual-course-studio.webp", subject: "Multilingual Course Studio — instructor recording a video lesson", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/creative-fashion-designer-filming-tutorial-36731347/", source: "Pexels" },
+  { file: "proj-multilingual-course-studio-2.webp", subject: "Multilingual Course Studio — team reviewing content together on screen", author: "Kindel Media", href: "https://www.pexels.com/photo/people-working-together-on-the-table-7651829/", source: "Pexels" },
+  { file: "proj-clinical-onboarding-assistant.webp", subject: "Clinical Onboarding Assistant — nursing staff in a hands-on training session", author: "Sahil Singh", href: "https://www.pexels.com/photo/medical-training-session-with-healthcare-professionals-35645519/", source: "Pexels" },
+  { file: "proj-clinical-onboarding-assistant-2.webp", subject: "Clinical Onboarding Assistant — healthcare workers using a laptop and tablet", author: "Thirdman", href: "https://www.pexels.com/photo/healthcare-professionals-working-on-their-gadgets-while-sitting-next-to-each-other-5327654/", source: "Pexels" },
+  { file: "proj-ai-ready-educators.webp", subject: "AI-Ready Educators — adults in a professional-development workshop with laptops", author: "Beniam", href: "https://www.pexels.com/photo/diverse-team-engaged-in-business-training-workshop-34046709/", source: "Pexels" },
+  { file: "proj-ai-ready-educators-2.webp", subject: "AI-Ready Educators — facilitator presenting to a group of adults", author: "fauxels", href: "https://www.pexels.com/photo/man-wearing-gray-dress-shirt-and-blue-jeans-3184317/", source: "Pexels" },
+  { file: "proj-tutor-safety-evaluation.webp", subject: "Tutor Safety Evaluation — engineers reviewing results together at a monitor", author: "Tiger Lily", href: "https://www.pexels.com/photo/colleagues-looking-at-the-screen-7109095/", source: "Pexels" },
+  { file: "proj-tutor-safety-evaluation-2.webp", subject: "Tutor Safety Evaluation — team mapping findings on a glass wall", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/collaborative-office-team-brainstorming-39204849/", source: "Pexels" },
+  { file: "about-pairing.webp", subject: "About — engineers pair-programming", author: "Diva Plavalaguna", href: "https://www.pexels.com/photo/men-looking-at-the-screen-of-a-laptop-6147360/", source: "Pexels" },
+  { file: "about-research.webp", subject: "About — user research with an educator", author: "Yan Krukau", href: "https://www.pexels.com/photo/women-sitting-at-the-meeting-table-with-laptop-and-digital-tablet-8837735/", source: "Pexels" },
+  { file: "about-remote.webp", subject: "About — hybrid team meeting on video call", author: "MART PRODUCTION", href: "https://www.pexels.com/photo/a-group-of-people-in-a-meeting-using-video-call-7644076/", source: "Pexels" },
+  { file: "about-office.webp", subject: "About — bright, plant-filled studio", author: "Thirdman", href: "https://www.pexels.com/photo/man-and-woman-having-a-conversation-7653773/", source: "Pexels" },
+  { file: "phase-discover.webp", subject: "Delivery phase — Discover", author: "fauxels", href: "https://www.pexels.com/photo/group-of-people-gathered-around-wooden-table-3184360/", source: "Pexels" },
+  { file: "phase-prototype.webp", subject: "Delivery phase — Prototype", author: "Akshar Dave🌻", href: "https://www.pexels.com/photo/a-person-holding-black-smartphone-11780441/", source: "Pexels" },
+  { file: "phase-build.webp", subject: "Delivery phase — Build", author: "ThisIsEngineering", href: "https://www.pexels.com/photo/woman-coding-on-computer-3861958/", source: "Pexels" },
+  { file: "phase-launch.webp", subject: "Delivery phase — Launch (classroom pilot)", author: "Max Fischer", href: "https://www.pexels.com/photo/a-two-girls-using-laptop-with-classmates-5212695/", source: "Pexels" },
+  { file: "phase-improve.webp", subject: "Delivery phase — Improve (reviewing metrics)", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/creative-team-meeting-analyzing-business-growth-39190577/", source: "Pexels" },
+  { file: "trust-classroom.webp", subject: "Responsible AI — teacher with young students using tablets", author: "Arthur Krijgsman", href: "https://www.pexels.com/photo/children-sitting-on-brown-chairs-inside-the-classroom-4019754/", source: "Pexels" },
+  { file: "hero-student.webp", subject: "Hero tile — student learning on a laptop", author: "Zen Chung", href: "https://www.pexels.com/photo/happy-young-asian-student-doing-homework-and-listening-to-music-with-earphones-5538618/", source: "Pexels" },
+  { file: "about-celebrate.webp", subject: "About — team celebrating a launch", author: "Andrea Piacquadio", href: "https://www.pexels.com/photo/smiling-diverse-employees-of-different-ages-using-laptop-and-cooperating-on-project-in-office-3866342/", source: "Pexels" },
   { file: "team/martin.webp", subject: "Team portrait — Martin Keller (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/portrait-positive-confident-businessman_3584960.htm" },
   { file: "team/kenji.webp", subject: "Team portrait — Kenji Watanabe (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/content-confident-handsome-asian-businessman-looking-camera_3583387.htm" },
   { file: "team/mei.webp", subject: "Team portrait — Mei Lin Chen (placeholder)", author: "benzoix", href: "https://www.magnific.com/free-photo/young-asian-woman-professional-entrepreneur-standing-office-clothing-smiling-looking-confident-white-background_23649170.htm" },
@@ -598,20 +647,21 @@ export interface CompanyMenuItem {
 }
 
 export const companyMenu: CompanyMenuItem[] = [
-  { key: "about", label: "About", desc: "Who we are, what we stand for and how the company is organised.", to: "/about", image: "/images/company-team.webp" },
-  { key: "approach", label: "How we work", desc: "Five phases and three ways to engage, from discovery to long-term support.", to: "/approach", image: "/images/aud-edtech.webp" },
-  { key: "technology", label: "Technology", desc: "The models, frameworks and learning standards we build with — and how we choose.", to: "/technology", image: "/images/cta-backdrop.webp" },
+  { key: "about", label: "About", desc: "Who we are, what we stand for and how the company is organised.", to: "/about", image: "/images/about-office.webp" },
+  { key: "approach", label: "How we work", desc: "Five phases and three ways to engage, from discovery to long-term support.", to: "/approach", image: "/images/phase-discover.webp" },
+  { key: "technology", label: "Technology", desc: "The models, frameworks and learning standards we build with — and how we choose.", to: "/technology", image: "/images/tech-ai-abstract.webp" },
   { key: "team", label: "Team", desc: "The engineers and educators who design and build it.", to: "/team" },
-  { key: "responsible", label: "Responsible AI", desc: "How we protect learners, data and client confidentiality.", to: "/responsible-ai" },
+  { key: "responsible", label: "Responsible AI", desc: "How we protect learners, data and client confidentiality.", to: "/responsible-ai", image: "/images/trust-classroom.webp" },
   { key: "contact", label: "Contact", desc: `Tell us about your learners — we reply within ${company.responseTime}.`, to: "/contact" },
 ];
 
 // Home page sections, in order (the navbar highlights the menu that covers the one in view)
-export const homeSections = ["services", "solutions", "industries", "outcomes", "process", "technology", "company", "team", "faq", "contact"];
+export const homeSections = ["services", "solutions", "projects", "industries", "outcomes", "process", "technology", "company", "team", "faq", "contact"];
 
 // Every page, for the footer site map
 export const sitePages = [
   { to: "/solutions", label: "Solutions" },
+  { to: "/projects", label: "Projects" },
   { to: "/services", label: "Services" },
   { to: "/industries", label: "Who we serve" },
   { to: "/approach", label: "How we work" },
