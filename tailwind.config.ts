@@ -54,23 +54,25 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
-        // Robotics theme, driven by the CSS variables on .site-root (dark) / html[data-theme="light"] (light):
-        // "paper" = surfaces, "ink" = text, "signal" = instrument-cyan fills, "beam" = cyan text,
-        // "on-signal" = text sitting on a signal fill (light in both themes)
-        paper: { DEFAULT: 'rgb(var(--paper-rgb) / <alpha-value>)', 2: 'rgb(var(--paper-2-rgb) / <alpha-value>)', 3: 'rgb(var(--paper-3-rgb) / <alpha-value>)' },
+        // Site theme, driven by the CSS variables on .site-root (light) / html[data-theme="dark"] (dark):
+        // canvas/surface/raised = backgrounds, ink/subtle = text, brand = indigo fills,
+        // brand-text = brand-coloured text, iris/sky = gradient partners, sun = warm accent
+        canvas: 'rgb(var(--canvas-rgb) / <alpha-value>)',
+        surface: 'rgb(var(--surface-rgb) / <alpha-value>)',
+        raised: 'rgb(var(--raised-rgb) / <alpha-value>)',
         ink: { DEFAULT: 'rgb(var(--ink-rgb) / <alpha-value>)', 2: 'rgb(var(--ink-2-rgb) / <alpha-value>)' },
-        signal: {
-          DEFAULT: 'rgb(var(--signal-rgb) / <alpha-value>)',
-          deep: 'rgb(var(--signal-deep-rgb) / <alpha-value>)',
-          hi: 'rgb(var(--signal-hi-rgb) / <alpha-value>)',
-          hot: 'rgb(var(--signal-hot-rgb) / <alpha-value>)',
-        },
-        beam: { DEFAULT: 'rgb(var(--beam-rgb) / <alpha-value>)', hi: 'rgb(var(--beam-hi-rgb) / <alpha-value>)' },
-        'on-signal': 'rgb(var(--on-signal-rgb) / <alpha-value>)',
-        // safety amber: hazard striping only
-        caution: 'rgb(var(--caution-rgb) / <alpha-value>)',
-        muted2: 'rgb(var(--muted-rgb) / <alpha-value>)',
+        subtle: 'rgb(var(--subtle-rgb) / <alpha-value>)',
         line: 'var(--line)',
+        brand: {
+          DEFAULT: 'rgb(var(--brand-rgb) / <alpha-value>)',
+          hi: 'rgb(var(--brand-hi-rgb) / <alpha-value>)',
+          soft: 'rgb(var(--brand-soft-rgb) / <alpha-value>)',
+          text: 'rgb(var(--brand-text-rgb) / <alpha-value>)',
+        },
+        iris: 'rgb(var(--iris-rgb) / <alpha-value>)',
+        sky2: 'rgb(var(--sky-rgb) / <alpha-value>)',
+        sun: 'rgb(var(--sun-rgb) / <alpha-value>)',
+        'on-brand': 'rgb(var(--on-brand-rgb) / <alpha-value>)',
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',
@@ -85,9 +87,9 @@ export default {
       fontFamily: {
         mono: ['JetBrains Mono', 'monospace'],
         sans: ['Inter', 'sans-serif'],
-        display: ['"Chakra Petch"', 'system-ui', 'sans-serif'],
-        body: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
-        code: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        display: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
+        code: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       borderRadius: {
         lg: 'calc(var(--radius) + 2px)',

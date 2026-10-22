@@ -46,7 +46,7 @@ const privacy: LegalDoc = {
       id: "cookies",
       heading: "Cookies and browser storage",
       blocks: [
-        "We do not use advertising or analytics cookies. The site keeps small preferences in your browser's own storage — your light or dark theme choice, and a flag that the start-up animation has already played this visit — and never sends them to us.",
+        "We do not use advertising or analytics cookies. The site keeps one small preference in your browser's own storage — your light or dark theme choice — and never sends it to us.",
       ],
     },
     {

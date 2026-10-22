@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // ---------- Environment checks ----------
 export const prefersReducedMotion = () =>
@@ -7,31 +7,6 @@ export const prefersReducedMotion = () =>
 /** True on devices with a precise pointer that can hover (mouse / trackpad). */
 export const hasFinePointer = () =>
   typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-
-// ---------- Boot hand-off ----------
-// index.html paints the boot screen and sets <html data-boot="pending">; src/boot.ts flips it to
-// "done" and fires BOOT_EVENT as the bay doors part. Pages without a boot screen never set it.
-export const BOOT_EVENT = "boot:done";
-
-export const isBooted = () => typeof document === "undefined" || document.documentElement.dataset.boot !== "pending";
-
-/** Calls `cb` once the boot screen opens (right away if it already has). Returns an unsubscribe. */
-export function onBooted(cb: () => void) {
-  if (isBooted()) {
-    cb();
-    return () => {};
-  }
-  window.addEventListener(BOOT_EVENT, cb, { once: true });
-  return () => window.removeEventListener(BOOT_EVENT, cb);
-}
-
-const subscribeBoot = (cb: () => void) => {
-  window.addEventListener(BOOT_EVENT, cb);
-  return () => window.removeEventListener(BOOT_EVENT, cb);
-};
-
-/** True once the boot screen has opened, so entrances can wait for the doors. */
-export const useBooted = () => useSyncExternalStore(subscribeBoot, isBooted, () => true);
 
 // ---------- Hooks ----------
 

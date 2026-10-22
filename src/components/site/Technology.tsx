@@ -1,59 +1,52 @@
+import { BrainCircuit, Cloud, Code2, Database, GraduationCap, Layers, LucideIcon } from "lucide-react";
 import { stackGroups } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
 
+// One icon per stack group, in the same order as stackGroups
+const icons: LucideIcon[] = [BrainCircuit, Layers, Database, Code2, GraduationCap, Cloud];
+
 export default function Technology() {
   return (
-    <section id="technology" className="bay relative overflow-hidden border-y border-line px-5 py-24 sm:px-10 lg:px-14 lg:py-32">
-      <div className="bay-glow pointer-events-none absolute inset-0" />
-      <div className="bp-grid-dark pointer-events-none absolute inset-0 opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" />
-      <div className="hazard pointer-events-none absolute inset-x-0 top-0 h-1.5 opacity-50" />
-      <div className="relative mx-auto max-w-[1320px]">
+    <section id="technology" className="px-5 py-24 sm:px-8 lg:py-32">
+      <div className="mx-auto max-w-[1240px]">
         <SectionHeading
-          index="05"
           label="Technology"
+          center
           title={
             <>
-              Open standards, <span className="glow-text text-beam">no lock-in.</span>
+              The right model for the job, <span className="gradient-text">no lock-in.</span>
             </>
           }
         >
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted2">
-            We build on open, well-supported tools, so your system can be maintained, extended and audited — by us or by your own engineers.
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
+            We build on open, well-supported tools and education standards, so your system can be maintained, extended and audited — by us or by your own engineers.
           </p>
         </SectionHeading>
 
-        <div className="mt-14 grid border-l border-t border-line md:grid-cols-2 xl:grid-cols-3">
-          {stackGroups.map((g, gi) => (
-            <Reveal key={g.title} delay={gi * 70} className="border-b border-r border-line">
-              <div className="spotlight bevel-cell group h-full p-6 sm:p-8">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="font-code text-[10px] uppercase tracking-[0.2em] text-muted2">Module {String(gi + 1).padStart(2, "0")}</p>
-                    <h3 className="mt-1.5 font-display text-xl font-semibold uppercase tracking-wide transition-colors duration-300 group-hover:text-beam">{g.title}</h3>
-                  </div>
-                  <div className="flex flex-col items-end gap-1.5 pt-0.5">
-                    <span className="gauge" aria-hidden="true">
-                      {Array.from({ length: 8 }, (_, i) => (
-                        <i key={i} className={i < g.items.length ? "on" : ""} />
-                      ))}
+        <div className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {stackGroups.map((g, gi) => {
+            const Icon = icons[gi % icons.length];
+            return (
+              <Reveal key={g.title} delay={(gi % 3) * 80} className="h-full">
+                <div className="card card-hover h-full p-6 sm:p-7">
+                  <div className="flex items-center gap-3">
+                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-soft text-brand-text">
+                      <Icon className="h-5 w-5" />
                     </span>
-                    <span className="font-code text-[10px] text-beam">{String(g.items.length).padStart(2, "0")} tools</span>
+                    <h3 className="font-display text-lg font-bold">{g.title}</h3>
+                    <span className="ml-auto text-xs font-medium text-subtle">{g.items.length} tools</span>
                   </div>
+                  <ul className="stagger mt-6 flex flex-wrap gap-2">
+                    {g.items.map((item, i) => (
+                      <li key={item} style={{ ["--i" as string]: i }} className="chip px-3 py-1.5 text-[13px] transition-colors hover:border-brand/40 hover:text-brand-text">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="stagger mt-6 flex flex-wrap gap-2">
-                  {g.items.map((item, i) => (
-                    <li
-                      key={item}
-                      style={{ ["--i" as string]: i }}
-                      className="key-dark cut-sm border border-line bg-paper/60 px-3.5 py-2 font-code text-[13px] text-ink/90 transition-colors duration-150 hover:border-signal hover:bg-signal hover:text-on-signal"
-                    >
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          ))}
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>

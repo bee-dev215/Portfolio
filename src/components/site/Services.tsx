@@ -1,69 +1,70 @@
-import { Activity, Boxes, Cable, Cpu, LucideIcon } from "lucide-react";
-import { company, ServiceKey, services, stats } from "@/data/company";
+import { ArrowUpRight, Bot, Cable, GraduationCap, LucideIcon, Rocket } from "lucide-react";
+import { company, ServiceKey, services, startEnquiry, stats } from "@/data/company";
 import CountUp from "./CountUp";
 import Reveal, { SectionHeading } from "./Reveal";
 
-const icons: Record<ServiceKey, LucideIcon> = { build: Cpu, integrate: Cable, simulate: Boxes, operate: Activity };
+const icons: Record<ServiceKey, LucideIcon> = { build: Rocket, llm: Bot, platform: Cable, academy: GraduationCap };
 
 export default function Services() {
   return (
-    <section id="services" className="px-5 py-24 sm:px-10 lg:px-14 lg:py-32">
-      <div className="mx-auto max-w-[1320px]">
-        <SectionHeading
-          index="01"
-          label="Services"
-          title={
-            <>
-              Robotics software, <span className="glow-text text-beam">end to end.</span>
-            </>
-          }
-        >
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted2">{company.intro}</p>
-        </SectionHeading>
+    <section id="services" className="px-5 py-24 sm:px-8 lg:py-32">
+      <div className="mx-auto max-w-[1240px]">
+        <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+          <SectionHeading
+            label="Services"
+            title={
+              <>
+                Everything you need to <span className="gradient-text">ship AI for learning.</span>
+              </>
+            }
+          >
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">{company.intro}</p>
+          </SectionHeading>
+          <Reveal delay={100}>
+            <button onClick={() => startEnquiry()} className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
+              Talk to an engineer <ArrowUpRight className="h-4 w-4" />
+            </button>
+          </Reveal>
+        </div>
 
-        <div className="mt-14 grid gap-px border border-line bg-line md:grid-cols-2">
+        <div className="mt-14 grid gap-5 md:grid-cols-2">
           {services.map((s, i) => {
             const Icon = icons[s.key];
             return (
-              <Reveal key={s.key} delay={i * 70} className="bg-paper">
-                <div className="spotlight bevel-cell group relative flex h-full flex-col p-7 transition-colors duration-300 hover:bg-paper-2 sm:p-9">
-                  <div className="flex items-start justify-between gap-6">
-                    <span className="font-code text-xs text-beam">0{i + 1} /</span>
-                    <span className="key-dark cut-sm grid h-12 w-12 shrink-0 place-items-center border border-line text-beam transition-colors duration-300 group-hover:border-signal">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                  </div>
-                  <h3 className="mt-2 font-display text-2xl font-semibold uppercase tracking-wide transition-transform duration-300 group-hover:translate-x-1">{s.title}</h3>
-                  <p className="mt-3 max-w-md leading-relaxed text-muted2">{s.desc}</p>
+              <Reveal key={s.key} delay={i * 80} className="h-full">
+                <article className="card card-hover group relative flex h-full flex-col overflow-hidden p-7 sm:p-9">
+                  <div className="bg-grad pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-20" />
+                  <span className="icon-tile h-12 w-12">
+                    <Icon className="h-6 w-6" />
+                  </span>
+                  <h3 className="mt-6 font-display text-2xl font-bold tracking-tight">{s.title}</h3>
+                  <p className="mt-3 max-w-md leading-relaxed text-ink-2">{s.desc}</p>
                   <ul className="mt-auto flex flex-wrap gap-2 pt-7">
                     {s.includes.map((it) => (
-                      <li key={it} className="key-dark cut-sm border border-line bg-paper/60 px-3 py-1.5 font-code text-xs text-ink/90">
+                      <li key={it} className="chip">
                         {it}
                       </li>
                     ))}
                   </ul>
-                  <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-signal glow-line transition-all duration-500 group-hover:w-full" />
-                </div>
+                </article>
               </Reveal>
             );
           })}
         </div>
 
         {/* Stats */}
-        <div className="mt-20 grid grid-cols-2 border-l border-t border-line lg:grid-cols-4">
-          {stats.map((s, i) => (
-            <Reveal key={s.label} delay={i * 80} variant="clip" className="border-b border-r border-line">
-              <div className="bevel-cell group relative h-full p-6 transition-colors duration-300 hover:bg-paper-2 sm:p-8">
-                <span className="absolute right-4 top-4 font-code text-[10px] uppercase tracking-[0.2em] text-muted2/70">M-{String(i + 1).padStart(2, "0")}</span>
-                <div className="extrude-sm font-display text-5xl font-bold tracking-tight transition-colors duration-300 group-hover:text-beam sm:text-6xl">
+        <Reveal delay={100}>
+          <div className="grad-border mt-16 grid grid-cols-2 overflow-hidden rounded-3xl bg-surface lg:grid-cols-4">
+            {stats.map((s, i) => (
+              <div key={s.label} className={`p-7 sm:p-9 ${i > 0 ? "border-line lg:border-l" : ""} ${i % 2 === 1 ? "border-l border-line" : ""} ${i > 1 ? "border-t border-line lg:border-t-0" : ""}`}>
+                <div className="gradient-text font-display text-5xl font-extrabold tracking-tight sm:text-6xl">
                   <CountUp value={s.value} />
                 </div>
-                <div className="mt-3 text-sm text-muted2">{s.label}</div>
-                <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-signal transition-all duration-500 group-hover:w-full" />
+                <div className="mt-2 text-sm font-medium text-ink-2">{s.label}</div>
               </div>
-            </Reveal>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </section>
   );

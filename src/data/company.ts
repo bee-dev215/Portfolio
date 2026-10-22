@@ -1,7 +1,7 @@
 // ============================================================
-//  SITE CONTENT — GKT LLC, robotics software engineering.
+//  SITE CONTENT — GKT LLC, AI engineering for education.
 //  Edit this single file to update the public site
-//  (company details, services, solutions, process and stack).
+//  (company details, services, solutions, audiences, process, stack, team).
 // ============================================================
 
 export const company = {
@@ -9,21 +9,21 @@ export const company = {
   legalName: "GKT LLC",
   initials: "GKT",
   entity: "Limited liability company",
-  discipline: "Robotics software engineering",
+  discipline: "AI engineering for education",
   email: "welcome.devs@gmail.com",
   phone: "+1 (480) 271 8467",
   phoneHref: "tel:+14802718467",
   availability: "Booking new projects",
   responseTime: "one business day",
-  engagements: "Fixed-scope projects · Retainers · Team extension",
+  engagements: "Fixed-scope projects · Retainers · Team training",
   tagline:
-    "GKT engineers the motion, perception and fleet software that turns robots into dependable production systems — proven in simulation, commissioned on your floor and supported for the long run.",
+    "GKT designs, builds and ships AI for learning — tutors, assessment, analytics and knowledge assistants — for schools, universities and the companies that teach.",
   intro:
-    "We take robots from a promising demo to a system that runs every shift. One accountable team covers the software end to end — and stays with it after go-live.",
+    "One team from idea to production: product strategy, AI engineering, learning design, and the training your people need to run it with confidence.",
   about: [
-    "GKT is a software company focused on one thing: robotics. We design, build and support the software that lets robots see, plan, move and work together — for manufacturers, logistics operators and equipment makers who need automation that holds up in production, not just in the demo.",
-    "We work hardware-agnostic and simulation-first. Every behaviour is modelled and tested in a digital twin before it touches steel, so commissioning is shorter, safer and predictable. When the code reaches your site, our engineers are there with it.",
-    "Engagements range from a focused integration or retrofit to a complete autonomy stack. Either way you get clear milestones, agreed acceptance tests and software that is documented, tested and handed over in a state your own team can maintain.",
+    "GKT is an AI engineering company built around one mission: helping people learn better. We design and build the AI products that sit behind modern learning — tutors that explain instead of answering, feedback that teachers trust, and analytics that spot a struggling learner before the exam does.",
+    "We are model-agnostic and evidence-driven. Every feature is grounded in your own content, tested against evaluation sets before it ships, and measured on learning outcomes afterwards — not just on usage.",
+    "And we teach as we build. Engagements end with your engineers, educators and staff able to run, extend and question the system themselves, through hands-on workshops and documentation written for people, not just for machines.",
   ],
 };
 
@@ -45,7 +45,7 @@ export const socials: SocialLink[] = [
 //  Services — the four ways we work with clients
 // ------------------------------------------------------------
 
-export type ServiceKey = "build" | "integrate" | "simulate" | "operate";
+export type ServiceKey = "build" | "llm" | "platform" | "academy";
 
 export interface Service {
   key: ServiceKey;
@@ -57,27 +57,27 @@ export interface Service {
 export const services: Service[] = [
   {
     key: "build",
-    title: "Custom robotics software",
-    desc: "Motion planning, perception and autonomy software engineered for your robot and your process — from a single work cell to a complete product.",
-    includes: ["Motion & control", "Perception & AI", "Autonomy & navigation"],
+    title: "AI product engineering",
+    desc: "Full-stack AI products from first prototype to production — web and mobile apps, APIs, and the evaluation pipelines that keep models honest.",
+    includes: ["Rapid prototyping", "Full-stack apps", "Evals & monitoring"],
   },
   {
-    key: "integrate",
-    title: "Integration & retrofit",
-    desc: "Connecting robots to the systems around them — PLCs, safety, MES and WMS — and giving existing cells new capability without replacing the hardware.",
-    includes: ["PLC & fieldbus", "MES / WMS links", "Legacy cell upgrades"],
+    key: "llm",
+    title: "LLM & RAG solutions",
+    desc: "Assistants grounded in your own content — curricula, course material, policies — with citations, guardrails and role-based access.",
+    includes: ["Retrieval (RAG)", "Agents & tools", "Guardrails"],
   },
   {
-    key: "simulate",
-    title: "Simulation & digital twins",
-    desc: "Physics-accurate models of your robots and cells for layout studies, virtual commissioning and automated testing of every software release.",
-    includes: ["Virtual commissioning", "Scenario testing in CI", "Synthetic data"],
+    key: "platform",
+    title: "Learning platform integration",
+    desc: "AI features inside the systems you already use — Canvas, Moodle, Google Classroom or your own platform — connected through LTI and open standards.",
+    includes: ["LTI 1.3", "LMS plugins", "Data pipelines"],
   },
   {
-    key: "operate",
-    title: "Operations & support",
-    desc: "Fleet monitoring, remote operations and maintained software, so the system keeps performing long after go-live.",
-    includes: ["Telemetry & alerting", "Over-the-air updates", "Support plans"],
+    key: "academy",
+    title: "AI training & upskilling",
+    desc: "Hands-on courses and workshops that teach your engineers, educators and staff to build with AI and to use it responsibly.",
+    includes: ["Engineering bootcamps", "Educator workshops", "AI literacy"],
   },
 ];
 
@@ -86,28 +86,28 @@ export const services: Service[] = [
 // ------------------------------------------------------------
 
 export const stackGroups = [
-  { title: "Robotics middleware", items: ["ROS 2", "MoveIt 2", "Nav2", "ros2_control", "micro-ROS", "DDS"] },
-  { title: "Languages", items: ["Modern C++", "Python", "Rust", "TypeScript", "CUDA"] },
-  { title: "Perception & AI", items: ["OpenCV", "PCL", "PyTorch", "TensorRT", "ONNX Runtime", "Open3D"] },
-  { title: "Simulation", items: ["NVIDIA Isaac Sim", "Gazebo", "MuJoCo", "URDF / SDF", "Synthetic data"] },
-  { title: "Industrial I/O", items: ["OPC UA", "EtherCAT", "PROFINET", "Modbus TCP", "CANopen", "MQTT", "VDA 5050"] },
-  { title: "Cloud & DevOps", items: ["Docker", "Kubernetes", "AWS IoT", "Grafana", "CI/CD", "OTA updates"] },
+  { title: "Foundation models", items: ["OpenAI GPT", "Anthropic Claude", "Google Gemini", "Llama", "Mistral", "Whisper"] },
+  { title: "AI frameworks", items: ["LangChain", "LlamaIndex", "Hugging Face", "PyTorch", "vLLM", "MLflow"] },
+  { title: "Data & retrieval", items: ["PostgreSQL", "pgvector", "Pinecone", "Elasticsearch", "Redis", "dbt"] },
+  { title: "Product engineering", items: ["TypeScript", "React", "Next.js", "Python", "FastAPI", "React Native"] },
+  { title: "Learning standards", items: ["LTI 1.3", "xAPI", "SCORM", "QTI", "OneRoster", "Caliper"] },
+  { title: "Cloud & MLOps", items: ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes", "Terraform"] },
 ];
 
-// Capabilities scrolling along the bottom of the hero
+// Capabilities scrolling under the hero
 export const ticker = [
-  "Motion planning",
-  "Computer vision",
-  "Fleet orchestration",
-  "Digital twins",
-  "ROS 2",
-  "Virtual commissioning",
-  "Sensor fusion",
-  "Edge AI",
-  "PLC integration",
-  "Teleoperation",
-  "Path planning",
-  "Safety systems",
+  "AI tutors",
+  "Retrieval-augmented generation",
+  "LLM evaluation",
+  "Learning analytics",
+  "Adaptive learning",
+  "LTI 1.3",
+  "Content generation",
+  "Speech & voice",
+  "AI agents",
+  "Responsible AI",
+  "MLOps",
+  "Educator copilots",
 ];
 
 // ------------------------------------------------------------
@@ -118,7 +118,7 @@ export const ticker = [
 export interface Solution {
   id: number;
   title: string;
-  category: string; // industry, used by the filter
+  category: string; // audience, used by the filter
   domain: string;
   summary: string;
   description: string;
@@ -131,118 +131,116 @@ export interface Solution {
 export const solutions: Solution[] = [
   {
     id: 1,
-    title: "Cell Control",
-    category: "Manufacturing",
-    domain: "Manipulation · Motion planning",
-    summary:
-      "Control software for robotic work cells — pick-and-place, machine tending and palletising — planned collision-free and tuned for cycle time.",
+    title: "AI Tutor",
+    category: "Schools & universities",
+    domain: "Conversational learning · Socratic tutoring",
+    summary: "A patient, always-on tutor grounded in your course material — it gives hints and asks questions instead of handing out answers.",
     description:
-      "Cell Control is our software stack for industrial and collaborative arms. It plans collision-free trajectories around fixtures and people, picks parts with vision-guided grasping, and talks to your PLC and safety system over standard industrial protocols. We model the cell in simulation first, tune motions for cycle time there, then commission on the real hardware with the same code.",
+      "AI Tutor is a conversational learning assistant built on your own curriculum. It explains concepts step by step, adapts to each learner's level, and is designed to guide rather than to do the work for them. Teachers choose the subjects and the rules, see which topics students struggle with, and can review conversations. It runs inside your LMS through LTI or as a standalone app.",
     capabilities: [
-      "Collision-aware motion planning with MoveIt 2 and trajectory optimisation",
-      "Vision-guided grasping for mixed, randomly placed parts",
-      "PLC and safety handshakes over OPC UA, PROFINET or EtherCAT",
-      "Brand-agnostic drivers for industrial and collaborative arms",
+      "Step-by-step explanations grounded in your course content, with sources",
+      "Hint-first mode that guides learners instead of giving answers away",
+      "Teacher controls for subjects, tone and academic-integrity rules",
+      "Topic insights showing where a class is getting stuck",
     ],
-    tech: ["ROS 2", "MoveIt 2", "C++", "ros2_control", "OPC UA", "OpenCV"],
-    deliverables: ["Cell software (ROS 2 workspace)", "Simulation model of the cell", "PLC interface specification", "Operator runbook"],
-    image: "/images/cell-control.webp",
+    tech: ["Claude / GPT", "LangChain", "pgvector", "FastAPI", "React", "LTI 1.3"],
+    deliverables: ["Tutor web app & LMS plugin", "Curriculum knowledge base", "Teacher dashboard", "Evaluation suite"],
+    image: "/images/sol-ai-tutor.webp",
   },
   {
     id: 2,
-    title: "Fleet Orchestrator",
-    category: "Logistics",
-    domain: "Multi-robot autonomy",
-    summary:
-      "Traffic control and task allocation for fleets of autonomous mobile robots, so every robot is working — not waiting in an aisle.",
+    title: "Assessment Assistant",
+    category: "Schools & universities",
+    domain: "Feedback · Rubrics · Question generation",
+    summary: "Rubric-aligned feedback drafts that teachers review and approve, so every learner gets detailed feedback in a fraction of the time.",
     description:
-      "Fleet Orchestrator coordinates autonomous mobile robots across a warehouse or plant. It assigns missions from your WMS or MES, plans deadlock-free routes through shared aisles and lifts, manages charging, and hands work between robots from different vendors. Operators see the whole fleet live and can re-route, pause or take over any robot.",
+      "Assessment Assistant drafts feedback on written work against your own rubrics and examples, highlights where an answer meets or misses each criterion, and suggests next steps for the learner. The teacher stays in charge: nothing reaches a student until it has been reviewed. It also generates question banks and practice quizzes aligned to your learning objectives.",
     capabilities: [
-      "Mission allocation driven by your WMS, MES or ERP",
-      "Deadlock-free traffic management for shared aisles and lifts",
-      "Opportunity charging and battery-aware scheduling",
-      "Mixed-vendor fleets through the VDA 5050 interface",
+      "Rubric-aligned feedback drafts with evidence quoted from the work",
+      "Teacher review and edit before anything is released",
+      "Question and quiz generation mapped to learning objectives",
+      "Consistency checks across markers and sections",
     ],
-    tech: ["ROS 2", "Nav2", "Rust", "VDA 5050", "MQTT", "PostgreSQL"],
-    deliverables: ["Fleet manager service", "Facility map and traffic rules", "WMS / MES integration", "Live fleet dashboard"],
-    image: "/images/fleet-orchestrator.webp",
+    tech: ["Claude / GPT", "Python", "FastAPI", "PostgreSQL", "React", "QTI"],
+    deliverables: ["Feedback workflow app", "Rubric & exemplar library", "Question-bank generator", "Calibration report"],
+    image: "/images/sol-assessment.webp",
   },
   {
     id: 3,
-    title: "Vision Inspection",
-    category: "Manufacturing",
-    domain: "Perception · Quality",
-    summary: "Machine-vision inspection that finds defects at line speed and records the reason for every reject.",
+    title: "Learning Analytics",
+    category: "EdTech",
+    domain: "Data · Early warning · Insight",
+    summary: "Dashboards and early-warning models that show who is falling behind, why, and what to do next — while there is still time to act.",
     description:
-      "Vision Inspection puts trained models on the production line. Cameras and lighting are specified for your part, models are trained on your own good and defective samples, and inference runs on edge hardware next to the conveyor. Every decision is logged with its image and confidence, so quality engineers can audit rejects and retrain as products change.",
+      "Learning Analytics brings activity, assessment and engagement data together into one learning record store, then turns it into insight: progress dashboards for teachers and managers, early-warning signals for learners at risk, and plain-language summaries generated from the data. Models are explainable, and every alert links to the evidence behind it.",
     capabilities: [
-      "Defect detection, measurement and presence checks at line speed",
-      "Edge inference on GPU hardware beside the line",
-      "Reject logging with images and confidence for audits",
-      "Retraining workflow for new variants and products",
+      "Unified learning record store fed by xAPI, LMS and SIS data",
+      "Early-warning models for learners at risk, with explanations",
+      "Role-based dashboards for teachers, advisers and leadership",
+      "AI-written weekly summaries in plain language",
     ],
-    tech: ["Python", "PyTorch", "TensorRT", "OpenCV", "ONNX Runtime", "C++"],
-    deliverables: ["Camera and lighting specification", "Trained inspection models", "Edge inference service", "Quality dashboard and reports"],
-    image: "/images/vision-inspection.webp",
+    tech: ["Python", "dbt", "PostgreSQL", "xAPI", "PyTorch", "React"],
+    deliverables: ["Data pipeline & warehouse", "Risk models & model cards", "Dashboards", "Alerting playbook"],
+    image: "/images/sol-analytics.webp",
   },
   {
     id: 4,
-    title: "Digital Twin",
-    category: "Manufacturing",
-    domain: "Simulation · Virtual commissioning",
-    summary: "A physics-accurate model of your robots and cell, used to design, test and commission before the hardware arrives.",
+    title: "Content Studio",
+    category: "EdTech",
+    domain: "Course creation · Localisation",
+    summary: "An AI workspace that turns outlines and source material into lessons, quizzes and translations — reviewed by your subject experts.",
     description:
-      "We build a digital twin of the robots, conveyors and fixtures in your cell and connect it to the real control software. Layouts and cycle times are proven in simulation, every software change runs through automated scenarios in CI, and synthetic images train perception models before a camera is installed. Commissioning on site becomes confirmation, not discovery.",
+      "Content Studio speeds up course production without lowering the bar. Authors start from an outline or existing material, and the studio drafts lessons, examples, assessments and summaries in your house style, aligned to the standards you choose. Every draft moves through a review workflow with subject-matter experts, and approved content can be translated and published to your platform.",
     capabilities: [
-      "Virtual commissioning against the real PLC and robot code",
-      "Automated regression scenarios in CI for every release",
-      "Layout and cycle-time studies before you buy hardware",
-      "Synthetic data generation for perception training",
+      "Lesson, quiz and summary drafts from outlines or source documents",
+      "House-style and standards alignment built into every prompt",
+      "Expert review workflow with version history",
+      "Translation and localisation for multilingual courses",
     ],
-    tech: ["Isaac Sim", "Gazebo", "MuJoCo", "URDF / SDF", "Python", "Docker"],
-    deliverables: ["Simulation model of the cell", "Scenario test suite in CI", "Layout and cycle-time report", "Synthetic datasets"],
-    image: "/images/digital-twin.webp",
+    tech: ["Claude / GPT", "Next.js", "TypeScript", "PostgreSQL", "SCORM", "AWS"],
+    deliverables: ["Authoring web app", "Style & standards guides", "Review workflow", "Publishing connectors"],
+    image: "/images/sol-content-studio.webp",
   },
   {
     id: 5,
-    title: "Field Autonomy",
-    category: "Field robotics",
-    domain: "Outdoor navigation · Localisation",
-    summary: "Navigation and localisation for robots that work outdoors — in fields, yards, solar farms and on inspection routes.",
+    title: "Knowledge Assistant",
+    category: "Corporate learning",
+    domain: "RAG · Policies · Onboarding",
+    summary: "An assistant that answers staff questions from your handbooks, policies and training material — always with a link to the source.",
     description:
-      "Field Autonomy takes robots beyond the structured factory floor. We fuse RTK-GNSS, lidar, IMU and wheel odometry for centimetre-level positioning, plan coverage paths across rows and uneven ground, and keep the robot safe around people, animals and equipment. Missions are planned on a map and monitored remotely, and the robot pauses and asks for help when it is unsure.",
+      "Knowledge Assistant gives employees and students instant, cited answers from the documents your organisation already has: handbooks, policies, course catalogues and training guides. It respects existing permissions through single sign-on, says so when it does not know, and shows content owners which questions are being asked so gaps can be filled.",
     capabilities: [
-      "Sensor fusion of RTK-GNSS, lidar, IMU and odometry",
-      "Coverage and row-following path planning",
-      "Obstacle detection and safe-stop behaviours",
-      "Remote mission planning and monitoring",
+      "Cited answers from handbooks, policies and training material",
+      "Single sign-on and document-level permissions",
+      "Honest fallbacks and hand-off to a human when unsure",
+      "Question analytics that reveal gaps in your content",
     ],
-    tech: ["ROS 2", "Nav2", "C++", "robot_localization", "PCL", "MQTT"],
-    deliverables: ["Navigation and localisation stack", "Field test plan and reports", "Mission planning tool", "Safety case inputs"],
-    image: "/images/field-autonomy.webp",
+    tech: ["LlamaIndex", "Elasticsearch", "pgvector", "FastAPI", "React", "Azure"],
+    deliverables: ["Assistant web & chat app", "Ingestion pipeline", "Admin console", "Evaluation set"],
+    image: "/images/sol-knowledge.webp",
   },
   {
     id: 6,
-    title: "Robot Ops Console",
-    category: "Logistics",
-    domain: "Telemetry · Remote operations",
-    summary: "One console to monitor, teleoperate and update every robot you run, from any site.",
+    title: "AI Academy",
+    category: "Corporate learning",
+    domain: "Training · Upskilling · AI literacy",
+    summary: "Hands-on programmes that take your team from AI-curious to AI-capable — for engineers, educators and everyone in between.",
     description:
-      "Robot Ops Console is the operations layer on top of your robots. Telemetry streams from each machine to a central dashboard with alerts and history, operators take remote control with live video when a robot gets stuck, and software updates roll out over the air in staged waves with automatic rollback. It works with robots we build and with the fleets you already run.",
+      "AI Academy is our training practice. Engineering tracks cover prompt design, retrieval, agents, evaluation and deployment through labs on your own use cases. Educator and staff tracks focus on using AI well and responsibly in daily work, with practical policies you can adopt. Programmes run on site or remotely, as intensive bootcamps or as a series of short sessions.",
     capabilities: [
-      "Live telemetry, alerts and history for every robot",
-      "Low-latency teleoperation with live video",
-      "Staged over-the-air updates with automatic rollback",
-      "Role-based access for operators, engineers and partners",
+      "Engineering bootcamps with labs built on your real use cases",
+      "Workshops for educators, trainers and support staff",
+      "Responsible-use and AI-policy sessions for leadership",
+      "Course material and recordings your team keeps",
     ],
-    tech: ["TypeScript", "React", "WebRTC", "Kubernetes", "Grafana", "AWS IoT"],
-    deliverables: ["Operations console", "Telemetry pipeline", "OTA update service", "Alerting and on-call setup"],
-    image: "/images/ops-console.webp",
+    tech: ["Python", "LangChain", "OpenAI GPT", "Anthropic Claude", "Jupyter", "GitHub"],
+    deliverables: ["Training curriculum", "Hands-on labs", "Course materials", "Skills assessment"],
+    image: "/images/sol-academy.webp",
   },
 ];
 
 // ------------------------------------------------------------
-//  Industries — where the software runs. Images live in public/images/ (portrait crops).
+//  Audiences — who we build for. Images live in public/images/ (4:5 crops).
 // ------------------------------------------------------------
 
 export interface Industry {
@@ -258,44 +256,44 @@ export interface Industry {
 
 export const industries: Industry[] = [
   {
-    key: "manufacturing",
-    title: "Manufacturing",
-    focus: "Work cells · Assembly · Machine tending",
-    desc: "Robot cells that hold cycle time and work with the PLC, safety system and MES around them.",
-    work: ["Pick-and-place & palletising", "Machine tending", "Vision-guided assembly"],
-    solutions: ["Cell Control", "Vision Inspection", "Digital Twin"],
-    image: "/images/ind-manufacturing.webp",
-    imageAlt: "Robot arms welding car bodies on an automotive assembly line",
+    key: "schools",
+    title: "K-12 schools",
+    focus: "Districts · Teachers · Students",
+    desc: "Safe, curriculum-aligned AI that gives teachers time back and gives every student a patient guide.",
+    work: ["Tutoring & homework help", "Feedback drafting", "Parent communication"],
+    solutions: ["AI Tutor", "Assessment Assistant"],
+    image: "/images/aud-schools.webp",
+    imageAlt: "Students working together on laptops in a classroom",
   },
   {
-    key: "logistics",
-    title: "Logistics & warehousing",
-    focus: "AMR fleets · Picking · Intralogistics",
-    desc: "Mobile robots coordinated with your WMS, so goods keep moving through shared aisles and lifts.",
-    work: ["AMR & AGV fleets", "Robotic picking", "Mixed-vendor traffic"],
-    solutions: ["Fleet Orchestrator", "Robot Ops Console"],
-    image: "/images/ind-logistics.webp",
-    imageAlt: "A wheeled service robot in a warehouse",
+    key: "universities",
+    title: "Universities & colleges",
+    focus: "Faculty · Advisers · Learners",
+    desc: "AI across teaching, advising and student services — integrated with your LMS and your data.",
+    work: ["Course assistants", "Early-warning analytics", "Student-services chat"],
+    solutions: ["AI Tutor", "Learning Analytics", "Knowledge Assistant"],
+    image: "/images/aud-universities.webp",
+    imageAlt: "University students studying together",
   },
   {
-    key: "agriculture",
-    title: "Agriculture & field",
-    focus: "Outdoor autonomy · Coverage · Localisation",
-    desc: "Navigation for robots working outdoors — on uneven ground, in changing light and around people and animals.",
-    work: ["RTK-GNSS & lidar fusion", "Row-following & coverage", "Remote mission monitoring"],
-    solutions: ["Field Autonomy"],
-    image: "/images/ind-agriculture.webp",
-    imageAlt: "A drone spraying crops in a field",
+    key: "edtech",
+    title: "EdTech companies",
+    focus: "Product · Content · Data",
+    desc: "An experienced AI engineering team that ships new features into your product without slowing your roadmap.",
+    work: ["AI feature development", "Content generation", "Evaluation pipelines"],
+    solutions: ["Content Studio", "Learning Analytics"],
+    image: "/images/aud-edtech.webp",
+    imageAlt: "A software team reviewing a product on screen",
   },
   {
-    key: "energy",
-    title: "Energy & infrastructure",
-    focus: "Inspection · Teleoperation · Monitoring",
-    desc: "Robots that run inspection rounds in plants, substations and solar farms, and report back what they find.",
-    work: ["Autonomous inspection rounds", "Remote teleoperation", "Anomaly detection"],
-    solutions: ["Field Autonomy", "Vision Inspection", "Robot Ops Console"],
-    image: "/images/ind-energy.webp",
-    imageAlt: "Rows of four-legged inspection robots",
+    key: "corporate",
+    title: "Corporate learning",
+    focus: "L&D · Onboarding · Upskilling",
+    desc: "Faster onboarding, answers on demand and AI skills for every team, measured against business goals.",
+    work: ["Knowledge assistants", "Onboarding copilots", "AI upskilling programmes"],
+    solutions: ["Knowledge Assistant", "AI Academy"],
+    image: "/images/aud-corporate.webp",
+    imageAlt: "Colleagues in a corporate training workshop",
   },
 ];
 
@@ -316,70 +314,93 @@ export const phases: Phase[] = [
   {
     id: 1,
     name: "Discover",
-    title: "Feasibility & requirements",
-    summary: "We start on your floor, not in a slide deck: what the robot must do, how fast, how safely, and with which hardware.",
+    title: "Goals, learners & data",
+    summary: "We start with the learning problem, not the model: who the learners are, what success looks like, and what data and policies apply.",
     activities: [
-      "Site survey: We walk the process with your operators and engineers and record cycle times, constraints and edge cases.",
-      "Requirements: Tasks, throughput targets, safety requirements and integration points captured in one shared specification.",
-      "Feasibility: A short technical spike on the hardest part — the grasp, the sensor, the aisle — before anyone commits budget.",
-      "Proposal: A fixed-scope plan with milestones, acceptance criteria and a list of known risks.",
+      "Interviews: We talk to learners, educators and administrators to understand the real workflow.",
+      "Success metrics: Learning and business outcomes agreed up front, so we can measure what matters.",
+      "Data & policy review: Content, data sources, privacy requirements and AI-use policies mapped together with your team.",
+      "Proposal: A fixed-scope plan with milestones, acceptance criteria and known risks.",
     ],
-    outputs: ["Requirements spec", "Feasibility report", "Fixed-scope proposal"],
+    outputs: ["Discovery brief", "Success metrics", "Fixed-scope proposal"],
   },
   {
     id: 2,
-    name: "Simulate",
-    title: "Digital twin & proof of concept",
-    summary: "The cell is modelled to scale and the core behaviour runs end to end in simulation, so you see it work before hardware is ordered.",
+    name: "Prototype",
+    title: "Working demo in weeks",
+    summary: "A clickable, working prototype on your own content, put in front of real users early — before anyone commits to the full build.",
     activities: [
-      "Cell model: Robots, fixtures, conveyors and people modelled with real kinematics and physics.",
-      "Proof of concept: The hardest behaviour running end to end against the simulated cell.",
-      "Layout & cycle time: Layout options compared and cycle times measured, not estimated.",
+      "Prototype: The core experience built end to end on a sample of your real content.",
+      "User testing: Sessions with learners and educators to see what helps and what confuses.",
+      "Evaluation set: The first set of test questions and expected behaviours, used from here on.",
     ],
-    outputs: ["Simulation model", "Proof-of-concept demo", "Layout study"],
+    outputs: ["Working prototype", "User-testing notes", "Evaluation set v1"],
   },
   {
     id: 3,
     name: "Build",
-    title: "Production software engineering",
-    summary: "Motion, perception and fleet software engineered in short iterations, with a working demo at every milestone.",
+    title: "Production engineering",
+    summary: "Secure, scalable software built in short iterations, with automated evaluations running on every change.",
     activities: [
-      "Architecture: A modular ROS 2 architecture with clear interfaces to your PLC, MES and safety systems.",
-      "Engineering: Features delivered in short iterations and reviewed against the simulated cell.",
-      "Testing: Unit, integration and simulation scenario tests run automatically on every change.",
+      "Architecture: Model-agnostic design with clear interfaces to your LMS, SIS and identity provider.",
+      "Engineering: Features delivered in two-week iterations with a demo at the end of each.",
+      "Quality: Automated tests and model evaluations on every release, plus safety and bias reviews.",
     ],
-    outputs: ["Source code", "CI pipeline", "Test reports"],
+    outputs: ["Source code", "CI & eval pipeline", "Security review"],
   },
   {
     id: 4,
-    name: "Integrate",
-    title: "On-site commissioning",
-    summary: "Our engineers install the software on your hardware and prove it against the acceptance tests agreed at the start.",
+    name: "Launch",
+    title: "Pilot, training & rollout",
+    summary: "A measured pilot with a real cohort, the training your people need, and a rollout plan based on what the pilot shows.",
     activities: [
-      "Installation: Software deployed and connected on site, alongside your integrator or maintenance team.",
-      "Acceptance: Agreed tests run on the real cell — throughput, accuracy and safety behaviours.",
-      "Handover: Operator training, runbooks and documentation for your team.",
+      "Pilot: A time-boxed pilot with a real class, cohort or team, against the agreed metrics.",
+      "Training: Workshops for administrators, educators and support staff.",
+      "Rollout: Staged release with monitoring, documentation and a support handover.",
     ],
-    outputs: ["Commissioned system", "Acceptance report", "Training & runbooks"],
+    outputs: ["Pilot report", "Training sessions", "Runbooks"],
   },
   {
     id: 5,
-    name: "Operate",
-    title: "Monitoring, updates & support",
-    summary: "Go-live is the start of the job. We monitor, improve and support the system for as long as it runs.",
+    name: "Improve",
+    title: "Measure & iterate",
+    summary: "Launch is the start. We watch quality and learning outcomes, and keep improving the system for as long as you run it.",
     activities: [
-      "Monitoring: Telemetry and alerting so issues are caught before they stop production.",
-      "Updates: Improvements and fixes delivered as tested, staged releases.",
-      "Support: Support plans sized to your shifts, from engineers who know your system.",
+      "Monitoring: Quality, cost and usage dashboards with alerts when answers drift.",
+      "Iteration: Regular releases driven by feedback and evaluation results.",
+      "Support: Support plans sized to your term calendar or business cycle.",
     ],
-    outputs: ["Support plan", "Release notes", "Health reports"],
+    outputs: ["Support plan", "Release notes", "Outcome reports"],
   },
 ];
 
 // ------------------------------------------------------------
-//  Team. Real people only. The section stays hidden until this list has entries.
-//  photo: optional headshot in public/images/team/ (portrait, 4:5); without one the
-//  card shows the person's initials. linkedin: optional full profile URL.
+//  Company
+// ------------------------------------------------------------
+
+export const principles = [
+  {
+    title: "Learners first",
+    desc: "Every feature starts from a learner's or educator's real need. If it doesn't help someone learn or teach better, we don't build it.",
+  },
+  {
+    title: "Responsible by design",
+    desc: "Privacy, safety and fairness are part of the design from day one — planned with your compliance and safeguarding teams, never bolted on later.",
+  },
+  {
+    title: "Evidence over hype",
+    desc: "We evaluate models before they ship and measure outcomes after. Claims about AI should be tested, not assumed.",
+  },
+  {
+    title: "Teach as we build",
+    desc: "We hand over knowledge, not just code — so your team can run, extend and challenge the system without us.",
+  },
+];
+
+// ------------------------------------------------------------
+//  Team. PLACEHOLDER PROFILES: fictional names on licensed stock portraits.
+//  Replace with your real team before launch — visitors will read these as your staff.
+//  photo: portrait in public/images/team/ (4:5); without one the card shows initials.
 // ------------------------------------------------------------
 
 export interface TeamMember {
@@ -391,78 +412,112 @@ export interface TeamMember {
   focus?: string[]; // up to three specialities, shown as tags
 }
 
-export const team: TeamMember[] = [];
-
-// ------------------------------------------------------------
-//  Company
-// ------------------------------------------------------------
-
-export const principles = [
+export const team: TeamMember[] = [
   {
-    title: "Safety by design",
-    desc: "We design around the applicable safety standards from the first sketch, working with your safety engineers and integrators — never bolted on at sign-off.",
+    name: "Martin Keller",
+    role: "Founder & CEO",
+    bio: "Leads strategy and client partnerships, and makes sure every project starts from a real learning problem.",
+    photo: "/images/team/martin.webp",
+    focus: ["Strategy", "EdTech", "Partnerships"],
   },
   {
-    title: "Simulation first",
-    desc: "Every behaviour is proven in a digital twin before it runs on hardware. Fewer surprises on site, shorter commissioning, safer testing.",
+    name: "Kenji Watanabe",
+    role: "CTO · Head of AI engineering",
+    bio: "Owns the architecture and engineering standards, from retrieval pipelines to production infrastructure.",
+    photo: "/images/team/kenji.webp",
+    focus: ["LLM systems", "Architecture", "MLOps"],
   },
   {
-    title: "Hardware agnostic",
-    desc: "We choose robots, sensors and compute on merit and build on open standards like ROS 2, so you are never locked in to one vendor — including us.",
+    name: "Mei Lin Chen",
+    role: "Lead ML engineer",
+    bio: "Builds and evaluates the models behind our tutors and assistants, with a focus on grounding and safety.",
+    photo: "/images/team/mei.webp",
+    focus: ["RAG", "Evaluation", "PyTorch"],
   },
   {
-    title: "Measured in uptime",
-    desc: "A demo is not a deployment. We judge our work by throughput and availability on real shifts, and stay involved to keep it there.",
+    name: "Marcus Bello",
+    role: "Senior full-stack engineer",
+    bio: "Turns prototypes into fast, accessible products and connects them to the platforms schools already use.",
+    photo: "/images/team/marcus.webp",
+    focus: ["React", "FastAPI", "LTI 1.3"],
+  },
+  {
+    name: "Sofia Marín",
+    role: "Learning experience designer",
+    bio: "Designs how learners and teachers work with AI, grounded in learning science and plenty of user testing.",
+    photo: "/images/team/sofia.webp",
+    focus: ["Learning design", "UX research", "Accessibility"],
+  },
+  {
+    name: "Hannah Lindqvist",
+    role: "Data scientist · Learning analytics",
+    bio: "Builds the analytics and early-warning models that help educators act sooner.",
+    photo: "/images/team/hannah.webp",
+    focus: ["Analytics", "xAPI", "Modelling"],
+  },
+  {
+    name: "Amara Nwosu",
+    role: "AI education lead",
+    bio: "Runs the AI Academy — engineering bootcamps, educator workshops and AI-literacy programmes.",
+    photo: "/images/team/amara.webp",
+    focus: ["Training", "Curriculum", "AI literacy"],
+  },
+  {
+    name: "Owen Brady",
+    role: "Product designer",
+    bio: "Shapes interfaces that make complex AI feel simple, from first sketch to design system.",
+    photo: "/images/team/owen.webp",
+    focus: ["Product design", "Design systems", "Prototyping"],
   },
 ];
 
 // Frequently asked questions (shown above the contact form)
 export const faqs = [
   {
-    q: "Do you sell robots or other hardware?",
-    a: "No — GKT is a software company. We help you choose robots, sensors and compute on merit, build on the hardware you already own, and work alongside your integrator for the mechanical and electrical side.",
+    q: "Which AI models do you use?",
+    a: "We are model-agnostic. We choose between commercial models such as GPT, Claude and Gemini and open models such as Llama or Mistral for each task, based on quality, cost and privacy — and we can run open models inside your own cloud when data must stay there.",
   },
   {
-    q: "Which robots and platforms do you work with?",
-    a: "We are hardware-agnostic: industrial and collaborative arms, autonomous mobile robots and outdoor platforms. Our software is built on ROS 2 and open industrial interfaces such as OPC UA, EtherCAT and VDA 5050, so it connects through open standards rather than one vendor's ecosystem.",
+    q: "How do you protect student and staff data?",
+    a: "We collect only the data a feature needs, use enterprise API terms that exclude your data from model training, encrypt data in transit and at rest, and respect your existing permissions. Privacy requirements such as FERPA or GDPR are mapped with your compliance team during discovery.",
+  },
+  {
+    q: "How do you stop the AI from giving wrong answers?",
+    a: "Answers are grounded in your approved content and cite their sources. Every release is tested against an evaluation set of real questions, guardrails catch off-topic or unsafe requests, and high-stakes outputs such as grades go to a person for review.",
+  },
+  {
+    q: "Can it work inside our LMS?",
+    a: "Yes. We integrate with platforms such as Canvas, Moodle, Blackboard and Google Classroom through LTI 1.3 and open standards like xAPI and OneRoster, so learners and educators use AI where they already work.",
   },
   {
     q: "How are projects priced?",
-    a: "Most work starts with a short discovery phase, followed by a fixed-scope proposal with milestones and acceptance criteria agreed up front. Ongoing improvements and support run on a retainer, and we can also extend your own engineering team.",
+    a: "Most work starts with a short discovery phase, followed by a fixed-scope proposal with milestones and acceptance criteria agreed up front. Ongoing improvement and support run on a retainer, and training programmes are priced per cohort.",
   },
   {
-    q: "Why do you simulate before touching hardware?",
-    a: "Hardware time is the scarcest and most expensive part of a robotics project. Proving behaviour in a digital twin first means shorter, safer commissioning and fewer surprises on your floor — and the same scenarios keep testing every later release.",
-  },
-  {
-    q: "Will you work on site with our team?",
-    a: "Yes. Our engineers commission the system on site alongside your integrator or maintenance team, then hand over runbooks and training so your own staff can operate and maintain it.",
-  },
-  {
-    q: "What happens after go-live?",
-    a: "Go-live is the start of the job. We monitor the system, ship improvements as tested, staged releases and support it under a plan sized to your shifts, for as long as it runs.",
+    q: "Do you train our own team?",
+    a: "Yes — it is part of every engagement. We also run standalone AI Academy programmes: engineering bootcamps, educator workshops and AI-literacy sessions for leadership and staff.",
   },
 ];
 
 // Shown beside the contact form
 export const nextSteps = [
-  { title: "Engineer review", desc: `An engineer reads your enquiry and replies within ${company.responseTime}.` },
-  { title: "Discovery call", desc: "A short call to understand the task, the hardware and your constraints." },
+  { title: "Reply from an expert", desc: `An AI engineer reads your message and replies within ${company.responseTime}.` },
+  { title: "Discovery call", desc: "A short call about your learners, your content and your goals." },
   { title: "Proposal", desc: "A fixed-scope proposal with milestones and acceptance criteria." },
 ];
 
 export const companyFile = [
   { k: "Legal name", v: company.legalName },
   { k: "Entity", v: company.entity },
-  { k: "Discipline", v: company.discipline },
+  { k: "Focus", v: company.discipline },
   { k: "Engagements", v: company.engagements },
 ];
 
 export const stats = [
   { value: String(solutions.length), label: "Solution blueprints ready to adapt" },
+  { value: String(industries.length), label: "Learning audiences we build for" },
   { value: String(phases.length), label: "Delivery phases, discovery to support" },
-  { value: String(stackGroups.reduce((n, g) => n + g.items.length, 0)), label: "Tools across the robotics stack" },
-  { value: "100%", label: "Releases tested in simulation first" },
+  { value: String(stackGroups.reduce((n, g) => n + g.items.length, 0)), label: "Tools across the AI stack" },
 ];
 
 // ------------------------------------------------------------
@@ -478,40 +533,50 @@ export interface ImageCredit {
 }
 
 export const imageCredits: ImageCredit[] = [
-  { file: "cell-control.webp", subject: "Cell Control — robot arms in a smart factory", author: "Freepik", href: "https://www.magnific.com/free-ai-image/robotic-arms-modern-factory-setting_417567669.htm" },
-  { file: "fleet-orchestrator.webp", subject: "Fleet Orchestrator — mobile robots in a warehouse", author: "user6702303", href: "https://www.magnific.com/free-photo/robot-arm-picks-up-box-autonomous_18321474.htm" },
-  { file: "vision-inspection.webp", subject: "Vision Inspection — robot placing a chip", author: "Freepik", href: "https://www.magnific.com/free-ai-image/robotic-arm-placing-chip-circuit-board_420745227.htm" },
-  { file: "digital-twin.webp", subject: "Digital Twin — robot model on a laptop", author: "DC Studio", href: "https://www.magnific.com/free-photo/technician-managing-robotic-arms-conveyor-belts-smart-manufacturing-plant_418613798.htm" },
-  { file: "field-autonomy.webp", subject: "Field Autonomy — robot spraying crops", author: "user6702303", href: "https://www.magnific.com/free-photo/robot-spraying-fertilizer-vegetable-garden_65134569.htm" },
-  { file: "ops-console.webp", subject: "Robot Ops Console — monitoring workstation", author: "DC Studio", href: "https://www.magnific.com/free-photo/pc-monitoring-photovoltaics-factory-engineering-workspace_416930226.htm" },
-  { file: "ind-manufacturing.webp", subject: "Manufacturing — automotive assembly line", author: "usertrmk", href: "https://www.magnific.com/free-photo/car-bodies-are-assembly-line-factory-production-cars-modern-automotive-industry-electric-car-factory-conveyor_26151287.htm" },
-  { file: "ind-logistics.webp", subject: "Logistics — robot in a warehouse", author: "Freepik", href: "https://www.magnific.com/free-ai-image/delivery-robot-futuristic-environment_138544800.htm" },
-  { file: "ind-agriculture.webp", subject: "Agriculture — drone spraying a field", author: "user6702303", href: "https://www.magnific.com/free-photo/drone-spraying-fertilizer-vegetable-green-plants-agriculture-technology-farm-automation_36681035.htm" },
-  { file: "ind-energy.webp", subject: "Energy — quadruped robots", author: "user6702303", href: "https://www.magnific.com/free-photo/robot-dog-is-robot-factory_25514951.htm" },
-  { file: "company-lab.webp", subject: "Company — engineers building a robot", author: "frimufilms", href: "https://www.magnific.com/free-photo/young-man-woman-protective-glasses-doing-experiments-robotics-laboratory-robot_59151288.htm" },
-  { file: "cta-backdrop.webp", subject: "Solutions banner — robotic arm", author: "vecstock", href: "https://www.magnific.com/free-ai-image/futuristic-robotic-arm-controls-automated-steel-production-generated-by-ai_42597138.htm" },
+  { file: "sol-ai-tutor.webp", subject: "AI Tutor — students learning on a laptop", author: "jcomp", href: "https://www.magnific.com/free-photo/two-students-studying-together-online-with-laptop-park_2525704.htm" },
+  { file: "sol-assessment.webp", subject: "Assessment Assistant — teacher with a student", author: "Drazen Zigic", href: "https://www.magnific.com/free-photo/happy-black-teacher-schoolgirl-using-digital-tablet-classroom_26609427.htm" },
+  { file: "sol-analytics.webp", subject: "Learning Analytics — team reviewing data", author: "DC Studio", href: "https://www.magnific.com/free-photo/business-people-looking-documents-charts-laptop-using-financial-statistics-create-data-analysis-team-workers-planning-economy-presentation-together-doing-work-collaboration_25700886.htm" },
+  { file: "sol-content-studio.webp", subject: "Content Studio — learner with laptop and books", author: "Freepik", href: "https://www.magnific.com/free-photo/woman-taking-e-learning-courses_21828975.htm" },
+  { file: "sol-knowledge.webp", subject: "Knowledge Assistant — online learning at work", author: "Drazen Zigic", href: "https://www.magnific.com/free-photo/closeup-freelancer-learning-online-while-using-laptop-office_26346338.htm" },
+  { file: "sol-academy.webp", subject: "AI Academy — workplace training session", author: "Freepik", href: "https://www.magnific.com/free-photo/medium-shot-colleagues-learning-work_23404621.htm" },
+  { file: "aud-schools.webp", subject: "K-12 schools — students in class", author: "pressfoto", href: "https://www.magnific.com/free-photo/students-working-laptop-school_857862.htm" },
+  { file: "aud-universities.webp", subject: "Universities — students in a library", author: "garetsvisual", href: "https://www.magnific.com/free-photo/group-young-cheerful-students-joyfully-talking-while-studying-together-library-university_23177325.htm" },
+  { file: "aud-edtech.webp", subject: "EdTech — software engineers brainstorming", author: "DC Studio", href: "https://www.magnific.com/free-photo/team-software-engineers-doing-brainstorming-office_417798983.htm" },
+  { file: "aud-corporate.webp", subject: "Corporate learning — training workshop", author: "Freepik", href: "https://www.magnific.com/free-photo/medium-shot-people-learning-office_23404611.htm" },
+  { file: "company-team.webp", subject: "Company — team planning a project", author: "fabrikasimf", href: "https://www.magnific.com/free-photo/team-diverse-coworkers-modern-office-discuss-their-project-together_21130991.htm" },
+  { file: "company-learning.webp", subject: "Company — students with a laptop", author: "Freepik", href: "https://www.magnific.com/free-photo/students-with-laptop-medium-shot_13819167.htm" },
+  { file: "cta-backdrop.webp", subject: "Solutions banner — engineers and AI", author: "DC Studio", href: "https://www.magnific.com/free-photo/engineers-brainstorming-ways-use-ai_190325729.htm" },
+  { file: "team/martin.webp", subject: "Team portrait — Martin Keller (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/closeup-happy-middle-aged-business-leader_1304420.htm" },
+  { file: "team/kenji.webp", subject: "Team portrait — Kenji Watanabe (placeholder)", author: "DC Studio", href: "https://www.magnific.com/free-photo/portrait-happy-cto-manager-using-pc-startup-office-implement-algorithms_416761681.htm" },
+  { file: "team/mei.webp", subject: "Team portrait — Mei Lin Chen (placeholder)", author: "DC Studio", href: "https://www.magnific.com/free-photo/portrait-smiling-asian-software-developer-looking-camera-cloud-computing-development-agency-confident-programer-posing-happy-colleagues-working-big-data-office_26367495.htm" },
+  { file: "team/marcus.webp", subject: "Team portrait — Marcus Bello (placeholder)", author: "DC Studio", href: "https://www.magnific.com/free-photo/portrait-african-american-programer-sitting-down-working-laptop-arranging-glasses-looking-up-smiling-camera-system-engineer-using-portable-computer-computing-big-data_25498839.htm" },
+  { file: "team/sofia.webp", subject: "Team portrait — Sofia Marín (placeholder)", author: "wayhomestudio", href: "https://www.magnific.com/free-photo/young-woman-wearing-grey-turtleneck-eyeglasses_10228105.htm" },
+  { file: "team/hannah.webp", subject: "Team portrait — Hannah Lindqvist (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/young-businesswoman-portrait-office_993616.htm" },
+  { file: "team/amara.webp", subject: "Team portrait — Amara Nwosu (placeholder)", author: "partystock", href: "https://www.magnific.com/free-photo/portrait-woman-business-embrace-confidence-posing-beauty-black-african-american-isolated-gray-background_25767305.htm" },
+  { file: "team/owen.webp", subject: "Team portrait — Owen Brady (placeholder)", author: "drobotdean", href: "https://www.magnific.com/free-photo/cheerful-readhead-bearded-man-glasses-white-tshirt-holding-laptop-hands_7339019.htm" },
 ];
 
 // Suggested categories offered in the admin project form (you can type any category)
-export const suggestedCategories = ["Manufacturing", "Logistics", "Field robotics", "Healthcare", "Energy", "Agriculture"];
+export const suggestedCategories = ["Schools & universities", "EdTech", "Corporate learning", "Healthcare education", "Government"];
 
 export const navLinks = [
   { id: "services", label: "Services" },
-  { id: "industries", label: "Industries" },
   { id: "solutions", label: "Solutions" },
+  { id: "industries", label: "Who we serve" },
   { id: "process", label: "Process" },
-  { id: "company", label: "Company" },
+  { id: "team", label: "Team" },
   { id: "contact", label: "Contact" },
 ];
 
 // Footer site map (every section, including the ones not in the top bar)
 export const footerLinks = [
   { id: "services", label: "Services" },
-  { id: "industries", label: "Industries" },
   { id: "solutions", label: "Solutions" },
+  { id: "industries", label: "Who we serve" },
   { id: "process", label: "Process" },
   { id: "technology", label: "Technology" },
   { id: "company", label: "Company" },
+  { id: "team", label: "Team" },
   { id: "faq", label: "FAQ" },
   { id: "contact", label: "Contact" },
 ];

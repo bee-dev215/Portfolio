@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Plus } from "lucide-react";
+import { useState } from "react";
+import { Check } from "lucide-react";
 import { phases } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
 
@@ -9,146 +9,107 @@ function Activity({ text }: { text: string }) {
   return (
     <>
       <strong className="font-semibold text-ink">{text.slice(0, i)}</strong>
-      <span className="text-muted2"> — {text.slice(i + 2)}</span>
+      <span className="text-ink-2"> — {text.slice(i + 2)}</span>
     </>
   );
 }
 
-/** Fills a vertical rail as the list scrolls past the middle of the screen and lights up each phase's node. */
-function useScrollRail() {
-  const list = useRef<HTMLOListElement>(null);
-  const fill = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const el = list.current;
-    if (!el) return;
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const r = el.getBoundingClientRect();
-      const p = Math.max(0, Math.min(1, (window.innerHeight * 0.55 - r.top) / r.height));
-      if (fill.current) fill.current.style.transform = `scaleY(${p})`;
-      el.querySelectorAll<HTMLElement>("[data-node]").forEach((node) => {
-        // node.offsetTop is relative to its <li>, so add the <li>'s offset within the list
-        const top = (node.parentElement?.offsetTop ?? 0) + node.offsetTop;
-        node.dataset.active = String(top / r.height <= p);
-      });
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
-  return { list, fill };
-}
-
 export default function Process() {
-  const [open, setOpen] = useState<number | null>(0);
-  const { list, fill } = useScrollRail();
+  const [active, setActive] = useState(0);
+  const phase = phases[active];
 
   return (
-    <section id="process" className="px-5 py-24 sm:px-10 lg:px-14 lg:py-32">
-      <div className="mx-auto max-w-[1320px]">
+    <section id="process" className="band px-5 py-24 sm:px-8 lg:py-32">
+      <div className="mx-auto max-w-[1240px]">
         <SectionHeading
-          index="04"
           label="Process"
           title={
             <>
-              From first survey to <span className="glow-text text-beam">full production.</span>
+              From first idea to <span className="gradient-text">measurable impact.</span>
             </>
           }
         >
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted2">
-            Every engagement moves through {phases.length} phases, each with clear outputs and an acceptance gate — so you always know what is done, what is next and what you will receive.
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
+            Every engagement moves through {phases.length} phases, each with clear outputs and a decision point — so you always know what is done, what is next and what you will receive.
           </p>
         </SectionHeading>
 
-        <ol ref={list} className="relative mt-14 border-t border-line pl-7 sm:pl-10">
-          {/* progress rail */}
-          <span className="absolute bottom-0 left-[7px] top-0 w-px bg-ink/15 sm:left-[11px]" aria-hidden="true" />
-          <span
-            ref={fill}
-            className="absolute bottom-0 left-[6px] top-0 w-[3px] origin-top bg-signal glow-line transition-transform duration-200 ease-out sm:left-[10px]"
-            style={{ transform: "scaleY(0)" }}
-            aria-hidden="true"
-          />
-
-          {phases.map((phase, i) => {
-            const isOpen = open === i;
-            return (
-              <li key={phase.id} className="relative border-b border-line">
-                <span data-node className="rail-node absolute -left-7 top-9 sm:-left-9 sm:top-11" aria-hidden="true" />
-                <Reveal delay={i * 80} variant="left">
-                  <button
-                    onClick={() => setOpen(isOpen ? null : i)}
-                    aria-expanded={isOpen}
-                    className="group grid w-full grid-cols-[1fr_auto] items-start gap-4 py-7 text-left sm:grid-cols-[11rem_1fr_auto] sm:gap-8 sm:py-9"
-                  >
-                    <div className="col-span-2 font-code text-sm uppercase tracking-[0.18em] sm:col-span-1 sm:pt-2">
-                      <span className={isOpen ? "text-beam" : "text-muted2"}>Phase {String(i + 1).padStart(2, "0")}</span>
-                    </div>
-                    <div className="col-start-1 sm:col-start-2">
-                      <h3 className="font-display text-2xl font-semibold uppercase leading-tight tracking-wide transition-transform duration-300 group-hover:translate-x-1 sm:text-3xl">
-                        {phase.name}
-                      </h3>
-                      <p className="mt-1.5 font-medium text-ink/85">{phase.title}</p>
-                    </div>
-                    <span
-                      className={`key-dark grid h-10 w-10 shrink-0 place-items-center border transition-all duration-300 ${
-                        isOpen ? "rotate-45 border-signal bg-signal text-on-signal" : "border-line group-hover:border-signal group-hover:text-beam"
+        <div className="mt-14 grid gap-6 lg:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)]">
+          <Reveal variant="left">
+            <ol className="relative space-y-2" role="tablist" aria-label="Delivery phases" aria-orientation="vertical">
+              {/* progress rail */}
+              <span className="absolute bottom-8 left-[27px] top-8 w-px bg-line" aria-hidden="true" />
+              <span
+                className="bg-grad absolute left-[26px] top-8 w-[3px] rounded-full transition-all duration-500"
+                style={{ height: `calc(${(active / (phases.length - 1)) * 100}% - ${(active / (phases.length - 1)) * 64}px)` }}
+                aria-hidden="true"
+              />
+              {phases.map((p, i) => {
+                const isActive = i === active;
+                const done = i < active;
+                return (
+                  <li key={p.id}>
+                    <button
+                      role="tab"
+                      id={`phase-tab-${i}`}
+                      aria-selected={isActive}
+                      aria-controls="phase-panel"
+                      onClick={() => setActive(i)}
+                      className={`relative flex w-full items-center gap-4 rounded-2xl p-3 text-left transition-all duration-300 ${
+                        isActive ? "card" : "hover:bg-surface/70"
                       }`}
                     >
-                      <Plus className="h-5 w-5" />
-                    </span>
-                  </button>
+                      <span
+                        className={`relative z-[1] grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full text-sm font-bold transition-colors ${
+                          isActive ? "bg-grad text-white shadow-[0_8px_18px_-8px_rgb(var(--brand-rgb)/.8)]" : done ? "bg-brand-soft text-brand-text" : "border border-line bg-surface text-subtle"
+                        }`}
+                      >
+                        {done ? <Check className="h-4 w-4" /> : i + 1}
+                      </span>
+                      <span>
+                        <span className={`block font-display text-lg font-bold ${isActive ? "text-ink" : "text-ink-2"}`}>{p.name}</span>
+                        <span className="block text-sm text-subtle">{p.title}</span>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          </Reveal>
 
-                  <div className={`grid transition-all duration-500 ease-out ${isOpen ? "exp-open grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-                    <div className="overflow-hidden">
-                      <div className="pb-10 sm:grid sm:grid-cols-[11rem_1fr] sm:gap-8">
-                        <div className="hidden sm:block" />
-                        <div>
-                          <p className="max-w-2xl text-lg leading-relaxed">{phase.summary}</p>
-                          <ul className="mt-6 space-y-3.5">
-                            {phase.activities.map((a, ai) => (
-                              <li key={a} className="exp-item flex gap-3 leading-relaxed" style={{ ["--i" as string]: ai }}>
-                                <span className="mt-2.5 h-2 w-2 shrink-0 rotate-45 bg-signal" />
-                                <span>
-                                  <Activity text={a} />
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                          <div className="mt-7 flex flex-wrap items-center gap-2">
-                            <span className="exp-item mr-1 font-code text-[11px] uppercase tracking-[0.18em] text-muted2" style={{ ["--i" as string]: phase.activities.length }}>
-                              Outputs
-                            </span>
-                            {phase.outputs.map((t, ti) => (
-                              <span
-                                key={t}
-                                className="exp-item key-dark cut-sm border border-line bg-paper px-3 py-1.5 font-code text-xs text-ink/90"
-                                style={{ ["--i" as string]: phase.activities.length + ti * 0.5 }}
-                              >
-                                {t}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Reveal>
-              </li>
-            );
-          })}
-        </ol>
+          <Reveal variant="right" delay={100}>
+            <div id="phase-panel" role="tabpanel" aria-labelledby={`phase-tab-${active}`} className="card relative h-full overflow-hidden p-7 sm:p-10">
+              <div className="bg-grad pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full opacity-[.12] blur-3xl" />
+              <div key={phase.id} className="msg-in relative">
+                <p className="text-sm font-semibold text-brand-text">
+                  Phase {String(active + 1).padStart(2, "0")} of {String(phases.length).padStart(2, "0")}
+                </p>
+                <h3 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{phase.name}</h3>
+                <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-2">{phase.summary}</p>
+                <ul className="mt-7 space-y-4">
+                  {phase.activities.map((a) => (
+                    <li key={a} className="flex gap-3 leading-relaxed">
+                      <span className="bg-grad mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full text-white">
+                        <Check className="h-3 w-3" />
+                      </span>
+                      <span>
+                        <Activity text={a} />
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8 flex flex-wrap items-center gap-2 border-t border-line pt-6">
+                  <span className="mr-1 text-xs font-semibold uppercase tracking-wider text-subtle">You receive</span>
+                  {phase.outputs.map((t) => (
+                    <span key={t} className="chip border-brand/20 bg-brand-soft text-brand-text">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

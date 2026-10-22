@@ -1,13 +1,12 @@
 import { ReactNode } from "react";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { company, footerLinks, legalLinks, openSolution, scrollToId, socials, solutions, startEnquiry } from "@/data/company";
 import { Monogram } from "./Navbar";
 import SocialIcon from "./SocialIcon";
 
-const linkCls = "u-link font-display text-sm font-medium uppercase tracking-wide text-ink/75 transition-colors hover:text-beam";
-const ctaCls = "u-link font-display text-sm font-medium uppercase tracking-wide text-beam transition-colors hover:text-beam-hi";
-const headCls = "font-code text-[10px] uppercase tracking-[0.2em] text-muted2";
+const linkCls = "text-sm text-ink-2 transition-colors hover:text-brand-text";
+const headCls = "text-xs font-semibold uppercase tracking-wider text-subtle";
 
 /** On the home page, acts in place; elsewhere (legal pages), navigates home to the section. */
 function HomeAction({ section, onHome, className, children }: { section: string; onHome: () => void; className: string; children: ReactNode }) {
@@ -26,38 +25,40 @@ function HomeAction({ section, onHome, className, children }: { section: string;
 export default function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="relative border-t border-line bg-paper px-5 pb-8 pt-16 sm:px-10 lg:px-14">
-      <div className="hazard pointer-events-none absolute inset-x-0 top-0 h-1 opacity-40" />
-      <div className="mx-auto max-w-[1320px]">
-        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_0.9fr]">
-          {/* Identity & contact */}
+    <footer className="relative border-t border-line bg-surface px-5 pb-8 pt-16 sm:px-8">
+      <div className="mx-auto max-w-[1240px]">
+        {/* CTA strip */}
+        <div className="grad-border flex flex-col items-start justify-between gap-6 rounded-3xl bg-brand-soft/60 p-7 sm:flex-row sm:items-center sm:p-9">
           <div>
-            <div className="flex items-center gap-3">
+            <p className="font-display text-2xl font-extrabold tracking-tight">Ready to bring AI into your learning experience?</p>
+            <p className="mt-1 text-ink-2">Book a free discovery call — we reply within {company.responseTime}.</p>
+          </div>
+          <HomeAction section="contact" onHome={() => startEnquiry()} className="btn btn-primary shrink-0 px-6 py-3">
+            Start a project <ArrowUpRight className="h-4 w-4" />
+          </HomeAction>
+        </div>
+
+        <div className="mt-14 grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_0.9fr]">
+          <div>
+            <div className="flex items-center gap-2.5">
               <Monogram />
-              <p className="font-display text-2xl font-bold uppercase tracking-wide">
-                {company.legalName}
-                <span className="text-beam">.</span>
-              </p>
+              <p className="font-display text-xl font-extrabold tracking-tight">{company.legalName}</p>
             </div>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted2">
-              {company.discipline} — motion, perception and fleet software, from simulation to the factory floor.
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-2">
+              {company.discipline} — AI tutors, assessment, analytics and training for the organisations that teach.
             </p>
             <ul className="mt-6 space-y-2.5">
               {socials.map((s) => (
                 <li key={s.key}>
-                  <a href={s.href} className="group inline-flex items-center gap-3 text-sm text-ink/85 transition-colors hover:text-beam">
-                    <SocialIcon name={s.key} className="h-4 w-4 text-beam" />
-                    <span className="u-link">{s.handle}</span>
+                  <a href={s.href} className="inline-flex items-center gap-2.5 text-sm text-ink-2 transition-colors hover:text-brand-text">
+                    <SocialIcon name={s.key} className="h-4 w-4 text-brand-text" />
+                    {s.handle}
                   </a>
                 </li>
               ))}
             </ul>
-            <p className="mt-6 flex items-center gap-2 font-code text-[10px] uppercase tracking-[0.2em] text-muted2">
-              <span className="led" /> {company.availability}
-            </p>
           </div>
 
-          {/* Site map */}
           <nav aria-label="Footer">
             <p className={headCls}>Explore</p>
             <ul className="mt-4 space-y-2.5">
@@ -85,13 +86,8 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className={headCls}>Company</p>
+            <p className={headCls}>Legal</p>
             <ul className="mt-4 space-y-2.5">
-              <li>
-                <HomeAction section="contact" onHome={() => startEnquiry()} className={ctaCls}>
-                  Start a project
-                </HomeAction>
-              </li>
               {legalLinks.map((l) => (
                 <li key={l.to}>
                   <Link to={l.to} className={linkCls}>
@@ -108,21 +104,15 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-line pt-6 text-xs text-muted2 sm:flex-row sm:items-center">
+        <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-line pt-6 text-sm text-subtle sm:flex-row sm:items-center">
           <p>
             © {year} {company.legalName}. All rights reserved.
           </p>
-          <p className="font-code uppercase tracking-wider">
-            // End of transmission ·{" "}
-            <Link to="/admin" className="transition-colors hover:text-beam">
-              Admin
-            </Link>
-          </p>
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="press key-dark group flex items-center gap-2 border border-line px-4 py-2 font-display text-xs font-medium uppercase tracking-wide text-ink/80 hover:border-signal hover:text-beam"
-          >
-            Back to top <ArrowUp className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-y-1" />
+          <Link to="/admin" className="transition-colors hover:text-brand-text">
+            Admin
+          </Link>
+          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="btn btn-secondary px-4 py-2 text-xs">
+            Back to top <ArrowUp className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>

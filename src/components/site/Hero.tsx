@@ -1,163 +1,65 @@
-import { useEffect, useRef } from "react";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, CheckCircle2, PlayCircle, Sparkles } from "lucide-react";
 import { company, scrollToId, startEnquiry, ticker } from "@/data/company";
-import { prefersReducedMotion } from "@/hooks/use-motion";
-import RobotArm from "./RobotArm";
-import ScrambleText from "./ScrambleText";
-import VelocityTicker from "./VelocityTicker";
+import TutorDemo from "./TutorDemo";
 
-const GRID = 56; // matches .bp-grid's cell size
-const pad4 = (n: number) => String(Math.round(n)).padStart(4, "0");
-
-const specs = [
-  { k: "Company", v: company.legalName },
-  { k: "Discipline", v: company.discipline },
-  { k: "Domains", v: "Motion · Perception · Fleets" },
-  { k: "Core stack", v: "ROS 2 · C++ · Python · Rust" },
-  { k: "Simulation", v: "Isaac Sim · Gazebo · MuJoCo" },
-  { k: "Engagements", v: "Build · Integrate · Operate" },
-];
-
-/** Splits a word into letters that rise one after another. */
-function Letters({ text, delay, className = "" }: { text: string; delay: number; className?: string }) {
-  return (
-    <span className={`mask-line ${className}`}>
-      <span className="sr-only">{text}</span>
-      {Array.from(text).map((ch, i) => (
-        <span key={i} aria-hidden="true" className="ch" style={{ animationDelay: `${delay + i * 0.045}s`, ["--i" as string]: i }}>
-          {ch}
-        </span>
-      ))}
-    </span>
-  );
-}
+const promises = ["Model-agnostic", "Privacy-first", "LMS-ready"];
 
 export default function Hero() {
-  const section = useRef<HTMLElement>(null);
-  const coords = useRef<HTMLSpanElement>(null);
-  const snap = useRef<HTMLSpanElement>(null);
-
-  // Pointer coordinate readout, plus a crosshair that snaps to the nearest node of the machine grid
-  useEffect(() => {
-    const el = section.current;
-    if (!el || prefersReducedMotion()) return;
-    let raf = 0;
-    const onMove = (e: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      const x = e.clientX - r.left;
-      const y = e.clientY - r.top;
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        if (coords.current) coords.current.textContent = `X ${pad4(x)} · Y ${pad4(y)}`;
-        if (snap.current) {
-          snap.current.style.transform = `translate3d(${Math.round(x / GRID) * GRID}px, ${Math.round(y / GRID) * GRID}px, 0)`;
-          snap.current.style.opacity = "1";
-        }
-      });
-    };
-    const onLeave = () => {
-      cancelAnimationFrame(raf);
-      if (snap.current) snap.current.style.opacity = "0";
-    };
-    el.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerleave", onLeave);
-    return () => {
-      cancelAnimationFrame(raf);
-      el.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerleave", onLeave);
-    };
-  }, []);
-
   return (
-    <section ref={section} className="hero relative overflow-hidden">
-      <div className="bp-grid pointer-events-none absolute inset-0" />
+    <section className="relative overflow-hidden pb-10 pt-28 sm:pt-32 lg:pt-40">
+      <div className="mesh pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div className="dot-grid pointer-events-none absolute inset-0" aria-hidden="true" />
 
-      {/* machine-shop decor */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden md:block">
-        <div className="spin-step absolute left-[44%] top-[10%] h-20 w-20 rounded-full border border-dashed border-signal/30">
-          <div className="absolute inset-3 rounded-full border border-ink/15" />
-          <span className="absolute left-1/2 top-0 h-2 w-px -translate-x-1/2 bg-signal" />
-        </div>
-        <span ref={snap} className="crosshair hero-snap" />
-      </div>
+      <div className="relative mx-auto grid max-w-[1240px] items-center gap-16 px-5 sm:px-8 lg:grid-cols-[1.05fr_.95fr] lg:gap-12">
+        <div>
+          <p className="fade-up eyebrow" style={{ animationDelay: ".05s" }}>
+            <Sparkles className="h-3.5 w-3.5" /> {company.discipline}
+          </p>
+          <h1 className="fade-up mt-6 font-display text-[clamp(2.75rem,7vw,4.75rem)] font-extrabold leading-[1.02] tracking-tight" style={{ animationDelay: ".12s" }}>
+            AI that helps people <span className="gradient-text">learn better.</span>
+          </h1>
+          <p className="fade-up mt-6 max-w-xl text-lg leading-relaxed text-ink-2" style={{ animationDelay: ".2s" }}>
+            {company.tagline}
+          </p>
 
-      <div className="relative mx-auto max-w-[1320px] px-5 pb-14 pt-10 sm:px-10 lg:px-14 lg:pb-16 lg:pt-14">
-        <p className="fade-up flex items-center font-code text-xs uppercase tracking-[0.25em] text-muted2" style={{ animationDelay: ".1s" }}>
-          <span className="draw-x mr-3 inline-block h-px w-10 bg-signal" style={{ animationDelay: ".1s" }} />
-          <ScrambleText text={`${company.legalName} · ${new Date().getFullYear()} · Sys online`} delay={150} duration={800} />
-          <span ref={coords} className="ml-auto hidden font-code text-[11px] tracking-[0.2em] text-muted2/80 lg:inline" aria-hidden="true">
-            X 0000 · Y 0000
-          </span>
-        </p>
-
-        <div className="mt-10 grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14">
-          <div>
-            <p className="fade-up font-code text-sm text-beam" style={{ animationDelay: ".15s" }}>
-              &gt; gkt deploy --env production<span className="blink">_</span>
-            </p>
-            <h1 className="mt-5 font-display font-bold uppercase leading-[0.88] tracking-tight text-[clamp(3.2rem,12vw,7rem)] lg:text-[clamp(3rem,8vw,7rem)]">
-              <Letters text="Robotics" delay={0.15} className="extrude" />
-              <Letters text="Software" delay={0.35} className="text-outline wave-fill extrude" />
-            </h1>
-
-            <div className="mt-8 flex items-center gap-3">
-              <div className="draw-x h-1.5 w-32 bg-signal glow-line sm:w-44" />
-              <div className="draw-x hazard h-1.5 w-20 opacity-60" style={{ animationDelay: ".7s" }} />
-            </div>
-
-            <p className="fade-up mt-8 font-display text-2xl font-semibold uppercase tracking-wide sm:text-3xl" style={{ animationDelay: ".55s" }}>
-              <ScrambleText text="For machines that move" delay={600} duration={1000} replayOnHover />
-            </p>
-            <p className="fade-up mt-5 max-w-xl text-lg leading-relaxed text-muted2" style={{ animationDelay: ".7s" }}>
-              {company.tagline}
-            </p>
-
-            <div className="fade-up mt-9 flex flex-wrap gap-3" style={{ animationDelay: ".85s" }}>
-              <button
-                onClick={() => scrollToId("services")}
-                className="press btn-signal cut-sm group inline-flex items-center gap-2 bg-signal px-6 py-3.5 font-display text-sm font-semibold uppercase tracking-wide text-on-signal hover:bg-signal-hi"
-              >
-                Explore services
-                <ArrowDownRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              </button>
-              <button
-                onClick={() => startEnquiry()}
-                className="press key-dark group inline-flex items-center gap-2 border border-line bg-paper/40 px-6 py-3.5 font-display text-sm font-semibold uppercase tracking-wide hover:border-signal hover:text-beam"
-              >
-                Start a project
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </button>
-            </div>
+          <div className="fade-up mt-9 flex flex-wrap gap-3" style={{ animationDelay: ".28s" }}>
+            <button onClick={() => startEnquiry()} className="btn btn-primary px-7 py-3.5">
+              Start a project <ArrowRight className="h-4 w-4" />
+            </button>
+            <button onClick={() => scrollToId("solutions")} className="btn btn-secondary px-7 py-3.5">
+              <PlayCircle className="h-4 w-4" /> Explore solutions
+            </button>
           </div>
 
-          <div className="fade-up" style={{ animationDelay: ".9s" }}>
-            <RobotArm />
-            <p className="mt-3 hidden font-code text-[10px] uppercase tracking-[0.2em] text-muted2 lg:block">
-              Move the cursor to steer · hold click to grab the crate, release to throw
-            </p>
-          </div>
-        </div>
-
-        {/* Telemetry strip, standing on the factory floor */}
-        <div className="relative mt-14">
-          <div className="floor3d" aria-hidden="true">
-            <div />
-          </div>
-          <dl className="fade-up plate relative grid grid-cols-1 border-l border-t border-line bg-paper-2/80 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6" style={{ animationDelay: "1.05s" }}>
-            {specs.map((s, i) => (
-              <div key={s.k} className="spec-row group border-b border-r border-line px-5 py-4 transition-colors hover:bg-paper-3" style={{ animationDelay: `${1.15 + i * 0.08}s` }}>
-                <dt className="flex items-center gap-2 font-code text-[10px] uppercase tracking-[0.2em] text-muted2">
-                  <span className="text-beam">{String(i + 1).padStart(2, "0")}</span>
-                  {s.k}
-                </dt>
-                <dd className="mt-1.5 text-sm font-medium transition-colors group-hover:text-beam-hi">{s.v}</dd>
-              </div>
+          <ul className="fade-up mt-9 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-ink-2" style={{ animationDelay: ".36s" }}>
+            {promises.map((p) => (
+              <li key={p} className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-brand-text" /> {p}
+              </li>
             ))}
-          </dl>
+          </ul>
+        </div>
+
+        <div className="fade-up" style={{ animationDelay: ".3s" }}>
+          <TutorDemo />
         </div>
       </div>
 
-      <VelocityTicker items={ticker} />
+      {/* capabilities marquee */}
+      <div className="marquee-host relative mt-20 overflow-hidden border-y border-line bg-surface/50 py-4 [mask-image:linear-gradient(to_right,transparent,#000_10%,#000_90%,transparent)]" aria-hidden="true">
+        <div className="marquee flex w-max">
+          {[0, 1].map((n) => (
+            <div key={n} className="flex shrink-0 items-center gap-10 pr-10">
+              {ticker.map((t) => (
+                <span key={t} className="flex items-center gap-10 whitespace-nowrap font-display text-base font-semibold text-ink-2">
+                  {t}
+                  <Sparkles className="h-4 w-4 text-brand-text/60" />
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

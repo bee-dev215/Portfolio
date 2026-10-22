@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 export type SiteTheme = "light" | "dark";
 
 const KEY = "gkt-theme"; // also read by the pre-paint script in index.html
-const BROWSER_BAR: Record<SiteTheme, string> = { light: "#eef2f5", dark: "#070b0f" };
+const BROWSER_BAR: Record<SiteTheme, string> = { light: "#f7f8fc", dark: "#080b18" };
 
 const current = (): SiteTheme => (document.documentElement.dataset.theme === "dark" ? "dark" : "light");
 

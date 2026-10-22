@@ -1,71 +1,62 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Check } from "lucide-react";
 import { industries, openSolution } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
 
 export default function Industries() {
   return (
-    <section id="industries" className="px-5 py-24 sm:px-10 lg:px-14 lg:py-32">
-      <div className="mx-auto max-w-[1320px]">
+    <section id="industries" className="px-5 py-24 sm:px-8 lg:py-32">
+      <div className="mx-auto max-w-[1240px]">
         <SectionHeading
-          index="02"
-          label="Industries"
+          label="Who we serve"
           title={
             <>
-              Where robots <span className="glow-text text-beam">do real work.</span>
+              Built for the people <span className="gradient-text">who teach and learn.</span>
             </>
           }
         >
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted2">
-            Production lines, busy warehouses, open fields and live plants — the places where a robot has to perform every shift, not just in the demo.
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
+            From the classroom to the boardroom — we understand how each kind of learning organisation works, and build AI that fits it.
           </p>
         </SectionHeading>
 
         <div className="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
           {industries.map((ind, i) => (
             <Reveal key={ind.key} delay={i * 90} className="h-full">
-              <article className="plate hud group relative flex h-full flex-col border border-line bg-paper-2/80 hover:border-signal/50">
-                <div className="on-dark img-wipe photo-cast relative aspect-[4/3] overflow-hidden border-b border-line bg-paper-3 xl:aspect-[4/5]">
-                  <div className="img-zoom h-full w-full">
-                    <img src={ind.image} alt={ind.imageAlt} loading="lazy" width={900} height={1125} className="photo h-full w-full object-cover" />
-                  </div>
-                  <span className="photo-fade absolute inset-0" aria-hidden="true" />
-                  <span className="img-scan absolute inset-0" aria-hidden="true" />
-                  <span className="absolute left-0 top-0 z-[2] border-b border-r border-line bg-paper/85 px-3 py-1.5 font-code text-xs text-beam backdrop-blur">
-                    IND-{String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="absolute inset-x-0 bottom-0 z-[2] p-5">
-                    <h3 className="extrude-sm font-display text-2xl font-semibold uppercase leading-tight tracking-wide">{ind.title}</h3>
-                    <p className="mt-1 font-code text-[11px] uppercase tracking-wider text-ink/75">{ind.focus}</p>
+              <article className="card card-hover group flex h-full flex-col overflow-hidden">
+                <div className="relative aspect-[4/3] overflow-hidden bg-raised xl:aspect-[4/5]">
+                  <img src={ind.image} alt={ind.imageAlt} loading="lazy" width={392} height={490} className="img-zoom h-full w-full object-cover" />
+                  <div className="photo-fade absolute inset-0" aria-hidden="true" />
+                  <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                    <h3 className="font-display text-2xl font-bold leading-tight tracking-tight">{ind.title}</h3>
+                    <p className="mt-1 text-xs font-medium text-white/80">{ind.focus}</p>
                   </div>
                 </div>
 
                 <div className="flex flex-1 flex-col p-5 sm:p-6">
-                  <p className="text-[15px] leading-relaxed text-muted2">{ind.desc}</p>
+                  <p className="text-[15px] leading-relaxed text-ink-2">{ind.desc}</p>
                   <ul className="mt-5 space-y-2.5">
                     {ind.work.map((w) => (
-                      <li key={w} className="flex items-center gap-3 text-sm text-ink/90">
-                        <span className="h-1.5 w-1.5 shrink-0 rotate-45 bg-signal" />
+                      <li key={w} className="flex items-center gap-2.5 text-sm text-ink">
+                        <Check className="h-4 w-4 shrink-0 text-brand-text" />
                         {w}
                       </li>
                     ))}
                   </ul>
                   <div className="mt-auto pt-6">
-                    <p className="font-code text-[10px] uppercase tracking-[0.2em] text-muted2">Related solutions</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-subtle">Related solutions</p>
                     <div className="mt-2.5 flex flex-wrap gap-1.5">
                       {ind.solutions.map((t) => (
                         <button
                           key={t}
                           onClick={() => openSolution(t)}
-                          className="press key-dark group/sol inline-flex items-center gap-1 border border-line bg-paper/60 px-2.5 py-1.5 font-code text-[11px] text-ink/85 hover:border-signal hover:text-beam"
+                          className="chip transition-colors hover:border-brand/40 hover:bg-brand-soft hover:text-brand-text"
                         >
-                          {t}
-                          <ArrowUpRight className="h-3 w-3 transition-transform group-hover/sol:-translate-y-px group-hover/sol:translate-x-px" />
+                          {t} <ArrowUpRight className="h-3 w-3" />
                         </button>
                       ))}
                     </div>
                   </div>
                 </div>
-                <span className="glow-line absolute inset-x-0 bottom-0 h-[2px] origin-left scale-x-0 bg-signal transition-transform duration-300 [transition-timing-function:var(--ease-servo)] group-hover:scale-x-100" />
               </article>
             </Reveal>
           ))}
