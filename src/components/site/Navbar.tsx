@@ -414,12 +414,11 @@ export default function Navbar() {
                                   onClick={close}
                                   className={`flex h-full w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left transition-colors ${peek === i ? "bg-raised" : ""}`}
                                 >
-                                  {Icon ? (
+                                  {/* Photos show only in the preview column */}
+                                  {Icon && (
                                     <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition-colors ${peek === i ? "bg-grad text-white" : "bg-brand-soft text-brand-text"}`}>
                                       <Icon className="h-[18px] w-[18px]" />
                                     </span>
-                                  ) : (
-                                    it.image && <img src={it.image} alt="" width={40} height={40} className="h-10 w-10 shrink-0 rounded-xl bg-raised object-cover" />
                                   )}
                                   <span className="min-w-0">
                                     <span className={`block font-display text-[15px] font-bold leading-snug transition-colors ${peek === i ? "text-brand-text" : ""}`}>{it.label}</span>
