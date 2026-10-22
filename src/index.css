@@ -405,6 +405,12 @@ html[data-theme="dark"] .site-root, .on-dark {
 .fade-up { opacity: 0; transform: translateY(16px); animation: fadeup .8s var(--ease) forwards; }
 @keyframes fadeup { to { opacity: 1; transform: none; } }
 
+/* Top-bar menus: the panel drops in when opened; switching menus or items cross-fades the content */
+.mega-in { animation: mega-in .22s var(--ease) both; }
+@keyframes mega-in { from { opacity: 0; transform: translateY(-6px); } }
+.mega-swap { animation: mega-swap .25s var(--ease) both; }
+@keyframes mega-swap { from { opacity: 0; } }
+
 /* Staggered children (set --i on each child) */
 .stagger > * { opacity: 0; transform: translateY(8px); }
 .rv-in .stagger > *, .stagger.is-in > * { animation: fadeup .5s var(--ease) forwards; animation-delay: calc(var(--rv-delay, 0ms) + 150ms + var(--i, 0) * 50ms); }
@@ -497,7 +503,7 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
   .wordmark-fill { mask-size: 160% 100%; -webkit-mask-size: 160% 100%; transition: none; animation: none !important; }
   .img-zoom, .card-hover, .btn { transition: none; }
   .group:hover .img-zoom, .card-hover:hover { transform: none; }
-  .marquee, .live-dot::after, .caret::after, .typing > i, .msg-in, .bar-grow, .modal-in, .kenburns { animation: none; }
+  .marquee, .live-dot::after, .caret::after, .typing > i, .msg-in, .bar-grow, .modal-in, .kenburns, .mega-in, .mega-swap { animation: none; }
   .viewer-rise > * { opacity: 1; transform: none; animation: none; }
   .stack-inner, .stack-num, .stack-item { transform: none; translate: none; opacity: 1; transition: none; }
   .sol-panel, .sol-panel-img, .sol-panel-tint, .sol-panel-spine, .sol-panel-body > * { clip-path: none; transition: none; }

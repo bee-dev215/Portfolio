@@ -1,9 +1,8 @@
-import { ArrowUpRight, Bot, Cable, GraduationCap, LucideIcon, Rocket } from "lucide-react";
-import { company, ServiceKey, services, startEnquiry, stats } from "@/data/company";
+import { ArrowUpRight } from "lucide-react";
+import { company, services, startEnquiry, stats } from "@/data/company";
 import CountUp from "./CountUp";
+import { serviceIcons } from "./icons";
 import Reveal, { SectionHeading } from "./Reveal";
-
-const icons: Record<ServiceKey, LucideIcon> = { build: Rocket, llm: Bot, platform: Cable, academy: GraduationCap };
 
 export default function Services() {
   return (
@@ -29,7 +28,7 @@ export default function Services() {
 
         <div className="mt-14 grid gap-5 md:grid-cols-2">
           {services.map((s, i) => {
-            const Icon = icons[s.key];
+            const Icon = serviceIcons[s.key];
             return (
               <Reveal key={s.key} delay={i * 80} className="h-full">
                 <article className="card card-hover group relative flex h-full flex-col overflow-hidden p-7 sm:p-9">

@@ -22,7 +22,7 @@ export default function Industries() {
         <div className="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
           {industries.map((ind, i) => (
             <Reveal key={ind.key} delay={i * 90} className="h-full">
-              <article className="card card-hover group flex h-full flex-col overflow-hidden">
+              <article id={`audience-${ind.key}`} className="card card-hover group flex h-full scroll-mt-24 flex-col overflow-hidden">
                 <div className="unveil relative aspect-[4/3] overflow-hidden bg-raised xl:aspect-[4/5]">
                   <img src={ind.image} alt={ind.imageAlt} loading="lazy" width={392} height={490} className="img-zoom h-full w-full object-cover" />
                   <div className="photo-fade absolute inset-0" aria-hidden="true" />

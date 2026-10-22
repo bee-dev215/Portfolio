@@ -53,6 +53,7 @@ export interface Service {
   title: string;
   desc: string;
   includes: string[];
+  image: string; // preview photo in the top-bar menu
 }
 
 export const services: Service[] = [
@@ -61,24 +62,28 @@ export const services: Service[] = [
     title: "AI product engineering",
     desc: "Full-stack AI products from first prototype to production — web and mobile apps, APIs, and the evaluation pipelines that keep models honest.",
     includes: ["Rapid prototyping", "Full-stack apps", "Evals & monitoring"],
+    image: "/images/cta-backdrop.webp",
   },
   {
     key: "llm",
     title: "LLM & RAG solutions",
     desc: "Assistants grounded in your own content — curricula, course material, policies — with citations, guardrails and role-based access.",
     includes: ["Retrieval (RAG)", "Agents & tools", "Guardrails"],
+    image: "/images/sol-knowledge.webp",
   },
   {
     key: "platform",
     title: "Learning platform integration",
     desc: "AI features inside the systems you already use — Canvas, Moodle, Google Classroom or your own platform — connected through LTI and open standards.",
     includes: ["LTI 1.3", "LMS plugins", "Data pipelines"],
+    image: "/images/sol-analytics.webp",
   },
   {
     key: "academy",
     title: "AI training & upskilling",
     desc: "Hands-on courses and workshops that teach your engineers, educators and staff to build with AI and to use it responsibly.",
     includes: ["Engineering bootcamps", "Educator workshops", "AI literacy"],
+    image: "/images/sol-academy.webp",
   },
 ];
 
@@ -562,13 +567,28 @@ export const imageCredits: ImageCredit[] = [
 // Suggested categories offered in the admin project form (you can type any category)
 export const suggestedCategories = ["Schools & universities", "EdTech", "Corporate learning", "Healthcare education", "Government"];
 
-export const navLinks = [
-  { id: "services", label: "Services" },
-  { id: "solutions", label: "Solutions" },
-  { id: "industries", label: "Who we serve" },
-  { id: "process", label: "Process" },
-  { id: "team", label: "Team" },
-  { id: "contact", label: "Contact" },
+// ------------------------------------------------------------
+//  Top-bar menus. Solutions, Services and Who we serve list the data above;
+//  the Company menu is set here. Hovering an item previews it on the right.
+// ------------------------------------------------------------
+
+export type CompanyMenuKey = "about" | "process" | "technology" | "team" | "faq" | "contact";
+
+export interface CompanyMenuItem {
+  key: CompanyMenuKey;
+  label: string;
+  desc: string;
+  section: string; // id of the section it scrolls to
+  image?: string; // preview photo; Team and Contact draw their own preview
+}
+
+export const companyMenu: CompanyMenuItem[] = [
+  { key: "about", label: "About", desc: "Who we are and what we stand for.", section: "company", image: "/images/company-team.webp" },
+  { key: "process", label: "How we work", desc: "Five phases, from discovery to long-term support.", section: "process", image: "/images/aud-edtech.webp" },
+  { key: "technology", label: "Technology", desc: "The models, frameworks and learning standards we build with.", section: "technology", image: "/images/cta-backdrop.webp" },
+  { key: "team", label: "Team", desc: "The engineers and educators who design and build it.", section: "team" },
+  { key: "faq", label: "Questions", desc: "Answers for anyone deciding whether to get in touch.", section: "faq", image: "/images/company-learning.webp" },
+  { key: "contact", label: "Contact", desc: `Tell us about your learners — we reply within ${company.responseTime}.`, section: "contact" },
 ];
 
 // Footer site map (every section, including the ones not in the top bar)

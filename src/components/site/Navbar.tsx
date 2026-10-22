@@ -1,6 +1,19 @@
-import { useEffect, useState } from "react";
-import { ArrowRight, Menu, X } from "lucide-react";
-import { company, navLinks, scrollToId, startEnquiry } from "@/data/company";
+import { FocusEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { ArrowRight, Building2, ChevronDown, Cpu, HelpCircle, LucideIcon, Mail, Menu, Phone, Route, Users, X } from "lucide-react";
+import {
+  company,
+  companyMenu,
+  CompanyMenuKey,
+  footerLinks,
+  industries,
+  openSolution,
+  scrollToId,
+  services,
+  solutions,
+  startEnquiry,
+  team,
+} from "@/data/company";
+import { serviceIcons } from "./icons";
 import ThemeToggle from "./ThemeToggle";
 
 function useScrollState() {
@@ -13,7 +26,7 @@ function useScrollState() {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       document.documentElement.style.setProperty("--progress", max > 0 ? (window.scrollY / max).toFixed(4) : "0");
       let current = "";
-      for (const l of navLinks) {
+      for (const l of footerLinks) {
         const el = document.getElementById(l.id);
         if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.35) current = l.id;
       }
@@ -41,19 +54,250 @@ export const Monogram = ({ className = "h-9 w-9" }: { className?: string }) => (
   </span>
 );
 
+// ------------------------------------------------------------
+//  Menus, built from the site data
+// ------------------------------------------------------------
+
+const companyIcons: Record<CompanyMenuKey, LucideIcon> = { about: Building2, process: Route, technology: Cpu, team: Users, faq: HelpCircle, contact: Mail };
+
+interface MenuItem {
+  key: string;
+  label: string;
+  desc: string; // short line under the label
+  blurb: string; // longer text in the preview
+  image?: string;
+  preview?: "team" | "contact"; // drawn previews for items without a photo
+  icon?: LucideIcon;
+  run: () => void;
+}
+
+interface MenuGroup {
+  key: string;
+  label: string;
+  sections: string[]; // the trigger lights up while one of these is in view
+  all: { label: string; section: string };
+  items: MenuItem[];
+}
+
+const menus: MenuGroup[] = [
+  {
+    key: "solutions",
+    label: "Solutions",
+    sections: ["solutions"],
+    all: { label: `All ${solutions.length} solutions`, section: "solutions" },
+    items: solutions.map((s) => ({
+      key: `solution-${s.id}`,
+      label: s.title,
+      desc: s.domain,
+      blurb: s.summary,
+      image: s.image,
+      run: () => openSolution(s.title),
+    })),
+  },
+  {
+    key: "services",
+    label: "Services",
+    sections: ["services"],
+    all: { label: `All ${services.length} services`, section: "services" },
+    items: services.map((s) => ({
+      key: `service-${s.key}`,
+      label: s.title,
+      desc: s.includes.join(" · "),
+      blurb: s.desc,
+      image: s.image,
+      icon: serviceIcons[s.key],
+      run: () => scrollToId("services"),
+    })),
+  },
+  {
+    key: "audiences",
+    label: "Who we serve",
+    sections: ["industries"],
+    all: { label: `All ${industries.length} audiences`, section: "industries" },
+    items: industries.map((ind) => ({
+      key: `audience-${ind.key}`,
+      label: ind.title,
+      desc: ind.focus,
+      blurb: ind.desc,
+      image: ind.image,
+      run: () => scrollToId(`audience-${ind.key}`),
+    })),
+  },
+  {
+    key: "company",
+    label: "Company",
+    sections: companyMenu.map((c) => c.section),
+    all: { label: "About the company", section: "company" },
+    items: companyMenu.map((c) => ({
+      key: `company-${c.key}`,
+      label: c.label,
+      desc: c.desc,
+      blurb: c.desc,
+      image: c.image,
+      preview: c.key === "team" || c.key === "contact" ? c.key : undefined,
+      icon: companyIcons[c.key],
+      run: () => (c.key === "contact" ? startEnquiry() : scrollToId(c.section)),
+    })),
+  },
+];
+
+const preloaded = new Set<string>();
+
+/** Warms the browser cache for a menu's preview photos, so hovering never shows an empty frame. */
+function preload(group: MenuGroup) {
+  if (preloaded.has(group.key)) return;
+  preloaded.add(group.key);
+  for (const it of group.items) if (it.image) new Image().src = it.image;
+}
+
+// ------------------------------------------------------------
+//  Preview column
+// ------------------------------------------------------------
+
+const frame = "relative grid aspect-[16/9] w-full place-items-center overflow-hidden rounded-2xl border border-line";
+
+function TeamPreview() {
+  const faces = team.filter((m) => m.photo).slice(0, 5);
+  const more = team.length - faces.length;
+  return (
+    <div className={`${frame} bg-brand-soft`}>
+      <div className="mesh absolute inset-0 opacity-70" />
+      <div className="relative flex items-center">
+        {faces.map((m, i) => (
+          <img key={m.name} src={m.photo} alt="" width={52} height={52} className={`h-[52px] w-[52px] rounded-full border-[3px] border-surface object-cover ${i ? "-ml-4" : ""}`} />
+        ))}
+        {more > 0 && <span className="-ml-4 grid h-[52px] w-[52px] place-items-center rounded-full border-[3px] border-surface bg-grad text-sm font-bold text-white">+{more}</span>}
+      </div>
+    </div>
+  );
+}
+
+function ContactPreview() {
+  return (
+    <div className={`${frame} bg-brand-soft p-5`}>
+      <div className="mesh absolute inset-0 opacity-70" />
+      <ul className="relative w-full space-y-2 text-sm">
+        <li className="flex items-center gap-2.5 font-semibold">
+          <span className="grid h-7 w-7 place-items-center">
+            <span className="live-dot" />
+          </span>
+          {company.availability}
+        </li>
+        <li className="flex items-center gap-2.5 text-ink-2">
+          <Mail className="h-7 w-7 rounded-lg bg-surface p-1.5 text-brand-text" /> <span className="truncate">{company.email}</span>
+        </li>
+        <li className="flex items-center gap-2.5 text-ink-2">
+          <Phone className="h-7 w-7 rounded-lg bg-surface p-1.5 text-brand-text" /> {company.phone}
+        </li>
+      </ul>
+    </div>
+  );
+}
+
+function Preview({ item }: { item: MenuItem }) {
+  return (
+    // Keyed by item so each change cross-fades
+    <div key={item.key} className="mega-swap">
+      {item.preview === "team" ? (
+        <TeamPreview />
+      ) : item.preview === "contact" ? (
+        <ContactPreview />
+      ) : (
+        item.image && <img src={item.image} alt="" width={300} height={169} className={`${frame} bg-raised object-cover`} />
+      )}
+      <p className="mt-3.5 font-display text-lg font-bold tracking-tight">{item.label}</p>
+      <p className="mt-1.5 line-clamp-4 text-sm leading-relaxed text-ink-2">{item.blurb}</p>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------
+//  Navbar
+// ------------------------------------------------------------
+
 export default function Navbar() {
   const { active, scrolled } = useScrollState();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // phone menu
+  const [expanded, setExpanded] = useState<string | null>(null); // phone menu: the group shown
+  const [menu, setMenu] = useState<string | null>(null); // desktop: the open group
+  const [peek, setPeek] = useState(0); // desktop: the previewed item
+  const [fresh, setFresh] = useState(false); // the panel drops in only when opening from closed
 
-  const go = (id: string) => {
-    setOpen(false);
-    scrollToId(id);
+  const headerRef = useRef<HTMLElement>(null);
+  const triggers = useRef<Record<string, HTMLButtonElement | null>>({});
+  const closeTimer = useRef<number>();
+  const hoverOpenedAt = useRef(0);
+
+  const cancelClose = () => window.clearTimeout(closeTimer.current);
+
+  const show = (key: string) => {
+    cancelClose();
+    if (key === menu) return;
+    preload(menus.find((g) => g.key === key)!);
+    setFresh(menu === null);
+    setMenu(key);
+    setPeek(0);
   };
+
+  const hide = () => {
+    cancelClose();
+    setMenu(null);
+  };
+
+  // A short grace period, so crossing the gap between a trigger and its panel doesn't close it
+  const hideSoon = () => {
+    cancelClose();
+    closeTimer.current = window.setTimeout(() => setMenu(null), 180);
+  };
+
+  // A mouse opens a menu on hover, so a click that quickly follows keeps it open rather than toggling it shut
+  const onTriggerClick = (key: string) => {
+    if (menu === key && performance.now() - hoverOpenedAt.current < 600) return;
+    if (menu === key) hide();
+    else show(key);
+  };
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key !== "Escape" || !menu) return;
+    triggers.current[menu]?.focus();
+    hide();
+  };
+
+  // Tabbing out of the header closes the menu
+  const onBlur = (e: FocusEvent) => {
+    const next = e.relatedTarget as Node | null;
+    if (next && !headerRef.current?.contains(next)) hide();
+  };
+
+  // Clicking anywhere else closes it too
+  useEffect(() => {
+    if (!menu) return;
+    const onDown = (e: PointerEvent) => {
+      if (!headerRef.current?.contains(e.target as Node)) setMenu(null);
+    };
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [menu]);
+
+  useEffect(() => cancelClose, []);
+
+  const pick = (run: () => void) => {
+    hide();
+    setOpen(false);
+    run();
+  };
+
+  const isActive = (g: MenuGroup) => g.sections.includes(active);
 
   return (
     <header
+      ref={headerRef}
+      onPointerLeave={(e) => e.pointerType === "mouse" && menu && hideSoon()}
+      onPointerEnter={cancelClose}
+      onKeyDown={onKeyDown}
+      onBlur={onBlur}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled || open ? "glass border-b border-line shadow-[0_8px_30px_-20px_rgb(var(--shadow-rgb)/.5)]" : "border-b border-transparent"
+        scrolled || open || menu ? "glass border-b border-line shadow-[0_8px_30px_-20px_rgb(var(--shadow-rgb)/.5)]" : "border-b border-transparent"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-[1240px] items-center gap-4 px-5 sm:px-8 lg:h-[72px]">
@@ -66,17 +310,81 @@ export default function Navbar() {
         </button>
 
         <nav className="mx-auto hidden items-center gap-1 rounded-full border border-line bg-surface/60 p-1 lg:flex" aria-label="Primary">
-          {navLinks.map((l) => {
-            const isActive = active === l.id;
+          {menus.map((g) => {
+            const isOpen = menu === g.key;
+            const cols = g.items.length > 4 ? "xl:grid-cols-3" : "";
+            const current = g.items[Math.min(peek, g.items.length - 1)];
             return (
-              <button
-                key={l.id}
-                onClick={() => go(l.id)}
-                aria-current={isActive ? "true" : undefined}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${isActive ? "bg-brand-soft text-brand-text" : "text-ink-2 hover:bg-raised hover:text-ink"}`}
-              >
-                {l.label}
-              </button>
+              <div key={g.key}>
+                <button
+                  ref={(el) => (triggers.current[g.key] = el)}
+                  onPointerEnter={(e) => {
+                    if (e.pointerType !== "mouse") return;
+                    if (menu !== g.key) hoverOpenedAt.current = performance.now();
+                    show(g.key);
+                  }}
+                  onClick={() => onTriggerClick(g.key)}
+                  aria-expanded={isOpen}
+                  aria-controls={`menu-${g.key}`}
+                  className={`flex items-center gap-1 rounded-full py-1.5 pl-4 pr-3 text-sm font-medium transition-colors ${
+                    isOpen ? "bg-brand-soft text-brand-text" : isActive(g) ? "text-brand-text hover:bg-raised" : "text-ink-2 hover:bg-raised hover:text-ink"
+                  }`}
+                >
+                  {g.label}
+                  <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {/* The panel follows its trigger in the DOM, so Tab walks from a trigger into its menu */}
+                {isOpen && (
+                  <div id={`menu-${g.key}`} className={`absolute inset-x-0 top-full px-5 pt-2 sm:px-8 ${fresh ? "mega-in" : ""}`}>
+                    <div className="shadow-soft mx-auto grid max-w-[1240px] grid-cols-[1fr_300px] overflow-hidden rounded-3xl border border-line bg-surface">
+                      <div className="flex flex-col p-4 xl:p-5">
+                        <ul key={g.key} className={`mega-swap grid flex-1 auto-rows-fr grid-cols-2 gap-1.5 ${cols}`}>
+                          {g.items.map((it, i) => {
+                            const Icon = it.icon;
+                            return (
+                              <li key={it.key}>
+                                <button
+                                  onPointerEnter={() => setPeek(i)}
+                                  onFocus={() => setPeek(i)}
+                                  onClick={() => pick(it.run)}
+                                  className={`flex h-full w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left transition-colors ${peek === i ? "bg-raised" : ""}`}
+                                >
+                                  {Icon ? (
+                                    <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition-colors ${peek === i ? "bg-grad text-white" : "bg-brand-soft text-brand-text"}`}>
+                                      <Icon className="h-[18px] w-[18px]" />
+                                    </span>
+                                  ) : (
+                                    it.image && <img src={it.image} alt="" width={40} height={40} className="h-10 w-10 shrink-0 rounded-xl bg-raised object-cover" />
+                                  )}
+                                  <span className="min-w-0">
+                                    <span className={`block font-display text-[15px] font-bold leading-snug transition-colors ${peek === i ? "text-brand-text" : ""}`}>{it.label}</span>
+                                    <span className="mt-0.5 line-clamp-2 block text-[13px] leading-snug text-subtle">{it.desc}</span>
+                                  </span>
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-line px-3 pt-4">
+                          <button onClick={() => pick(() => scrollToId(g.all.section))} className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
+                            {g.all.label} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                          </button>
+                          <p className="text-sm text-subtle">
+                            Not sure where to start?{" "}
+                            <button onClick={() => pick(() => startEnquiry())} className="u-link font-semibold text-ink">
+                              Talk to an engineer
+                            </button>
+                          </p>
+                        </div>
+                      </div>
+                      <aside className="border-l border-line bg-raised/40 p-5" aria-hidden="true">
+                        <Preview item={current} />
+                      </aside>
+                    </div>
+                  </div>
+                )}
+              </div>
             );
           })}
         </nav>
@@ -96,30 +404,58 @@ export default function Navbar() {
           </button>
         </div>
       </div>
-      <span className={`scroll-line bg-grad absolute inset-x-0 bottom-[-1px] h-[2px] transition-opacity duration-300 ${scrolled ? "opacity-100" : "opacity-0"}`} aria-hidden="true" />
+      <span className={`scroll-line bg-grad absolute inset-x-0 bottom-[-1px] h-[2px] transition-opacity duration-300 ${scrolled && !menu ? "opacity-100" : "opacity-0"}`} aria-hidden="true" />
 
       {open && (
-        <div className="fade-up border-t border-line px-5 pb-6 pt-2 sm:px-8 lg:hidden" style={{ animationDuration: ".3s" }}>
-          {navLinks.map((l) => (
-            <button
-              key={l.id}
-              onClick={() => go(l.id)}
-              className={`flex w-full items-center justify-between border-b border-line py-4 text-left font-display text-lg font-semibold ${active === l.id ? "text-brand-text" : "text-ink"}`}
-            >
-              {l.label}
-              <ArrowRight className="h-4 w-4 text-subtle" />
-            </button>
-          ))}
+        <div className="fade-up max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-line px-5 pb-6 pt-2 sm:px-8 lg:hidden" style={{ animationDuration: ".3s" }}>
+          {menus.map((g) => {
+            const isOpen = expanded === g.key;
+            return (
+              <div key={g.key} className="border-b border-line">
+                <button
+                  onClick={() => setExpanded(isOpen ? null : g.key)}
+                  aria-expanded={isOpen}
+                  className={`flex w-full items-center justify-between py-4 text-left font-display text-lg font-semibold ${isActive(g) || isOpen ? "text-brand-text" : "text-ink"}`}
+                >
+                  {g.label}
+                  <ChevronDown className={`h-4 w-4 text-subtle transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                </button>
+                {isOpen && (
+                  <ul className="mega-in -mx-2 pb-3">
+                    {g.items.map((it) => {
+                      const Icon = it.icon;
+                      return (
+                        <li key={it.key}>
+                          <button onClick={() => pick(it.run)} className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-raised">
+                            {Icon ? (
+                              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand-text">
+                                <Icon className="h-[18px] w-[18px]" />
+                              </span>
+                            ) : (
+                              it.image && <img src={it.image} alt="" loading="lazy" width={40} height={40} className="h-10 w-10 shrink-0 rounded-xl bg-raised object-cover" />
+                            )}
+                            <span className="min-w-0">
+                              <span className="block font-semibold">{it.label}</span>
+                              <span className="block truncate text-[13px] text-subtle">{it.desc}</span>
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                    <li>
+                      <button onClick={() => pick(() => scrollToId(g.all.section))} className="inline-flex items-center gap-1.5 px-2 pt-2 text-sm font-semibold text-brand-text">
+                        {g.all.label} <ArrowRight className="h-4 w-4" />
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            );
+          })}
           <div className="mt-5 flex items-center gap-2 text-sm text-subtle">
             <span className="live-dot" /> {company.availability}
           </div>
-          <button
-            onClick={() => {
-              setOpen(false);
-              startEnquiry();
-            }}
-            className="btn btn-primary mt-5 w-full py-3.5"
-          >
+          <button onClick={() => pick(() => startEnquiry())} className="btn btn-primary mt-5 w-full py-3.5">
             Start a project <ArrowRight className="h-4 w-4" />
           </button>
         </div>
