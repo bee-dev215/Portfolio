@@ -37,7 +37,7 @@ export default function SolutionPanel({
     >
       {/* The viewer's photo morphs out of this frame and back into it */}
       <div data-solution-photo={solution.id} className="absolute inset-0 overflow-hidden rounded-[inherit]">
-        {solution.image && <img src={solution.image} alt="" loading="lazy" width={736} height={460} className="sol-panel-img h-full w-full object-cover" />}
+        {solution.image && <img src={solution.image} alt="" loading="lazy" width={1280} height={800} className="sol-panel-img h-full w-full object-cover" />}
       </div>
       <div className="photo-fade absolute inset-0" />
       <div className="sol-panel-tint absolute inset-0" />

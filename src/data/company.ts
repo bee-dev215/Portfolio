@@ -536,12 +536,12 @@ export interface ImageCredit {
 }
 
 export const imageCredits: ImageCredit[] = [
-  { file: "sol-ai-tutor.webp", subject: "AI Tutor — students learning on a laptop", author: "jcomp", href: "https://www.magnific.com/free-photo/two-students-studying-together-online-with-laptop-park_2525704.htm" },
-  { file: "sol-assessment.webp", subject: "Assessment Assistant — teacher with a student", author: "Drazen Zigic", href: "https://www.magnific.com/free-photo/happy-black-teacher-schoolgirl-using-digital-tablet-classroom_26609427.htm" },
-  { file: "sol-analytics.webp", subject: "Learning Analytics — team reviewing data", author: "DC Studio", href: "https://www.magnific.com/free-photo/business-people-looking-documents-charts-laptop-using-financial-statistics-create-data-analysis-team-workers-planning-economy-presentation-together-doing-work-collaboration_25700886.htm" },
-  { file: "sol-content-studio.webp", subject: "Content Studio — learner with laptop and books", author: "Freepik", href: "https://www.magnific.com/free-photo/woman-taking-e-learning-courses_21828975.htm" },
-  { file: "sol-knowledge.webp", subject: "Knowledge Assistant — online learning at work", author: "Drazen Zigic", href: "https://www.magnific.com/free-photo/closeup-freelancer-learning-online-while-using-laptop-office_26346338.htm" },
-  { file: "sol-academy.webp", subject: "AI Academy — workplace training session", author: "Freepik", href: "https://www.magnific.com/free-photo/medium-shot-colleagues-learning-work_23404621.htm" },
+  { file: "sol-ai-tutor.webp", subject: "AI Tutor — a girl learning on a tablet", author: "Ryan Delfin", href: "https://www.pexels.com/photo/a-girl-using-a-tablet-computer-7548729/", source: "Pexels" },
+  { file: "sol-assessment.webp", subject: "Assessment Assistant — a teacher marking work in class", author: "RDNE Stock project", href: "https://www.pexels.com/photo/a-woman-in-green-long-sleeve-shirt-sitting-at-the-table-holding-a-pencil-on-paper-8363162/", source: "Pexels" },
+  { file: "sol-analytics.webp", subject: "Learning Analytics — a team reviewing a dashboard", author: "Muhammad Jawadur Rahman", href: "https://www.pexels.com/photo/brainstorming-during-presentation-15096572/", source: "Pexels" },
+  { file: "sol-content-studio.webp", subject: "Content Studio — a creator recording a lesson", author: "Alena Darmel", href: "https://www.pexels.com/photo/woman-in-white-long-sleeve-shirt-wearing-black-framed-eyeglasses-holding-white-notepad-9040531/", source: "Pexels" },
+  { file: "sol-knowledge.webp", subject: "Knowledge Assistant — a staff member working at a laptop", author: "Kampus Production", href: "https://www.pexels.com/photo/woman-in-white-blazer-sitting-at-table-using-laptop-8636622/", source: "Pexels" },
+  { file: "sol-academy.webp", subject: "AI Academy — a workshop on AI and data", author: "Mikael Blomkvist", href: "https://www.pexels.com/photo/a-woman-in-red-long-sleeve-shirt-6476783/", source: "Pexels" },
   { file: "aud-schools.webp", subject: "K-12 schools — students in class", author: "pressfoto", href: "https://www.magnific.com/free-photo/students-working-laptop-school_857862.htm" },
   { file: "aud-universities.webp", subject: "Universities — students in a library", author: "garetsvisual", href: "https://www.magnific.com/free-photo/group-young-cheerful-students-joyfully-talking-while-studying-together-library-university_23177325.htm" },
   { file: "aud-edtech.webp", subject: "EdTech — software engineers brainstorming", author: "DC Studio", href: "https://www.magnific.com/free-photo/team-software-engineers-doing-brainstorming-office_417798983.htm" },
