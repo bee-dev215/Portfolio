@@ -80,6 +80,7 @@ interface MenuItem {
 interface MenuGroup {
   key: string;
   label: string;
+  intro: string; // one line under the panel's heading
   paths: string[]; // the trigger lights up on these pages…
   sections: string[]; // …and while one of these home sections is in view
   all: { label: string; to: string };
@@ -90,6 +91,7 @@ interface MenuGroup {
 const projectsMenu = (projects: Project[], ready: boolean): MenuGroup => ({
   key: "projects",
   label: "Projects",
+  intro: "Selected work with schools, universities and learning teams",
   paths: ["/projects"],
   sections: ["projects"],
   all: { label: ready ? `All ${projects.length} projects` : "All projects", to: "/projects" },
@@ -108,6 +110,7 @@ const [solutionsMenu, ...otherMenus]: MenuGroup[] = [
   {
     key: "solutions",
     label: "Solutions",
+    intro: "AI products for teaching, learning and training",
     paths: ["/solutions"],
     sections: ["solutions"],
     all: { label: `All ${solutions.length} solutions`, to: "/solutions" },
@@ -123,6 +126,7 @@ const [solutionsMenu, ...otherMenus]: MenuGroup[] = [
   {
     key: "services",
     label: "Services",
+    intro: "Hands-on help from first prototype to production",
     paths: ["/services"],
     sections: ["services"],
     all: { label: `All ${services.length} services`, to: "/services" },
@@ -139,6 +143,7 @@ const [solutionsMenu, ...otherMenus]: MenuGroup[] = [
   {
     key: "audiences",
     label: "Who we serve",
+    intro: "Built around the people who teach and learn",
     paths: ["/industries"],
     sections: ["industries", "outcomes"],
     all: { label: `All ${industries.length} audiences`, to: "/industries" },
@@ -154,6 +159,7 @@ const [solutionsMenu, ...otherMenus]: MenuGroup[] = [
   {
     key: "company",
     label: "Company",
+    intro: "Who we are, how we work and how to reach us",
     paths: [...companyMenu.map((c) => c.to), "/faq"],
     sections: ["process", "technology", "company", "team", "faq", "contact"],
     all: { label: "Questions & answers", to: "/faq" },
@@ -236,21 +242,33 @@ function IconPreview({ icon: Icon }: { icon: LucideIcon }) {
   );
 }
 
-function Preview({ item }: { item: MenuItem }) {
+/** Two-digit item number: 01, 02… */
+const pad = (n: number) => String(n).padStart(2, "0");
+
+function Preview({ item, n, total }: { item: MenuItem; n: number; total: number }) {
   return (
     // Keyed by item so each change cross-fades
-    <div key={item.key} className="mega-swap">
+    <div key={item.key} className="mega-swap relative">
       {item.preview === "team" ? (
         <TeamPreview />
       ) : item.preview === "contact" ? (
         <ContactPreview />
       ) : item.image ? (
-        <img src={item.image} alt="" width={300} height={169} className={`${frame} bg-raised object-cover`} />
+        <div className={`${frame} bg-raised`}>
+          <img src={item.image} alt="" width={300} height={169} className="kenburns absolute inset-0 h-full w-full object-cover" />
+          <span className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
+        </div>
       ) : (
         item.icon && <IconPreview icon={item.icon} />
       )}
-      <p className="mt-3.5 font-display text-lg font-bold tracking-tight">{item.label}</p>
+      <span className="glass absolute left-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-semibold tabular-nums text-ink-2">
+        {pad(n)} / {pad(total)}
+      </span>
+      <p className="mt-4 font-display text-lg font-bold tracking-tight">{item.label}</p>
       <p className="mt-1.5 line-clamp-4 text-sm leading-relaxed text-ink-2">{item.blurb}</p>
+      <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
+        Learn more <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+      </span>
     </div>
   );
 }
@@ -400,11 +418,26 @@ export default function Navbar() {
                 {/* The panel follows its trigger in the DOM, so Tab walks from a trigger into its menu */}
                 {isOpen && (
                   <div id={`menu-${g.key}`} className={`absolute inset-x-0 top-full px-5 pt-2 sm:px-8 ${fresh ? "mega-in" : ""}`}>
-                    <div className="shadow-soft mx-auto grid max-w-[1240px] grid-cols-[1fr_300px] overflow-hidden rounded-3xl border border-line bg-surface">
+                    <div className="shadow-soft relative mx-auto grid max-w-[1240px] grid-cols-[1fr_300px] overflow-hidden rounded-3xl border border-line bg-surface">
+                      <span className="bg-grad pointer-events-none absolute inset-x-0 top-0 z-10 h-[2px] opacity-80" aria-hidden="true" />
                       <div className="flex flex-col p-4 xl:p-5">
-                        <ul key={g.key} className={`mega-swap grid flex-1 auto-rows-fr grid-cols-2 gap-1.5 ${cols}`}>
+                        <div key={g.key} className="mega-swap flex items-start justify-between gap-6 px-3 pb-4 pt-1">
+                          <div className="min-w-0">
+                            <p className="text-[11px] font-bold uppercase tracking-[.16em] text-brand-text">{g.label}</p>
+                            <p className="mt-1 text-sm text-subtle">{g.intro}</p>
+                          </div>
+                          <Link
+                            to={g.all.to}
+                            onClick={close}
+                            className="group inline-flex shrink-0 items-center gap-1.5 rounded-full border border-line px-3.5 py-1.5 text-[13px] font-semibold text-ink-2 transition-colors hover:border-brand/40 hover:text-brand-text"
+                          >
+                            {g.all.label} <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                          </Link>
+                        </div>
+                        <ul key={`${g.key}-items`} className={`mega-swap grid flex-1 auto-rows-fr grid-cols-2 gap-1.5 ${cols}`}>
                           {g.items.map((it, i) => {
                             const Icon = it.icon;
+                            const on = peek === i;
                             return (
                               <li key={it.key}>
                                 <Link
@@ -412,16 +445,23 @@ export default function Navbar() {
                                   onPointerEnter={() => setPeek(i)}
                                   onFocus={() => setPeek(i)}
                                   onClick={close}
-                                  className={`flex h-full w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left transition-colors ${peek === i ? "bg-raised" : ""}`}
+                                  className={`flex h-full w-full items-center gap-3.5 rounded-2xl px-3 py-3 text-left transition-colors duration-300 ${on ? "bg-brand-soft/70" : ""}`}
                                 >
-                                  {/* Photos show only in the preview column */}
-                                  {Icon && (
-                                    <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition-colors ${peek === i ? "bg-grad text-white" : "bg-brand-soft text-brand-text"}`}>
-                                      <Icon className="h-[18px] w-[18px]" />
-                                    </span>
-                                  )}
+                                  {/* Photos show only in the preview column; the list leads with the item's icon, or its number */}
+                                  <span
+                                    className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl transition-shadow duration-300 ${
+                                      on ? "bg-grad text-white shadow-[0_8px_18px_-8px_rgb(var(--brand-rgb)/.7)]" : "bg-brand-soft text-brand-text"
+                                    }`}
+                                  >
+                                    {Icon ? <Icon className="h-[18px] w-[18px]" /> : <span className="font-display text-[13px] font-bold tabular-nums">{pad(i + 1)}</span>}
+                                  </span>
                                   <span className="min-w-0">
-                                    <span className={`block font-display text-[15px] font-bold leading-snug transition-colors ${peek === i ? "text-brand-text" : ""}`}>{it.label}</span>
+                                    <span className={`block font-display text-[15px] font-bold leading-snug transition-colors ${on ? "text-brand-text" : ""}`}>
+                                      {it.label}
+                                      <ArrowRight
+                                        className={`-mr-[18px] ml-1 inline h-3.5 w-3.5 align-[-2px] transition-all duration-300 ${on ? "translate-x-0 opacity-100" : "-translate-x-1.5 opacity-0"}`}
+                                      />
+                                    </span>
                                     <span className="mt-0.5 line-clamp-2 block text-[13px] leading-snug text-subtle">{it.desc}</span>
                                   </span>
                                 </Link>
@@ -429,20 +469,23 @@ export default function Navbar() {
                             );
                           })}
                         </ul>
-                        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-line px-3 pt-4">
-                          <Link to={g.all.to} onClick={close} className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                            {g.all.label} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                          </Link>
-                          <p className="text-sm text-subtle">
-                            Not sure where to start?{" "}
-                            <button onClick={enquire} className="u-link font-semibold text-ink">
-                              Talk to an engineer
-                            </button>
+                        <div className="mt-3 flex items-center justify-between gap-4 rounded-2xl bg-raised/70 py-2.5 pl-4 pr-2.5">
+                          <p className="min-w-0 text-sm">
+                            <span className="font-semibold text-ink">Not sure where to start?</span> <span className="text-subtle">Tell us about your learners.</span>
                           </p>
+                          <button onClick={enquire} className="btn btn-secondary shrink-0 px-4 py-2 text-[13px]">
+                            <span className="live-dot" /> Talk to an engineer
+                          </button>
                         </div>
                       </div>
-                      <aside className="border-l border-line bg-raised/40 p-5" aria-hidden="true">
-                        {current && <Preview item={current} />}
+                      {/* Mouse users can click the preview too; keyboard and screen-reader users already have the item's own link */}
+                      <aside className="relative overflow-hidden border-l border-line bg-raised/40 p-5" aria-hidden="true">
+                        <div className="mesh absolute inset-0 opacity-50" />
+                        {current && (
+                          <Link to={current.to} onClick={close} tabIndex={-1} className="group relative block">
+                            <Preview item={current} n={Math.min(peek, g.items.length - 1) + 1} total={g.items.length} />
+                          </Link>
+                        )}
                       </aside>
                     </div>
                   </div>
