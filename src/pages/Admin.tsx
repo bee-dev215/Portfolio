@@ -19,9 +19,7 @@ function Dashboard({ email, onSignOut }: { email: string; onSignOut: () => void 
       <header className="sticky top-0 z-40 border-b border-white/5 bg-zinc-950/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-500 font-mono text-sm font-bold text-zinc-950">
-              {company.initials}
-            </span>
+            <img src="/favicon.svg" alt="" className="h-9 w-9" />
             <div>
               <div className="text-sm font-semibold text-white">{company.legalName} Admin</div>
               <div className="text-xs text-zinc-500">{email}</div>

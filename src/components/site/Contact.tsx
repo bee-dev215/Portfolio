@@ -8,6 +8,11 @@ import SocialIcon from "./SocialIcon";
 import Reveal, { SectionHeading } from "./Reveal";
 
 const CRM_URL = "https://famous.ai/api/crm/6ad5d2059d9fe46e4e2f09d9/subscribe";
+// Emails each enquiry to the company inbox. Until the inbox clicks the "Activate Form" link FormSubmit sends with the first one, nothing is delivered.
+const EMAIL_URL = `https://formsubmit.co/ajax/${company.email}`;
+
+const postJson = (url: string, body: object) =>
+  fetch(url, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body) });
 
 const EMPTY = { name: "", email: "", company: "", phone: "", subject: CONTACT_SUBJECTS[0] as string, message: "" };
 type Form = typeof EMPTY;
@@ -87,22 +92,44 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
       return;
     }
     setLoading(true);
+    const name = form.name.trim();
+    const email = form.email.trim();
+    const phone = form.phone.trim() || undefined;
+    const organisation = form.company.trim() || undefined;
+    const message = form.message.trim();
     try {
-      const res = await fetch(CRM_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: form.email.trim(),
-          name: form.name.trim() || undefined,
-          phone: form.phone.trim() || undefined,
+      // The CRM keeps the lead and the SMS consent; the email reaches the inbox. Either one getting through counts as sent.
+      const results = await Promise.allSettled([
+        postJson(CRM_URL, {
+          email,
+          name,
+          phone,
           sms_opt_in: smsOptIn === true,
           subject: form.subject,
-          message: form.company.trim() ? `Organisation: ${form.company.trim()}\n\n${form.message.trim()}` : form.message.trim(),
+          message: organisation ? `Organisation: ${organisation}\n\n${message}` : message,
           source: "contact-form",
           tags: ["website-contact", form.subject.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")],
+        }).then((res) => {
+          if (!res.ok) throw new Error("CRM request failed");
         }),
-      });
-      if (!res.ok) throw new Error("Request failed");
+        // FormSubmit answers 200 even when it delivers nothing, so its own success flag is what counts
+        postJson(EMAIL_URL, {
+          _subject: `New enquiry: ${form.subject} — ${name}`,
+          _template: "table",
+          name,
+          email,
+          organisation,
+          phone,
+          topic: form.subject,
+          message,
+          sms_updates: smsOptIn ? "Yes" : "No",
+        })
+          .then((res) => res.json())
+          .then((data: { success?: string | boolean; message?: string }) => {
+            if (String(data.success) !== "true") throw new Error(data.message ?? "Email request failed");
+          }),
+      ]);
+      if (results.every((r) => r.status === "rejected")) throw new Error("Request failed");
       setSent(true);
       setForm(EMPTY);
       setSmsOptIn(false);

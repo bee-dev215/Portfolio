@@ -66,7 +66,7 @@ const privacy: LegalDoc = {
       id: "sharing",
       heading: "Service providers",
       blocks: [
-        "Contact-form submissions are stored in the customer-relationship management (CRM) service we use to manage enquiries, which processes them on our behalf. We share information with other parties only when the law requires it, or to protect our rights and the safety of others.",
+        "Contact-form submissions are stored in the customer-relationship management (CRM) service we use to manage enquiries, and forwarded to our inbox by an email-delivery service (FormSubmit). Both process them on our behalf. We share information with other parties only when the law requires it, or to protect our rights and the safety of others.",
       ],
     },
     {

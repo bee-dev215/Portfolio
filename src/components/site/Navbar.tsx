@@ -47,12 +47,14 @@ function useScrollState() {
   return { active, scrolled };
 }
 
-/** Logo mark: gradient tile with a spark. */
+/** Logo mark: gradient tile with a graduation cap whose tassel ends in a spark. public/favicon.svg is the same artwork. */
 export const Monogram = ({ className = "h-9 w-9" }: { className?: string }) => (
   <span className={`bg-grad grid shrink-0 place-items-center rounded-xl text-white shadow-[0_8px_18px_-8px_rgb(var(--brand-rgb)/.7)] ${className}`}>
-    <svg viewBox="0 0 24 24" className="h-[55%] w-[55%]" fill="currentColor" aria-hidden="true">
-      <path d="M12 2.5l2.3 6.2L20.5 11l-6.2 2.3L12 19.5l-2.3-6.2L3.5 11l6.2-2.3z" />
-      <circle cx="19" cy="19" r="2" opacity=".85" />
+    <svg viewBox="0 0 64 64" className="h-full w-full" fill="currentColor" aria-hidden="true">
+      <path d="M32 13 54 23 32 33 10 23Z" />
+      <path d="M19 30.4 32 36.3 45 30.4V39.5C40 43.8 24 43.8 19 39.5Z" />
+      <path d="M50.5 25V34.5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M50.5 34.7Q51.43 39.57 56.3 40.5Q51.43 41.43 50.5 46.3Q49.57 41.43 44.7 40.5Q49.57 39.57 50.5 34.7Z" />
     </svg>
   </span>
 );
