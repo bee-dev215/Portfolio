@@ -1,14 +1,30 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format, formatDistanceToNow, isThisYear, isToday } from "date-fns";
-import { Archive, ArrowLeft, Copy, Inbox, LucideIcon, Mail, MailOpen, MessageSquare, Phone, Reply, Search, Tag, Trash2 } from "lucide-react";
+import { Archive, ArrowDown, ArrowLeft, ArrowUp, ArrowUpDown, Copy, Download, Inbox, LayoutList, LucideIcon, Mail, MailOpen, MessageSquare, Phone, Reply, Search, Table2, Tag, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { company } from "@/data/company";
 import { explain } from "@/lib/adminApi";
+import { downloadCsv } from "@/lib/csv";
 import { deleteMessage, fetchMessages, MESSAGES_KEY, MessageRow, MessageStatus, setMessageStatus } from "@/lib/messagesApi";
 import ConfirmDelete from "./ConfirmDelete";
 
 type View = "inbox" | "archived";
+type Layout = "list" | "table";
+type SortKey = "created_at" | "name" | "organisation" | "topic";
+type Sort = { key: SortKey; dir: "asc" | "desc" };
+
+const LAYOUT_KEY = "gsedu-admin-messages-layout";
+const STATUS_LABEL: Record<MessageStatus, string> = { new: "Unread", read: "Read", archived: "Archived" };
+
+// The layout is remembered in this browser; storage can be unavailable (private windows), so it falls back to the list
+function savedLayout(): Layout {
+  try {
+    return localStorage.getItem(LAYOUT_KEY) === "table" ? "table" : "list";
+  } catch {
+    return "list";
+  }
+}
 
 /** Every message, checked again each minute so new ones turn up while the admin is open. */
 export const useInbox = () => useQuery({ queryKey: MESSAGES_KEY, queryFn: fetchMessages, refetchInterval: 60_000 });
@@ -17,6 +33,15 @@ export const useInbox = () => useQuery({ queryKey: MESSAGES_KEY, queryFn: fetchM
 function shortDate(iso: string) {
   const d = new Date(iso);
   return format(d, isToday(d) ? "HH:mm" : isThisYear(d) ? "d MMM" : "d MMM yyyy");
+}
+
+/** Downloads messages as a spreadsheet, one row each, in the order given. */
+function exportCsv(rows: MessageRow[], view: View) {
+  downloadCsv(
+    `${company.shortName.toLowerCase()}-messages${view === "archived" ? "-archived" : ""}-${format(new Date(), "yyyy-MM-dd")}.csv`,
+    ["Received", "Name", "Email", "Organisation", "Phone", "Topic", "Message", "SMS updates", "Status"],
+    rows.map((m) => [format(new Date(m.created_at), "yyyy-MM-dd HH:mm"), m.name, m.email, m.organisation, m.phone, m.topic, m.message, m.sms_opt_in ? "Yes" : "No", STATUS_LABEL[m.status]]),
+  );
 }
 
 function Detail({ icon: Icon, label, children }: { icon: LucideIcon; label: string; children: ReactNode }) {
@@ -29,7 +54,7 @@ function Detail({ icon: Icon, label, children }: { icon: LucideIcon; label: stri
   );
 }
 
-function MessageView({ m, onBack, onStatus, onDelete }: { m: MessageRow; onBack: () => void; onStatus: (s: MessageStatus) => void; onDelete: () => void }) {
+function MessageView({ m, onBack, onStatus, onDelete }: { m: MessageRow; onBack?: () => void; onStatus: (s: MessageStatus) => void; onDelete: () => void }) {
   const archived = m.status === "archived";
   const sent = new Date(m.created_at);
   const reply = `mailto:${m.email}?subject=${encodeURIComponent(`Re: ${m.topic ?? "Your enquiry"} — ${company.shortName}`)}&body=${encodeURIComponent(`Hi ${m.name.split(/\s+/)[0]},\n\n`)}`;
@@ -46,9 +71,11 @@ function MessageView({ m, onBack, onStatus, onDelete }: { m: MessageRow; onBack:
   return (
     <article className="card overflow-hidden">
       <header className="border-b border-line p-5 sm:p-6">
-        <button onClick={onBack} className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text lg:hidden">
-          <ArrowLeft className="h-4 w-4" /> All messages
-        </button>
+        {onBack && (
+          <button onClick={onBack} className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text lg:hidden">
+            <ArrowLeft className="h-4 w-4" /> All messages
+          </button>
+        )}
         <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
           <div className="min-w-0">
             <h2 className="break-words font-display text-xl font-bold">{m.name}</h2>
@@ -105,6 +132,111 @@ function MessageView({ m, onBack, onStatus, onDelete }: { m: MessageRow; onBack:
   );
 }
 
+const th = "whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-subtle";
+
+function SortHeader({ label, k, sort, onSort }: { label: string; k: SortKey; sort: Sort; onSort: (k: SortKey) => void }) {
+  const on = sort.key === k;
+  const Icon = on ? (sort.dir === "asc" ? ArrowUp : ArrowDown) : ArrowUpDown;
+  return (
+    <th scope="col" aria-sort={on ? (sort.dir === "asc" ? "ascending" : "descending") : undefined} className={th}>
+      <button onClick={() => onSort(k)} className={`inline-flex items-center gap-1 uppercase tracking-wider hover:text-ink ${on ? "text-ink" : ""}`}>
+        {label}
+        <Icon className={`h-3.5 w-3.5 ${on ? "" : "opacity-40"}`} />
+      </button>
+    </th>
+  );
+}
+
+/** Every message as a row with all its details; clicking one opens it. */
+function MessagesTable({ rows, sort, onSort, openId, onOpen }: { rows: MessageRow[]; sort: Sort; onSort: (k: SortKey) => void; openId: number | null; onOpen: (m: MessageRow) => void }) {
+  const none = <span className="text-subtle">—</span>;
+  return (
+    <div className="card overflow-x-auto">
+      <table className="w-full min-w-[56rem] text-sm">
+        <thead className="border-b border-line bg-raised/50">
+          <tr>
+            <SortHeader label="Received" k="created_at" sort={sort} onSort={onSort} />
+            <SortHeader label="Name" k="name" sort={sort} onSort={onSort} />
+            <SortHeader label="Organisation" k="organisation" sort={sort} onSort={onSort} />
+            <th scope="col" className={th}>
+              Phone
+            </th>
+            <SortHeader label="Topic" k="topic" sort={sort} onSort={onSort} />
+            <th scope="col" className={th}>
+              SMS
+            </th>
+            <th scope="col" className={th}>
+              Message
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-line">
+          {rows.map((m) => {
+            const isNew = m.status === "new";
+            const d = new Date(m.created_at);
+            return (
+              <tr key={m.id} onClick={() => onOpen(m)} className={`cursor-pointer align-top transition-colors hover:bg-raised ${m.id === openId ? "bg-brand-soft" : ""}`}>
+                <td className="whitespace-nowrap px-4 py-3 text-subtle">
+                  <time dateTime={m.created_at}>{format(d, isThisYear(d) ? "d MMM, HH:mm" : "d MMM yyyy")}</time>
+                </td>
+                <td className="px-4 py-3">
+                  {/* The row opens the message too; this button makes it reachable by keyboard */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpen(m);
+                    }}
+                    className={`flex items-center gap-2 whitespace-nowrap text-left hover:text-brand-text ${isNew ? "font-bold text-ink" : "font-medium text-ink-2"}`}
+                  >
+                    {isNew && <span className="h-2 w-2 shrink-0 rounded-full bg-brand" aria-hidden="true" />}
+                    {isNew && <span className="sr-only">Unread: </span>}
+                    {m.name}
+                  </button>
+                  <span className={`mt-0.5 block whitespace-nowrap text-xs text-subtle ${isNew ? "pl-4" : ""}`}>{m.email}</span>
+                </td>
+                <td className="max-w-[11rem] truncate px-4 py-3 text-ink-2">{m.organisation || none}</td>
+                <td className="whitespace-nowrap px-4 py-3 text-ink-2">{m.phone || none}</td>
+                <td className="whitespace-nowrap px-4 py-3 text-ink-2">{m.topic || none}</td>
+                <td className="px-4 py-3 text-ink-2">{m.sms_opt_in ? "Yes" : "No"}</td>
+                {/* Takes the width left over and cuts the text to one line */}
+                <td className={`w-full max-w-0 truncate px-4 py-3 ${isNew ? "text-ink-2" : "text-subtle"}`}>{m.message}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/** Shows one message over the table, sliding in from the right. */
+function MessageDrawer({ paused, onClose, children }: { paused: boolean; onClose: () => void; children: ReactNode }) {
+  useEffect(() => {
+    // While the delete dialog is open, Escape belongs to it
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && !paused && onClose();
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [paused, onClose]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label="Message">
+      <div className="absolute inset-0 animate-fade-in bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative h-full w-full max-w-2xl animate-slide-in overflow-y-auto border-l border-line bg-canvas p-4 shadow-soft sm:p-6">
+        <div className="mb-3 flex justify-end">
+          <button autoFocus onClick={onClose} className="grid h-10 w-10 place-items-center rounded-full text-subtle hover:bg-raised hover:text-ink" aria-label="Close">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export default function MessagesInbox() {
   const qc = useQueryClient();
   const query = useInbox();
@@ -113,11 +245,34 @@ export default function MessagesInbox() {
   const [search, setSearch] = useState("");
   const [openId, setOpenId] = useState<number | null>(null);
   const [toDelete, setToDelete] = useState<MessageRow | null>(null);
+  const [layout, setLayout] = useState<Layout>(savedLayout);
+  const [sort, setSort] = useState<Sort>({ key: "created_at", dir: "desc" });
 
   const inView = (v: View) => all.filter((m) => (m.status === "archived") === (v === "archived"));
   const q = search.trim().toLowerCase();
   const list = inView(view).filter((m) => !q || [m.name, m.email, m.organisation, m.topic, m.message].some((s) => s?.toLowerCase().includes(q)));
   const open = all.find((m) => m.id === openId) ?? null;
+  // The table sorts by the chosen column; the list is always newest first
+  const shown =
+    layout === "table"
+      ? [...list].sort((a, b) => {
+          const c = String(a[sort.key] ?? "").localeCompare(String(b[sort.key] ?? ""), undefined, { sensitivity: "base", numeric: true });
+          return sort.dir === "asc" ? c : -c;
+        })
+      : list;
+
+  const changeLayout = (l: Layout) => {
+    setLayout(l);
+    setOpenId(null);
+    try {
+      localStorage.setItem(LAYOUT_KEY, l);
+    } catch {
+      // Not remembered this time; the switch still works
+    }
+  };
+
+  // A new column starts newest-first for dates and A–Z for text; the same column flips direction
+  const sortBy = (key: SortKey) => setSort((s) => (s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: key === "created_at" ? "desc" : "asc" }));
 
   // Shows the change straight away, then saves it; if saving fails, the list is read again
   const setStatus = async (m: MessageRow, status: MessageStatus) => {
@@ -136,8 +291,8 @@ export default function MessagesInbox() {
   const select = (m: MessageRow) => {
     setOpenId(m.id);
     if (m.status === "new") setStatus(m, "read");
-    // On a phone the message replaces the list, so start at its top
-    if (window.matchMedia("(max-width: 1023px)").matches) window.scrollTo({ top: 0 });
+    // On a phone the message replaces the list, so start at its top (the table opens it in a panel instead)
+    if (layout === "list" && window.matchMedia("(max-width: 1023px)").matches) window.scrollTo({ top: 0 });
   };
 
   const changeStatus = async (m: MessageRow, status: MessageStatus) => {
@@ -191,6 +346,11 @@ export default function MessagesInbox() {
     { key: "inbox", label: "Inbox", count: inView("inbox").length },
     { key: "archived", label: "Archived", count: inView("archived").length },
   ];
+  const empty = (
+    <div className="card p-8 text-center text-sm text-subtle">
+      {q ? `No messages match “${search.trim()}”.` : view === "inbox" ? "Nothing in the inbox. Archived messages are under Archived." : "No archived messages."}
+    </div>
+  );
 
   return (
     <div>
@@ -214,67 +374,108 @@ export default function MessagesInbox() {
             );
           })}
         </div>
-        <label className="relative w-full sm:w-72">
-          <span className="sr-only">Search messages</span>
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
-          <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search name, email or text" className="field py-2 pl-10 text-sm" />
-        </label>
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+          <label className="relative w-full sm:w-64">
+            <span className="sr-only">Search messages</span>
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
+            <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search name, email or text" className="field py-2 pl-10 text-sm" />
+          </label>
+          <div role="group" aria-label="Layout" className="inline-flex gap-0.5 rounded-full border border-line bg-surface p-1">
+            {(
+              [
+                ["list", LayoutList, "List"],
+                ["table", Table2, "Table"],
+              ] as const
+            ).map(([k, Icon, label]) => (
+              <button
+                key={k}
+                aria-pressed={layout === k}
+                onClick={() => changeLayout(k)}
+                title={`${label} view`}
+                className={`grid h-8 w-8 place-items-center rounded-full transition-colors ${layout === k ? "bg-grad text-white" : "text-subtle hover:text-ink"}`}
+              >
+                <Icon className="h-4 w-4" />
+                <span className="sr-only">{label} view</span>
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => exportCsv(shown, view)}
+            disabled={shown.length === 0}
+            title={`Download the ${shown.length} ${shown.length === 1 ? "message" : "messages"} shown, as a spreadsheet`}
+            className="btn btn-secondary px-4 py-2 text-sm disabled:pointer-events-none disabled:opacity-50"
+          >
+            <Download className="h-4 w-4" /> Download CSV
+          </button>
+        </div>
       </div>
 
       <p className="sr-only" aria-live="polite">
         {unread} unread
       </p>
 
-      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,23rem)_minmax(0,1fr)]">
-        <div className={open ? "hidden lg:block" : ""}>
-          {list.length === 0 ? (
-            <div className="card p-8 text-center text-sm text-subtle">
-              {q ? `No messages match “${search.trim()}”.` : view === "inbox" ? "Nothing in the inbox. Archived messages are under Archived." : "No archived messages."}
-            </div>
-          ) : (
-            <ul className="card divide-y divide-line overflow-hidden lg:max-h-[calc(100vh-15rem)] lg:overflow-y-auto">
-              {list.map((m) => {
-                const isNew = m.status === "new";
-                return (
-                  <li key={m.id}>
-                    <button
-                      onClick={() => select(m)}
-                      aria-current={m.id === openId ? "true" : undefined}
-                      className={`relative block w-full px-5 py-4 text-left transition-colors hover:bg-raised ${m.id === openId ? "bg-brand-soft hover:bg-brand-soft" : ""}`}
-                    >
-                      {isNew && (
-                        <>
-                          <span className="absolute left-2 top-[1.4rem] h-2 w-2 rounded-full bg-brand" aria-hidden="true" />
-                          <span className="sr-only">Unread: </span>
-                        </>
-                      )}
-                      <span className="flex items-baseline justify-between gap-3">
-                        <span className={`truncate ${isNew ? "font-bold text-ink" : "font-medium text-ink-2"}`}>{m.name}</span>
-                        <time dateTime={m.created_at} className={`shrink-0 text-xs ${isNew ? "font-semibold text-brand-text" : "text-subtle"}`}>
-                          {shortDate(m.created_at)}
-                        </time>
-                      </span>
-                      <span className="mt-0.5 block truncate text-xs text-subtle">{[m.topic, m.organisation].filter(Boolean).join(" · ") || m.email}</span>
-                      <span className={`mt-1.5 line-clamp-2 text-sm ${isNew ? "text-ink-2" : "text-subtle"}`}>{m.message}</span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
+      {layout === "table" ? (
+        shown.length === 0 ? (
+          empty
+        ) : (
+          <MessagesTable rows={shown} sort={sort} onSort={sortBy} openId={openId} onOpen={select} />
+        )
+      ) : (
+        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,23rem)_minmax(0,1fr)]">
+          <div className={open ? "hidden lg:block" : ""}>
+            {list.length === 0 ? (
+              empty
+            ) : (
+              <ul className="card divide-y divide-line overflow-hidden lg:max-h-[calc(100vh-15rem)] lg:overflow-y-auto">
+                {list.map((m) => {
+                  const isNew = m.status === "new";
+                  return (
+                    <li key={m.id}>
+                      <button
+                        onClick={() => select(m)}
+                        aria-current={m.id === openId ? "true" : undefined}
+                        className={`relative block w-full px-5 py-4 text-left transition-colors hover:bg-raised ${m.id === openId ? "bg-brand-soft hover:bg-brand-soft" : ""}`}
+                      >
+                        {isNew && (
+                          <>
+                            <span className="absolute left-2 top-[1.4rem] h-2 w-2 rounded-full bg-brand" aria-hidden="true" />
+                            <span className="sr-only">Unread: </span>
+                          </>
+                        )}
+                        <span className="flex items-baseline justify-between gap-3">
+                          <span className={`truncate ${isNew ? "font-bold text-ink" : "font-medium text-ink-2"}`}>{m.name}</span>
+                          <time dateTime={m.created_at} className={`shrink-0 text-xs ${isNew ? "font-semibold text-brand-text" : "text-subtle"}`}>
+                            {shortDate(m.created_at)}
+                          </time>
+                        </span>
+                        <span className="mt-0.5 block truncate text-xs text-subtle">{[m.topic, m.organisation].filter(Boolean).join(" · ") || m.email}</span>
+                        <span className={`mt-1.5 line-clamp-2 text-sm ${isNew ? "text-ink-2" : "text-subtle"}`}>{m.message}</span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
 
-        <div className={`lg:sticky lg:top-36 ${open ? "" : "hidden lg:block"}`}>
-          {open ? (
-            <MessageView m={open} onBack={() => setOpenId(null)} onStatus={(s) => changeStatus(open, s)} onDelete={() => setToDelete(open)} />
-          ) : (
-            <div className="card flex flex-col items-center justify-center p-12 text-center text-subtle">
-              <MailOpen className="h-8 w-8" />
-              <p className="mt-3 text-sm">Choose a message to read it.</p>
-            </div>
-          )}
+          <div className={`lg:sticky lg:top-36 ${open ? "" : "hidden lg:block"}`}>
+            {open ? (
+              <MessageView m={open} onBack={() => setOpenId(null)} onStatus={(s) => changeStatus(open, s)} onDelete={() => setToDelete(open)} />
+            ) : (
+              <div className="card flex flex-col items-center justify-center p-12 text-center text-subtle">
+                <MailOpen className="h-8 w-8" />
+                <p className="mt-3 text-sm">Choose a message to read it.</p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
+
+      {layout === "table" && open && (
+        <MessageDrawer paused={!!toDelete} onClose={() => setOpenId(null)}>
+          <MessageView m={open} onStatus={(s) => changeStatus(open, s)} onDelete={() => setToDelete(open)} />
+        </MessageDrawer>
+      )}
 
       <ConfirmDelete open={!!toDelete} title="Delete this message?" onCancel={() => setToDelete(null)} onConfirm={confirmDelete}>
         The message from {toDelete?.name} will be deleted from the database. This can't be undone — to keep it out of the inbox, archive it instead.
