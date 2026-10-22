@@ -55,7 +55,7 @@ export default function AdminLogin({ setupMode, onAuthed }: { setupMode: boolean
 
       <div className="relative w-full max-w-md">
         <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-white">
-          <ArrowLeft className="h-4 w-4" /> Back to portfolio
+          <ArrowLeft className="h-4 w-4" /> Back to site
         </Link>
         <form onSubmit={submit} noValidate className="rounded-2xl border border-white/10 bg-zinc-950/80 p-8 backdrop-blur">
           <div className="mb-6 grid h-12 w-12 place-items-center rounded-xl bg-emerald-400/10 text-emerald-300">
@@ -65,7 +65,7 @@ export default function AdminLogin({ setupMode, onAuthed }: { setupMode: boolean
           <p className="mt-1.5 text-sm text-zinc-500">
             {setupMode
               ? "No admin exists yet. The first account created here becomes the only admin."
-              : "Sign in to manage your projects and employment history."}
+              : "Sign in to manage project records."}
           </p>
 
           <div className="mt-6 space-y-4">

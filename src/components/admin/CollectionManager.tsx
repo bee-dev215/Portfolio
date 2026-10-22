@@ -160,7 +160,7 @@ export default function CollectionManager<Row extends { id: number; sort_order: 
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this {noun.toLowerCase()}?</AlertDialogTitle>
             <AlertDialogDescription className="text-zinc-400">
-              "{toDelete ? getLabel(toDelete) : ""}" will be permanently removed from your portfolio.
+              "{toDelete ? getLabel(toDelete) : ""}" will be permanently removed from the database.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

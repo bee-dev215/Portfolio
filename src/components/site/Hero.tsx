@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { ArrowDownRight, Download } from "lucide-react";
-import { experience, profile, scrollToId, skillGroups } from "@/data/portfolio";
+import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { company, scrollToId, startEnquiry, ticker } from "@/data/company";
 import { prefersReducedMotion } from "@/hooks/use-motion";
 import RobotArm from "./RobotArm";
 import ScrambleText from "./ScrambleText";
@@ -9,15 +9,13 @@ import VelocityTicker from "./VelocityTicker";
 const GRID = 56; // matches .bp-grid's cell size
 const pad4 = (n: number) => String(Math.round(n)).padStart(4, "0");
 
-const current = experience.find((j) => j.end === "Present");
-
 const specs = [
-  { k: "Role", v: profile.title },
-  ...(current ? [{ k: "Now", v: `${current.company} · ${current.location.split(", ").pop()}` }] : []),
-  { k: "Focus", v: "Education platforms, full-stack delivery" },
-  { k: "Core stack", v: "Angular · React · Next.js · TypeScript" },
-  { k: "Data", v: "PostgreSQL · MongoDB · Supabase" },
-  { k: "Uptime", v: `${profile.yearsExperience} years · 2017 – present` },
+  { k: "Company", v: company.legalName },
+  { k: "Discipline", v: company.discipline },
+  { k: "Domains", v: "Motion · Perception · Fleets" },
+  { k: "Core stack", v: "ROS 2 · C++ · Python · Rust" },
+  { k: "Simulation", v: "Isaac Sim · Gazebo · MuJoCo" },
+  { k: "Engagements", v: "Build · Integrate · Operate" },
 ];
 
 /** Splits a word into letters that rise one after another. */
@@ -34,12 +32,10 @@ function Letters({ text, delay, className = "" }: { text: string; delay: number;
   );
 }
 
-export default function Hero({ onResume }: { onResume: () => void }) {
-  const ticker = skillGroups.flatMap((g) => g.items);
+export default function Hero() {
   const section = useRef<HTMLElement>(null);
   const coords = useRef<HTMLSpanElement>(null);
   const snap = useRef<HTMLSpanElement>(null);
-  const [firstName, ...rest] = profile.name.split(" ");
 
   // Pointer coordinate readout, plus a crosshair that snaps to the nearest node of the machine grid
   useEffect(() => {
@@ -88,7 +84,7 @@ export default function Hero({ onResume }: { onResume: () => void }) {
       <div className="relative mx-auto max-w-[1320px] px-5 pb-14 pt-10 sm:px-10 lg:px-14 lg:pb-16 lg:pt-14">
         <p className="fade-up flex items-center font-code text-xs uppercase tracking-[0.25em] text-muted2" style={{ animationDelay: ".1s" }}>
           <span className="draw-x mr-3 inline-block h-px w-10 bg-signal" style={{ animationDelay: ".1s" }} />
-          <ScrambleText text={`Portfolio · ${new Date().getFullYear()} · Sys online`} delay={150} duration={800} />
+          <ScrambleText text={`${company.legalName} · ${new Date().getFullYear()} · Sys online`} delay={150} duration={800} />
           <span ref={coords} className="ml-auto hidden font-code text-[11px] tracking-[0.2em] text-muted2/80 lg:inline" aria-hidden="true">
             X 0000 · Y 0000
           </span>
@@ -96,39 +92,40 @@ export default function Hero({ onResume }: { onResume: () => void }) {
 
         <div className="mt-10 grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14">
           <div>
-            <p className="fade-up font-code text-sm text-copper" style={{ animationDelay: ".15s" }}>
-              &gt; hello_world --operator<span className="blink">_</span>
+            <p className="fade-up font-code text-sm text-beam" style={{ animationDelay: ".15s" }}>
+              &gt; gkt deploy --env production<span className="blink">_</span>
             </p>
-            <h1 className="mt-5 font-display font-bold uppercase leading-[0.88] tracking-tight text-[clamp(3.2rem,9vw,8rem)]">
-              <Letters text={firstName} delay={0.15} className="extrude" />
-              <Letters text={rest.join(" ")} delay={0.35} className="text-outline wave-fill extrude" />
+            <h1 className="mt-5 font-display font-bold uppercase leading-[0.88] tracking-tight text-[clamp(3.2rem,12vw,7rem)] lg:text-[clamp(3rem,8vw,7rem)]">
+              <Letters text="Robotics" delay={0.15} className="extrude" />
+              <Letters text="Software" delay={0.35} className="text-outline wave-fill extrude" />
             </h1>
 
             <div className="mt-8 flex items-center gap-3">
-              <div className="draw-x h-1.5 w-32 bg-signal shadow-[0_0_14px_rgba(168,68,15,.7)] sm:w-44" />
+              <div className="draw-x h-1.5 w-32 bg-signal glow-line sm:w-44" />
               <div className="draw-x hazard h-1.5 w-20 opacity-60" style={{ animationDelay: ".7s" }} />
             </div>
 
             <p className="fade-up mt-8 font-display text-2xl font-semibold uppercase tracking-wide sm:text-3xl" style={{ animationDelay: ".55s" }}>
-              <ScrambleText text={profile.title} delay={600} duration={1000} replayOnHover />
+              <ScrambleText text="For machines that move" delay={600} duration={1000} replayOnHover />
             </p>
             <p className="fade-up mt-5 max-w-xl text-lg leading-relaxed text-muted2" style={{ animationDelay: ".7s" }}>
-              {profile.tagline}
+              {company.tagline}
             </p>
 
             <div className="fade-up mt-9 flex flex-wrap gap-3" style={{ animationDelay: ".85s" }}>
               <button
-                onClick={() => scrollToId("work")}
-                className="press btn-signal cut-sm group inline-flex items-center gap-2 bg-signal px-6 py-3.5 font-display text-sm font-semibold uppercase tracking-wide text-ink hover:bg-signal-hi"
+                onClick={() => scrollToId("services")}
+                className="press btn-signal cut-sm group inline-flex items-center gap-2 bg-signal px-6 py-3.5 font-display text-sm font-semibold uppercase tracking-wide text-on-signal hover:bg-signal-hi"
               >
-                View my work
+                Explore services
                 <ArrowDownRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
               </button>
               <button
-                onClick={onResume}
-                className="press key-dark group inline-flex items-center gap-2 border border-line bg-paper/40 px-6 py-3.5 font-display text-sm font-semibold uppercase tracking-wide hover:border-signal hover:text-copper"
+                onClick={() => startEnquiry()}
+                className="press key-dark group inline-flex items-center gap-2 border border-line bg-paper/40 px-6 py-3.5 font-display text-sm font-semibold uppercase tracking-wide hover:border-signal hover:text-beam"
               >
-                <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" /> Download résumé
+                Start a project
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </button>
             </div>
           </div>
@@ -150,10 +147,10 @@ export default function Hero({ onResume }: { onResume: () => void }) {
             {specs.map((s, i) => (
               <div key={s.k} className="spec-row group border-b border-r border-line px-5 py-4 transition-colors hover:bg-paper-3" style={{ animationDelay: `${1.15 + i * 0.08}s` }}>
                 <dt className="flex items-center gap-2 font-code text-[10px] uppercase tracking-[0.2em] text-muted2">
-                  <span className="text-copper">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="text-beam">{String(i + 1).padStart(2, "0")}</span>
                   {s.k}
                 </dt>
-                <dd className="mt-1.5 text-sm font-medium transition-colors group-hover:text-copper-hi">{s.v}</dd>
+                <dd className="mt-1.5 text-sm font-medium transition-colors group-hover:text-beam-hi">{s.v}</dd>
               </div>
             ))}
           </dl>

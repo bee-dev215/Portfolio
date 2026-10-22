@@ -54,15 +54,23 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
         },
-        // Robotics theme: "paper" = forge-black surfaces, "ink" = warm light text, "signal" = industrial orange
-        paper: { DEFAULT: '#0d0805', 2: '#160d08', 3: '#20130b' },
-        ink: { DEFAULT: '#f6e7d8', 2: '#d9c3ae' },
-        // dark burnt orange for fills, bars and borders (light text sits on it); copper for orange text on dark
-        signal: { DEFAULT: '#a8440f', deep: '#7c300a', hi: '#b9511a', hot: '#c4561a' },
-        copper: { DEFAULT: '#bd5f26', hi: '#cc7139' },
-        ember: '#2c1307',
-        muted2: '#a8907d',
-        line: 'rgba(246, 231, 216, 0.11)',
+        // Robotics theme, driven by the CSS variables on .site-root (dark) / html[data-theme="light"] (light):
+        // "paper" = surfaces, "ink" = text, "signal" = instrument-cyan fills, "beam" = cyan text,
+        // "on-signal" = text sitting on a signal fill (light in both themes)
+        paper: { DEFAULT: 'rgb(var(--paper-rgb) / <alpha-value>)', 2: 'rgb(var(--paper-2-rgb) / <alpha-value>)', 3: 'rgb(var(--paper-3-rgb) / <alpha-value>)' },
+        ink: { DEFAULT: 'rgb(var(--ink-rgb) / <alpha-value>)', 2: 'rgb(var(--ink-2-rgb) / <alpha-value>)' },
+        signal: {
+          DEFAULT: 'rgb(var(--signal-rgb) / <alpha-value>)',
+          deep: 'rgb(var(--signal-deep-rgb) / <alpha-value>)',
+          hi: 'rgb(var(--signal-hi-rgb) / <alpha-value>)',
+          hot: 'rgb(var(--signal-hot-rgb) / <alpha-value>)',
+        },
+        beam: { DEFAULT: 'rgb(var(--beam-rgb) / <alpha-value>)', hi: 'rgb(var(--beam-hi-rgb) / <alpha-value>)' },
+        'on-signal': 'rgb(var(--on-signal-rgb) / <alpha-value>)',
+        // safety amber: hazard striping only
+        caution: 'rgb(var(--caution-rgb) / <alpha-value>)',
+        muted2: 'rgb(var(--muted-rgb) / <alpha-value>)',
+        line: 'var(--line)',
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',

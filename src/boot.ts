@@ -1,6 +1,6 @@
 import { BOOT_EVENT } from "@/hooks/use-motion";
 
-const SEEN_KEY = "jm-boot-seen";
+const SEEN_KEY = "gkt-boot-seen";
 const TICKS = 72; // calibration dial
 const CELLS = 40; // charge bar
 

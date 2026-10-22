@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { suggestedCategories } from "@/data/portfolio";
+import { suggestedCategories } from "@/data/company";
 import { emptyProject, ProjectInput, ProjectRow } from "@/lib/portfolioApi";
 import EditorDrawer from "./EditorDrawer";
 import ImageUpload from "./ImageUpload";

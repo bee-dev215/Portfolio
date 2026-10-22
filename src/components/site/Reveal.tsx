@@ -45,7 +45,7 @@ export function SectionHeading({
   return (
     <div ref={ref} className={`rv rv-up ${visible ? "rv-in" : ""}`}>
       <div className="flex items-center gap-4 font-code text-xs uppercase tracking-[0.22em]">
-        <span className="bevel cut-sm bg-signal px-2 py-1 font-semibold text-ink">{index}</span>
+        <span className="bevel cut-sm bg-signal px-2 py-1 font-semibold text-on-signal">{index}</span>
         <ScrambleText text={label} start={visible} delay={150} className="text-muted2" />
         <span className="rv-line h-px flex-1 bg-gradient-to-r from-signal/60 via-line to-transparent" />
         <span className="hidden text-[10px] text-muted2/70 sm:inline">[ MOD-{index} ]</span>

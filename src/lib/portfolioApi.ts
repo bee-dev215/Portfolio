@@ -1,8 +1,6 @@
 import { supabase } from "@/lib/supabase";
-import type { Job, Project } from "@/data/portfolio";
 
 export const PROJECTS_TABLE = "portfolio_projects";
-export const EXPERIENCE_TABLE = "portfolio_experience";
 export const IMAGE_BUCKET = "portfolio-images";
 
 // ---------- Row types (database shape) ----------
@@ -22,26 +20,11 @@ export interface ProjectRow {
   sort_order: number;
 }
 
-export interface ExperienceRow {
-  id: number;
-  company: string;
-  role: string;
-  type: string;
-  location: string;
-  start_date: string;
-  end_date: string;
-  summary: string;
-  achievements: string[];
-  tech: string[];
-  sort_order: number;
-}
-
 export type ProjectInput = Omit<ProjectRow, "id" | "sort_order">;
-export type ExperienceInput = Omit<ExperienceRow, "id" | "sort_order">;
 
 export const emptyProject: ProjectInput = {
   title: "",
-  category: "SaaS",
+  category: "Manufacturing",
   year: String(new Date().getFullYear()),
   role: "",
   summary: "",
@@ -52,50 +35,6 @@ export const emptyProject: ProjectInput = {
   live_url: "",
   repo_url: "",
 };
-
-export const emptyExperience: ExperienceInput = {
-  company: "",
-  role: "",
-  type: "Full-time",
-  location: "",
-  start_date: "",
-  end_date: "Present",
-  summary: "",
-  achievements: [],
-  tech: [],
-};
-
-// ---------- Mappers (database -> UI types) ----------
-// The admin form accepts "#" as "no link"; normalize it so the UI can hide the button
-const linkOrEmpty = (u: string) => (u && u !== "#" ? u : "");
-
-export const toProject = (r: ProjectRow): Project => ({
-  id: r.id,
-  title: r.title,
-  category: r.category,
-  year: r.year,
-  role: r.role,
-  summary: r.summary,
-  description: r.description,
-  highlights: r.highlights ?? [],
-  tech: r.tech ?? [],
-  image: r.image_url,
-  liveUrl: linkOrEmpty(r.live_url),
-  repoUrl: linkOrEmpty(r.repo_url),
-});
-
-export const toJob = (r: ExperienceRow): Job => ({
-  id: r.id,
-  company: r.company,
-  role: r.role,
-  type: r.type,
-  location: r.location,
-  start: r.start_date,
-  end: r.end_date,
-  summary: r.summary,
-  achievements: r.achievements ?? [],
-  tech: r.tech ?? [],
-});
 
 // ---------- Reads ----------
 export async function fetchProjectRows(): Promise<ProjectRow[]> {
@@ -108,18 +47,8 @@ export async function fetchProjectRows(): Promise<ProjectRow[]> {
   return (data ?? []) as ProjectRow[];
 }
 
-export async function fetchExperienceRows(): Promise<ExperienceRow[]> {
-  const { data, error } = await supabase
-    .from(EXPERIENCE_TABLE)
-    .select("*")
-    .order("sort_order", { ascending: true })
-    .order("id", { ascending: true });
-  if (error) throw error;
-  return (data ?? []) as ExperienceRow[];
-}
-
 // ---------- Generic writes ----------
-type Table = typeof PROJECTS_TABLE | typeof EXPERIENCE_TABLE;
+type Table = typeof PROJECTS_TABLE;
 
 export async function createRow<T extends object>(table: Table, values: T, sortOrder: number) {
   const { error } = await supabase.from(table).insert({ ...values, sort_order: sortOrder });

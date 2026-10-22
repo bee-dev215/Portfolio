@@ -1,36 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Briefcase, ExternalLink, FolderKanban, Loader2, LogOut, ShieldAlert } from "lucide-react";
+import { ExternalLink, Loader2, LogOut, ShieldAlert } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import {
-  adminExists,
-  claimAdmin,
-  EXPERIENCE_TABLE,
-  ExperienceInput,
-  ExperienceRow,
-  isCurrentUserAdmin,
-  PROJECTS_TABLE,
-  ProjectInput,
-  ProjectRow,
-} from "@/lib/portfolioApi";
-import { EXPERIENCE_KEY, PROJECTS_KEY, useExperienceRows, useProjectRows } from "@/hooks/usePortfolioData";
-import { profile } from "@/data/portfolio";
+import { adminExists, claimAdmin, isCurrentUserAdmin, PROJECTS_TABLE, ProjectInput, ProjectRow } from "@/lib/portfolioApi";
+import { PROJECTS_KEY, useProjectRows } from "@/hooks/usePortfolioData";
+import { company } from "@/data/company";
 import AdminLogin from "@/components/admin/AdminLogin";
 import CollectionManager from "@/components/admin/CollectionManager";
 import ProjectForm from "@/components/admin/ProjectForm";
-import ExperienceForm from "@/components/admin/ExperienceForm";
 
 type Status = "loading" | "signed-out" | "setup" | "not-admin" | "admin";
 
 function Dashboard({ email, onSignOut }: { email: string; onSignOut: () => void }) {
-  const [tab, setTab] = useState<"projects" | "experience">("projects");
   const projectsQ = useProjectRows();
-  const experienceQ = useExperienceRows();
-
-  const tabs = [
-    { id: "projects" as const, label: "Projects", icon: FolderKanban, count: projectsQ.data?.length ?? 0 },
-    { id: "experience" as const, label: "Experience", icon: Briefcase, count: experienceQ.data?.length ?? 0 },
-  ];
 
   return (
     <div className="pf-root min-h-screen">
@@ -38,10 +20,10 @@ function Dashboard({ email, onSignOut }: { email: string; onSignOut: () => void 
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-3">
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-500 font-mono text-sm font-bold text-zinc-950">
-              {profile.initials}
+              {company.initials}
             </span>
             <div>
-              <div className="text-sm font-semibold text-white">Portfolio Admin</div>
+              <div className="text-sm font-semibold text-white">{company.legalName} Admin</div>
               <div className="text-xs text-zinc-500">{email}</div>
             </div>
           </div>
@@ -57,71 +39,33 @@ function Dashboard({ email, onSignOut }: { email: string; onSignOut: () => void 
       </header>
 
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <h1 className="text-3xl font-bold tracking-tight text-white">Content</h1>
-        <p className="mt-1 text-zinc-500">Changes are saved to the database and appear on your portfolio instantly.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-white">Projects</h1>
+        <p className="mt-1 text-zinc-500">Project records are saved to the database. The public site's solutions are edited in src/data/company.ts.</p>
 
-        <div className="mt-8 flex gap-1 rounded-xl border border-white/10 bg-white/[0.02] p-1 sm:inline-flex">
-          {tabs.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm transition sm:flex-none ${
-                tab === t.id ? "bg-white text-zinc-950" : "text-zinc-400 hover:text-white"
-              }`}
-            >
-              <t.icon className="h-4 w-4" /> {t.label}
-              <span className={`rounded-full px-1.5 text-xs ${tab === t.id ? "bg-zinc-200" : "bg-white/10"}`}>{t.count}</span>
-            </button>
-          ))}
-        </div>
-
-        <div className="mt-6">
-          {tab === "projects" ? (
-            <CollectionManager<ProjectRow, ProjectInput>
-              table={PROJECTS_TABLE}
-              queryKey={PROJECTS_KEY}
-              query={projectsQ}
-              noun="Project"
-              getLabel={(r) => r.title}
-              Form={ProjectForm}
-              render={(r) => (
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-16 shrink-0 overflow-hidden rounded-lg bg-white/5">
-                    {r.image_url && <img src={r.image_url} alt="" className="h-full w-full object-cover" />}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="truncate font-medium text-white">{r.title}</div>
-                    <div className="mt-0.5 flex flex-wrap gap-x-2 text-xs text-zinc-500">
-                      <span className="text-emerald-400">{r.category}</span>
-                      <span>{r.year}</span>
-                      <span className="hidden truncate sm:inline">{r.tech.slice(0, 4).join(" · ")}</span>
-                    </div>
-                  </div>
+        <div className="mt-8">
+          <CollectionManager<ProjectRow, ProjectInput>
+            table={PROJECTS_TABLE}
+            queryKey={PROJECTS_KEY}
+            query={projectsQ}
+            noun="Project"
+            getLabel={(r) => r.title}
+            Form={ProjectForm}
+            render={(r) => (
+              <div className="flex items-center gap-4">
+                <div className="h-12 w-16 shrink-0 overflow-hidden rounded-lg bg-white/5">
+                  {r.image_url && <img src={r.image_url} alt="" className="h-full w-full object-cover" />}
                 </div>
-              )}
-            />
-          ) : (
-            <CollectionManager<ExperienceRow, ExperienceInput>
-              table={EXPERIENCE_TABLE}
-              queryKey={EXPERIENCE_KEY}
-              query={experienceQ}
-              noun="Role"
-              getLabel={(r) => `${r.role} at ${r.company}`}
-              Form={ExperienceForm}
-              render={(r) => (
                 <div className="min-w-0">
-                  <div className="truncate font-medium text-white">{r.role}</div>
+                  <div className="truncate font-medium text-white">{r.title}</div>
                   <div className="mt-0.5 flex flex-wrap gap-x-2 text-xs text-zinc-500">
-                    <span className="text-zinc-300">{r.company}</span>
-                    <span className="font-mono text-emerald-400">
-                      {r.start_date} — {r.end_date}
-                    </span>
-                    <span className="hidden sm:inline">{r.location}</span>
+                    <span className="text-emerald-400">{r.category}</span>
+                    <span>{r.year}</span>
+                    <span className="hidden truncate sm:inline">{r.tech.slice(0, 4).join(" · ")}</span>
                   </div>
                 </div>
-              )}
-            />
-          )}
+              </div>
+            )}
+          />
         </div>
       </main>
     </div>
@@ -195,7 +139,7 @@ export default function Admin() {
           <p className="mt-2 text-sm text-zinc-400">
             {status === "setup"
               ? `Signed in as ${email}. No admin exists yet — claim admin access for this account.`
-              : `${email} does not have admin access to this portfolio.`}
+              : `${email} does not have admin access to this site.`}
           </p>
           <div className="mt-6 flex flex-col gap-2">
             {status === "setup" && (

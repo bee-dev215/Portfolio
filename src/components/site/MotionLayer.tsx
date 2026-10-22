@@ -184,7 +184,7 @@ export default function MotionLayer() {
         ))}
       </div>
       <div ref={badge} className="cursor-badge">
-        <span className="cut-sm flex h-full w-full items-center justify-center gap-1 bg-signal font-display text-xs font-bold uppercase tracking-wider text-ink">
+        <span className="cut-sm flex h-full w-full items-center justify-center gap-1 bg-signal font-display text-xs font-bold uppercase tracking-wider text-on-signal">
           View <ArrowUpRight className="h-3.5 w-3.5" />
         </span>
       </div>

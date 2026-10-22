@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Plus } from "lucide-react";
-import { experience } from "@/data/portfolio";
+import { phases } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
 
-function Achievement({ text }: { text: string }) {
+function Activity({ text }: { text: string }) {
   const i = text.indexOf(": ");
   if (i === -1) return <>{text}</>;
   return (
@@ -14,7 +14,7 @@ function Achievement({ text }: { text: string }) {
   );
 }
 
-/** Fills a vertical rail as the list scrolls past the middle of the screen and lights up each job's node. */
+/** Fills a vertical rail as the list scrolls past the middle of the screen and lights up each phase's node. */
 function useScrollRail() {
   const list = useRef<HTMLOListElement>(null);
   const fill = useRef<HTMLSpanElement>(null);
@@ -50,24 +50,24 @@ function useScrollRail() {
   return { list, fill };
 }
 
-export default function Experience() {
+export default function Process() {
   const [open, setOpen] = useState<number | null>(0);
   const { list, fill } = useScrollRail();
 
   return (
-    <section id="experience" className="border-y border-line bg-paper-2/60 px-5 py-24 sm:px-10 lg:px-14 lg:py-32">
+    <section id="process" className="px-5 py-24 sm:px-10 lg:px-14 lg:py-32">
       <div className="mx-auto max-w-[1320px]">
         <SectionHeading
           index="04"
-          label="Experience"
+          label="Process"
           title={
             <>
-              Employment <span className="glow-text text-copper">history.</span>
+              From first survey to <span className="glow-text text-beam">full production.</span>
             </>
           }
         >
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted2">
-            From Angular developer to senior full-stack developer — over eight years of shipping, now building education software in Switzerland.
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted2">
+            Every engagement moves through {phases.length} phases, each with clear outputs and an acceptance gate — so you always know what is done, what is next and what you will receive.
           </p>
         </SectionHeading>
 
@@ -76,16 +76,15 @@ export default function Experience() {
           <span className="absolute bottom-0 left-[7px] top-0 w-px bg-ink/15 sm:left-[11px]" aria-hidden="true" />
           <span
             ref={fill}
-            className="absolute bottom-0 left-[6px] top-0 w-[3px] origin-top bg-signal shadow-[0_0_10px_rgba(168,68,15,.7)] transition-transform duration-200 ease-out sm:left-[10px]"
+            className="absolute bottom-0 left-[6px] top-0 w-[3px] origin-top bg-signal glow-line transition-transform duration-200 ease-out sm:left-[10px]"
             style={{ transform: "scaleY(0)" }}
             aria-hidden="true"
           />
 
-          {experience.map((job, i) => {
+          {phases.map((phase, i) => {
             const isOpen = open === i;
-            const isCurrent = job.end === "Present";
             return (
-              <li key={job.id} className="relative border-b border-line">
+              <li key={phase.id} className="relative border-b border-line">
                 <span data-node className="rail-node absolute -left-7 top-9 sm:-left-9 sm:top-11" aria-hidden="true" />
                 <Reveal delay={i * 80} variant="left">
                   <button
@@ -93,30 +92,18 @@ export default function Experience() {
                     aria-expanded={isOpen}
                     className="group grid w-full grid-cols-[1fr_auto] items-start gap-4 py-7 text-left sm:grid-cols-[11rem_1fr_auto] sm:gap-8 sm:py-9"
                   >
-                    <div className="col-span-2 flex flex-wrap items-center gap-3 font-code text-sm sm:col-span-1 sm:block">
-                      <span className={isOpen ? "text-copper" : "text-muted2"}>
-                        {job.start} — {job.end}
-                      </span>
-                      {isCurrent && (
-                        <span className="inline-flex items-center gap-1.5 border border-signal/40 bg-signal/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-copper sm:mt-2 sm:flex sm:w-fit">
-                          <span className="led led-sm" />
-                          Now
-                        </span>
-                      )}
+                    <div className="col-span-2 font-code text-sm uppercase tracking-[0.18em] sm:col-span-1 sm:pt-2">
+                      <span className={isOpen ? "text-beam" : "text-muted2"}>Phase {String(i + 1).padStart(2, "0")}</span>
                     </div>
                     <div className="col-start-1 sm:col-start-2">
                       <h3 className="font-display text-2xl font-semibold uppercase leading-tight tracking-wide transition-transform duration-300 group-hover:translate-x-1 sm:text-3xl">
-                        {job.role}
+                        {phase.name}
                       </h3>
-                      <p className="mt-1.5 text-muted2">
-                        <span className="font-medium text-ink">{job.company}</span>
-                        {job.type && ` · ${job.type}`}
-                        {job.location && ` · ${job.location}`}
-                      </p>
+                      <p className="mt-1.5 font-medium text-ink/85">{phase.title}</p>
                     </div>
                     <span
                       className={`key-dark grid h-10 w-10 shrink-0 place-items-center border transition-all duration-300 ${
-                        isOpen ? "rotate-45 border-signal bg-signal text-ink" : "border-line group-hover:border-signal group-hover:text-copper"
+                        isOpen ? "rotate-45 border-signal bg-signal text-on-signal" : "border-line group-hover:border-signal group-hover:text-beam"
                       }`}
                     >
                       <Plus className="h-5 w-5" />
@@ -128,23 +115,26 @@ export default function Experience() {
                       <div className="pb-10 sm:grid sm:grid-cols-[11rem_1fr] sm:gap-8">
                         <div className="hidden sm:block" />
                         <div>
-                          <p className="max-w-2xl text-lg leading-relaxed">{job.summary}</p>
+                          <p className="max-w-2xl text-lg leading-relaxed">{phase.summary}</p>
                           <ul className="mt-6 space-y-3.5">
-                            {job.achievements.map((a, ai) => (
+                            {phase.activities.map((a, ai) => (
                               <li key={a} className="exp-item flex gap-3 leading-relaxed" style={{ ["--i" as string]: ai }}>
                                 <span className="mt-2.5 h-2 w-2 shrink-0 rotate-45 bg-signal" />
                                 <span>
-                                  <Achievement text={a} />
+                                  <Activity text={a} />
                                 </span>
                               </li>
                             ))}
                           </ul>
-                          <div className="mt-7 flex flex-wrap gap-2">
-                            {job.tech.map((t, ti) => (
+                          <div className="mt-7 flex flex-wrap items-center gap-2">
+                            <span className="exp-item mr-1 font-code text-[11px] uppercase tracking-[0.18em] text-muted2" style={{ ["--i" as string]: phase.activities.length }}>
+                              Outputs
+                            </span>
+                            {phase.outputs.map((t, ti) => (
                               <span
                                 key={t}
                                 className="exp-item key-dark cut-sm border border-line bg-paper px-3 py-1.5 font-code text-xs text-ink/90"
-                                style={{ ["--i" as string]: job.achievements.length + ti * 0.5 }}
+                                style={{ ["--i" as string]: phase.activities.length + ti * 0.5 }}
                               >
                                 {t}
                               </span>

@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jackson Moore — Senior Full-Stack Engineer</title>
-    <meta name="description" content="Jackson Moore is a senior full-stack engineer specialising in Angular, React, Next.js and TypeScript — building fast, scalable web applications with clean architecture and considered UX." />
-    <meta name="theme-color" content="#0d0805" />
+    <title>GKT — Robotics Software Engineering</title>
+    <meta name="description" content="GKT LLC is a robotics software company. We engineer motion planning, machine vision, fleet orchestration and digital-twin software that turns robots into dependable production systems." />
+    <meta name="theme-color" content="#eef2f5" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,11 +15,24 @@
       rel="stylesheet"
     />
 
-    <meta property="og:title" content="Jackson Moore — Senior Full-Stack Engineer" />
-    <meta property="og:description" content="Senior full-stack engineer specialising in Angular, React, Next.js and TypeScript. Fast, scalable web applications with clean architecture and considered UX." />
+    <meta property="og:title" content="GKT — Robotics Software Engineering" />
+    <meta property="og:site_name" content="GKT LLC" />
+    <meta property="og:description" content="Motion, perception and fleet software for robots that run every shift — proven in simulation, commissioned on your floor and supported for the long run." />
     <meta property="og:type" content="website" />
 
     <meta name="twitter:card" content="summary" />
+
+    <script>
+      // Colour theme: the visitor's saved choice (see src/hooks/use-site-theme.ts), else light.
+      // Applied before first paint so the page never flashes the other theme.
+      (function (d) {
+        var t = null;
+        try {
+          t = localStorage.getItem("gkt-theme");
+        } catch (e) {}
+        d.dataset.theme = t === "dark" ? "dark" : "light";
+      })(document.documentElement);
+    </script>
 
     <script>
       // Boot screen (markup below, driven by src/boot.ts): home page only, never for reduced motion.
@@ -28,7 +41,7 @@
         if (location.pathname !== "/" || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         d.dataset.boot = "pending";
         try {
-          if (sessionStorage.getItem("jm-boot-seen")) d.dataset.bootMode = "warm";
+          if (sessionStorage.getItem("gkt-boot-seen")) d.dataset.bootMode = "warm";
         } catch (e) {}
         // Failsafe: never strand a visitor behind the doors if the app bundle fails to load
         setTimeout(function () {
@@ -42,13 +55,14 @@
     </script>
 
     <style>
-      html { background: #0d0805; }
+      html { background: #eef2f5; }
+      html[data-theme="dark"] { background: #070b0f; }
       html[data-boot] { scrollbar-gutter: stable; }
       html[data-boot="pending"] { overflow: hidden; }
       html:not([data-boot]) #boot { display: none; }
 
       #boot {
-        --paper: #0d0805; --ink: #f6e7d8; --muted: #a8907d; --line: rgba(246, 231, 216, .11); --signal: #a8440f; --signal-hi: #b9511a; --copper: #bd5f26;
+        --paper: #070b0f; --ink: #e4edf3; --muted: #8b9cab; --line: rgba(228, 237, 243, .11); --signal: #0a6a85; --signal-hi: #0b7390; --beam: #4aafcc; --caution: #c4921f;
         --servo: cubic-bezier(.7, 0, .2, 1); --lock: cubic-bezier(.2, 0, 0, 1);
         position: fixed; inset: 0; z-index: 250; overflow: hidden; color: var(--ink);
         font: 500 11px/1.6 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -58,22 +72,22 @@
       }
 
       /* Bay doors: two heavy halves that meet at the centre line and part when the system is up.
-         Furnace light from inside the bay leaks through the seam until they open */
+         Cold instrument light from inside the bay leaks through the seam until they open */
       .boot-door {
         position: absolute; left: 0; right: 0; height: 50%; background-color: var(--paper);
-        background-image: linear-gradient(to right, rgba(246, 231, 216, .03) 1px, transparent 1px), linear-gradient(to bottom, rgba(246, 231, 216, .03) 1px, transparent 1px);
+        background-image: linear-gradient(to right, rgba(228, 237, 243, .03) 1px, transparent 1px), linear-gradient(to bottom, rgba(228, 237, 243, .03) 1px, transparent 1px);
         background-size: 64px 64px;
         transition: transform .85s var(--servo) .28s;
       }
-      .boot-door.t { top: 0; background-position: center bottom; box-shadow: inset 0 1px 0 rgba(246, 231, 216, .04), inset 0 -60px 70px -50px rgba(168, 68, 15, .2), 0 1px 0 #050201; }
-      .boot-door.b { bottom: 0; background-position: center top; box-shadow: inset 0 1px 0 rgba(246, 231, 216, .08), inset 0 60px 70px -50px rgba(168, 68, 15, .2), inset 0 -40px 60px -40px rgba(0, 0, 0, .8); }
-      .boot-door::after { content: ""; position: absolute; left: 0; right: 0; height: 10px; opacity: 0; background: repeating-linear-gradient(-45deg, var(--signal) 0 8px, transparent 8px 16px); transition: opacity 0s .24s; }
+      .boot-door.t { top: 0; background-position: center bottom; box-shadow: inset 0 1px 0 rgba(228, 237, 243, .04), inset 0 -60px 70px -50px rgba(40, 150, 185, 0.16), 0 1px 0 #020406; }
+      .boot-door.b { bottom: 0; background-position: center top; box-shadow: inset 0 1px 0 rgba(228, 237, 243, .08), inset 0 60px 70px -50px rgba(40, 150, 185, 0.16), inset 0 -40px 60px -40px rgba(0, 0, 0, .8); }
+      .boot-door::after { content: ""; position: absolute; left: 0; right: 0; height: 10px; opacity: 0; background: repeating-linear-gradient(-45deg, var(--caution) 0 8px, transparent 8px 16px); transition: opacity 0s .24s; }
       .boot-door.t::after { bottom: 0; border-bottom: 2px solid var(--signal-hi); }
       .boot-door.b::after { top: 0; border-top: 2px solid var(--signal-hi); }
-      .boot-seam { position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: var(--signal-hi); box-shadow: 0 0 12px rgba(168, 68, 15, .6); transform: scaleX(0); opacity: 0; }
+      .boot-seam { position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: var(--signal-hi); box-shadow: 0 0 12px rgba(40, 150, 185, 0.48); transform: scaleX(0); opacity: 0; }
 
       .boot-ui { position: absolute; inset: 0; transition: opacity .14s linear; }
-      .boot-frame { position: absolute; width: 18px; height: 18px; border: 0 solid rgba(246, 231, 216, .22); }
+      .boot-frame { position: absolute; width: 18px; height: 18px; border: 0 solid rgba(228, 237, 243, .22); }
       .boot-frame.tl { left: 16px; top: 16px; border-width: 1.5px 0 0 1.5px; }
       .boot-frame.tr { right: 16px; top: 16px; border-width: 1.5px 1.5px 0 0; }
       .boot-frame.bl { left: 16px; bottom: 16px; border-width: 0 0 1.5px 1.5px; }
@@ -81,7 +95,7 @@
       .boot-bar { position: absolute; left: 44px; right: 44px; display: flex; justify-content: space-between; gap: 16px; font-size: 10px; letter-spacing: .2em; color: var(--muted); white-space: nowrap; }
       .boot-bar.top { top: 22px; }
       .boot-bar.bot { bottom: 22px; }
-      .boot-bar b { font-weight: 500; color: var(--copper); }
+      .boot-bar b { font-weight: 500; color: var(--beam); }
       .boot-tabular { font-variant-numeric: tabular-nums; }
 
       .boot-core { position: absolute; left: 50%; top: 50%; width: min(400px, calc(100% - 32px)); transform: translate(-50%, -50%); }
@@ -97,25 +111,25 @@
       .boot-lock i:nth-child(2) { right: 0; top: 0; border-width: 2px 2px 0 0; }
       .boot-lock i:nth-child(3) { right: 0; bottom: 0; border-width: 0 2px 2px 0; }
       .boot-lock i:nth-child(4) { left: 0; bottom: 0; border-width: 0 0 2px 2px; }
-      .boot-mono { fill: rgba(168, 68, 15, .12); stroke: var(--signal); stroke-width: 1.5; }
-      .boot-mono-t { fill: var(--copper); font: 700 22px "Chakra Petch", system-ui, sans-serif; letter-spacing: 0; }
+      .boot-mono { fill: rgba(40, 150, 185, 0.096); stroke: var(--signal); stroke-width: 1.5; }
+      .boot-mono-t { fill: var(--beam); font: 700 16px "Chakra Petch", system-ui, sans-serif; letter-spacing: 0; }
 
       .boot-read { display: flex; justify-content: space-between; margin-top: 30px; }
-      .boot-read [data-b="pct"] { color: var(--copper); }
+      .boot-read [data-b="pct"] { color: var(--beam); }
       .boot-caret { animation: boot-blink 1s step-end infinite; }
       @keyframes boot-blink { 50% { opacity: 0; } }
 
       /* Segmented charge bar: 40 cells, lit a whole cell at a time */
-      .boot-cells { position: relative; height: 10px; margin: 10px 5px 0; transform: skewX(-18deg); background: repeating-linear-gradient(90deg, rgba(246, 231, 216, .1) 0 calc(2.5% - 3px), transparent 0 2.5%); }
-      .boot-cells::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, var(--signal-hi) 0 calc(2.5% - 3px), transparent 0 2.5%); clip-path: inset(0 calc((1 - var(--p, 0)) * 100%) 0 0); filter: drop-shadow(0 2px 0 #2c1307) drop-shadow(0 0 4px rgba(168, 68, 15, .45)); }
+      .boot-cells { position: relative; height: 10px; margin: 10px 5px 0; transform: skewX(-18deg); background: repeating-linear-gradient(90deg, rgba(228, 237, 243, .1) 0 calc(2.5% - 3px), transparent 0 2.5%); }
+      .boot-cells::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, var(--signal-hi) 0 calc(2.5% - 3px), transparent 0 2.5%); clip-path: inset(0 calc((1 - var(--p, 0)) * 100%) 0 0); filter: drop-shadow(0 2px 0 #0d212b) drop-shadow(0 0 4px rgba(40, 150, 185, 0.36)); }
 
       /* Power-on self-test: rows are reserved up front so nothing shifts as they print */
       .boot-log { margin: 24px 0 0; padding: 0; list-style: none; font-size: 10.5px; letter-spacing: .08em; }
       .boot-log li { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: baseline; height: 20px; visibility: hidden; color: var(--muted); }
       .boot-log li.on { visibility: visible; }
       .boot-log .lb { overflow: hidden; white-space: nowrap; color: var(--ink); }
-      .boot-log .lb::after { content: " ................................................"; color: rgba(246, 231, 216, .18); }
-      .boot-log .st { visibility: hidden; color: var(--copper); }
+      .boot-log .lb::after { content: " ................................................"; color: rgba(228, 237, 243, .18); }
+      .boot-log .st { visibility: hidden; color: var(--beam); }
       .boot-log li.ok .st { visibility: visible; }
 
       @media (hover: none) { .boot-fine { display: none; } }
@@ -130,8 +144,8 @@
 
       /* Lock → open */
       #boot.is-locked .boot-lock { inset: -8px; }
-      .boot-dial svg { filter: drop-shadow(0 0 6px rgba(168, 68, 15, .2)); }
-      #boot.is-locked .boot-dial svg { filter: drop-shadow(0 0 12px rgba(168, 68, 15, .45)); }
+      .boot-dial svg { filter: drop-shadow(0 0 6px rgba(40, 150, 185, 0.16)); }
+      #boot.is-locked .boot-dial svg { filter: drop-shadow(0 0 12px rgba(40, 150, 185, 0.36)); }
       #boot.is-locked .boot-index { animation-play-state: paused; }
       #boot.is-locked .boot-mono { fill: var(--signal); }
       #boot.is-locked .boot-mono-t { fill: var(--ink); }
@@ -146,8 +160,8 @@
       #boot.is-quick .boot-door::after { transition-delay: .14s; }
       #boot.is-quick.is-open .boot-seam { animation-duration: .5s; }
     </style>
-    <script type="module" crossorigin src="/assets/index-DVLJG_Kt.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-D6ciWzvl.css">
+    <script type="module" crossorigin src="/assets/index-DnZtMhL1.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BkykKkk4.css">
   </head>
 
   <body>
@@ -158,7 +172,7 @@
       <div class="boot-ui">
         <i class="boot-frame tl"></i><i class="boot-frame tr"></i><i class="boot-frame bl"></i><i class="boot-frame br"></i>
         <div class="boot-bar top">
-          <span><b>JM-01</b> // System boot</span>
+          <span><b>GKT-01</b> // System boot</span>
           <span class="boot-tabular" data-b="clock">T+00.000</span>
         </div>
 
@@ -170,16 +184,16 @@
                   <circle data-b="arc" cx="100" cy="100" r="86" fill="none" stroke="#fff" stroke-width="16" pathLength="72" stroke-dasharray="0 72" transform="rotate(-90 100 100)" />
                 </mask>
               </defs>
-              <circle cx="100" cy="100" r="86" fill="none" stroke="rgba(246,231,216,.12)" stroke-width="10" pathLength="72" stroke-dasharray=".3 .7" transform="rotate(-90 100 100)" />
-              <circle cx="100" cy="100" r="86" fill="none" stroke="#b9511a" stroke-width="10" pathLength="72" stroke-dasharray=".3 .7" transform="rotate(-90 100 100)" mask="url(#boot-arc)" />
-              <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(246,231,216,.1)" />
+              <circle cx="100" cy="100" r="86" fill="none" stroke="rgba(228, 237, 243,.12)" stroke-width="10" pathLength="72" stroke-dasharray=".3 .7" transform="rotate(-90 100 100)" />
+              <circle cx="100" cy="100" r="86" fill="none" stroke="#0b7390" stroke-width="10" pathLength="72" stroke-dasharray=".3 .7" transform="rotate(-90 100 100)" mask="url(#boot-arc)" />
+              <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(228, 237, 243,.1)" />
               <g class="boot-index">
-                <circle cx="100" cy="100" r="60" fill="none" stroke="rgba(168,68,15,.45)" stroke-dasharray="2 5" />
-                <rect x="98.5" y="38" width="3" height="9" fill="#a8440f" />
+                <circle cx="100" cy="100" r="60" fill="none" stroke="rgba(40, 150, 185, 0.36)" stroke-dasharray="2 5" />
+                <rect x="98.5" y="38" width="3" height="9" fill="#0a6a85" />
               </g>
-              <path d="M100 0v14M100 186v14M0 100h14M186 100h14" stroke="#a8440f" stroke-width="1.5" />
+              <path d="M100 0v14M100 186v14M0 100h14M186 100h14" stroke="#0a6a85" stroke-width="1.5" />
               <polygon class="boot-mono" points="78,78 114,78 122,86 122,122 86,122 78,114" />
-              <text class="boot-mono-t" x="100" y="108" text-anchor="middle">JM</text>
+              <text class="boot-mono-t" x="100" y="106" text-anchor="middle">GKT</text>
             </svg>
             <div class="boot-lock"><i></i><i></i><i></i><i></i></div>
           </div>
@@ -196,7 +210,7 @@
             <li data-line><span class="ts boot-tabular">[ 0.000 ]</span><span class="lb">Inverse kinematics</span><span class="st">Calibrated</span></li>
             <li data-line><span class="ts boot-tabular">[ 0.000 ]</span><span class="lb">Vision · targeting</span><span class="st">Online</span></li>
             <li data-line><span class="ts boot-tabular">[ 0.000 ]</span><span class="lb">Safety interlock</span><span class="st">Engaged</span></li>
-            <li data-line><span class="ts boot-tabular">[ 0.000 ]</span><span class="lb">Portfolio modules</span><span class="st">06/06</span></li>
+            <li data-line><span class="ts boot-tabular">[ 0.000 ]</span><span class="lb">Solution library</span><span class="st">06/06</span></li>
             <li data-line><span class="ts boot-tabular">[ 0.000 ]</span><span class="lb">Operator access</span><span class="st">Granted</span></li>
           </ol>
         </div>
@@ -204,7 +218,7 @@
         <div class="boot-bar bot">
           <span class="boot-x">Arrival bay 01 · Firmware 26.10</span>
           <span><span class="boot-fine">Click or press any key to skip</span><span class="boot-touch">Tap to skip</span></span>
-          <span class="boot-x">Unit JM-01 · Full-stack</span>
+          <span class="boot-x">GKT LLC · Robotics software</span>
         </div>
       </div>
     </div>

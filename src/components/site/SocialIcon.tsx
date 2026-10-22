@@ -1,4 +1,4 @@
-import { SocialKey } from "@/data/portfolio";
+import { SocialKey } from "@/data/company";
 
 const paths: Record<SocialKey, string> = {
   email:
