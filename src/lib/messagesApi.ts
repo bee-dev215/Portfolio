@@ -80,6 +80,6 @@ export async function sendReply(messageId: number, subject: string, body: string
     const detail = await res.json().catch(() => null);
     throw new Error(detail?.error ?? `The reply service answered with an error (${res.status}).`);
   }
-  // No answer at all: the function isn't deployed yet, or the connection dropped
-  throw new Error(`Couldn't reach the reply service. If it isn't set up yet, ${SET_UP}.`);
+  // No answer at all: almost always the function isn't deployed yet (Supabase then fails the browser's CORS check)
+  throw new Error(`The send-reply function didn't answer — it probably isn't deployed yet. To set it up, ${SET_UP}.`);
 }
