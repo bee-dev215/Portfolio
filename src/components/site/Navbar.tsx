@@ -1,7 +1,8 @@
 import { FocusEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Building2, ChevronDown, Cpu, LucideIcon, Mail, Menu, Phone, Route, ShieldCheck, Users, X } from "lucide-react";
+import { ArrowRight, Building2, CalendarDays, ChevronDown, Cpu, LucideIcon, Mail, Menu, Phone, Route, ShieldCheck, Users, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
+  bookCall,
   company,
   companyMenu,
   CompanyMenuKey,
@@ -12,7 +13,6 @@ import {
   services,
   solutionPath,
   solutions,
-  startEnquiry,
 } from "@/data/company";
 import { Project, projectPath } from "@/data/projects";
 import { useProjects } from "@/hooks/use-projects";
@@ -49,14 +49,12 @@ function useScrollState() {
   return { active, scrolled };
 }
 
-/** Logo mark: gradient tile with a graduation cap whose tassel ends in a spark. public/favicon.svg is the same artwork. */
+/** Logo mark: gradient tile with a J and a spark. public/favicon.svg is the same artwork. */
 export const Monogram = ({ className = "h-9 w-9" }: { className?: string }) => (
   <span className={`bg-grad grid shrink-0 place-items-center rounded-xl text-white shadow-[0_8px_18px_-8px_rgb(var(--brand-rgb)/.7)] ${className}`}>
     <svg viewBox="0 0 64 64" className="h-full w-full" fill="currentColor" aria-hidden="true">
-      <path d="M32 13 54 23 32 33 10 23Z" />
-      <path d="M19 30.4 32 36.3 45 30.4V39.5C40 43.8 24 43.8 19 39.5Z" />
-      <path d="M50.5 25V34.5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
-      <path d="M50.5 34.7Q51.43 39.57 56.3 40.5Q51.43 41.43 50.5 46.3Q49.57 41.43 44.7 40.5Q49.57 39.57 50.5 34.7Z" />
+      <path d="M38.5 16v20a11 11 0 0 1-22 0" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" />
+      <path d="M49 11Q50.1 16.9 56 18Q50.1 19.1 49 25Q47.9 19.1 42 18Q47.9 16.9 49 11Z" />
     </svg>
   </span>
 );
@@ -88,11 +86,11 @@ interface MenuGroup {
   items: MenuItem[];
 }
 
-/** The Projects menu, built from the projects once they've loaded. */
+/** The Our work menu, built from the projects. */
 const projectsMenu = (projects: Project[], ready: boolean): MenuGroup => ({
   key: "projects",
-  label: "Projects",
-  intro: "Selected work with schools, universities and learning teams",
+  label: "Our work",
+  intro: "Software we've built to take busywork off people's desks",
   paths: ["/projects"],
   sections: ["projects"],
   all: { label: ready ? `All ${projects.length} projects` : "All projects", to: "/projects" },
@@ -106,28 +104,12 @@ const projectsMenu = (projects: Project[], ready: boolean): MenuGroup => ({
   })),
 });
 
-// The menus in order; the Projects menu goes second, once the projects are known
-const [solutionsMenu, ...otherMenus]: MenuGroup[] = [
-  {
-    key: "solutions",
-    label: "Solutions",
-    intro: "AI products for teaching, learning and training",
-    paths: ["/solutions"],
-    sections: ["solutions"],
-    all: { label: `All ${solutions.length} solutions`, to: "/solutions" },
-    items: solutions.map((s) => ({
-      key: `solution-${s.id}`,
-      label: s.title,
-      desc: s.domain,
-      blurb: s.summary,
-      image: s.image,
-      to: solutionPath(s),
-    })),
-  },
+// The menus in order; Our work goes third, between these two and the rest
+const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
   {
     key: "services",
     label: "Services",
-    intro: "Hands-on help from first prototype to production",
+    intro: "Engineering from a two-week prototype to production",
     paths: ["/services"],
     sections: ["services"],
     all: { label: `All ${services.length} services`, to: "/services" },
@@ -142,14 +124,30 @@ const [solutionsMenu, ...otherMenus]: MenuGroup[] = [
     })),
   },
   {
-    key: "audiences",
-    label: "Who we serve",
-    intro: "Built around the people who teach and learn",
+    key: "solutions",
+    label: "Solutions",
+    intro: "Ready-made starting points for the most common busywork",
+    paths: ["/solutions"],
+    sections: ["solutions"],
+    all: { label: `All ${solutions.length} solutions`, to: "/solutions" },
+    items: solutions.map((s) => ({
+      key: `solution-${s.id}`,
+      label: s.title,
+      desc: s.domain,
+      blurb: s.summary,
+      image: s.image,
+      to: solutionPath(s),
+    })),
+  },
+  {
+    key: "industries",
+    label: "Industries",
+    intro: "Teams whose weeks we give back",
     paths: ["/industries"],
-    sections: ["industries", "outcomes"],
-    all: { label: `All ${industries.length} audiences`, to: "/industries" },
+    sections: ["industries"],
+    all: { label: `All ${industries.length} industries`, to: "/industries" },
     items: industries.map((ind) => ({
-      key: `audience-${ind.key}`,
+      key: `industry-${ind.key}`,
       label: ind.title,
       desc: ind.focus,
       blurb: ind.desc,
@@ -280,7 +278,7 @@ export default function Navbar() {
   const photos = usePhotos();
   // Built-in photos swapped for any replacements chosen in the admin
   const menus = useMemo(
-    () => [solutionsMenu, projectsMenu(projects, ready), ...otherMenus].map((g) => ({ ...g, items: g.items.map((it) => ({ ...it, image: photos.src(it.image) })) })),
+    () => [servicesMenu, solutionsMenu, projectsMenu(projects, ready), ...otherMenus].map((g) => ({ ...g, items: g.items.map((it) => ({ ...it, image: photos.src(it.image) })) })),
     [projects, ready, photos],
   );
 
@@ -353,9 +351,9 @@ export default function Navbar() {
     setOpen(false);
   };
 
-  const enquire = () => {
+  const book = () => {
     close();
-    startEnquiry();
+    bookCall();
   };
 
   const isActive = (g: MenuGroup) => (home ? g.sections.includes(active) : g.paths.some((p) => pathname === p || pathname.startsWith(`${p}/`)));
@@ -381,7 +379,7 @@ export default function Navbar() {
           <Monogram />
           <span className="leading-tight">
             <span className="block font-display text-lg font-extrabold tracking-tight">{company.name}</span>
-            <span className="hidden text-[11px] font-medium text-subtle sm:block">AI for education</span>
+            <span className="hidden text-[11px] font-medium text-subtle sm:block">Software & AI engineering</span>
           </span>
         </Link>
 
@@ -424,8 +422,8 @@ export default function Navbar() {
                         </div>
                         <div className="border-t border-line pt-4 text-sm">
                           <p className="text-subtle">Not sure where to start?</p>
-                          <button onClick={enquire} className="u-link mt-1 font-semibold text-ink">
-                            Talk to an engineer
+                          <button onClick={book} className="u-link mt-1 font-semibold text-ink">
+                            Book a free call
                           </button>
                         </div>
                       </div>
@@ -463,9 +461,9 @@ export default function Navbar() {
 
         <div className="ml-auto flex items-center gap-2 lg:ml-0">
           <ThemeToggle />
-          <button onClick={() => startEnquiry()} className="btn btn-primary hidden px-5 py-2.5 text-sm sm:inline-flex">
-            Start a project <ArrowRight className="h-4 w-4" />
-          </button>
+          <Link to="/book" className="btn btn-primary hidden px-5 py-2.5 text-sm sm:inline-flex">
+            Book a call <CalendarDays className="h-4 w-4" />
+          </Link>
           <button
             onClick={() => setOpen((o) => !o)}
             className="grid h-10 w-10 place-items-center rounded-full border border-line bg-surface text-ink transition-colors hover:border-brand/40 lg:hidden"
@@ -527,8 +525,8 @@ export default function Navbar() {
           <div className="mt-5 flex items-center gap-2 text-sm text-subtle">
             <span className="live-dot" /> {company.availability}
           </div>
-          <button onClick={enquire} className="btn btn-primary mt-5 w-full py-3.5">
-            Start a project <ArrowRight className="h-4 w-4" />
+          <button onClick={book} className="btn btn-primary mt-5 w-full py-3.5">
+            Book a free call <CalendarDays className="h-4 w-4" />
           </button>
         </div>
       )}

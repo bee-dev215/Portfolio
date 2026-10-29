@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, ArrowUpRight, CalendarRange, Check, FileCheck2, GraduationCap } from "lucide-react";
+import { ArrowRight, ArrowUpRight, CalendarRange, Check, FileCheck2, FlaskConical } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -7,30 +7,30 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import ServiceCard from "@/components/services/ServiceCard";
 import { serviceIcons } from "@/components/site/icons";
-import { company, servicePath, services, startEnquiry } from "@/data/company";
+import { bookCall, company, offer, servicePath, services } from "@/data/company";
 import { ServiceGroup, serviceGroups } from "@/data/service-details";
 
 const byKey = (key: string) => services.find((s) => s.key === key)!;
 
 const engagements = [
   {
+    icon: FlaskConical,
+    title: "Two-week prototype",
+    desc: `${offer.badge}. A working prototype on your own data, so you can judge the idea before you commit to a build.`,
+  },
+  {
     icon: FileCheck2,
-    title: "Fixed-scope project",
-    desc: "A short discovery, then a proposal with milestones and acceptance criteria agreed before the build starts.",
+    title: "Fixed-scope build",
+    desc: "A proposal with milestones and acceptance criteria agreed before the build starts, then a working demo every week.",
   },
   {
     icon: CalendarRange,
-    title: "Retainer",
-    desc: "Ongoing improvement, support and new features, sized to your term calendar or business cycle.",
-  },
-  {
-    icon: GraduationCap,
-    title: "Team training",
-    desc: "AI Academy programmes priced per cohort — on their own, or alongside a build.",
+    title: "Dedicated team & support",
+    desc: "Senior engineers on a monthly plan for new features, improvements and support, sized to the system.",
   },
 ];
 
-const everyService = ["Your code, data and IP stay yours", "Evaluation on every release", "Privacy and safety planned from day one", "Training and hand-over for your team"];
+const everyService = ["Code, cloud accounts and docs in your name", "A working demo every week during the build", "Security and privacy planned from day one", "Training and handover for your team"];
 
 export default function ServicesIndex() {
   const [filter, setFilter] = useState<ServiceGroup | "All">("All");
@@ -39,21 +39,21 @@ export default function ServicesIndex() {
   return (
     <PageShell
       title="Services"
-      description={`${company.name} services: AI product engineering, LLM & RAG, learning platform integration, analytics, evaluation & safety, speech AI, learning design and AI training.`}
+      description={`${company.name} services: AI & machine learning, custom software & SaaS, mobile and desktop apps, business process automation, cloud & DevOps, data & analytics, and project rescue.`}
     >
       <PageHero
         crumbs={[{ label: "Services" }]}
         eyebrow="Services"
         title={
           <>
-            {services.length} ways we help you <span className="gradient-text">ship AI for learning.</span>
+            {services.length} ways to take <span className="gradient-text">busywork off your team.</span>
           </>
         }
         lead={company.intro}
         actions={
           <>
-            <button onClick={() => startEnquiry()} className="btn btn-primary px-7 py-3.5">
-              Start a project <ArrowRight className="h-4 w-4" />
+            <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
+              Book a call <ArrowRight className="h-4 w-4" />
             </button>
             <Link to="/approach" className="btn btn-secondary px-7 py-3.5">
               How we work
@@ -97,7 +97,7 @@ export default function ServicesIndex() {
               label="All services"
               title={
                 <>
-                  From first prototype <span className="gradient-text">to trained team.</span>
+                  From a two-week prototype <span className="gradient-text">to software you own.</span>
                 </>
               }
             />
@@ -155,7 +155,7 @@ export default function ServicesIndex() {
                 </>
               }
             >
-              <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">Every service can be bought on its own or combined. Most clients start with a project and stay on a retainer.</p>
+              <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">Every service can be used on its own or combined. Each project starts with a call and a prototype; after launch, support is there if you want it.</p>
             </SectionHeading>
             <Reveal delay={100}>
               <p className="mt-8 text-xs font-semibold uppercase tracking-wider text-subtle">Included in every service</p>
@@ -196,7 +196,12 @@ export default function ServicesIndex() {
       </section>
 
       <div className="pt-20 lg:pt-28">
-        <CtaBand title="Not sure which service you need?" kicker="Tell us the problem — we'll suggest where to start." secondary={{ label: "Browse solutions", to: "/solutions" }} />
+        <CtaBand
+          title="Not sure which service you need?"
+          kicker="Tell us the task. We'll suggest where to start."
+          primaryLabel="Book a call"
+          secondary={{ label: "Browse solutions", to: "/solutions" }}
+        />
       </div>
     </PageShell>
   );

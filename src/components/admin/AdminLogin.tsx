@@ -43,7 +43,7 @@ export default function AdminLogin() {
         <form onSubmit={submit} noValidate className="card shadow-soft rounded-3xl p-7 sm:p-9">
           <Monogram className="h-11 w-11" />
           <h1 className="mt-6 font-display text-2xl font-bold tracking-tight">Admin sign in</h1>
-          <p className="mt-1.5 text-sm text-subtle">Sign in to manage the projects on the site.</p>
+          <p className="mt-1.5 text-sm text-subtle">Sign in to read your messages and booked calls.</p>
 
           <div className="mt-7 space-y-5">
             <Field label="Email" htmlFor="admin-email">

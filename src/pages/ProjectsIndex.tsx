@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowRight, ArrowUpRight, Check, ClipboardCheck, GraduationCap, Lock, LucideIcon, Search, Sparkles, UserCheck, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, KeyRound, Lock, LucideIcon, MousePointerClick, PhoneCall, Search, Sparkles, UserCheck, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -8,7 +8,7 @@ import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import PageSection from "@/components/company/PageSection";
 import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectsLoading from "@/components/projects/ProjectsLoading";
-import { industries, services, solutionPath, solutions, startEnquiry } from "@/data/company";
+import { bookCall, industries, services, solutionPath, solutions } from "@/data/company";
 import { audienceTitle, Project, projectPath } from "@/data/projects";
 import { useProjects } from "@/hooks/use-projects";
 
@@ -28,11 +28,12 @@ const haystack = (p: Project) =>
     .join(" ")
     .toLowerCase();
 
+// The way every project runs, whatever the industry
 const common: { icon: LucideIcon; title: string; desc: string }[] = [
-  { icon: Sparkles, title: "Discovery before code", desc: "Every project began with learners, educators and data — and a written definition of success." },
-  { icon: ClipboardCheck, title: "An evaluation suite", desc: "Each AI feature shipped with tests for accuracy, grounding and safety that keep running after launch." },
-  { icon: UserCheck, title: "A person in the loop", desc: "Grades, feedback and sensitive answers were reviewed by an educator or routed to a person." },
-  { icon: GraduationCap, title: "A team that can run it", desc: "Handover included documentation, training and the source code — no black boxes left behind." },
+  { icon: PhoneCall, title: "A call before any code", desc: "A short call about the task that eats your week, and a shared definition of 'fixed' before anything is built." },
+  { icon: MousePointerClick, title: "A prototype in two weeks", desc: "Working software on your own data within two weeks, free, so you judge it before you're quoted for the rest." },
+  { icon: UserCheck, title: "A person approves what matters", desc: "Payments, messages to customers and sensitive decisions wait for someone on your team to sign off." },
+  { icon: KeyRound, title: "Yours to keep", desc: "Code, cloud accounts, documentation and training handed over in your name — no black boxes left behind." },
 ];
 
 /** Four project photos, staggered, for the page hero. */
@@ -105,7 +106,7 @@ export default function ProjectsIndex() {
   const [audience, setAudience] = useState("all");
   const [query, setQuery] = useState("");
 
-  // Audience filter: "all" plus every audience with at least one project
+  // Industry filter: "all" plus every industry with at least one project
   const audiences = useMemo(() => [{ key: "all", title: "All" }, ...industries.filter((i) => projects.some((p) => p.audience === i.key))], [projects]);
   const featured = projects.find((p) => p.featured) ?? projects[0];
 
@@ -114,7 +115,7 @@ export default function ProjectsIndex() {
     return projects.filter((p) => (audience === "all" || p.audience === audience) && words.every((w) => haystack(p).includes(w)));
   }, [projects, audience, query]);
 
-  if (!ready) return <ProjectsLoading title="Projects" />;
+  if (!ready) return <ProjectsLoading title="Our work" />;
 
   const browsing = audience === "all" && !query;
   // While browsing everything, the featured project gets its own card above the grid
@@ -128,32 +129,32 @@ export default function ProjectsIndex() {
 
   return (
     <PageShell
-      title="Projects"
-      description="AI tutors, feedback assistants, learning analytics, voice tutors, course studios and AI training — projects for schools, universities, EdTech companies and corporate learning teams."
+      title="Our work"
+      description="Field apps, document AI, voice agents, desktop assistants, operations dashboards and project rescues — case studies for healthcare, construction, real estate, professional services, logistics and startups."
     >
       <PageHero
-        crumbs={[{ label: "Projects" }]}
+        crumbs={[{ label: "Our work" }]}
         eyebrow={`${projects.length} projects`}
         title={
           <>
-            AI for learning, <span className="gradient-text">built and in use.</span>
+            Busywork, <span className="gradient-text">handed to software.</span>
           </>
         }
-        lead="A selection of the AI products and programmes we have built for schools, universities, EdTech companies and corporate learning teams — what the problem was, what we built, and how it was kept safe."
+        lead="What the task was, what the two-week prototype proved, what we built and how it was kept safe — from the first call to software in daily use."
         actions={
           <>
-            <a href="#all-projects" className="btn btn-primary px-7 py-3.5">
+            <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
+              Book a call <ArrowUpRight className="h-4 w-4" />
+            </button>
+            <a href="#all-projects" className="btn btn-secondary px-7 py-3.5">
               Browse projects <ArrowRight className="h-4 w-4" />
             </a>
-            <button onClick={() => startEnquiry()} className="btn btn-secondary px-7 py-3.5">
-              Start a project <ArrowUpRight className="h-4 w-4" />
-            </button>
           </>
         }
         aside={<HeroMosaic projects={projects} />}
       >
         <p className="flex items-center gap-2 text-sm text-subtle">
-          <Lock className="h-4 w-4 shrink-0" /> Clients are described, not named — their learners' data comes first.
+          <Lock className="h-4 w-4 shrink-0" /> Clients are described, not named — their business stays their own.
         </p>
       </PageHero>
 
@@ -162,7 +163,7 @@ export default function ProjectsIndex() {
           {/* Filter and search */}
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="-mx-5 overflow-x-auto px-5 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
-              <div className="inline-flex gap-1 rounded-full border border-line bg-surface p-1" role="group" aria-label="Filter projects by audience">
+              <div className="inline-flex gap-1 rounded-full border border-line bg-surface p-1" role="group" aria-label="Filter projects by industry">
                 {audiences.map((a) => (
                   <button
                     key={a.key}
@@ -184,7 +185,7 @@ export default function ProjectsIndex() {
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search — e.g. math, voice, LTI"
+                placeholder="Search — e.g. invoices, voice, Procore"
                 className="field rounded-full py-2.5 pl-11 pr-10"
               />
               {query && (
@@ -227,13 +228,13 @@ export default function ProjectsIndex() {
                 <Search className="h-6 w-6" />
               </span>
               <h2 className="mt-5 font-display text-2xl font-bold">No project matches that yet</h2>
-              <p className="mt-2 max-w-md text-ink-2">Try a broader word — or tell us about your idea. Most projects start from something no one has built before.</p>
+              <p className="mt-2 max-w-md text-ink-2">Try a broader word, or tell us about the task you have in mind. Most projects start from a problem no off-the-shelf tool has solved.</p>
               <div className="mt-6 flex flex-wrap justify-center gap-3">
                 <button onClick={reset} className="btn btn-secondary px-5 py-2.5 text-sm">
                   Clear filters
                 </button>
-                <button onClick={() => startEnquiry(query || undefined)} className="btn btn-primary px-5 py-2.5 text-sm">
-                  Describe your idea <ArrowRight className="h-4 w-4" />
+                <button onClick={() => bookCall(query || undefined)} className="btn btn-primary px-5 py-2.5 text-sm">
+                  Book a call <ArrowUpRight className="h-4 w-4" />
                 </button>
               </div>
             </div>
@@ -252,7 +253,7 @@ export default function ProjectsIndex() {
               </>
             }
           >
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">Whatever the audience or the model, four things were true of every project on this page.</p>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">Whatever the industry or the stack, every project follows the same four rules.</p>
           </SectionHeading>
           <Reveal delay={100}>
             <Link to="/approach" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
@@ -278,8 +279,8 @@ export default function ProjectsIndex() {
       </PageSection>
 
       <CtaBand
-        kicker="Every project on this page started with a discovery call."
-        title="Have a learning problem AI could solve?"
+        kicker="Every project starts with a free call."
+        title="Got a task that eats your team's week?"
         secondary={{ label: "Browse solutions", to: "/solutions" }}
       />
     </PageShell>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { OPEN_SOLUTION_EVENT, solutions, startEnquiry } from "@/data/company";
+import { OPEN_SOLUTION_EVENT, bookCall, solutions } from "@/data/company";
 import SolutionPanel from "./SolutionPanel";
 import SolutionViewer, { PHOTO_VT, panelPhoto } from "./SolutionViewer";
 import { useScrollProgress, viewTransition } from "@/hooks/use-motion";
@@ -20,7 +20,7 @@ export default function Solutions() {
 
   const list = useMemo(() => (filter === "All" ? solutions : solutions.filter((s) => s.category === filter)), [filter]);
 
-  // Audience cards and the footer open a solution by title: clear the filter so it is in the list, then open it
+  // Industry cards and the footer open a solution by title: clear the filter so it is in the list, then open it
   useEffect(() => {
     const onOpen = (e: Event) => {
       const i = solutions.findIndex((s) => s.title === (e as CustomEvent<string>).detail);
@@ -76,18 +76,18 @@ export default function Solutions() {
           center
           title={
             <>
-              Proven blueprints, <span className="gradient-text">tailored to you.</span>
+              Start from software <span className="gradient-text">that already runs.</span>
             </>
           }
         >
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-            Starting points we adapt to your learners, your content and your platform — so your project begins from working software, not a blank page.
+            Each solution is a working starting point for a common kind of busywork. We adapt it to your systems, your data and your rules, so your project begins from running software, not a blank page.
           </p>
         </SectionHeading>
 
         <Reveal delay={80}>
           <div className="mt-10 flex justify-center">
-            <div className="-mx-5 flex gap-1 overflow-x-auto rounded-full border border-line bg-surface p-1 px-1 sm:mx-0" role="tablist" aria-label="Filter solutions by audience">
+            <div className="-mx-5 flex gap-1 overflow-x-auto rounded-full border border-line bg-surface p-1 px-1 sm:mx-0" role="tablist" aria-label="Filter solutions by where they work">
               {categories.map((c) => (
                 <button
                   key={c}
@@ -132,12 +132,12 @@ export default function Solutions() {
             <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/20 blur-3xl" />
             <div className="relative flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
               <div>
-                <p className="text-sm font-semibold text-white/80">Not on the list? Every engagement starts with discovery.</p>
-                <h3 className="mt-3 max-w-2xl font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">Have a learning problem AI could solve?</h3>
+                <p className="text-sm font-semibold text-white/80">Not on the list? Every project starts with a call.</p>
+                <h3 className="mt-3 max-w-2xl font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">What task is eating your team's week?</h3>
               </div>
               <div className="flex flex-wrap gap-3">
-                <button onClick={() => startEnquiry()} className="btn bg-white px-6 py-3.5 text-[#3730a3] shadow-lg hover:-translate-y-px">
-                  Start a project <ArrowUpRight className="h-4 w-4" />
+                <button onClick={() => bookCall()} className="btn bg-white px-6 py-3.5 text-[#3730a3] shadow-lg hover:-translate-y-px">
+                  Book a call <ArrowUpRight className="h-4 w-4" />
                 </button>
                 <Link to="/approach" className="btn border border-white/40 px-6 py-3.5 text-white hover:bg-white/10">
                   How we work <ArrowRight className="h-4 w-4" />

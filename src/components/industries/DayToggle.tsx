@@ -7,10 +7,10 @@ type View = "before" | "after";
 
 const views: { key: View; label: string; icon: typeof Timer }[] = [
   { key: "before", label: "Today", icon: Timer },
-  { key: "after", label: "With AI support", icon: Sparkles },
+  { key: "after", label: "With better tools", icon: Sparkles },
 ];
 
-/** An illustrative day for one role, switchable between today and with AI support. */
+/** An illustrative day for one role, switchable between today and with the busywork handled by software. */
 export default function DayToggle({ day }: { day: IndustryDetail["day"] }) {
   const [view, setView] = useState<View>("before");
   const after = view === "after";

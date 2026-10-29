@@ -1,10 +1,12 @@
 import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format, formatDistanceToNow, isThisYear, isToday } from "date-fns";
-import { Archive, ArrowDown, ArrowLeft, ArrowUp, ArrowUpDown, Copy, Download, Inbox, LayoutList, Loader2, LucideIcon, Mail, MailOpen, MessageSquare, Phone, Reply, Search, Send, Table2, Tag, Trash2, X } from "lucide-react";
+import { Archive, ArrowDown, ArrowLeft, ArrowUp, ArrowUpDown, CalendarClock, CalendarPlus, Copy, Download, Inbox, LayoutList, Loader2, LucideIcon, Mail, MailOpen, MessageSquare, Phone, Reply, Search, Send, Table2, Tag, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
-import { company } from "@/data/company";
+import { booking, company } from "@/data/company";
 import { explain } from "@/lib/adminApi";
+import { BOOKINGS_KEY, BookingRow, BookingStatus, CALL_BOOKED_TOPIC, fetchBookings, setBookingStatus } from "@/lib/bookingApi";
+import { googleCalendarUrl, whenLabel } from "@/lib/booking-time";
 import { downloadCsv } from "@/lib/csv";
 import { deleteMessage, fetchMessages, MESSAGES_KEY, MessageRow, MessageStatus, ReplyRow, sendReply, setMessageStatus } from "@/lib/messagesApi";
 import ConfirmDelete from "./ConfirmDelete";
@@ -14,7 +16,7 @@ type Layout = "list" | "table";
 type SortKey = "created_at" | "name" | "organisation" | "topic";
 type Sort = { key: SortKey; dir: "asc" | "desc" };
 
-const LAYOUT_KEY = "gsedu-admin-messages-layout";
+const LAYOUT_KEY = "jovano-admin-messages-layout";
 const STATUS_LABEL: Record<MessageStatus, string> = { new: "Unread", read: "Read", archived: "Archived" };
 
 // The layout is remembered in this browser; storage can be unavailable (private windows), so it falls back to the list
@@ -165,6 +167,72 @@ function ReplyBox({ m, onSent, onClose }: { m: MessageRow; onSent: (reply?: Repl
   );
 }
 
+// A visitor's time zone comes from their browser; one this browser doesn't know is shown as it was given
+function theirTime(b: BookingRow) {
+  try {
+    return b.timezone ? whenLabel(new Date(b.starts_at), b.timezone) : "not given";
+  } catch {
+    return b.timezone ?? "not given";
+  }
+}
+
+/** On a message filed by the booking page: the call's time, a calendar link, and cancelling it (which frees the time). */
+function BookedCall({ messageId }: { messageId: number }) {
+  const qc = useQueryClient();
+  const { data } = useQuery({ queryKey: BOOKINGS_KEY, queryFn: fetchBookings, staleTime: 30_000, retry: false });
+  const [saving, setSaving] = useState(false);
+  const b = data?.find((x) => x.message_id === messageId);
+  if (!b) return null;
+
+  const start = new Date(b.starts_at);
+  const cancelled = b.status === "cancelled";
+  const past = start.getTime() + b.minutes * 60_000 < Date.now();
+
+  const change = async (status: BookingStatus) => {
+    setSaving(true);
+    try {
+      await setBookingStatus(b.id, status);
+      await qc.invalidateQueries({ queryKey: BOOKINGS_KEY });
+      toast.success(status === "cancelled" ? "Call cancelled — the time is open for booking again" : "Call restored");
+    } catch (e) {
+      toast.error(explain(e, "Someone else has booked that time since, so this call can't be restored."));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const invite = {
+    start,
+    minutes: b.minutes,
+    title: `${b.call_type} with ${b.name}`,
+    details: [b.email, b.organisation, b.phone, b.topic && `Topic: ${b.topic}`, b.notes].filter(Boolean).join("\n"),
+    location: booking.meetingUrl || "Video call",
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-3 border-b border-line bg-brand-soft/60 px-5 py-4 sm:px-6">
+      <CalendarClock className="h-5 w-5 shrink-0 text-brand-text" />
+      <div className="min-w-0 flex-1">
+        <p className={`text-sm font-semibold ${cancelled ? "text-subtle line-through" : ""}`}>
+          {b.call_type} ({b.minutes} min) · {whenLabel(start, booking.timezone)}
+        </p>
+        <p className="text-xs text-subtle">{cancelled ? "Cancelled — the time is open for booking again" : past ? "This call has taken place" : `Their time: ${theirTime(b)}`}</p>
+      </div>
+      {!cancelled && !past && (
+        <a href={googleCalendarUrl(invite)} target="_blank" rel="noreferrer" className="btn btn-secondary px-4 py-2 text-sm">
+          <CalendarPlus className="h-4 w-4" /> Add to my calendar
+        </a>
+      )}
+      {!past && (
+        <button onClick={() => change(cancelled ? "booked" : "cancelled")} disabled={saving} className="btn btn-secondary px-4 py-2 text-sm disabled:opacity-60">
+          {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+          {cancelled ? "Restore call" : "Cancel call"}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function MessageView({
   m,
   onBack,
@@ -234,6 +302,8 @@ function MessageView({
           </Detail>
         </dl>
       </header>
+
+      {m.topic === CALL_BOOKED_TOPIC && <BookedCall messageId={m.id} />}
 
       <p className="whitespace-pre-wrap break-words p-5 text-[15px] leading-relaxed sm:p-6">{m.message}</p>
 

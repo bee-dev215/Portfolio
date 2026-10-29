@@ -14,7 +14,7 @@ export default function NotFound() {
           <p className="eyebrow">Page not found</p>
           <h1 className="gradient-text mt-5 font-display text-8xl font-extrabold tracking-tight">404</h1>
           <p className="mt-4 text-lg text-ink-2">
-            There's nothing at <span className="font-code text-base text-ink">{pathname}</span> — but plenty to learn elsewhere.
+            There's nothing at <span className="font-code text-base text-ink">{pathname}</span> — try one of these pages instead.
           </p>
           <Link to="/" className="btn btn-primary mt-8 px-6 py-3 text-sm">
             <ArrowLeft className="h-4 w-4" /> Back to home

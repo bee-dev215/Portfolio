@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Compass, EyeOff, FlaskConical, HeartHandshake, Lock, LucideIcon, ScrollText, ShieldCheck } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Compass, EyeOff, KeyRound, Lock, LucideIcon, Presentation, ScrollText, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -6,12 +6,13 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import PageSection from "@/components/company/PageSection";
 import { serviceIcons } from "@/components/site/icons";
-import { company, companyFile, principles, servicePath, services, startEnquiry } from "@/data/company";
+import { bookCall, company, companyFile, principles, servicePath, services } from "@/data/company";
 import { confidentiality, practices, studioGallery } from "@/data/company-pages";
 import { usePhotos } from "@/hooks/use-photos";
 import { useTeam } from "@/hooks/use-team";
 
-const principleIcons: LucideIcon[] = [HeartHandshake, ShieldCheck, FlaskConical, Compass];
+// Same order as `principles`
+const principleIcons: LucideIcon[] = [Compass, Users, Presentation, KeyRound];
 const confidentialityIcons: LucideIcon[] = [Lock, ScrollText, EyeOff];
 
 function HeroCollage() {
@@ -23,7 +24,7 @@ function HeroCollage() {
         <img src={photos.src("/images/company-team.webp")} alt={photos.alt("/images/company-team.webp")} width={740} height={555} className="aspect-[4/3] w-full object-cover" />
       </div>
       <div className="absolute bottom-0 right-0 w-[48%] overflow-hidden rounded-3xl border-4 border-canvas shadow-soft">
-        <img src={photos.src("/images/company-learning.webp")} alt={photos.alt("/images/company-learning.webp")} width={480} height={360} className="aspect-[4/3] w-full object-cover" />
+        <img src={photos.src("/images/company-client.webp")} alt={photos.alt("/images/company-client.webp")} width={480} height={360} className="aspect-[4/3] w-full object-cover" />
       </div>
       {/* Shown once the team has loaded */}
       {team.length > 0 && (
@@ -37,9 +38,9 @@ function HeroCollage() {
               ))}
           </div>
           <span className="text-sm font-semibold leading-tight">
-            {team.length} engineers
+            {team.length} people
             <br />
-            <span className="font-medium text-subtle">and educators</span>
+            <span className="font-medium text-subtle">one senior team</span>
           </span>
         </div>
       )}
@@ -51,20 +52,20 @@ export default function About() {
   const photos = usePhotos();
 
   return (
-    <PageShell title="About" description={`${company.name}: ${company.discipline}. Who we are, what we stand for and how the company is organised.`}>
+    <PageShell title="About" description={`${company.name}: ${company.discipline}. Who we are, what we stand for and how the company is organized.`}>
       <PageHero
         crumbs={[{ label: "About" }]}
         eyebrow="About us"
         title={
           <>
-            One mission: <span className="gradient-text">helping people learn better.</span>
+            Software and AI that <span className="gradient-text">take work off your desk.</span>
           </>
         }
         lead={company.intro}
         actions={
           <>
-            <button onClick={() => startEnquiry()} className="btn btn-primary px-7 py-3.5">
-              Start a project <ArrowUpRight className="h-4 w-4" />
+            <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
+              Book a call <ArrowUpRight className="h-4 w-4" />
             </button>
             <Link to="/team" className="btn btn-secondary px-7 py-3.5">
               Meet the team <ArrowRight className="h-4 w-4" />
@@ -82,7 +83,7 @@ export default function About() {
               label="Our story"
               title={
                 <>
-                  AI engineering, <span className="gradient-text">built around learning.</span>
+                  The task first, <span className="gradient-text">then the technology.</span>
                 </>
               }
             />
@@ -122,11 +123,11 @@ export default function About() {
             label="Inside the studio"
             title={
               <>
-                Engineers and educators, <span className="gradient-text">at one table.</span>
+                Engineers and designers, <span className="gradient-text">at one table.</span>
               </>
             }
           >
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">How a project actually happens: pairing on the hard parts, testing with real learners, and showing working software every week.</p>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">How a project actually happens: pairing on the hard parts, walking clients through working prototypes, and showing progress every week.</p>
           </SectionHeading>
           <Reveal delay={100}>
             <Link to="/projects" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
@@ -184,7 +185,7 @@ export default function About() {
       <PageSection>
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <SectionHeading
-            label="How we're organised"
+            label="How we're organized"
             title={
               <>
                 Four practices, <span className="gradient-text">one team per project.</span>
@@ -192,7 +193,7 @@ export default function About() {
             }
           >
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-              Every project draws people from each practice, so engineering, data, design and training decisions are made together — not handed over the wall.
+              Every project draws on the practices it needs, so AI, product, infrastructure and support decisions are made together — not handed over the wall.
             </p>
           </SectionHeading>
           <Reveal delay={100}>
@@ -239,7 +240,7 @@ export default function About() {
               </>
             }
           >
-            <p className="mt-5 text-lg leading-relaxed text-ink-2">Our clients work with children's data, unpublished courses and products that haven't launched. Keeping that private comes first.</p>
+            <p className="mt-5 text-lg leading-relaxed text-ink-2">Our clients share customer records, financial documents and products that haven't launched. Keeping that private comes first.</p>
             <Link to="/responsible-ai" className="btn btn-secondary mt-8 px-6 py-3 text-sm">
               How we protect client work <ArrowRight className="h-4 w-4" />
             </Link>
@@ -265,7 +266,7 @@ export default function About() {
         </div>
       </PageSection>
 
-      <CtaBand title="Let's talk about what your learners need." secondary={{ label: "How we work", to: "/approach" }} />
+      <CtaBand title="Tell us what's eating your week." secondary={{ label: "How we work", to: "/approach" }} />
     </PageShell>
   );
 }

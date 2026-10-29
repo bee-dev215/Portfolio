@@ -1,7 +1,8 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
-import { phases } from "@/data/company";
+import { offer, phases } from "@/data/company";
+import { isFreePhase } from "@/data/company-pages";
 import { prefersReducedMotion } from "@/hooks/use-motion";
 import { usePhotos } from "@/hooks/use-photos";
 import Reveal, { SectionHeading } from "./Reveal";
@@ -74,7 +75,7 @@ function useCardStack(count: number) {
   return { cards, active, progress };
 }
 
-/** The five delivery phases. `more` adds a link to the full approach page (off on that page itself). */
+/** The delivery phases, with the free prototype marked. `more` adds a link to the full approach page (off on that page itself). */
 export default function Process({ more = true }: { more?: boolean }) {
   const photos = usePhotos();
   const { cards, active, progress } = useCardStack(phases.length);
@@ -88,16 +89,16 @@ export default function Process({ more = true }: { more?: boolean }) {
             label="Process"
             title={
               <>
-                From first idea to <span className="gradient-text">measurable impact.</span>
+                From the first call <span className="gradient-text">to working software.</span>
               </>
             }
           >
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-2">
-              Every engagement moves through {phases.length} phases, each with clear outputs and a decision point — so you always know what is done, what is next and what you will receive.
+              {phases.length} phases, each with clear outputs and a decision point. The prototype is on us: working software on your own data in two weeks, before you commit to anything.
             </p>
             {more && (
               <Link to="/approach" className="btn btn-secondary mt-8 px-6 py-3 text-sm">
-                How we engage <ArrowRight className="h-4 w-4" />
+                How we work <ArrowRight className="h-4 w-4" />
               </Link>
             )}
           </SectionHeading>
@@ -126,7 +127,14 @@ export default function Process({ more = true }: { more?: boolean }) {
                       {state === "done" ? <Check className="h-4 w-4" /> : i + 1}
                     </span>
                     <span className={`transition-all duration-500 ${state === "now" ? "translate-x-1" : "opacity-60"}`}>
-                      <span className="block font-display text-lg font-bold text-ink">{p.name}</span>
+                      <span className="flex items-center gap-2 font-display text-lg font-bold text-ink">
+                        {p.name}
+                        {isFreePhase(p) && (
+                          <span className="chip border-sun/30 bg-sun/10 px-2 py-0.5 text-[11px] font-semibold text-ink">
+                            <Gift className="h-3 w-3 text-sun" /> Free
+                          </span>
+                        )}
+                      </span>
                       <span className="block text-sm text-subtle">{p.title}</span>
                     </span>
                   </li>
@@ -138,55 +146,63 @@ export default function Process({ more = true }: { more?: boolean }) {
 
         {/* Right: the stack */}
         <ol className="relative" aria-label="What happens in each phase">
-          {phases.map((p, i) => (
-            <li
-              key={p.id}
-              ref={(el) => (cards.current[i] = el)}
-              className="stack-card mb-6 last:mb-0 lg:sticky lg:mb-10"
-              style={{ top: STICKY_TOP + i * STACK_STEP, zIndex: i + 1 } as CSSProperties}
-            >
-              <article className="stack-inner card relative overflow-hidden">
-                {/* Photo banner, with the phase number outlined over it */}
-                <div className="relative h-36 overflow-hidden bg-raised sm:h-44">
-                  <img src={photos.src(p.image)} alt="" loading="lazy" width={1280} height={800} className="stack-photo h-full w-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[rgb(8_11_24/.7)] via-[rgb(8_11_24/.15)] to-transparent" aria-hidden="true" />
-                  <span className="stack-num pointer-events-none absolute -bottom-7 right-3 select-none font-display text-[7rem] font-extrabold leading-none sm:-bottom-9 sm:text-[9rem]" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <p className="absolute bottom-4 left-7 text-sm font-semibold text-white sm:left-10">
-                    Phase {String(i + 1).padStart(2, "0")} of {String(phases.length).padStart(2, "0")} · {p.title}
-                  </p>
-                </div>
-
-                <div className="p-7 sm:p-10">
-                  <h3 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{p.name}</h3>
-                  <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-2">{p.summary}</p>
-                  <ul className="mt-7 space-y-4">
-                    {p.activities.map((a, k) => (
-                      <li key={a} className="stack-item flex gap-3 leading-relaxed" style={{ "--i": k } as CSSProperties}>
-                        <span className="bg-grad mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full text-white">
-                          <Check className="h-3 w-3" />
-                        </span>
-                        <span>
-                          <Activity text={a} />
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-8 flex flex-wrap items-center gap-2 border-t border-line pt-6">
-                    <span className="mr-1 text-xs font-semibold uppercase tracking-wider text-subtle">You receive</span>
-                    {p.outputs.map((t) => (
-                      <span key={t} className="chip border-brand/20 bg-brand-soft text-brand-text">
-                        {t}
+          {phases.map((p, i) => {
+            const free = isFreePhase(p);
+            return (
+              <li
+                key={p.id}
+                ref={(el) => (cards.current[i] = el)}
+                className="stack-card mb-6 last:mb-0 lg:sticky lg:mb-10"
+                style={{ top: STICKY_TOP + i * STACK_STEP, zIndex: i + 1 } as CSSProperties}
+              >
+                <article className={`stack-inner card relative overflow-hidden ${free ? "grad-border" : ""}`}>
+                  {/* Photo banner, with the phase number outlined over it (and the offer badge on the free phase) */}
+                  <div className="relative h-36 overflow-hidden bg-raised sm:h-44">
+                    <img src={photos.src(p.image)} alt="" loading="lazy" width={1280} height={800} className="stack-photo h-full w-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[rgb(8_11_24/.7)] via-[rgb(8_11_24/.15)] to-transparent" aria-hidden="true" />
+                    {free && (
+                      <span className="glass absolute left-7 top-4 inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-xs font-bold text-ink sm:left-10">
+                        <Gift className="h-3.5 w-3.5 text-sun" /> {offer.badge}
                       </span>
-                    ))}
+                    )}
+                    <span className="stack-num pointer-events-none absolute -bottom-7 right-3 select-none font-display text-[7rem] font-extrabold leading-none sm:-bottom-9 sm:text-[9rem]" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <p className="absolute bottom-4 left-7 text-sm font-semibold text-white sm:left-10">
+                      Phase {String(i + 1).padStart(2, "0")} of {String(phases.length).padStart(2, "0")} · {p.title}
+                    </p>
                   </div>
-                </div>
-                {/* Shade that deepens as the next card slides over */}
-                <div className="stack-shade pointer-events-none absolute inset-0 rounded-[inherit]" aria-hidden="true" />
-              </article>
-            </li>
-          ))}
+
+                  <div className="p-7 sm:p-10">
+                    <h3 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{p.name}</h3>
+                    <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-2">{p.summary}</p>
+                    <ul className="mt-7 space-y-4">
+                      {p.activities.map((a, k) => (
+                        <li key={a} className="stack-item flex gap-3 leading-relaxed" style={{ "--i": k } as CSSProperties}>
+                          <span className="bg-grad mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full text-white">
+                            <Check className="h-3 w-3" />
+                          </span>
+                          <span>
+                            <Activity text={a} />
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-8 flex flex-wrap items-center gap-2 border-t border-line pt-6">
+                      <span className="mr-1 text-xs font-semibold uppercase tracking-wider text-subtle">You receive</span>
+                      {p.outputs.map((t) => (
+                        <span key={t} className="chip border-brand/20 bg-brand-soft text-brand-text">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Shade that deepens as the next card slides over */}
+                  <div className="stack-shade pointer-events-none absolute inset-0 rounded-[inherit]" aria-hidden="true" />
+                </article>
+              </li>
+            );
+          })}
         </ol>
       </div>
     </section>

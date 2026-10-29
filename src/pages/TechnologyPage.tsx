@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, BrainCircuit, Cloud, Code2, Database, GraduationCap, Layers, LucideIcon } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BrainCircuit, Cloud, Code2, Database, Layers, LucideIcon, MonitorSmartphone } from "lucide-react";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
@@ -8,11 +8,11 @@ import PageSection from "@/components/company/PageSection";
 import ModelSelector from "@/components/company/ModelSelector";
 import EvalPipeline from "@/components/company/EvalPipeline";
 import ArchitectureDiagram from "@/components/company/ArchitectureDiagram";
-import { company, stackGroups, startEnquiry } from "@/data/company";
+import { bookCall, company, stackGroups } from "@/data/company";
 import { standards } from "@/data/company-pages";
 
 // Same order as stackGroups (matches the Technology section)
-const groupIcons: LucideIcon[] = [BrainCircuit, Layers, Database, Code2, GraduationCap, Cloud];
+const groupIcons: LucideIcon[] = [BrainCircuit, Layers, Code2, MonitorSmartphone, Database, Cloud];
 
 function StackSummary() {
   return (
@@ -40,7 +40,7 @@ function StackSummary() {
 
 export default function TechnologyPage() {
   return (
-    <PageShell title="Technology" description={`The models, frameworks and learning standards ${company.name} builds with — how we choose a model, evaluate it and connect it to your platforms.`}>
+    <PageShell title="Technology" description={`The models, frameworks, cloud platforms and open standards ${company.name} builds with — how we choose a model, evaluate it and connect it to your systems.`}>
       <PageHero
         crumbs={[{ label: "Technology" }]}
         eyebrow="Technology"
@@ -49,13 +49,13 @@ export default function TechnologyPage() {
             Model-agnostic, <span className="gradient-text">evidence-driven.</span>
           </>
         }
-        lead="We pick models for each task on quality, cost and privacy, prove them on your own evaluation set, and build on open standards so you are never locked in."
+        lead="We pick models for each task on quality, cost and privacy, prove them on your own data, and build on open standards so you are never locked in."
         actions={
           <>
             <a href="#choose" className="btn btn-primary px-7 py-3.5">
               Try the model selector <ArrowRight className="h-4 w-4" />
             </a>
-            <button onClick={() => startEnquiry("our technology choices")} className="btn btn-secondary px-7 py-3.5">
+            <button onClick={() => bookCall("Technology choices")} className="btn btn-secondary px-7 py-3.5">
               Ask an engineer <ArrowUpRight className="h-4 w-4" />
             </button>
           </>
@@ -74,7 +74,7 @@ export default function TechnologyPage() {
           }
         >
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-            There is no single best model — only the best fit for your data, your users and your budget. Answer three questions to see where we would start.
+            There is no single best model — only the best fit for your data, your customers and your budget. Answer three questions to see where we would start.
           </p>
         </SectionHeading>
         <ModelSelector />
@@ -86,12 +86,12 @@ export default function TechnologyPage() {
           label="Architecture"
           title={
             <>
-              From your systems <span className="gradient-text">to your learners.</span>
+              From your systems <span className="gradient-text">to your team.</span>
             </>
           }
         >
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-            The same building blocks sit behind most of what we ship. The model gateway is what keeps you model-agnostic: change the model, keep the product.
+            The same building blocks sit behind most of the AI we ship — an invoice agent, a voice agent or a knowledge assistant. The model gateway is what keeps you model-agnostic: change the model, keep the product.
           </p>
         </SectionHeading>
         <ArchitectureDiagram />
@@ -109,7 +109,7 @@ export default function TechnologyPage() {
           }
         >
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-            Every change to a prompt, a model or the content it draws on goes through the same five steps before it reaches a learner.
+            Every change to a prompt, a model or the content it draws on goes through the same five steps before it reaches your team or your customers.
           </p>
         </SectionHeading>
         <EvalPipeline />
@@ -117,19 +117,19 @@ export default function TechnologyPage() {
 
       <Technology more={false} />
 
-      {/* Learning standards */}
+      {/* Open standards */}
       <PageSection band>
         <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:gap-20">
           <SectionHeading
-            label="Learning standards"
+            label="Open standards"
             title={
               <>
-                Plays well with <span className="gradient-text">your platforms.</span>
+                Plays well with <span className="gradient-text">your systems.</span>
               </>
             }
           >
             <p className="mt-5 text-lg leading-relaxed text-ink-2">
-              Open education standards mean learners use AI inside the tools they already have — and your data can move with you.
+              Open standards mean what we build connects to the tools you already use — and your data can move with you.
             </p>
           </SectionHeading>
           <ul className="grid gap-4 sm:grid-cols-2">
@@ -145,7 +145,7 @@ export default function TechnologyPage() {
         </div>
       </PageSection>
 
-      <CtaBand title="Not sure which model fits? We'll test it with you." topic="model selection and evaluation" secondary={{ label: "Responsible AI", to: "/responsible-ai" }} />
+      <CtaBand title="Not sure which model fits? We'll test it on your data." topic="Model selection and evaluation" secondary={{ label: "Security & AI", to: "/responsible-ai" }} />
     </PageShell>
   );
 }

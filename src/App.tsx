@@ -23,6 +23,7 @@ const TeamPage = lazy(() => import("./pages/TeamPage"));
 const ResponsibleAi = lazy(() => import("./pages/ResponsibleAi"));
 const FaqPage = lazy(() => import("./pages/FaqPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
+const BookCall = lazy(() => import("./pages/BookCall"));
 const Legal = lazy(() => import("./pages/Legal"));
 const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="/responsible-ai" element={<ResponsibleAi />} />
               <Route path="/faq" element={<FaqPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/book" element={<BookCall />} />
               <Route path="/privacy" element={<Legal doc="privacy" />} />
               <Route path="/terms" element={<Legal doc="terms" />} />
               <Route path="/admin/:section?" element={<Admin />} />

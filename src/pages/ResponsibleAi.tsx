@@ -1,15 +1,18 @@
 import {
-  Accessibility,
   ArrowRight,
   ArrowUpRight,
   Ban,
-  Baby,
-  Eye,
+  Cloud,
+  EyeOff,
   FileSearch,
   FlaskConical,
+  GitBranch,
+  KeyRound,
+  KeySquare,
+  ListFilter,
   Lock,
   LucideIcon,
-  Scale,
+  ScrollText,
   ShieldCheck,
   UserCheck,
 } from "lucide-react";
@@ -20,11 +23,13 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import PageSection from "@/components/company/PageSection";
 import DataLifecycle from "@/components/company/DataLifecycle";
-import { company, startEnquiry } from "@/data/company";
-import { commitments, confidentiality, dataLifecycle, neverDo, policies, policiesNote } from "@/data/company-pages";
+import { bookCall, company } from "@/data/company";
+import { aiSafeguards, commitments, confidentiality, dataLifecycle, neverDo, policies, policiesNote } from "@/data/company-pages";
 
 // Same order as `commitments`
-const commitmentIcons: LucideIcon[] = [Lock, FileSearch, UserCheck, FlaskConical, Scale, Accessibility, Baby, Eye];
+const commitmentIcons: LucideIcon[] = [Lock, KeyRound, KeySquare, ListFilter, GitBranch, Cloud, EyeOff, ShieldCheck];
+// Same order as `aiSafeguards`
+const safeguardIcons: LucideIcon[] = [FileSearch, UserCheck, FlaskConical, ScrollText];
 
 function NeverCard() {
   return (
@@ -52,22 +57,22 @@ function NeverCard() {
 export default function ResponsibleAi() {
   return (
     <PageShell
-      title="Responsible AI"
-      description={`How ${company.name} protects learners, data and client confidentiality: our commitments, the data lifecycle and the regulations we design around.`}
+      title="Security & AI"
+      description={`How ${company.name} protects your data, your code and your customers: security commitments, AI safeguards, the data lifecycle and the requirements we design around.`}
     >
       <PageHero
-        crumbs={[{ label: "Responsible AI" }]}
-        eyebrow="Responsible AI"
+        crumbs={[{ label: "Security & AI" }]}
+        eyebrow="Security & AI"
         title={
           <>
-            AI that learners, educators <span className="gradient-text">and parents can trust.</span>
+            Secure by default. <span className="gradient-text">Yours to keep.</span>
           </>
         }
-        lead="Education is a high-trust setting. Privacy, safety and fairness are part of the design from the first workshop — planned with your compliance and safeguarding teams, never bolted on later."
+        lead="We build software that handles patient records, contracts, invoices and customer data. Protecting it is part of the design from the first call — planned with your IT or compliance team, never bolted on at the end."
         actions={
           <>
-            <button onClick={() => startEnquiry("privacy and responsible AI requirements")} className="btn btn-primary px-7 py-3.5">
-              Discuss your requirements <ArrowUpRight className="h-4 w-4" />
+            <button onClick={() => bookCall("Security & data protection")} className="btn btn-primary px-7 py-3.5">
+              Book a call <ArrowUpRight className="h-4 w-4" />
             </button>
             <a href="#lifecycle" className="btn btn-secondary px-7 py-3.5">
               Follow your data <ArrowRight className="h-4 w-4" />
@@ -77,17 +82,21 @@ export default function ResponsibleAi() {
         aside={<NeverCard />}
       />
 
-      {/* Commitments */}
+      {/* Data protection and ownership */}
       <PageSection band>
         <SectionHeading
-          label="Our commitments"
+          label="Data protection"
           center
           title={
             <>
               Eight commitments <span className="gradient-text">on every project.</span>
             </>
           }
-        />
+        >
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
+            Your data is protected while we work with it, and everything we build is yours — the code, the cloud accounts and the keys.
+          </p>
+        </SectionHeading>
         <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {commitments.map((c, i) => {
             const Icon = commitmentIcons[i % commitmentIcons.length];
@@ -106,8 +115,46 @@ export default function ResponsibleAi() {
         </ul>
       </PageSection>
 
+      {/* AI safeguards */}
+      <PageSection id="ai-safeguards">
+        <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:gap-20">
+          <SectionHeading
+            label="AI safeguards"
+            title={
+              <>
+                AI that shows its work <span className="gradient-text">and asks before it acts.</span>
+              </>
+            }
+          >
+            <p className="mt-5 text-lg leading-relaxed text-ink-2">AI is only useful when you can check it. These safeguards are built into every assistant and agent we ship.</p>
+            <Link to="/technology" className="btn btn-secondary mt-8 px-6 py-3 text-sm">
+              How we test AI <ArrowRight className="h-4 w-4" />
+            </Link>
+          </SectionHeading>
+          <ol className="grid gap-4 sm:grid-cols-2">
+            {aiSafeguards.map((g, i) => {
+              const Icon = safeguardIcons[i % safeguardIcons.length];
+              return (
+                <li key={g.title}>
+                  <Reveal delay={i * 70} className="card h-full p-6">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="icon-tile h-11 w-11">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <span className="font-display text-sm font-bold text-brand-text">{String(i + 1).padStart(2, "0")}</span>
+                    </div>
+                    <h3 className="mt-5 font-display text-lg font-bold">{g.title}</h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{g.desc}</p>
+                  </Reveal>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </PageSection>
+
       {/* Data lifecycle */}
-      <PageSection id="lifecycle">
+      <PageSection id="lifecycle" band>
         <SectionHeading
           label="Your data"
           title={
@@ -123,14 +170,14 @@ export default function ResponsibleAi() {
         <DataLifecycle />
       </PageSection>
 
-      {/* Policies */}
-      <PageSection band>
+      {/* Compliance support */}
+      <PageSection>
         <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:gap-20">
           <SectionHeading
-            label="Regulation"
+            label="Compliance support"
             title={
               <>
-                Policies we <span className="gradient-text">design around.</span>
+                Requirements we <span className="gradient-text">design around.</span>
               </>
             }
           >
@@ -150,7 +197,7 @@ export default function ResponsibleAi() {
       </PageSection>
 
       {/* Confidentiality */}
-      <PageSection id="confidentiality">
+      <PageSection id="confidentiality" band>
         <div className="grad-border overflow-hidden rounded-[2rem] bg-surface">
           <div className="grid gap-10 p-7 sm:p-10 lg:grid-cols-[.8fr_1.2fr] lg:gap-16 lg:p-14">
             <div>
@@ -178,9 +225,9 @@ export default function ResponsibleAi() {
       </PageSection>
 
       <CtaBand
-        title="Bring your compliance team. We'll bring ours."
-        kicker="Privacy and safeguarding are on the agenda from the first call."
-        topic="privacy and responsible AI requirements"
+        title="Bring your security questions. We'll bring answers."
+        kicker="Security and privacy are on the agenda from the first call."
+        topic="Security & data protection"
         secondary={{ label: "Read the FAQ", to: "/faq" }}
       />
     </PageShell>

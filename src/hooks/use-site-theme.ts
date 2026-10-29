@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 export type SiteTheme = "light" | "dark";
 
-const KEY = "gsedu-theme"; // also read by the pre-paint script in index.html
+const KEY = "jovano-theme"; // also read by the pre-paint script in index.html
 const BROWSER_BAR: Record<SiteTheme, string> = { light: "#f7f8fc", dark: "#080b18" };
 
 const current = (): SiteTheme => (document.documentElement.dataset.theme === "dark" ? "dark" : "light");

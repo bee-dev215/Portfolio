@@ -6,7 +6,7 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import PageSection from "@/components/company/PageSection";
 import TeamDirectory from "@/components/company/TeamDirectory";
-import { company, startEnquiry } from "@/data/company";
+import { bookCall, company } from "@/data/company";
 import { projectRoles, workingValues } from "@/data/company-pages";
 import { useTeam } from "@/hooks/use-team";
 
@@ -29,20 +29,20 @@ export default function TeamPage() {
   const { team, ready } = useTeam();
 
   return (
-    <PageShell title="Team" description={`The engineers, data scientists, designers and educators at ${company.name}.`}>
+    <PageShell title="Team" description={`The senior engineers and designers at ${company.name} — the people you work with directly.`}>
       <PageHero
         crumbs={[{ label: "Team" }]}
         eyebrow="Team"
         title={
           <>
-            Engineers and educators, <span className="gradient-text">one team.</span>
+            Senior engineers, <span className="gradient-text">one small team.</span>
           </>
         }
-        lead={`AI engineers, data scientists, learning designers and trainers — the same people from your discovery call to your support plan.`}
+        lead="AI, web, mobile, data and automation engineers, plus product design — the same people from your first call to your support plan."
         actions={
           <>
-            <button onClick={() => startEnquiry()} className="btn btn-primary px-7 py-3.5">
-              Talk to the team <ArrowUpRight className="h-4 w-4" />
+            <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
+              Book a call <ArrowUpRight className="h-4 w-4" />
             </button>
             <Link to="/about" className="btn btn-secondary px-7 py-3.5">
               About {company.shortName} <ArrowRight className="h-4 w-4" />

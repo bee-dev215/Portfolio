@@ -10,7 +10,7 @@ import ServiceCard from "@/components/services/ServiceCard";
 import SolutionCards from "@/components/services/SolutionCards";
 import ProjectStrip from "@/components/projects/ProjectStrip";
 import { serviceIcons } from "@/components/site/icons";
-import { scrollToId, servicePath, services, stackGroups, startEnquiry } from "@/data/company";
+import { bookCall, scrollToId, servicePath, services, stackGroups, startEnquiry } from "@/data/company";
 import { serviceDetails, serviceGroups } from "@/data/service-details";
 import NotFound from "./NotFound";
 
@@ -37,8 +37,8 @@ export default function ServiceDetail() {
         aside={<ServiceArt service={service} />}
         actions={
           <>
-            <button onClick={() => startEnquiry(service.title)} className="btn btn-primary px-7 py-3.5">
-              Discuss your project <ArrowRight className="h-4 w-4" />
+            <button onClick={() => bookCall(service.title)} className="btn btn-primary px-7 py-3.5">
+              Book a call <ArrowRight className="h-4 w-4" />
             </button>
             <button onClick={() => scrollToId("included")} className="btn btn-secondary px-7 py-3.5">
               What's included
@@ -100,7 +100,7 @@ export default function ServiceDetail() {
               </>
             }
           >
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">The usual deliverables. The exact scope is agreed in a fixed proposal after discovery.</p>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">The usual deliverables. The exact scope is agreed in a fixed-scope proposal before the build starts.</p>
           </SectionHeading>
           <div className={`mt-12 grid gap-5 ${detail.included.length === 3 ? "lg:grid-cols-3" : "md:grid-cols-2"}`}>
             {detail.included.map((g, i) => (
@@ -239,7 +239,7 @@ export default function ServiceDetail() {
                 </>
               }
             >
-              <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">Solution blueprints that lean on this service — a working starting point we adapt to you.</p>
+              <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">Solutions that lean on this service: working starting points we adapt to your systems and data.</p>
             </SectionHeading>
             <div className="mt-12">
               <SolutionCards titles={detail.solutions} />
@@ -276,7 +276,7 @@ export default function ServiceDetail() {
             {service.title} <span className="gradient-text">in practice.</span>
           </>
         }
-        lead="Recent projects where this service did the heavy lifting."
+        lead="Projects where this service did the heavy lifting."
       />
 
       {/* Related services + previous / next */}
@@ -329,7 +329,13 @@ export default function ServiceDetail() {
         </div>
       </section>
 
-      <CtaBand title={`${service.title}: let's talk about your project.`} topic={service.title} secondary={{ label: "How we work", to: "/approach" }} />
+      <CtaBand
+        kicker="Every project starts with a free call."
+        title="Tell us what's slowing your team down."
+        topic={service.title}
+        primaryLabel="Book a call"
+        secondary={{ label: "How we work", to: "/approach" }}
+      />
     </PageShell>
   );
 }

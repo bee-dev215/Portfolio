@@ -162,12 +162,12 @@
 
 
 /* ============================================================
-   PUBLIC SITE — "Learning Intelligence" design system
+   PUBLIC SITE — the Jovano design system
    (the admin keeps the .pf-* styles above)
 
    Light-first and calm: cool paper-white surfaces, deep navy ink, and one brand gradient
    (indigo → violet → sky) used for primary actions, highlights and data. Amber ("sun") is a
-   small warm accent for education moments — badges, stars, progress — never a fill.
+   small warm accent for highlights — the free-prototype offer, badges, progress — never a fill.
    Motion is quiet and purposeful: short fade-ups on scroll, small lifts on hover, no bounce.
    ============================================================ */
 .site-root, .on-dark {
@@ -300,8 +300,9 @@ html[data-theme="dark"] .site-root, .on-dark {
   font-weight: 600; transition: transform .2s var(--ease), box-shadow .2s var(--ease), background-color .2s, border-color .2s, color .2s;
 }
 .btn:active { transform: translateY(1px); }
-.btn-primary { background: var(--grad); background-size: 140% 100%; color: rgb(var(--on-brand-rgb)); box-shadow: 0 10px 24px -10px rgb(var(--brand-rgb) / .65); }
-.btn-primary:hover { background-position: 100% 0; box-shadow: 0 14px 30px -10px rgb(var(--brand-rgb) / .75); transform: translateY(-1px); }
+/* Solid ink: deep navy on light pages, near-white on dark ones; it turns brand indigo on hover */
+.btn-primary { background-color: var(--ink); color: rgb(var(--canvas-rgb)); box-shadow: 0 10px 24px -12px rgb(var(--shadow-rgb) / .6); }
+.btn-primary:hover { background-color: rgb(var(--brand-rgb)); color: rgb(var(--on-brand-rgb)); box-shadow: 0 14px 30px -10px rgb(var(--brand-rgb) / .6); transform: translateY(-1px); }
 .btn-secondary { border: 1px solid var(--line); background: rgb(var(--surface-rgb)); color: var(--ink); }
 .btn-secondary:hover { border-color: rgb(var(--brand-rgb) / .4); color: rgb(var(--brand-text-rgb)); transform: translateY(-1px); }
 .eyebrow {

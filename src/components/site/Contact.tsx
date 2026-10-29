@@ -1,26 +1,70 @@
 import { FormEvent, useEffect, useState } from "react";
-import { ArrowUpRight, Check, Copy, Loader2, Send } from "lucide-react";
+import { ArrowRight, ArrowUpRight, CalendarDays, Check, Copy, Loader2, Send } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { company, ENQUIRE_EVENT, nextSteps, socials } from "@/data/company";
+import { booking, company, ENQUIRE_EVENT, nextSteps, socials } from "@/data/company";
 import { CONTACT_SUBJECTS, ContactPrefill, PREFILL_EVENT } from "@/components/contact/form";
+import { useAvailability } from "@/hooks/use-availability";
+import { dayParts, localZone, timeLabel } from "@/lib/booking-time";
+import { emailInbox, sendToCrm, tag } from "@/lib/leads";
 import { saveMessage } from "@/lib/messagesApi";
 import SocialIcon from "./SocialIcon";
 import Reveal, { SectionHeading } from "./Reveal";
-
-const CRM_URL = "https://famous.ai/api/crm/6ad5d2059d9fe46e4e2f09d9/subscribe";
-// Emails each enquiry to the company inbox. Until the inbox clicks the "Activate Form" link FormSubmit sends with the first one, nothing is delivered.
-const EMAIL_URL = `https://formsubmit.co/ajax/${company.email}`;
-
-const postJson = (url: string, body: object) =>
-  fetch(url, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body) });
 
 const EMPTY = { name: "", email: "", company: "", phone: "", subject: CONTACT_SUBJECTS[0] as string, message: "" };
 type Form = typeof EMPTY;
 
 // Pre-fills the message for a topic, unless the visitor has already started writing
 const forTopic = (topic: string) => (f: Form) =>
-  f.message.trim() ? f : { ...f, subject: CONTACT_SUBJECTS[0], message: `We'd like to discuss ${topic} for our organisation. ` };
+  f.message.trim() ? f : { ...f, subject: CONTACT_SUBJECTS[0], message: `We'd like to talk about ${topic} for our business. ` };
+
+/** "Prefer to talk?": the next few open call times, each opening the booking page at that time. */
+function NextTimes() {
+  const { slots, loading } = useAvailability();
+  const zone = localZone();
+  const next = slots.slice(0, 3);
+  const shortest = Math.min(...booking.callTypes.map((t) => t.minutes));
+
+  return (
+    <div className="card p-6">
+      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-subtle">
+        <CalendarDays className="h-4 w-4 text-brand-text" /> Prefer to talk?
+      </p>
+      <p className="mt-3 font-display text-lg font-bold">Book a free {shortest}-minute call</p>
+      {loading ? (
+        <div className="mt-4 flex gap-2" aria-hidden="true">
+          {[0, 1, 2].map((i) => (
+            <span key={i} className="h-14 flex-1 animate-pulse rounded-xl bg-raised" />
+          ))}
+        </div>
+      ) : (
+        next.length > 0 && (
+          <ul className="mt-4 grid grid-cols-3 gap-2" aria-label="Next open times">
+            {next.map((s) => {
+              const p = dayParts(s, zone);
+              return (
+                <li key={s.getTime()}>
+                  <Link
+                    to={`/book?slot=${encodeURIComponent(s.toISOString())}`}
+                    className="flex flex-col items-center rounded-xl border border-line bg-surface py-2 text-center transition-colors hover:border-brand hover:bg-brand-soft hover:text-brand-text"
+                  >
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-subtle">
+                      {p.weekday} {p.day}
+                    </span>
+                    <span className="text-sm font-bold tabular-nums">{timeLabel(s, zone)}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )
+      )}
+      <Link to="/book" className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
+        See all times <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+      </Link>
+    </div>
+  );
+}
 
 /** The enquiry form with direct contact details. On /contact the page hero introduces it, so it can drop its own heading. */
 export default function Contact({ showHeading = true }: { showHeading?: boolean }) {
@@ -103,22 +147,17 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
       // Any one getting through counts as sent.
       const results = await Promise.allSettled([
         saveMessage({ name, email, organisation: organisation ?? null, phone: phone ?? null, topic: form.subject, message, sms_opt_in: smsOptIn }),
-        postJson(CRM_URL, {
+        sendToCrm({
           email,
           name,
           phone,
           sms_opt_in: smsOptIn === true,
           subject: form.subject,
-          message: organisation ? `Organisation: ${organisation}\n\n${message}` : message,
+          message: organisation ? `Organization: ${organisation}\n\n${message}` : message,
           source: "contact-form",
-          tags: ["website-contact", form.subject.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")],
-        }).then((res) => {
-          if (!res.ok) throw new Error("CRM request failed");
+          tags: ["website-contact", tag(form.subject)],
         }),
-        // FormSubmit answers 200 even when it delivers nothing, so its own success flag is what counts
-        postJson(EMAIL_URL, {
-          _subject: `New enquiry: ${form.subject} — ${name}`,
-          _template: "table",
+        emailInbox(`New enquiry: ${form.subject} — ${name}`, {
           name,
           email,
           organisation,
@@ -126,11 +165,7 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
           topic: form.subject,
           message,
           sms_updates: smsOptIn ? "Yes" : "No",
-        })
-          .then((res) => res.json())
-          .then((data: { success?: string | boolean; message?: string }) => {
-            if (String(data.success) !== "true") throw new Error(data.message ?? "Email request failed");
-          }),
+        }),
       ]);
       if (results.every((r) => r.status === "rejected")) throw new Error("Request failed");
       setSent(true);
@@ -167,12 +202,12 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
             label="Contact"
             title={
               <>
-                Let's build something <span className="gradient-text">learners love.</span>
+                Let's take something <span className="gradient-text">off your plate.</span>
               </>
             }
           >
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-2">
-              Planning an AI tutor, modernising a platform or training your team? Tell us about it — an engineer, not a salesperson, will reply within {company.responseTime}.
+              Describe the task your team keeps doing by hand, or the software you need built. A senior engineer, not a salesperson, replies within {company.responseTime}.
             </p>
           </SectionHeading>
         )}
@@ -202,6 +237,10 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
             ))}
 
             <Reveal delay={socials.length * 80} variant="left">
+              <NextTimes />
+            </Reveal>
+
+            <Reveal delay={(socials.length + 1) * 80} variant="left">
               <div className="card p-6">
                 <p className="text-xs font-semibold uppercase tracking-wider text-subtle">What happens next</p>
                 <ol className="mt-4 space-y-5">
@@ -227,7 +266,7 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
                     <Check className="h-8 w-8" />
                   </div>
                   <h3 className="mt-6 font-display text-3xl font-extrabold">Message received</h3>
-                  <p className="mt-3 max-w-sm text-ink-2">Thanks for contacting {company.legalName}. We'll review your project and reply within {company.responseTime}.</p>
+                  <p className="mt-3 max-w-sm text-ink-2">Thanks for contacting {company.name}. We'll read it carefully and reply within {company.responseTime}.</p>
                   <button type="button" onClick={() => setSent(false)} className="u-link mt-6 text-sm font-semibold text-brand-text">
                     Send another message
                   </button>
@@ -235,7 +274,7 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
               ) : (
                 <div className="space-y-5">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-display text-xl font-bold">Tell us about your project</h3>
+                    <h3 className="font-display text-xl font-bold">Tell us what you need</h3>
                     <span className="flex items-center gap-2 text-xs font-medium text-subtle">
                       <span className="live-dot" /> Usually replies in a day
                     </span>
@@ -248,14 +287,14 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
                     </div>
                     <div>
                       <label htmlFor="c-email" className={label}>Work email</label>
-                      <input id="c-email" type="email" value={form.email} onChange={set("email")} placeholder="jane@school.edu" autoComplete="email" className={`field ${errors.email ? err : ""}`} />
+                      <input id="c-email" type="email" value={form.email} onChange={set("email")} placeholder="jane@company.com" autoComplete="email" className={`field ${errors.email ? err : ""}`} />
                       {errors.email && <p className="mt-1.5 text-xs text-red-500">{errors.email}</p>}
                     </div>
                   </div>
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="c-company" className={label}>Organisation <span className="font-normal text-subtle">(optional)</span></label>
-                      <input id="c-company" value={form.company} onChange={set("company")} placeholder="Riverside University" autoComplete="organization" className="field" />
+                      <label htmlFor="c-company" className={label}>Company <span className="font-normal text-subtle">(optional)</span></label>
+                      <input id="c-company" value={form.company} onChange={set("company")} placeholder="Acme Property Group" autoComplete="organization" className="field" />
                     </div>
                     <div>
                       <label htmlFor="c-phone" className={label}>Phone <span className="font-normal text-subtle">(optional)</span></label>
@@ -277,7 +316,7 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
                       rows={5}
                       value={form.message}
                       onChange={set("message")}
-                      placeholder="Your learners, the problem you want to solve, your platform and timeline…"
+                      placeholder="The task your team does by hand today, the tools involved, and your timeline…"
                       className={`field resize-none ${errors.message ? err : ""}`}
                     />
                     {errors.message && <p className="mt-1.5 text-xs text-red-500">{errors.message}</p>}

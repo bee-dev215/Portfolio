@@ -1,12 +1,13 @@
 import { CSSProperties } from "react";
-import { ArrowRight, Compass, FlaskConical, HeartHandshake, ShieldCheck, LucideIcon } from "lucide-react";
+import { ArrowRight, Compass, KeyRound, LucideIcon, Presentation, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { company, companyFile, principles } from "@/data/company";
 import { useScrollProgress } from "@/hooks/use-motion";
 import { usePhotos } from "@/hooks/use-photos";
 import Reveal, { SectionHeading } from "./Reveal";
 
-const principleIcons: LucideIcon[] = [HeartHandshake, ShieldCheck, FlaskConical, Compass];
+// Same order as `principles`
+const principleIcons: LucideIcon[] = [Compass, Users, Presentation, KeyRound];
 
 export default function Company() {
   const photos = usePhotos();
@@ -24,7 +25,7 @@ export default function Company() {
             </div>
             <div className="drift absolute bottom-0 right-0 w-[52%]" style={{ "--drift": "-90px" } as CSSProperties}>
               <div className="unveil shadow-soft overflow-hidden rounded-3xl border-4 border-canvas" style={{ "--unveil-delay": "420ms" } as CSSProperties}>
-              <img src={photos.src("/images/company-learning.webp")} alt={photos.alt("/images/company-learning.webp")} loading="lazy" width={480} height={360} className="aspect-[4/3] w-full object-cover" />
+                <img src={photos.src("/images/company-client.webp")} alt={photos.alt("/images/company-client.webp")} loading="lazy" width={480} height={360} className="aspect-[4/3] w-full object-cover" />
               </div>
             </div>
             <div className="drift glass shadow-soft absolute -left-2 bottom-8 hidden rounded-2xl border border-line p-4 sm:block" style={{ "--drift": "50px" } as CSSProperties}>
@@ -42,10 +43,10 @@ export default function Company() {
 
         <div className="order-1 lg:order-2">
           <SectionHeading
-            label="Company"
+            label={`Why ${company.shortName}`}
             title={
               <>
-                One mission: <span className="gradient-text">better learning.</span>
+                A small senior team, <span className="gradient-text">first call to production.</span>
               </>
             }
           />
@@ -82,7 +83,7 @@ export default function Company() {
                 About {company.shortName} <ArrowRight className="h-4 w-4" />
               </Link>
               <Link to="/responsible-ai" className="btn px-4 py-3 text-sm text-brand-text hover:bg-brand-soft">
-                Our responsible-AI commitments <ArrowRight className="h-4 w-4" />
+                How we protect your data <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </Reveal>

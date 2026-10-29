@@ -1,6 +1,6 @@
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { company, services, startEnquiry, stats } from "@/data/company";
+import { bookCall, company, services, stats } from "@/data/company";
 import ServiceCard from "@/components/services/ServiceCard";
 import CountUp from "./CountUp";
 import Reveal, { SectionHeading } from "./Reveal";
@@ -14,7 +14,7 @@ export default function Services() {
             label="Services"
             title={
               <>
-                Everything you need to <span className="gradient-text">ship AI for learning.</span>
+                One senior team, <span className="gradient-text">from first call to production.</span>
               </>
             }
           >
@@ -25,8 +25,8 @@ export default function Services() {
               <Link to="/services" className="btn btn-primary px-6 py-3 text-sm">
                 All {services.length} services <ArrowRight className="h-4 w-4" />
               </Link>
-              <button onClick={() => startEnquiry()} className="btn btn-secondary px-6 py-3 text-sm">
-                Talk to an engineer <ArrowUpRight className="h-4 w-4" />
+              <button onClick={() => bookCall()} className="btn btn-secondary px-6 py-3 text-sm">
+                Book a call <ArrowUpRight className="h-4 w-4" />
               </button>
             </div>
           </Reveal>

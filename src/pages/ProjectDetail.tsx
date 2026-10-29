@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { ArrowLeft, ArrowRight, Check, Clock, Gauge, Layers, ShieldCheck, Target, Users, Workflow } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Clock, Gauge, Layers, ShieldCheck, Target, Users, Workflow } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -10,7 +10,7 @@ import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectFlow from "@/components/projects/ProjectFlow";
 import ProjectsLoading from "@/components/projects/ProjectsLoading";
 import { serviceIcons } from "@/components/site/icons";
-import { industries, industryPath, servicePath, services, solutionPath, solutions, startEnquiry } from "@/data/company";
+import { bookCall, industries, industryPath, servicePath, services, solutionPath, solutions } from "@/data/company";
 import { audienceTitle, Project, projectPath } from "@/data/projects";
 import { useProjects } from "@/hooks/use-projects";
 import NotFound from "./NotFound";
@@ -26,7 +26,7 @@ const SECTIONS: NavSection[] = [
 // Sections sit below the navbar and the sticky section bar when jumped to
 const anchor: CSSProperties = { scrollMarginTop: SECTION_OFFSET };
 
-/** Up to three other projects: same audience first, then those sharing the most services. */
+/** Up to three other projects: same industry first, then those sharing the most services. */
 function relatedTo(project: Project, projects: Project[]) {
   const shared = (p: Project) => p.services.filter((k) => project.services.includes(k)).length;
   return projects
@@ -38,7 +38,7 @@ function relatedTo(project: Project, projects: Project[]) {
 export default function ProjectDetail() {
   const { slug } = useParams();
   const { projects, ready } = useProjects();
-  if (!ready) return <ProjectsLoading title="Projects" />;
+  if (!ready) return <ProjectsLoading title="Our work" />;
   const index = projects.findIndex((p) => p.slug === slug);
   if (index === -1) return <NotFound />;
   return <ProjectPage key={projects[index].slug} projects={projects} index={index} />;
@@ -68,14 +68,14 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
   return (
     <PageShell title={project.title} description={project.summary}>
       <PageHero
-        crumbs={[{ label: "Projects", to: "/projects" }, { label: project.title }]}
+        crumbs={[{ label: "Our work", to: "/projects" }, { label: project.title }]}
         eyebrow={`${audienceTitle(project)} · ${project.year}`}
         title={project.title}
         lead={project.summary}
         actions={
           <>
-            <button onClick={() => startEnquiry(project.title)} className="btn btn-primary px-7 py-3.5">
-              Discuss a similar project <ArrowRight className="h-4 w-4" />
+            <button onClick={() => bookCall(project.title)} className="btn btn-primary px-7 py-3.5">
+              Book a call <ArrowUpRight className="h-4 w-4" />
             </button>
             <button onClick={() => jump("architecture")} className="btn btn-secondary px-7 py-3.5">
               <Workflow className="h-4 w-4" /> See the architecture
@@ -158,7 +158,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
                 ))}
                 {audience && (
                   <div className="flex flex-col gap-1 py-3.5 sm:flex-row sm:justify-between sm:gap-6">
-                    <dt className="text-sm text-subtle">Audience</dt>
+                    <dt className="text-sm text-subtle">Industry</dt>
                     <dd className="text-sm font-semibold sm:text-right">
                       <Link to={industryPath(audience)} className="u-link text-brand-text">
                         {audience.title}
@@ -171,7 +171,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
                     <dt className="text-sm text-subtle">Started from</dt>
                     <dd className="text-sm font-semibold sm:text-right">
                       <Link to={solutionPath(solution)} className="u-link text-brand-text">
-                        {solution.title} blueprint
+                        {solution.title}
                       </Link>
                     </dd>
                   </div>
@@ -248,7 +248,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
             <Reveal variant="left" className="lg:sticky lg:top-44 lg:self-start">
               <figure>
                 <div className="unveil shadow-soft overflow-hidden rounded-[2rem] bg-raised">
-                  {/* Projects added at /admin may skip the second photo: the cover stands in */}
+                  {/* A project without a second photo shows its cover here instead */}
                   <img
                     src={project.gallery.src || project.image}
                     alt={project.gallery.src ? project.gallery.alt : project.imageAlt}
@@ -299,7 +299,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
             </SectionHeading>
             <Reveal delay={100}>
               <Link to="/technology" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-                How we choose models <ArrowRight className="h-4 w-4" />
+                Our technology <ArrowRight className="h-4 w-4" />
               </Link>
             </Reveal>
           </div>
@@ -328,7 +328,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
             label="Safeguards & measures"
             title={
               <>
-                Safe by design, <span className="gradient-text">judged on learning.</span>
+                Safe by design, <span className="gradient-text">judged on what changed.</span>
               </>
             }
           />
@@ -349,7 +349,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
                   ))}
                 </ul>
                 <Link to="/responsible-ai" className="u-link mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                  Our responsible-AI commitments <ArrowRight className="h-4 w-4" />
+                  How we handle security & AI <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </Reveal>
@@ -366,7 +366,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
                     </li>
                   ))}
                 </ol>
-                <p className="mt-6 text-sm leading-relaxed text-subtle">Agreed with the client during discovery and reported back to them — results stay between us and the client.</p>
+                <p className="mt-6 text-sm leading-relaxed text-subtle">Agreed with the client before the build and reported back to them — results stay between us and the client.</p>
               </div>
             </Reveal>
           </div>
@@ -417,10 +417,9 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
       </section>
 
       <CtaBand
-        kicker="Every project starts with a free discovery call."
+        kicker="Every project starts with a free call and a two-week prototype."
         title={<>Want something like {project.title}?</>}
         topic={project.title}
-        primaryLabel="Discuss a similar project"
         secondary={{ label: "All projects", to: "/projects" }}
       />
     </PageShell>

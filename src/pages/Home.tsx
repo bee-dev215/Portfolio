@@ -31,11 +31,11 @@ export default function Home() {
     <PageShell footerCta>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: orgSchema }} />
       <Hero />
+      <Outcomes />
       <Services />
       <Solutions />
       <Projects />
       <Industries />
-      <Outcomes />
       <Process />
       <Technology />
       <Company />

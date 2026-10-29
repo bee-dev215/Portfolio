@@ -6,7 +6,7 @@ import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import SolutionCard from "@/components/solutions/SolutionCard";
-import { industries, industryPath, solutionPath, solutions, startEnquiry } from "@/data/company";
+import { bookCall, industries, industryPath, solutionPath, solutions } from "@/data/company";
 import { usePhotos } from "@/hooks/use-photos";
 
 // "All" is the "no filter" value
@@ -34,21 +34,21 @@ export default function SolutionsIndex() {
   return (
     <PageShell
       title="Solutions"
-      description="Six AI solution blueprints for education — AI tutors, assessment, learning analytics, content creation, knowledge assistants and AI training — adapted to your learners, content and platform."
+      description="Six working starting points for taking busywork off your team — Document AI, Knowledge Assistant, AI Voice Agent, Field Operations App, Reporting Autopilot and Client Portal — adapted to your systems and data."
     >
       <PageHero
         crumbs={[{ label: "Solutions" }]}
-        eyebrow={`${solutions.length} solution blueprints`}
+        eyebrow={`${solutions.length} solutions`}
         title={
           <>
-            Proven blueprints, <span className="gradient-text">tailored to you.</span>
+            Start from software <span className="gradient-text">that already runs.</span>
           </>
         }
-        lead="Each solution is a working starting point we adapt to your learners, your content and your platform — so your project begins from software that already runs, not a blank page."
+        lead="Each solution is a working starting point for a common kind of busywork. We adapt it to your systems, your data and your rules, so your two-week prototype begins from running software, not a blank page."
         actions={
           <>
-            <button onClick={() => startEnquiry()} className="btn btn-primary px-7 py-3.5">
-              Start a project <ArrowRight className="h-4 w-4" />
+            <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
+              Book a call <ArrowRight className="h-4 w-4" />
             </button>
             <a href="#fit" className="btn btn-secondary px-7 py-3.5">
               Which solution fits?
@@ -62,7 +62,7 @@ export default function SolutionsIndex() {
           {/* Filter and search */}
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="-mx-5 overflow-x-auto px-5 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
-              <div className="inline-flex gap-1 rounded-full border border-line bg-surface p-1" role="group" aria-label="Filter solutions by audience">
+              <div className="inline-flex gap-1 rounded-full border border-line bg-surface p-1" role="group" aria-label="Filter solutions by where they work">
                 {categories.map((c) => (
                   <button
                     key={c}
@@ -84,7 +84,7 @@ export default function SolutionsIndex() {
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search — e.g. feedback, LTI, voice"
+                placeholder="Search — e.g. invoices, scheduling, offline"
                 className="field rounded-full py-2.5 pl-11 pr-10"
               />
               {query && (
@@ -122,14 +122,14 @@ export default function SolutionsIndex() {
               </span>
               <h2 className="mt-5 font-display text-2xl font-bold">No solution matches that yet</h2>
               <p className="mt-2 max-w-md text-ink-2">
-                Try a broader word, or tell us what you have in mind — many projects start from something not on this list.
+                Try a broader word, or tell us about the task. Plenty of projects start from something that isn't on this list.
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-3">
                 <button onClick={reset} className="btn btn-secondary px-5 py-2.5 text-sm">
                   Clear filters
                 </button>
-                <button onClick={() => startEnquiry(query || undefined)} className="btn btn-primary px-5 py-2.5 text-sm">
-                  Describe your idea <ArrowRight className="h-4 w-4" />
+                <button onClick={() => bookCall(query || undefined)} className="btn btn-primary px-5 py-2.5 text-sm">
+                  Book a call <ArrowRight className="h-4 w-4" />
                 </button>
               </div>
             </div>
@@ -137,26 +137,26 @@ export default function SolutionsIndex() {
         </div>
       </section>
 
-      {/* Which solution fits? solutions × audiences */}
+      {/* Which solution fits? solutions × industries */}
       <section id="fit" className="band px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto max-w-[1240px]">
           <SectionHeading
             label="Which solution fits?"
             title={
               <>
-                Find your starting point <span className="gradient-text">at a glance.</span>
+                Where each solution <span className="gradient-text">usually starts.</span>
               </>
             }
           >
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-              Where each solution is most often a good fit. Any of them can be adapted for other settings — this is where most projects start.
+              The industries where each solution fits most naturally. Any of them can be adapted to other businesses; this is just a good place to start looking.
             </p>
           </SectionHeading>
 
           <Reveal delay={100}>
             <div className="card relative mt-12 overflow-x-auto rounded-3xl">
               <table className="w-full min-w-[720px] border-collapse text-left">
-                <caption className="sr-only">Solutions and the audiences they suit</caption>
+                <caption className="sr-only">Solutions and the industries they suit</caption>
                 <thead>
                   <tr className="border-b border-line">
                     <th scope="col" className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-subtle sm:px-6">
@@ -209,14 +209,15 @@ export default function SolutionsIndex() {
             </div>
           </Reveal>
           <p className="mt-4 flex items-center gap-2 text-sm text-subtle sm:hidden">
-            <ArrowRight className="h-4 w-4" /> Scroll the table sideways to see every audience.
+            <ArrowRight className="h-4 w-4" /> Scroll the table sideways to see every industry.
           </p>
         </div>
       </section>
 
       <CtaBand
-        kicker="Not on the list? Every engagement starts with discovery."
-        title="Have a learning problem AI could solve?"
+        kicker="Not on the list? Every project starts with a call."
+        title="Tell us the task. We'll tell you if software can take it."
+        primaryLabel="Book a call"
         secondary={{ label: "How we work", to: "/approach" }}
       />
     </PageShell>

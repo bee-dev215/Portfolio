@@ -7,7 +7,7 @@ import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 import Reveal from "@/components/site/Reveal";
 import FaqItem from "@/components/faq/FaqItem";
-import { company, startEnquiry } from "@/data/company";
+import { bookCall, company, startEnquiry } from "@/data/company";
 import { Faq, FaqCategory, faqCategories, faqs } from "@/data/faq";
 
 type Filter = "All" | FaqCategory;
@@ -78,7 +78,7 @@ export default function FaqPage() {
   const tabs: Filter[] = ["All", ...faqCategories];
 
   return (
-    <PageShell title="Questions & answers" description={`Straight answers on how ${company.name} works: AI quality, data and privacy, pricing, timelines and working together.`}>
+    <PageShell title="Questions & answers" description={`Straight answers on how ${company.name} works: the free two-week prototype, pricing and timelines, AI quality, security and working together.`}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchema }} />
       <PageHero
         crumbs={[{ label: "Questions" }]}
@@ -88,7 +88,7 @@ export default function FaqPage() {
             Questions, <span className="gradient-text">answered.</span>
           </>
         }
-        lead={`How we work, how we keep AI accurate, what happens to your data and how projects are priced — ${faqs.length} straight answers. If yours isn't here, ask an engineer directly.`}
+        lead={`The free prototype, how we work, how we keep AI accurate, what happens to your data and how pricing works — ${faqs.length} straight answers. If yours isn't here, ask an engineer directly.`}
       >
         <div className="relative max-w-xl">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-subtle" aria-hidden="true" />
@@ -101,7 +101,7 @@ export default function FaqPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Escape" && setQuery("")}
-            placeholder="Search, e.g. “privacy”, “LMS”, “pricing”"
+            placeholder="Search, e.g. “prototype”, “NDA”, “pricing”"
             autoComplete="off"
             className="field rounded-full py-4 pl-12 pr-12 text-base shadow-soft [&::-webkit-search-cancel-button]:hidden"
           />
@@ -243,8 +243,11 @@ export default function FaqPage() {
                         </a>
                       </li>
                     </ul>
-                    <button onClick={() => startEnquiry()} className="btn btn-primary mt-5 w-full py-3 text-sm">
-                      Ask a question <ArrowRight className="h-4 w-4" />
+                    <button onClick={() => bookCall()} className="btn btn-primary mt-5 w-full py-3 text-sm">
+                      Book a call <ArrowRight className="h-4 w-4" />
+                    </button>
+                    <button onClick={() => startEnquiry()} className="mt-3 w-full text-center text-sm font-semibold text-brand-text">
+                      Or send us a message
                     </button>
                   </div>
                 </div>
@@ -255,9 +258,8 @@ export default function FaqPage() {
       </section>
 
       <CtaBand
-        kicker="An engineer, not a salesperson, will answer."
+        kicker="Ask a senior engineer, not a salesperson."
         title="Still have a question?"
-        primaryLabel="Ask us directly"
         secondary={{ label: "How we work", to: "/approach" }}
       />
     </PageShell>

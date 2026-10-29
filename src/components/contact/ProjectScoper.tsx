@@ -1,21 +1,22 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, ClipboardList, RotateCcw } from "lucide-react";
-import { company, industries, services, solutions } from "@/data/company";
+import { ArrowLeft, ArrowRight, CalendarClock, Check, ClipboardList, RotateCcw } from "lucide-react";
+import { bookCall, company, industries, services, solutions } from "@/data/company";
 import { ContactSubject, prefillContact } from "./form";
 import "./ProjectScoper.css";
 
 const NOT_SURE = "Not sure yet";
+const RESCUE = "Something to rescue";
 
 const stages = [
-  { value: "Exploring ideas", desc: "We want to understand what AI could do for us." },
-  { value: "A pilot in mind", desc: "We know the problem and want to test a solution." },
-  { value: "Ready to build", desc: "We have the go-ahead and want a delivery partner." },
-  { value: "Training for our team", desc: "We want our people to build or use AI well." },
+  { value: "Exploring ideas", desc: "Something is slowing us down and we want to see what's possible." },
+  { value: "A task in mind", desc: "We know the busywork we want gone and want to see it handled." },
+  { value: "Ready to build", desc: "We have the go-ahead and want a team to build it." },
+  { value: RESCUE, desc: "We have software that's stalled, fragile or overdue for an update." },
 ];
 
 const timelines = [
   { value: "No rush", desc: "We're planning ahead." },
-  { value: "Next term or quarter", desc: "We'd like to start soon." },
+  { value: "Next month or quarter", desc: "We'd like to start soon." },
   { value: "As soon as possible", desc: "There's a deadline we're working to." },
 ];
 
@@ -29,20 +30,24 @@ interface Answers {
 const EMPTY: Answers = { building: [], audience: [], stage: "", timeline: "" };
 
 const STEPS = [
-  { key: "building", title: "What are you building?", hint: "Pick any that apply." },
-  { key: "audience", title: "Who is it for?", hint: "Pick any that apply." },
+  { key: "building", title: "What do you need?", hint: "Pick any that apply." },
+  { key: "audience", title: "What kind of business are you?", hint: "Pick any that apply." },
   { key: "stage", title: "Where are you now?", hint: "Pick the closest." },
   { key: "timeline", title: "When would you like to start?", hint: "Pick the closest." },
 ] as const;
 
-/** Chooses the contact-form subject that best matches the answers. */
+/** Chooses the contact-form subject that best matches the answers; the first match wins. */
 function subjectFor(a: Answers): ContactSubject {
+  const picked = new Set(services.filter((s) => a.building.includes(s.title)).map((s) => s.key));
   const has = (...titles: string[]) => titles.some((t) => a.building.includes(t));
-  if (a.stage === "Training for our team" || has("AI Academy", "AI training & upskilling")) return "AI training for our team";
-  if (has("AI Tutor", "Assessment Assistant", "Knowledge Assistant")) return "AI tutor or assistant";
-  if (has("Learning Analytics", "Learning analytics & data engineering")) return "Learning analytics";
-  if (has("Learning platform integration")) return "LMS integration";
-  return "New AI product";
+  if (a.stage === RESCUE || picked.has("rescue")) return "Rescue or modernize a project";
+  if (picked.has("automation") || has("Document AI")) return "Automate a task or workflow";
+  if (picked.has("ai") || has("Knowledge Assistant", "AI Voice Agent")) return "AI tool or assistant";
+  if (picked.has("data") || has("Reporting Autopilot")) return "Data, dashboards & reporting";
+  if (picked.has("mobile") || has("Field Operations App")) return "Mobile app";
+  if (picked.has("desktop")) return "Desktop software";
+  if (picked.has("web") || picked.has("cloud") || has("Client Portal")) return "Web app or SaaS product";
+  return "Something else";
 }
 
 const list = (items: string[]) => (items.length ? items.join(", ") : NOT_SURE);
@@ -51,12 +56,12 @@ function compose(a: Answers) {
   return [
     `Hello ${company.shortName} team,`,
     "",
-    `What we're building: ${list(a.building)}`,
-    `Who it's for: ${list(a.audience)}`,
+    `What we need: ${list(a.building)}`,
+    `Industry: ${list(a.audience)}`,
     `Where we are: ${a.stage || NOT_SURE}`,
     `Timeline: ${a.timeline || NOT_SURE}`,
     "",
-    "A little more about our learners and the problem we want to solve: ",
+    "A little more about the task that eats our week: ",
   ].join("\n");
 }
 
@@ -157,6 +162,10 @@ export default function ProjectScoper() {
                 Plan your project
               </h2>
               <p className="mt-3 max-w-sm leading-relaxed text-ink-2">Four quick questions. We'll turn your answers into a brief in the form below — you can edit it before sending.</p>
+              <button type="button" onClick={() => bookCall()} className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
+                <CalendarClock className="h-4 w-4" /> Prefer to talk? Book a call
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </button>
 
               <ol className="mt-8 hidden space-y-1 lg:block" aria-label="Steps">
                 {[...STEPS.map((s) => s.title), "Your brief"].map((title, i) => {
@@ -227,11 +236,11 @@ export default function ProjectScoper() {
 
               {step === 1 && (
                 <div className="mt-6">
-                  <Group legend="Audiences">
+                  <Group legend="Industries">
                     {industries.map((ind) => (
                       <Chip key={ind.key} label={ind.title} checked={a.audience.includes(ind.title)} onChange={() => toggle("audience", ind.title)} />
                     ))}
-                    <Chip label="Someone else" checked={a.audience.includes("Someone else")} onChange={() => toggle("audience", "Someone else")} />
+                    <Chip label="Something else" checked={a.audience.includes("Something else")} onChange={() => toggle("audience", "Something else")} />
                     <Chip label={NOT_SURE} checked={a.audience.includes(NOT_SURE)} onChange={() => toggle("audience", NOT_SURE)} />
                   </Group>
                 </div>
@@ -265,7 +274,7 @@ export default function ProjectScoper() {
                     Here's your brief
                   </h3>
                   <p className="mt-1 text-sm text-subtle">
-                    It goes in the form as <span className="font-semibold text-ink">{subjectFor({ ...a, building: clean(a.building) })}</span>. Add a few lines about your learners, then send.
+                    It goes in the form as <span className="font-semibold text-ink">{subjectFor({ ...a, building: clean(a.building) })}</span>. Add a few lines about the task you'd like gone, then send.
                   </p>
                   <pre className="mt-5 whitespace-pre-wrap break-words rounded-2xl border border-line bg-raised/60 p-5 font-sans text-sm leading-relaxed text-ink-2">
                     {compose({ ...a, building: clean(a.building), audience: clean(a.audience) })}

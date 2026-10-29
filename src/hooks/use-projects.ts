@@ -1,21 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
-import { fetchSiteProjects, PROJECTS_KEY } from "@/lib/projectsApi";
-import { builtInProjects, Project } from "@/data/projects";
+import { builtInProjects } from "@/data/projects";
 
-const NONE: Project[] = [];
+const state = { projects: builtInProjects, ready: true };
 
-/**
- * The projects the site shows, read once per visit and shared by every page.
- * `ready` is false only while the first database read is in flight; `projects` is empty until then.
- */
+/** The projects the site shows: the case studies in src/data/projects.ts, in their order there. */
 export function useProjects() {
-  const { data } = useQuery({
-    queryKey: [...PROJECTS_KEY, "site"],
-    queryFn: fetchSiteProjects,
-    staleTime: 5 * 60_000,
-    // Without a database the built-in list is the answer, so there's nothing to wait for
-    initialData: supabase ? undefined : builtInProjects,
-  });
-  return { projects: data ?? NONE, ready: data !== undefined };
+  return state;
 }

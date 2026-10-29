@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import { ArrowUpRight, Check, Info, Minus } from "lucide-react";
-import { startEnquiry } from "@/data/company";
+import { bookCall } from "@/data/company";
 import { approachPriority, ModelApproachKey, modelApproaches, selectorQuestions } from "@/data/company-pages";
 
 /**
  * "How we choose a model": the visitor answers three questions and sees the approach we'd start the
- * conversation from, with the reasons. Each answer adds to the approaches it favours; ties follow approachPriority.
+ * conversation from, with the reasons. Each answer adds to the approaches it favors; ties follow approachPriority.
  */
 export default function ModelSelector() {
   const [answers, setAnswers] = useState<number[]>(selectorQuestions.map(() => 0));
@@ -120,9 +120,9 @@ export default function ModelSelector() {
           </div>
 
           <p className="mt-6 border-t border-line pt-5 text-xs leading-relaxed text-subtle">
-            A starting point for discussion, not a recommendation. The final choice is made with you after discovery, and tested against your own evaluation set.
+            A starting point for discussion, not a recommendation. The final choice is made with you, and proven in the prototype on your own data.
           </p>
-          <button onClick={() => startEnquiry(`model choice (${best.name.toLowerCase()})`)} className="btn btn-secondary mt-5 px-5 py-2.5 text-sm">
+          <button onClick={() => bookCall(`Model choice (${best.name.toLowerCase()})`)} className="btn btn-secondary mt-5 px-5 py-2.5 text-sm">
             Talk it through with an engineer <ArrowUpRight className="h-4 w-4" />
           </button>
         </div>

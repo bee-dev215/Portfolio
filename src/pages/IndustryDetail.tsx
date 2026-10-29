@@ -9,13 +9,13 @@ import ServiceCard from "@/components/services/ServiceCard";
 import SolutionCards from "@/components/services/SolutionCards";
 import DayToggle from "@/components/industries/DayToggle";
 import ProjectStrip from "@/components/projects/ProjectStrip";
-import { industries, industryPath, scrollToId, services, startEnquiry } from "@/data/company";
+import { bookCall, industries, industryPath, offer, scrollToId, services, startEnquiry } from "@/data/company";
 import { industryDetails } from "@/data/industry-details";
 import { usePhotos } from "@/hooks/use-photos";
 import NotFound from "./NotFound";
 
-// Lower-cases a title's first word for use mid-sentence, leaving names like "K-12" and "EdTech" alone
-const midSentence = (t: string) => (/^[A-Z][a-z]*\s/.test(t) ? t[0].toLowerCase() + t.slice(1) : t);
+// Lower-cases a title's first word for use mid-sentence ("Real estate" → "real estate"), leaving acronyms like "SaaS" alone
+const midSentence = (t: string) => (/^[A-Z][a-z]*(\s|$)/.test(t) ? t[0].toLowerCase() + t.slice(1) : t);
 
 export default function IndustryDetail() {
   const photos = usePhotos();
@@ -30,14 +30,14 @@ export default function IndustryDetail() {
   return (
     <PageShell title={industry.title} description={industry.desc}>
       <PageHero
-        crumbs={[{ label: "Who we serve", to: "/industries" }, { label: industry.title }]}
+        crumbs={[{ label: "Industries", to: "/industries" }, { label: industry.title }]}
         eyebrow={industry.focus}
         title={industry.title}
         lead={industry.desc}
         actions={
           <>
-            <button onClick={() => startEnquiry(industry.title)} className="btn btn-primary px-7 py-3.5">
-              Discuss your project <ArrowRight className="h-4 w-4" />
+            <button onClick={() => bookCall(industry.title)} className="btn btn-primary px-7 py-3.5">
+              Book a call <ArrowUpRight className="h-4 w-4" />
             </button>
             <button onClick={() => scrollToId("use-cases")} className="btn btn-secondary px-7 py-3.5">
               See use cases
@@ -104,7 +104,7 @@ export default function IndustryDetail() {
               </>
             }
           >
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">Working blueprints we adapt to your learners, content and platform.</p>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">Starting points we adapt to your workflow, your data and the systems you already run.</p>
           </SectionHeading>
           <div className="mt-12">
             <SolutionCards titles={industry.solutions} />
@@ -130,7 +130,7 @@ export default function IndustryDetail() {
             label="Use cases"
             title={
               <>
-                Where AI <span className="gradient-text">earns its place.</span>
+                Where software <span className="gradient-text">takes work off your plate.</span>
               </>
             }
           />
@@ -161,7 +161,7 @@ export default function IndustryDetail() {
               </>
             }
           >
-            <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">Switch between today and with AI support to see where the time and attention go.</p>
+            <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">Switch between today and the same day with better tools to see where the time and attention go.</p>
           </SectionHeading>
           <Reveal delay={100} variant="right">
             <DayToggle day={detail.day} />
@@ -169,12 +169,12 @@ export default function IndustryDetail() {
         </div>
       </section>
 
-      {/* Integrations & policy */}
+      {/* Integrations & compliance */}
       <section className="px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-2 lg:gap-16">
           {[
-            { label: "Integrations & standards", title: "Fits the systems you run.", icon: Plug, items: detail.integrations },
-            { label: "Privacy & policy", title: "Designed around your rules.", icon: ShieldCheck, items: detail.policies },
+            { label: "Integrations", title: "Fits the systems you run.", icon: Plug, items: detail.integrations },
+            { label: "Security & compliance", title: "Designed around your rules.", icon: ShieldCheck, items: detail.policies },
           ].map((col) => (
             <div key={col.label}>
               <Reveal>
@@ -201,9 +201,9 @@ export default function IndustryDetail() {
         </div>
         <Reveal>
           <p className="mx-auto mt-8 max-w-[1240px] text-sm text-subtle">
-            Requirements are mapped with your own compliance, data protection and safeguarding teams during discovery.{" "}
+            These describe what we design for, not certifications. We map the requirements with your own compliance, security and legal advisers before anything goes live.{" "}
             <Link to="/responsible-ai" className="u-link font-semibold text-brand-text">
-              Our responsible-AI commitments
+              How we handle security & AI
             </Link>
           </p>
         </Reveal>
@@ -222,7 +222,7 @@ export default function IndustryDetail() {
               }
             >
               <button onClick={() => startEnquiry(industry.title)} className="btn btn-secondary mt-8 px-6 py-3 text-sm">
-                Ask your own <ArrowUpRight className="h-4 w-4" />
+                Send us your question <ArrowUpRight className="h-4 w-4" />
               </button>
             </SectionHeading>
           </div>
@@ -234,13 +234,13 @@ export default function IndustryDetail() {
         match={(p) => p.audience === industry.key}
         title={
           <>
-            Built for {midSentence(industry.title)}, <span className="gradient-text">in use today.</span>
+            {industry.title} projects, <span className="gradient-text">start to finish.</span>
           </>
         }
-        lead="Recent projects for organisations like yours. Clients are described, not named."
+        lead="From the first call and the two-week prototype to launch. Clients are described, not named."
       />
 
-      {/* Other audiences */}
+      {/* Other industries */}
       <section className="px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto max-w-[1240px]">
           <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
@@ -248,26 +248,27 @@ export default function IndustryDetail() {
               label="Also building for"
               title={
                 <>
-                  Other people <span className="gradient-text">who teach.</span>
+                  Other industries, <span className="gradient-text">same approach.</span>
                 </>
               }
             />
             <Reveal>
               <Link to="/industries" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-                All audiences <ArrowRight className="h-4 w-4" />
+                All industries <ArrowRight className="h-4 w-4" />
               </Link>
             </Reveal>
           </div>
-          <div className="mt-12 grid gap-5 sm:grid-cols-3">
+          {/* Five portrait tiles in a row on wide screens: the photos' own 4:5 shape */}
+          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5">
             {others.map((o, i) => (
-              <Reveal key={o.key} delay={i * 80} className="h-full">
+              <Reveal key={o.key} delay={i * 70} className="h-full">
                 <Link to={industryPath(o)} className="card card-hover group relative block overflow-hidden">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-raised">
-                    <img src={photos.src(o.image)} alt="" loading="lazy" width={400} height={300} className="img-zoom h-full w-full object-cover" />
+                  <div className="relative aspect-[4/5] overflow-hidden bg-raised">
+                    <img src={photos.src(o.image)} alt="" loading="lazy" width={392} height={490} className="img-zoom h-full w-full object-cover" />
                     <div className="photo-fade absolute inset-0" />
-                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5 text-white">
-                      <div>
-                        <p className="font-display text-xl font-bold leading-tight">{o.title}</p>
+                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-white sm:p-5">
+                      <div className="min-w-0">
+                        <p className="font-display text-lg font-bold leading-tight sm:text-xl">{o.title}</p>
                         <p className="mt-0.5 text-xs text-white/80">{o.focus}</p>
                       </div>
                       <ArrowUpRight className="h-5 w-5 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -280,7 +281,7 @@ export default function IndustryDetail() {
         </div>
       </section>
 
-      <CtaBand title={`Let's build something for ${midSentence(industry.title)}.`} topic={industry.title} secondary={{ label: "How we work", to: "/approach" }} />
+      <CtaBand title="Tell us the task that eats your week." kicker={offer.title} topic={industry.title} secondary={{ label: "How we work", to: "/approach" }} />
     </PageShell>
   );
 }

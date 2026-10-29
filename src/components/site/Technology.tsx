@@ -1,18 +1,18 @@
 import { CSSProperties } from "react";
-import { ArrowRight, BrainCircuit, Cloud, Code2, Database, GraduationCap, Layers, LucideIcon } from "lucide-react";
+import { ArrowRight, BrainCircuit, Cloud, Code2, Database, Layers, LucideIcon, MonitorSmartphone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { stackGroups } from "@/data/company";
 import { usePhotos } from "@/hooks/use-photos";
 import Reveal, { SectionHeading } from "./Reveal";
 
 // One icon per stack group, in the same order as stackGroups
-const icons: LucideIcon[] = [BrainCircuit, Layers, Database, Code2, GraduationCap, Cloud];
+const icons: LucideIcon[] = [BrainCircuit, Layers, Code2, MonitorSmartphone, Database, Cloud];
 
 // What the stack means for a client, in pictures
 const pillars = [
   { image: "/images/tech-ai-abstract.webp", icon: BrainCircuit, title: "Models chosen per task", desc: "Proven on your own evaluation set — not on a leaderboard." },
   { image: "/images/tech-code.webp", icon: Code2, title: "Code you own", desc: "Readable, tested and documented, in your repositories." },
-  { image: "/images/tech-datacenter.webp", icon: Cloud, title: "Your cloud or ours", desc: "Open models can run inside your own tenancy." },
+  { image: "/images/tech-datacenter.webp", icon: Cloud, title: "Your cloud, your accounts", desc: "Everything runs in cloud accounts you own — open models included." },
 ];
 
 /** The stack, by group. `more` adds a link to the technology page (off on that page itself). */
@@ -27,12 +27,12 @@ export default function Technology({ more = true }: { more?: boolean }) {
           center
           title={
             <>
-              The right model for the job, <span className="gradient-text">no lock-in.</span>
+              The right tools for the job, <span className="gradient-text">no lock-in.</span>
             </>
           }
         >
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-            We build on open, well-supported tools and education standards, so your system can be maintained, extended and audited — by us or by your own engineers.
+            We build on open, well-supported tools and standards, so your software can be maintained, extended and audited — by us or by your own engineers.
           </p>
         </SectionHeading>
 

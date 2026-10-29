@@ -4,7 +4,7 @@ import { company, setNavigator } from "@/data/company";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-const DEFAULT_TITLE = `${company.name} — AI Engineering for Education`;
+const DEFAULT_TITLE = `${company.name} — Custom Software & AI Engineering`;
 
 /**
  * Frame for every public page: skip link, navbar, main and footer.

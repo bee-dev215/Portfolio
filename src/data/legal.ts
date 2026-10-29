@@ -23,7 +23,7 @@ export interface LegalDoc {
   sections: LegalSection[];
 }
 
-const UPDATED = "October 22, 2026";
+const UPDATED = "October 30, 2026";
 
 const privacy: LegalDoc = {
   title: "Privacy policy",
@@ -36,9 +36,10 @@ const privacy: LegalDoc = {
       blocks: [
         "We only collect what you choose to send us, plus the basic technical data any website receives:",
         [
-          "Contact form: your name, email address, company and phone number (both optional), the type of enquiry, your message, and whether you opted in to text messages.",
+          "Contact form: your name and email address, your organization and phone number (both optional), the topic of your inquiry, your message, and whether you opted in to text messages.",
+          "Call booking (/book): your name and email address, your organization and phone number (both optional), the topic you'd like to discuss, any notes you add, the kind of call and the time you choose, and your time zone, which your browser reports so we can show times in your local time.",
           "Email and phone: whatever you include when you contact us directly.",
-          "Technical data: like any website, our hosting provider receives standard request data such as your IP address, browser type and the pages requested. This site loads its fonts from Google Fonts, so Google also receives your IP address when your browser requests them. Project case studies load from our database provider (Supabase), which receives the same standard request data.",
+          "Technical data: like any website, our hosting provider receives standard request data such as your IP address, browser type and the pages requested. This site loads its fonts from Google Fonts, so Google also receives your IP address when your browser requests them. When you open the booking page, book a call or send a message, your browser connects to our database provider (Supabase), which receives the same standard request data.",
         ],
       ],
     },
@@ -54,9 +55,10 @@ const privacy: LegalDoc = {
       heading: "How we use your information",
       blocks: [
         [
-          "To reply to your enquiry and discuss your project.",
+          "To reply to your inquiry and discuss your project.",
+          "To hold the call time you booked, send you the details and contact you if it needs to move.",
           "To prepare proposals and provide services you ask us for.",
-          "To send text messages about your enquiry, only if you opted in.",
+          "To send text messages about your inquiry, only if you opted in.",
           "To keep the records a business needs to keep, and to protect the security of this website.",
         ],
         "We do not sell your personal information.",
@@ -66,14 +68,15 @@ const privacy: LegalDoc = {
       id: "sharing",
       heading: "Service providers",
       blocks: [
-        "Contact-form submissions are stored in the customer-relationship management (CRM) service we use to manage enquiries, and forwarded to our inbox by an email-delivery service (FormSubmit). Both process them on our behalf. We share information with other parties only when the law requires it, or to protect our rights and the safety of others.",
+        "Contact-form messages and booked calls are stored in our database, hosted by Supabase, and emailed to our inbox by an email-delivery service (FormSubmit). Both are also added to the customer-relationship management (CRM) service we use to manage inquiries, which keeps any text-message consent. These providers process the information on our behalf.",
+        "Calls take place on a video-meeting service, which processes the call under its own privacy policy. We share information with other parties only when the law requires it, or to protect our rights and the safety of others.",
       ],
     },
     {
       id: "sms",
       heading: "Text messages",
       blocks: [
-        "If you tick the box to receive text messages, we may text you about your enquiry and our services. Message frequency varies and message and data rates may apply. Reply STOP to opt out at any time, or HELP for help.",
+        "If you check the box to receive text messages, we may text you about your inquiry and our services. Message frequency varies and message and data rates may apply. Reply STOP to opt out at any time, or HELP for help.",
         "Mobile numbers and text-messaging opt-in data are not shared with or sold to third parties for their marketing purposes.",
       ],
     },
@@ -81,7 +84,7 @@ const privacy: LegalDoc = {
       id: "retention",
       heading: "How long we keep it",
       blocks: [
-        "We keep enquiry information for as long as we need it to respond and for our ordinary business records, and delete it on request unless we are required to keep it.",
+        "We keep inquiry and booking information for as long as we need it to respond, hold the call and keep our ordinary business records, and delete it on request unless we are required to keep it.",
       ],
     },
     {
@@ -94,7 +97,7 @@ const privacy: LegalDoc = {
     {
       id: "security",
       heading: "Security",
-      blocks: ["We use reasonable technical and organisational measures to protect your information. No method of transmission or storage is completely secure, so we cannot guarantee absolute security."],
+      blocks: ["We use reasonable technical and organizational measures to protect your information. No method of transmission or storage is completely secure, so we cannot guarantee absolute security."],
     },
     {
       id: "children",
@@ -120,7 +123,7 @@ const terms: LegalDoc = {
       id: "information",
       heading: "Information only",
       blocks: [
-        "The content on this site describes our services in general terms and is provided for information. It is not an offer and does not form part of any contract. Every engagement is governed by its own written proposal or agreement.",
+        "The content on this site describes our services in general terms and is provided for information. It is not an offer and does not form part of any contract. Every engagement is governed by its own written proposal or agreement — including the free prototype, whose scope is agreed with you in writing before work starts.",
       ],
     },
     {
@@ -134,14 +137,14 @@ const terms: LegalDoc = {
       id: "use",
       heading: "Acceptable use",
       blocks: [
-        "Please do not misuse the site — for example by attempting to access restricted areas, interfering with its operation, sending unlawful or malicious content through the contact form, or scraping it at a volume that affects other visitors.",
+        "Please do not misuse the site — for example by attempting to access restricted areas, interfering with its operation, sending unlawful or malicious content through the contact or booking forms, booking calls you don't intend to attend, or scraping it at a volume that affects other visitors.",
       ],
     },
     {
       id: "sms",
       heading: "Text messaging",
       blocks: [
-        `If you opt in on the contact form, ${company.name} may send you text messages about your enquiry and our services. Message frequency varies. Message and data rates may apply. Reply STOP to cancel at any time and HELP for help, or email ${company.email}. Carriers are not liable for delayed or undelivered messages. See our privacy policy for how we handle your number.`,
+        `If you opt in on the contact form, ${company.name} may send you text messages about your inquiry and our services. Message frequency varies. Message and data rates may apply. Reply STOP to cancel at any time and HELP for help, or email ${company.email}. Carriers are not liable for delayed or undelivered messages. See our privacy policy for how we handle your number.`,
       ],
     },
     {

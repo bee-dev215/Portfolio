@@ -9,7 +9,7 @@ import SampleExchange from "@/components/solutions/SampleExchange";
 import SectionNav, { NavSection, SECTION_OFFSET } from "@/components/solutions/SectionNav";
 import SolutionCard from "@/components/solutions/SolutionCard";
 import ProjectStrip from "@/components/projects/ProjectStrip";
-import { industries, industryPath, solutionPath, solutions, startEnquiry } from "@/data/company";
+import { bookCall, industries, industryPath, offer, solutionPath, solutions, startEnquiry } from "@/data/company";
 import { SolutionFaq, solutionDetails } from "@/data/solution-details";
 import NotFound from "@/pages/NotFound";
 import { usePhotos } from "@/hooks/use-photos";
@@ -104,8 +104,8 @@ function SolutionPage({ index }: { index: number }) {
         lead={solution.summary}
         actions={
           <>
-            <button onClick={() => startEnquiry(solution.title)} className="btn btn-primary px-7 py-3.5">
-              Discuss this solution <ArrowRight className="h-4 w-4" />
+            <button onClick={() => bookCall(solution.title)} className="btn btn-primary px-7 py-3.5">
+              Book a call about {solution.title} <ArrowRight className="h-4 w-4" />
             </button>
             <button onClick={seeSample} className="btn btn-secondary px-7 py-3.5">
               <MessageSquareText className="h-4 w-4" /> See a sample
@@ -122,7 +122,7 @@ function SolutionPage({ index }: { index: number }) {
               <dl className="mt-3 space-y-2.5 text-sm">
                 <div className="flex items-center gap-2.5">
                   <Users className="h-4 w-4 shrink-0 text-brand-text" />
-                  <dt className="sr-only">For</dt>
+                  <dt className="sr-only">Where it works</dt>
                   <dd className="font-semibold">{solution.category}</dd>
                 </div>
                 <div className="flex items-center gap-2.5">
@@ -195,7 +195,7 @@ function SolutionPage({ index }: { index: number }) {
                     </li>
                   ))}
                 </ul>
-                <p className="mt-4 text-xs leading-relaxed text-subtle">Goals the design aims at. Each project agrees its own success measures during discovery.</p>
+                <p className="mt-4 text-xs leading-relaxed text-subtle">Goals the design aims at, not promised results. Each project agrees its own success measures before anything is built.</p>
               </div>
             </Reveal>
           </div>
@@ -209,7 +209,7 @@ function SolutionPage({ index }: { index: number }) {
             label="How it works"
             title={
               <>
-                From your content to <span className="gradient-text">everyday use.</span>
+                From your data to <span className="gradient-text">everyday use.</span>
               </>
             }
           />
@@ -248,7 +248,7 @@ function SolutionPage({ index }: { index: number }) {
                 A short, scripted walk-through of a typical moment with {solution.title}. Play it, step through it turn by turn, or replay it.
               </p>
               <p className="mt-4 text-sm leading-relaxed text-subtle">
-                The people, documents and data in this sample are invented for illustration. In a real project the content comes from your own material.
+                The people, businesses, documents and figures in this sample are invented for illustration. In a real project it runs on your own systems, data and rules.
               </p>
             </SectionHeading>
           </div>
@@ -354,6 +354,7 @@ function SolutionPage({ index }: { index: number }) {
                     </li>
                   ))}
                 </ul>
+                <p className="mt-4 text-sm leading-relaxed text-subtle">Common examples. If a tool has an API or an export, we can usually connect to it.</p>
               </div>
             </Reveal>
           </div>
@@ -416,7 +417,7 @@ function SolutionPage({ index }: { index: number }) {
             Built on <span className="gradient-text">{solution.title}.</span>
           </>
         }
-        lead="Projects that started from this blueprint, then grew into something specific to the client."
+        lead="Projects that started from this solution, then grew into something specific to the client."
       />
 
       {/* Previous / next and related */}
@@ -465,10 +466,10 @@ function SolutionPage({ index }: { index: number }) {
       </section>
 
       <CtaBand
-        kicker={`Every ${solution.title} project starts with a free discovery call.`}
-        title={<>Make {solution.title} yours.</>}
+        kicker={`${offer.badge}. Every ${solution.title} project starts with a free call.`}
+        title={<>See {solution.title} working on your own data.</>}
         topic={solution.title}
-        primaryLabel="Discuss this solution"
+        primaryLabel="Book a call"
         secondary={{ label: "How we work", to: "/approach" }}
       />
     </PageShell>

@@ -1,7 +1,7 @@
 import { CSSProperties } from "react";
 import { ArrowRight, ArrowUpRight, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
-import { industries } from "@/data/company";
+import { bookCall, industries } from "@/data/company";
 import { audienceTitle, projectPath } from "@/data/projects";
 import { useProjects } from "@/hooks/use-projects";
 import Reveal, { SectionHeading } from "./Reveal";
@@ -11,26 +11,29 @@ export default function Projects() {
   const { projects, ready } = useProjects();
   // Featured projects lead; the first takes the large tile
   const shown = [...projects.filter((p) => p.featured), ...projects.filter((p) => !p.featured)].slice(0, 5);
-  const audiencesCovered = industries.filter((i) => projects.some((p) => p.audience === i.key)).length;
+  const industriesCovered = industries.filter((i) => projects.some((p) => p.audience === i.key)).length;
 
   return (
     <section id="projects" className="px-5 py-24 sm:px-8 lg:py-32">
       <div className="mx-auto max-w-[1240px]">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <SectionHeading
-            label="Projects"
+            label="Our work"
             title={
               <>
-                AI for learning, <span className="gradient-text">already at work.</span>
+                From a first call <span className="gradient-text">to software in use.</span>
               </>
             }
           >
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-              Tutors, feedback, analytics, voice and training{ready && <> — {projects.length} projects across {audiencesCovered} kinds of learning organisation</>}. Client names stay private; the engineering doesn't.
+              Field apps, document AI, voice agents, desktop tools and dashboards{ready && <> — {projects.length} projects across {industriesCovered} industries</>}, each one started with a call and a two-week prototype. Client names stay private; the engineering doesn't.
             </p>
           </SectionHeading>
-          <Reveal delay={100}>
-            <Link to="/projects" className="btn btn-primary shrink-0 px-6 py-3 text-sm">
+          <Reveal delay={100} className="flex shrink-0 flex-wrap gap-3">
+            <button onClick={() => bookCall()} className="btn btn-primary px-6 py-3 text-sm">
+              Book a call <ArrowUpRight className="h-4 w-4" />
+            </button>
+            <Link to="/projects" className="btn btn-secondary px-6 py-3 text-sm">
               All {ready && `${projects.length} `}projects <ArrowRight className="h-4 w-4" />
             </Link>
           </Reveal>

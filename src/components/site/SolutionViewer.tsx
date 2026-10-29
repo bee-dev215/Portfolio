@@ -1,7 +1,7 @@
 import { CSSProperties, useEffect, useRef } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Solution, solutionPath, startEnquiry } from "@/data/company";
+import { Solution, bookCall, solutionPath } from "@/data/company";
 import { supportsViewTransitions } from "@/hooks/use-motion";
 import { usePhotos } from "@/hooks/use-photos";
 
@@ -63,10 +63,10 @@ export default function SolutionViewer({
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  const enquire = () => {
+  const book = () => {
     onClose(false);
-    // wait a frame so the page scroll lock is released before scrolling to the form
-    requestAnimationFrame(() => startEnquiry(solution.title));
+    // wait a frame so the page scroll lock is released before the booking page opens
+    requestAnimationFrame(() => bookCall(solution.title));
   };
 
   const rise = (d: number) => ({ "--d": `${d}ms` }) as CSSProperties;
@@ -185,8 +185,8 @@ export default function SolutionViewer({
           </div>
 
           <div className="viewer-rise mt-10 flex flex-wrap gap-3" style={rise(540)}>
-            <button onClick={enquire} className="btn btn-primary px-6 py-3.5 text-sm">
-              Discuss this solution <ArrowUpRight className="h-4 w-4" />
+            <button onClick={book} className="btn btn-primary px-6 py-3.5 text-sm">
+              Book a call <ArrowUpRight className="h-4 w-4" />
             </button>
             {/* Leaving the page unmounts the viewer, which releases the scroll lock */}
             <Link to={solutionPath(solution)} className="btn btn-secondary px-6 py-3.5 text-sm" style={{ "--i": 1 } as CSSProperties}>

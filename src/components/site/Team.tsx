@@ -60,7 +60,7 @@ export function TeamCard({ member: m }: { member: TeamMember }) {
   );
 }
 
-/** Team section. Renders nothing while the team loads, or if nobody is listed (in /admin → Team). */
+/** Team section: the people in builtInTeam (src/data/company.ts). Renders nothing if nobody is listed. */
 export default function Team() {
   const { team } = useTeam();
 
@@ -74,12 +74,12 @@ export default function Team() {
             label="Team"
             title={
               <>
-                Engineers and educators, <span className="gradient-text">one team.</span>
+                Senior engineers, <span className="gradient-text">one small team.</span>
               </>
             }
           >
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-              AI engineers, learning designers and product specialists — working side by side on every {company.shortName} project, from discovery to support.
+              AI, web, mobile, data and automation engineers, plus product design — working side by side on every {company.shortName} project, from the first call to support.
             </p>
           </SectionHeading>
           <Reveal delay={100}>

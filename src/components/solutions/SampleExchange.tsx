@@ -1,32 +1,59 @@
 import { useEffect, useRef, useState } from "react";
-import { BadgeCheck, Briefcase, FileText, Info, Laptop, LucideIcon, Pause, PenLine, Play, Presentation, RotateCcw, School, SkipForward, Sparkles, User } from "lucide-react";
+import {
+  AudioLines,
+  Briefcase,
+  ClipboardCheck,
+  FileText,
+  HardHat,
+  Headset,
+  Info,
+  LucideIcon,
+  Pause,
+  PhoneCall,
+  Play,
+  RotateCcw,
+  SkipForward,
+  Sparkles,
+  User,
+  UserRound,
+} from "lucide-react";
 import { SampleTurn, TurnRole } from "@/data/solution-details";
 import { prefersReducedMotion, useInView } from "@/hooks/use-motion";
 
-// The AI (and the trainer, who leads the lab) speak from the left; people answering speak from the right
-const LEFT: TurnRole[] = ["tutor", "assistant", "trainer"];
+/**
+ * How each role looks: the AI ("ai") and the business's own team ("team") speak from the left,
+ * the people using the tool ("person") from the right, and system notes sit in the middle.
+ */
+type Kind = "ai" | "team" | "person" | "system";
 
-const roleMeta: Record<TurnRole, { label: string; icon: LucideIcon }> = {
-  learner: { label: "Learner", icon: User },
-  tutor: { label: "AI tutor", icon: Sparkles },
-  teacher: { label: "Teacher", icon: School },
-  assistant: { label: "Assistant", icon: Sparkles },
-  system: { label: "System", icon: Info },
-  staff: { label: "Staff", icon: Briefcase },
-  author: { label: "Author", icon: PenLine },
-  reviewer: { label: "Reviewer", icon: BadgeCheck },
-  trainer: { label: "Trainer", icon: Presentation },
-  participant: { label: "Participant", icon: Laptop },
+const roleMeta: Record<TurnRole, { label: string; icon: LucideIcon; kind: Kind }> = {
+  assistant: { label: "Assistant", icon: Sparkles, kind: "ai" },
+  agent: { label: "AI voice agent", icon: AudioLines, kind: "ai" },
+  support: { label: "Support team", icon: Headset, kind: "team" },
+  caller: { label: "Caller", icon: PhoneCall, kind: "person" },
+  customer: { label: "Customer", icon: User, kind: "person" },
+  staff: { label: "Staff", icon: UserRound, kind: "person" },
+  reviewer: { label: "Reviewer", icon: ClipboardCheck, kind: "person" },
+  supervisor: { label: "Supervisor", icon: HardHat, kind: "person" },
+  manager: { label: "Manager", icon: Briefcase, kind: "person" },
+  system: { label: "System", icon: Info, kind: "system" },
 };
 
-const isAi = (r: TurnRole) => r === "tutor" || r === "assistant";
+const isLeft = (r: TurnRole) => roleMeta[r].kind === "ai" || roleMeta[r].kind === "team";
+
+const avatarStyle: Record<Kind, string> = {
+  ai: "bg-grad text-white",
+  team: "border border-brand/30 bg-brand-soft text-brand-text",
+  person: "border border-line bg-surface text-ink-2",
+  system: "",
+};
 
 function Turn({ turn }: { turn: SampleTurn }) {
   const meta = roleMeta[turn.role];
   const Icon = meta.icon;
   const name = turn.name ?? meta.label;
 
-  if (turn.role === "system") {
+  if (meta.kind === "system") {
     return (
       <li className="msg-in flex justify-center">
         <div className="max-w-[90%] rounded-2xl border border-dashed border-line bg-raised/60 px-4 py-2.5 text-center text-[13px] leading-relaxed text-ink-2">
@@ -38,13 +65,10 @@ function Turn({ turn }: { turn: SampleTurn }) {
     );
   }
 
-  const left = LEFT.includes(turn.role);
+  const left = isLeft(turn.role);
   return (
     <li className={`msg-in flex items-end gap-2.5 ${left ? "" : "flex-row-reverse"}`}>
-      <span
-        className={`grid h-8 w-8 shrink-0 place-items-center rounded-full ${isAi(turn.role) ? "bg-grad text-white" : "border border-line bg-surface text-ink-2"}`}
-        aria-hidden="true"
-      >
+      <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full ${avatarStyle[meta.kind]}`} aria-hidden="true">
         <Icon className="h-4 w-4" />
       </span>
       <div className={`flex min-w-0 max-w-[82%] flex-col ${left ? "items-start" : "items-end"}`}>
@@ -174,7 +198,7 @@ export default function SampleExchange({ title, context, turns }: { title: strin
           <Turn key={i} turn={t} />
         ))}
         {typing && next && (
-          <li className={`msg-in flex items-center gap-2.5 ${next.role === "system" ? "justify-center" : LEFT.includes(next.role) ? "" : "flex-row-reverse"}`}>
+          <li className={`msg-in flex items-center gap-2.5 ${roleMeta[next.role].kind === "system" ? "justify-center" : isLeft(next.role) ? "" : "flex-row-reverse"}`}>
             <span className="typing inline-flex items-center gap-1 rounded-full border border-line bg-surface px-3.5 py-2.5 text-subtle" aria-hidden="true">
               <i />
               <i />

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArrowRight, ArrowUpRight, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
-import { company, startEnquiry } from "@/data/company";
+import { bookCall, company } from "@/data/company";
 import { faqs as allFaqs } from "@/data/faq";
 
 // The home page shows the featured questions; /faq has them all
@@ -31,10 +31,12 @@ export default function Faq() {
               </>
             }
           >
-            <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">Straight answers on how {company.shortName} works. If yours isn't here, ask us directly.</p>
+            <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">
+              Straight answers on the free prototype, pricing, ownership and security at {company.shortName}. If yours isn't here, ask us on a call.
+            </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-              <button onClick={() => startEnquiry()} className="btn btn-secondary px-6 py-3 text-sm">
-                Ask a question <ArrowUpRight className="h-4 w-4" />
+              <button onClick={() => bookCall()} className="btn btn-secondary px-6 py-3 text-sm">
+                Book a call <ArrowUpRight className="h-4 w-4" />
               </button>
               <Link to="/faq" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
                 All {allFaqs.length} questions <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

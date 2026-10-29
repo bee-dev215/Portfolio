@@ -1,21 +1,21 @@
 import { ReactNode } from "react";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
-import { startEnquiry } from "@/data/company";
+import { bookCall } from "@/data/company";
 import { usePhotos } from "@/hooks/use-photos";
 import Reveal from "./Reveal";
 
-/** Closing call to action for inner pages: a gradient card with "Start a project" and an optional second link. */
+/** Closing call to action for inner pages: a gradient card with "Book a call" and an optional second link. */
 export default function CtaBand({
-  kicker = "Every engagement starts with a free discovery call.",
+  kicker = "Every project starts with a free call — and the first two weeks are on us.",
   title,
   topic,
-  primaryLabel = "Start a project",
+  primaryLabel = "Book a call",
   secondary,
 }: {
   kicker?: ReactNode;
   title: ReactNode;
-  topic?: string; // pre-fills the contact form
+  topic?: string; // pre-fills the booking form's topic
   primaryLabel?: string;
   secondary?: { label: string; to: string };
 }) {
@@ -33,8 +33,8 @@ export default function CtaBand({
               <h2 className="mt-3 max-w-2xl text-balance font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">{title}</h2>
             </div>
             <div className="flex shrink-0 flex-wrap gap-3">
-              <button onClick={() => startEnquiry(topic)} className="btn bg-white px-6 py-3.5 text-[#3730a3] shadow-lg hover:-translate-y-px">
-                {primaryLabel} <ArrowUpRight className="h-4 w-4" />
+              <button onClick={() => bookCall(topic)} className="btn bg-white px-6 py-3.5 text-[#3730a3] shadow-lg hover:-translate-y-px">
+                {primaryLabel} <CalendarDays className="h-4 w-4" />
               </button>
               {secondary && (
                 <Link to={secondary.to} className="btn border border-white/40 px-6 py-3.5 text-white hover:bg-white/10">

@@ -12,32 +12,33 @@ export default function Industries() {
       <div className="mx-auto max-w-[1240px]">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <SectionHeading
-            label="Who we serve"
+            label="Industries"
             title={
               <>
-                Built for the people <span className="gradient-text">who teach and learn.</span>
+                Different industries, <span className="gradient-text">the same busywork.</span>
               </>
             }
           >
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-              From the classroom to the boardroom — we understand how each kind of learning organisation works, and build AI that fits it.
+              Re-typing, chasing, answering the same questions and stitching reports together. We build around the systems and rules each industry already runs on.
             </p>
           </SectionHeading>
           <Reveal delay={100}>
             <Link to="/industries" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-              All {industries.length} audiences <ArrowRight className="h-4 w-4" />
+              All {industries.length} industries <ArrowRight className="h-4 w-4" />
             </Link>
           </Reveal>
         </div>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {industries.map((ind, i) => (
-            <Reveal key={ind.key} delay={i * 90} className="h-full">
+            <Reveal key={ind.key} delay={(i % 3) * 90} className="h-full">
               <article id={`audience-${ind.key}`} className="card card-hover group flex h-full scroll-mt-24 flex-col overflow-hidden">
-                <div className="unveil relative aspect-[4/3] overflow-hidden bg-raised xl:aspect-[4/5]">
+                {/* The 4:5 photos are cropped to 4:3 so three cards sit side by side */}
+                <div className="unveil relative aspect-[4/3] overflow-hidden bg-raised">
                   <img src={photos.src(ind.image)} alt={photos.alt(ind.image, ind.imageAlt)} loading="lazy" width={392} height={490} className="img-zoom h-full w-full object-cover" />
                   <div className="photo-fade absolute inset-0" aria-hidden="true" />
-                  {/* The whole photo opens the audience page (the title link is the keyboard route) */}
+                  {/* The whole photo opens the industry page (the title link is the keyboard route) */}
                   <Link to={industryPath(ind)} tabIndex={-1} aria-hidden="true" className="absolute inset-0" />
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 p-5 text-white">
                     <h3 className="font-display text-2xl font-bold leading-tight tracking-tight">
@@ -60,7 +61,7 @@ export default function Industries() {
                     ))}
                   </ul>
                   <Link to={industryPath(ind)} className="u-link mt-5 inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-brand-text">
-                    How we help <ArrowRight className="h-4 w-4" />
+                    Use cases & examples<span className="sr-only"> in {ind.title}</span> <ArrowRight className="h-4 w-4" />
                   </Link>
                   <div className="mt-auto pt-6">
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-subtle">Related solutions</p>

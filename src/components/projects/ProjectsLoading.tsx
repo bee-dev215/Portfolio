@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import PageShell from "@/components/site/PageShell";
 
-/** Stands in for a projects page while the projects load from the database. */
+/** Stands in for a projects page while the projects load. */
 export default function ProjectsLoading({ title }: { title: string }) {
   return (
     <PageShell title={title}>

@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, BookOpenCheck, CalendarCheck, ClipboardCheck, FileText, GitBranch, KeyRound, Kanban, LucideIcon, NotebookPen, Presentation, Users } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ClipboardCheck, FileText, Gift, GitBranch, KeyRound, Kanban, LucideIcon, NotebookPen, Presentation, ScrollText, ShieldCheck, UserCheck, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -8,11 +8,11 @@ import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import PageSection from "@/components/company/PageSection";
 import EngagementModels from "@/components/company/EngagementModels";
 import HandoverChecklist from "@/components/company/HandoverChecklist";
-import { company, phases, startEnquiry } from "@/data/company";
-import { inTheLoop, needFromYou } from "@/data/company-pages";
+import { bookCall, company, offer, phases } from "@/data/company";
+import { inTheLoop, isFreePhase, needFromYou } from "@/data/company-pages";
 
-const needIcons: LucideIcon[] = [Users, Presentation, FileText, BookOpenCheck, KeyRound];
-const loopIcons: LucideIcon[] = [CalendarCheck, Presentation, Kanban, NotebookPen, ClipboardCheck, GitBranch];
+const needIcons: LucideIcon[] = [UserCheck, Users, FileText, ShieldCheck, KeyRound];
+const loopIcons: LucideIcon[] = [Presentation, NotebookPen, Kanban, ScrollText, ClipboardCheck, GitBranch];
 
 function PhaseSummary() {
   return (
@@ -24,7 +24,14 @@ function PhaseSummary() {
           <li key={p.id} className="relative flex items-center gap-4 py-2">
             <span className="bg-grad relative z-[1] grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full text-sm font-bold text-white">{i + 1}</span>
             <span>
-              <span className="block font-display font-bold">{p.name}</span>
+              <span className="flex items-center gap-2 font-display font-bold">
+                {p.name}
+                {isFreePhase(p) && (
+                  <span className="chip border-sun/30 bg-sun/10 px-2 py-0.5 text-[11px] font-semibold text-ink">
+                    <Gift className="h-3 w-3 text-sun" /> Free
+                  </span>
+                )}
+              </span>
               <span className="block text-sm text-subtle">{p.title}</span>
             </span>
           </li>
@@ -37,20 +44,20 @@ function PhaseSummary() {
 
 export default function Approach() {
   return (
-    <PageShell title="How we work" description={`How ${company.name} runs a project: ${phases.length} phases from discovery to support, three ways to engage, and what you receive at handover.`}>
+    <PageShell title="How we work" description={`How ${company.name} runs a project: ${phases.length} phases from a free call and a two-week prototype to production and support, three ways to engage, and what you receive at handover.`}>
       <PageHero
         crumbs={[{ label: "How we work" }]}
         eyebrow="Approach"
         title={
           <>
-            A clear path from idea <span className="gradient-text">to impact.</span>
+            From a free call <span className="gradient-text">to software you use.</span>
           </>
         }
-        lead="Short phases, working software at every step and decisions written down — so you always know what is done, what is next and what it costs."
+        lead="Short phases, working software at every step and decisions written down. The first two weeks are on us, so you see it working before you commit to anything."
         actions={
           <>
-            <button onClick={() => startEnquiry()} className="btn btn-primary px-7 py-3.5">
-              Start with discovery <ArrowUpRight className="h-4 w-4" />
+            <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
+              Book a call <ArrowUpRight className="h-4 w-4" />
             </button>
             <a href="#engage" className="btn btn-secondary px-7 py-3.5">
               Ways to engage <ArrowRight className="h-4 w-4" />
@@ -72,7 +79,7 @@ export default function Approach() {
             </>
           }
         >
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">Most clients start with a fixed-scope project, move to a retainer once the product is live, and add training along the way.</p>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">Most work starts with the free prototype, becomes a fixed-scope build if it proves itself, and moves to a dedicated team or monthly retainer once it's live.</p>
         </SectionHeading>
         <EngagementModels />
       </PageSection>
@@ -154,7 +161,7 @@ export default function Approach() {
         </div>
       </PageSection>
 
-      <CtaBand title="Every project starts with a free discovery call." kicker="No commitment — just a conversation about your learners." secondary={{ label: "Meet the team", to: "/team" }} />
+      <CtaBand title="Every project starts with a free call." kicker={offer.title} secondary={{ label: "Meet the team", to: "/team" }} />
     </PageShell>
   );
 }

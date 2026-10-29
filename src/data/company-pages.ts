@@ -1,10 +1,10 @@
 // ============================================================
-//  COMPANY PAGES — content for /about, /approach, /technology, /team and /responsible-ai.
+//  COMPANY PAGES — content for /about, /approach, /technology, /team and /responsible-ai (Security & AI).
 //  Core company facts, services, team and process stay in src/data/company.ts.
 //  Copy here was drafted for the site: review it before launch.
 // ============================================================
 
-import type { ServiceKey, TeamMember } from "./company";
+import type { Phase, ServiceKey, TeamMember } from "./company";
 
 // ------------------------------------------------------------
 //  About
@@ -16,35 +16,35 @@ export interface Practice {
   services: ServiceKey[]; // the service pages this practice delivers
 }
 
-/** How the company is organised: four practices that staff every project together. */
+/** How the company is organized: four practices that staff every project together. */
 export const practices: Practice[] = [
   {
-    title: "AI engineering",
-    desc: "Builds the products: retrieval pipelines, agents, model integration, APIs and the apps people use — plus the integrations into your platforms.",
-    services: ["build", "llm", "platform", "voice"],
+    title: "AI & automation",
+    desc: "Assistants, agents and document tools that do real work, and the automations that move data between your systems — with a person approving what matters.",
+    services: ["ai", "automation"],
   },
   {
-    title: "Data & analytics",
-    desc: "Owns the record of learning: pipelines, warehouses, dashboards, explainable models — and the evaluation suites that keep AI features honest.",
-    services: ["analytics", "evaluation"],
+    title: "Product engineering",
+    desc: "The web apps, portals, mobile apps and desktop tools people use every day — designed with the people who'll use them and built to be maintained.",
+    services: ["web", "mobile", "desktop"],
   },
   {
-    title: "Learning & product design",
-    desc: "Researches how learners and educators actually work, and designs AI features that fit a lesson, a workflow or a workday.",
-    services: ["design"],
+    title: "Cloud & data",
+    desc: "Secure infrastructure set up as code in your own cloud account, and the pipelines, dashboards and reports that keep your numbers in one place.",
+    services: ["cloud", "data"],
   },
   {
-    title: "AI Academy",
-    desc: "Teaches as we build: engineering bootcamps, educator workshops and AI-literacy sessions, so your team can run what we hand over.",
-    services: ["academy"],
+    title: "Rescue & support",
+    desc: "Stalled builds and fragile legacy systems audited and moved forward, and the software we launch monitored and improved for as long as you need us.",
+    services: ["rescue"],
   },
 ];
 
 /** "Inside the studio" photos on /about. The first one is shown large. */
 export const studioGallery = [
-  { src: "/images/about-office.webp", alt: "A bright studio with plants, where one person works at a laptop while two colleagues review notes by the window", caption: "The studio — engineers, designers and educators in one room" },
-  { src: "/images/about-pairing.webp", alt: "Two engineers working through code together at one laptop", caption: "Pairing on a retrieval pipeline" },
-  { src: "/images/about-research.webp", alt: "A researcher with a tablet talking through a prototype with an educator at a laptop", caption: "Testing a prototype with the people who'll use it" },
+  { src: "/images/about-office.webp", alt: "A bright studio with plants, where one person works at a laptop while two colleagues review notes by the window", caption: "The studio — engineers and designers in one room" },
+  { src: "/images/about-pairing.webp", alt: "Two engineers working through code together at one laptop", caption: "Pairing on a document-processing pipeline" },
+  { src: "/images/about-research.webp", alt: "A woman with a tablet talking through a prototype with a colleague at a laptop", caption: "Walking a client through their prototype" },
   { src: "/images/about-remote.webp", alt: "Colleagues at a conference table on a video call with a remote teammate", caption: "Weekly demo with a client team" },
   { src: "/images/about-celebrate.webp", alt: "Three colleagues sharing a high-five around a laptop", caption: "Shipping day" },
 ];
@@ -53,15 +53,15 @@ export const studioGallery = [
 export const confidentiality = [
   {
     title: "Client work stays confidential",
-    desc: "Schools, universities and companies trust us with learner data, course material and unreleased products. We don't name them, show their logos or publish their screens unless they agree to it in writing.",
+    desc: "The businesses we work with share customer records, financial documents and products that haven't launched. We don't name them, show their logos or publish their screens unless they agree to it in writing.",
   },
   {
     title: "Described by the engineering",
-    desc: "Instead of logos, our project write-ups describe the engineering — the problem, what we built and how it was kept safe — with client names and identifying details left out. In a discovery call we can walk you through relevant work in more detail.",
+    desc: "Instead of logos, our project write-ups describe the engineering — the problem, what we built and how it was kept secure — with client names and identifying details left out. On a call we can walk you through relevant work in more detail.",
   },
   {
     title: "Your project gets the same care",
-    desc: "Confidentiality terms are part of every engagement from the first call — and they continue after the project ends.",
+    desc: "Confidentiality terms — and an NDA, if you'd like one — are in place before you share anything sensitive, and they continue after the project ends.",
   },
 ];
 
@@ -69,8 +69,11 @@ export const confidentiality = [
 //  Approach — ways to engage
 // ------------------------------------------------------------
 
+/** The free phase (the two-week prototype), marked wherever the phases are listed. */
+export const isFreePhase = (p: Phase) => p.name === "Prototype";
+
 export interface EngagementModel {
-  key: "project" | "retainer" | "training";
+  key: "prototype" | "project" | "team";
   name: string;
   tagline: string;
   bestFor: string;
@@ -82,66 +85,66 @@ export interface EngagementModel {
 
 export const engagementModels: EngagementModel[] = [
   {
+    key: "prototype",
+    name: "Free two-week prototype",
+    tagline: "Working software on your own data in two weeks — before you commit to anything.",
+    bestFor: "One task that eats your team's week and that software could take over — re-typing invoices, answering the same calls, stitching together a weekly report.",
+    pricing: "Free",
+    shape: "A short call, a one-page plan, two weeks of building on a sample of your real data, then a demo and an honest recommendation.",
+    youGet: ["A working prototype on your own data", "Feedback from your team using it on real tasks", "A fixed-scope proposal, if it's worth building", "A straight answer if it isn't"],
+    team: ["A senior engineer who runs the call and the build", "An AI, web or mobile engineer, depending on the task"],
+  },
+  {
     key: "project",
-    name: "Fixed-scope project",
-    tagline: "A defined product or feature, delivered against agreed acceptance criteria.",
-    bestFor: "A new AI product, a pilot, or a feature with a clear goal and a deadline — an AI tutor for one course, a feedback workflow, an LMS integration.",
-    pricing: "Discovery first, then a fixed price for the scope in the proposal, invoiced by milestone.",
-    shape: "Discovery → prototype → build → pilot, with a demo at the end of every two-week iteration.",
-    youGet: ["Working software in production", "Source code and infrastructure as code", "Evaluation suite and runbooks", "Handover training for your team"],
-    team: ["Engagement lead", "AI and full-stack engineers", "Learning designer", "Evaluation support"],
+    name: "Fixed-scope build",
+    tagline: "The full system, engineered for production against a scope agreed up front.",
+    bestFor: "Turning a proven prototype into software your team relies on every day — or a new web app, mobile app or integration with a clear goal.",
+    pricing: "Fixed price, quoted after the prototype",
+    shape: "Short iterations with a demo every week and automated tests on every change, then a staged launch and a full handover.",
+    youGet: ["Production software, tested and monitored", "Source code in your repository, infrastructure in your cloud account", "Documentation and runbooks", "Training for the people who use and maintain it"],
+    team: ["A senior engineer as your single point of contact", "AI, full-stack or mobile engineers, as the work needs", "Product design support"],
   },
   {
-    key: "retainer",
-    name: "Retainer",
-    tagline: "A standing team that keeps improving what you run.",
-    bestFor: "Products already in use that need steady iteration, monitoring and support — sized to your term calendar or business cycle.",
-    pricing: "A monthly fee for an agreed amount of team time, reviewed each quarter.",
-    shape: "A shared backlog, regular releases and monitoring — priorities set together every month.",
-    youGet: ["Regular releases driven by feedback and evaluations", "Quality, cost and usage monitoring", "Support within agreed response times", "Quarterly outcome reviews"],
-    team: ["Engagement lead", "Engineers from the original build", "Data and evaluation support as needed"],
-  },
-  {
-    key: "training",
-    name: "Training programme",
-    tagline: "AI Academy courses for engineers, educators and staff.",
-    bestFor: "Teams that want to build with AI themselves, or adopt it responsibly — from engineering bootcamps to AI-literacy sessions for leadership.",
-    pricing: "Priced per cohort, with materials and recordings your team keeps.",
-    shape: "Short needs assessment, then on-site or remote sessions — an intensive bootcamp or a series of short workshops.",
-    youGet: ["A curriculum tailored to your use cases", "Hands-on labs and course materials", "Recordings and reference guides", "A skills check at the end"],
-    team: ["AI education lead", "Practising engineers as instructors", "Learning designer"],
+    key: "team",
+    name: "Dedicated team",
+    tagline: "A standing team, or a monthly retainer, that keeps building and improving what you run.",
+    bestFor: "Software already in use that needs steady new features, monitoring and support — or a product that needs senior engineers without a hiring round.",
+    pricing: "Monthly, sized to the team",
+    shape: "A shared backlog, regular releases and monitoring, with priorities set together each month.",
+    youGet: ["Regular releases driven by your priorities", "Uptime, cost and AI-quality monitoring", "Support within agreed response times", "A monthly health report"],
+    team: ["Engineers from the original build", "Data, design or DevOps support as needed"],
   },
 ];
 
 /** What a project needs from the client side. */
 export const needFromYou = [
-  { title: "A product owner", desc: "One person who can make decisions and is available for a short check-in each week." },
-  { title: "Access to real users", desc: "Learners, educators or staff we can interview and test with during discovery and the pilot." },
-  { title: "Content and data", desc: "The course material, policies or datasets the system will be grounded in — or a sample to start with." },
-  { title: "Your policies", desc: "Privacy, safeguarding and AI-use policies, and a contact in compliance or IT security." },
-  { title: "Platform access", desc: "Sandbox access to your LMS, SIS or identity provider when the work integrates with them." },
+  { title: "A decision-maker", desc: "One person who knows the work, can make decisions and has time for a short demo each week." },
+  { title: "The people who do the task", desc: "Time with the people doing the work today, so we see the real workflow — shortcuts, exceptions and all." },
+  { title: "Real examples", desc: "A sample of the invoices, emails, reports or records involved, to build and test on — shared under NDA if you'd like." },
+  { title: "Your security rules", desc: "Any security, privacy or compliance requirements we need to follow, and a contact in IT if you have one." },
+  { title: "Access to your systems", desc: "Test or read-only access to the tools the work touches — accounting, CRM, scheduling or practice-management systems." },
 ];
 
 /** How a client stays informed during a project. */
 export const inTheLoop = [
-  { title: "Weekly check-in", desc: "Thirty minutes on progress, blockers and decisions needed — with notes sent afterwards." },
-  { title: "Demo every iteration", desc: "Working software shown at the end of each two-week iteration, not slides." },
+  { title: "Weekly demo", desc: "Working software every week, on your data — progress you can click, not slides." },
+  { title: "Notes after every call", desc: "Progress, blockers and the decisions we need from you, written down and sent the same day." },
   { title: "Shared board", desc: "The backlog and its status are visible to your team at all times." },
   { title: "Decision log", desc: "Every significant product, model or architecture decision is written down with its reasons." },
-  { title: "Evaluation reports", desc: "Results from the evaluation suite shared with each release, including what got worse." },
-  { title: "Open repository", desc: "Your code lives in a repository you own and can read from day one." },
+  { title: "Quality reports", desc: "Test and AI-evaluation results shared with each release, including anything that got worse." },
+  { title: "Your repository", desc: "The code lives in a repository you own and can read from day one." },
 ];
 
 /** What is handed over at the end of a build. */
 export const handoverChecklist = [
   "Source code in a repository you own",
+  "Cloud accounts and credentials in your name",
   "Infrastructure as code and deployment pipeline",
   "Architecture overview and decision log",
-  "Evaluation suite with the latest results",
-  "Runbooks for monitoring, incidents and model updates",
-  "Admin and educator guides",
-  "Training sessions for your engineers and staff",
-  "Credentials and accounts transferred to your organisation",
+  "Automated tests and the AI evaluation set",
+  "Runbooks for monitoring, incidents and updates",
+  "User and admin guides",
+  "Training for the people who use and maintain it",
 ];
 
 // ------------------------------------------------------------
@@ -162,8 +165,8 @@ export const modelApproaches: Record<ModelApproachKey, ModelApproach> = {
   hosted: {
     key: "hosted",
     name: "Hosted commercial model",
-    summary: "A leading model such as GPT, Claude or Gemini, called through an API under enterprise terms that exclude your data from training.",
-    strengths: ["Strongest reasoning and writing quality", "Fastest route to a working pilot", "No infrastructure to run"],
+    summary: "A leading model such as GPT, Claude or Gemini, called through an API under business terms that exclude your data from training.",
+    strengths: ["Strongest reasoning and writing quality", "Fastest route to a working prototype", "No infrastructure to run"],
     tradeoffs: ["Data leaves your cloud (under contract)", "Per-request cost grows with usage"],
   },
   open: {
@@ -176,9 +179,9 @@ export const modelApproaches: Record<ModelApproachKey, ModelApproach> = {
   small: {
     key: "small",
     name: "Small fine-tuned model",
-    summary: "A compact model trained for one narrow task — classification, extraction, short feedback — that runs fast and cheaply.",
-    strengths: ["Very low latency", "Lowest cost per request at scale", "Can run in your cloud or on the edge"],
-    tradeoffs: ["Narrow: one task per model", "Needs labelled examples to train and maintain"],
+    summary: "A compact model trained for one narrow task — sorting documents, pulling out fields, routing requests — that runs fast and cheaply.",
+    strengths: ["Very low latency", "Lowest cost per request at scale", "Can run in your cloud or on a device"],
+    tradeoffs: ["Narrow: one task per model", "Needs labeled examples to train and maintain"],
   },
   hybrid: {
     key: "hybrid",
@@ -201,31 +204,31 @@ export interface SelectorQuestion {
   options: SelectorOption[];
 }
 
-/** The "How we choose a model" selector. Each answer adds to the approaches it favours; the highest total wins. */
+/** The "How we choose a model" selector. Each answer adds to the approaches it favors; the highest total wins. */
 export const selectorQuestions: SelectorQuestion[] = [
   {
     key: "data",
     question: "How sensitive is the data?",
     options: [
-      { label: "Public or published content", note: "Public content can go to a hosted model with little extra protection.", scores: { hosted: 2, open: 0, small: 0, hybrid: 1 } },
-      { label: "Internal, not personal", note: "Internal documents are fine under enterprise terms, but some teams prefer to keep them in their own cloud.", scores: { hosted: 1, open: 1, small: 1, hybrid: 2 } },
-      { label: "Personal or student data", note: "Personal and student data points towards models that run inside your environment.", scores: { hosted: 0, open: 3, small: 2, hybrid: 2 } },
+      { label: "Public information", note: "Public content can go to a hosted model with little extra protection.", scores: { hosted: 2, open: 0, small: 0, hybrid: 1 } },
+      { label: "Internal, not personal", note: "Internal documents are fine under business terms, but some teams prefer to keep them in their own cloud.", scores: { hosted: 1, open: 1, small: 1, hybrid: 2 } },
+      { label: "Personal, health or financial", note: "Patient, customer and financial records point toward models that run inside your own environment.", scores: { hosted: 0, open: 3, small: 2, hybrid: 2 } },
     ],
   },
   {
     key: "latency",
     question: "How fast must it respond?",
     options: [
-      { label: "A few seconds is fine", note: "Chat-style answers within a few seconds work with any approach.", scores: { hosted: 1, open: 1, small: 0, hybrid: 1 } },
-      { label: "It must feel instant", note: "Live voice, autocomplete or in-lesson feedback favour small, fast models.", scores: { hosted: 0, open: 0, small: 3, hybrid: 1 } },
+      { label: "A few seconds is fine", note: "Chat-style answers and document processing work with any approach.", scores: { hosted: 1, open: 1, small: 0, hybrid: 1 } },
+      { label: "It must feel instant", note: "Live phone calls, autocomplete and checks while someone types favor small, fast models.", scores: { hosted: 0, open: 0, small: 3, hybrid: 1 } },
     ],
   },
   {
     key: "scale",
     question: "How much use do you expect?",
     options: [
-      { label: "A pilot or one course", note: "At pilot scale, speed of building matters more than cost per request.", scores: { hosted: 3, open: 0, small: 0, hybrid: 1 } },
-      { label: "Thousands of users each day", note: "Steady daily use is where mixing models starts to pay off.", scores: { hosted: 1, open: 1, small: 1, hybrid: 2 } },
+      { label: "A prototype or one team", note: "At prototype scale, speed of building matters more than cost per request.", scores: { hosted: 3, open: 0, small: 0, hybrid: 1 } },
+      { label: "Daily use across the business", note: "Steady daily use is where mixing models starts to pay off.", scores: { hosted: 1, open: 1, small: 1, hybrid: 2 } },
       { label: "Millions of requests", note: "At very high volume, cost per request dominates — smaller and self-hosted models win.", scores: { hosted: 0, open: 2, small: 3, hybrid: 1 } },
     ],
   },
@@ -234,115 +237,126 @@ export const selectorQuestions: SelectorQuestion[] = [
 /** Tie-break order when two approaches score the same. */
 export const approachPriority: ModelApproachKey[] = ["hybrid", "open", "hosted", "small"];
 
-/** Evaluation pipeline: how a change reaches learners. */
+/** Evaluation pipeline: how a change reaches the people who use it. */
 export const evalPipeline = [
-  { title: "Test set", desc: "Real questions and tasks from your learners and educators, with the answers or behaviours we expect." },
-  { title: "Automated evals", desc: "Every change runs against the test set: accuracy, grounding, citations, tone and refusal behaviour." },
-  { title: "Human review", desc: "Educators and subject experts review a sample, focusing on the cases automation can't judge." },
+  { title: "Test set", desc: "Real examples from your business — invoices, questions, calls — with the answers or actions we expect." },
+  { title: "Automated evals", desc: "Every change runs against the test set: accuracy, grounding, citations, tone and what it should refuse to do." },
+  { title: "Human review", desc: "Your subject experts review a sample, focusing on the cases automation can't judge." },
   { title: "Release gate", desc: "A release ships only if it meets the agreed thresholds and nothing important got worse." },
   { title: "Monitoring", desc: "In production we watch quality, cost and drift — and new failure cases go back into the test set." },
 ];
 
 /** Reference architecture, left to right. `layer` groups the nodes in the diagram. */
 export const architecture = [
-  { title: "Your systems", desc: "LMS, SIS, content stores, identity provider", layer: "Sources" },
+  { title: "Your systems", desc: "Email, documents, CRM, accounting, scheduling", layer: "Sources" },
   { title: "Ingestion", desc: "Connectors, cleaning, chunking, permissions", layer: "Data" },
   { title: "Retrieval", desc: "Vector and keyword search over approved content", layer: "Data" },
   { title: "Model gateway", desc: "Routes each request to the right model", layer: "AI" },
-  { title: "Guardrails", desc: "Safety, policy and grounding checks", layer: "AI" },
-  { title: "Your apps", desc: "Tutor, assistant, dashboards — inside the LMS or standalone", layer: "Experience" },
-  { title: "Analytics", desc: "Usage, quality and learning outcomes", layer: "Insight" },
+  { title: "Guardrails", desc: "Policy, grounding and approval checks", layer: "AI" },
+  { title: "Your apps", desc: "An invoice agent, a voice agent, a knowledge assistant — web, mobile or desktop", layer: "Experience" },
+  { title: "Analytics", desc: "Usage, quality, cost and audit logs", layer: "Insight" },
 ];
 
-/** Learning standards, with what each one is for. */
+/** Open standards we build on, with what each one is for. */
 export const standards = [
-  { name: "LTI 1.3", desc: "Launches our tools inside Canvas, Moodle, Blackboard and other LMSs, with single sign-on and grade passback." },
-  { name: "xAPI", desc: "Records learning activity from any app into a learning record store for analytics." },
-  { name: "SCORM", desc: "Packages courses so they play and report progress in almost any LMS." },
-  { name: "QTI", desc: "Exchanges questions and tests between authoring tools and assessment platforms." },
-  { name: "OneRoster", desc: "Syncs classes, enrolments and rosters from the student information system." },
-  { name: "Caliper", desc: "Captures structured learning events for analytics across platforms." },
+  { name: "OpenAPI", desc: "Every API we build comes with a machine-readable spec, so your team and other tools can use and test it." },
+  { name: "OAuth 2.0 & OpenID Connect", desc: "Single sign-on with Microsoft 365, Google Workspace, Okta and other identity providers." },
+  { name: "Webhooks", desc: "Systems tell each other the moment something changes, instead of waiting for a nightly export." },
+  { name: "Model Context Protocol", desc: "Connects AI assistants and agents to your tools and data through one open, permissioned interface." },
+  { name: "HL7 FHIR", desc: "Exchanges healthcare data with EHR and practice-management systems that support it." },
+  { name: "EDI, CSV & Excel", desc: "The file formats logistics, accounting and older systems still rely on, read and written reliably." },
 ];
 
 // ------------------------------------------------------------
 //  Team
 // ------------------------------------------------------------
 
-export type Discipline = "Leadership" | "Engineering" | "Data & ML" | "Design" | "Education";
+export type Discipline = "Leadership" | "Engineering" | "AI & data" | "Mobile" | "Automation & desktop" | "Design";
 
-export const disciplines: Discipline[] = ["Leadership", "Engineering", "Data & ML", "Design", "Education"];
+export const disciplines: Discipline[] = ["Leadership", "Engineering", "AI & data", "Mobile", "Automation & desktop", "Design"];
 
 /** Which disciplines a person belongs to, read from their role. */
 export function disciplinesOf(m: TeamMember): Discipline[] {
   const role = m.role.toLowerCase();
   const out: Discipline[] = [];
-  if (/founder|ceo|cto/.test(role)) out.push("Leadership");
-  if (/engineer|cto/.test(role)) out.push("Engineering");
-  if (/\bml\b|data|analytics/.test(role)) out.push("Data & ML");
+  if (/founder|ceo|cto|head of/.test(role)) out.push("Leadership");
+  if (/engineer|developer|cto/.test(role)) out.push("Engineering");
+  if (/\bai\b|\bml\b|machine learning|data|analytics/.test(role)) out.push("AI & data");
+  if (/mobile|ios|android/.test(role)) out.push("Mobile");
+  if (/automation|desktop/.test(role)) out.push("Automation & desktop");
   if (/design/.test(role)) out.push("Design");
-  if (/education|learning experience|academy|training/.test(role)) out.push("Education");
   return out;
 }
 
 /** Typical roles on a project — the mix changes with the work. */
 export const projectRoles = [
-  { title: "Engagement lead", desc: "Your single point of contact: scope, schedule, risks and decisions.", when: "Every project" },
-  { title: "AI engineer", desc: "Retrieval, prompts, agents, model integration and evaluation pipelines.", when: "Every project" },
-  { title: "Full-stack engineer", desc: "The app, the APIs and the integrations with your platforms.", when: "Every build" },
-  { title: "Learning designer", desc: "Research with learners and educators, and how the AI fits the learning.", when: "Learner-facing work" },
-  { title: "Data scientist", desc: "Pipelines, analytics, early-warning models and their explanations.", when: "Analytics work" },
-  { title: "AI Academy instructor", desc: "Handover training and workshops for your engineers and staff.", when: "Handover and training" },
+  { title: "Lead engineer", desc: "Your single point of contact: scope, architecture, schedule and decisions.", when: "Every project" },
+  { title: "Full-stack engineer", desc: "The app, the APIs and the integrations with your systems.", when: "Every build" },
+  { title: "AI engineer", desc: "Prompts, retrieval, agents, model integration and evaluations.", when: "AI work" },
+  { title: "Mobile engineer", desc: "iOS and Android apps, offline sync, cameras and maps.", when: "Mobile apps" },
+  { title: "Data engineer", desc: "Pipelines, warehouses, dashboards and reports.", when: "Data & reporting" },
+  { title: "Automation & desktop engineer", desc: "Automations between systems, desktop tools and Office add-ins.", when: "Automation work" },
+  { title: "Product designer", desc: "Research with the people who'll use it, and interfaces that keep it simple.", when: "User-facing work" },
 ];
 
 /** How the team works with clients. */
 export const workingValues = [
-  { title: "Engineers you can talk to", desc: "The people building your product are in the meetings — no hand-offs through account managers." },
-  { title: "Small, steady teams", desc: "The same people from discovery to support, so context isn't lost between phases." },
+  { title: "Engineers you can talk to", desc: "The people building your software are on the calls — no hand-offs through account managers." },
+  { title: "Small, steady teams", desc: "The same people from the first call to support, so context isn't lost between phases." },
   { title: "Plain language", desc: "We explain models, risks and trade-offs without jargon, and write them down." },
-  { title: "Bad news early", desc: "If an evaluation fails or a timeline slips, you hear it from us first — with options." },
+  { title: "Bad news early", desc: "If a test fails or a timeline slips, you hear it from us first — with options." },
 ];
 
 // ------------------------------------------------------------
-//  Responsible AI
+//  Security & AI (/responsible-ai)
 // ------------------------------------------------------------
 
+/** How client data and systems are protected, and who owns what. */
 export const commitments = [
-  { title: "Privacy by design", desc: "We collect only the data a feature needs, keep it in the region you choose and encrypt it in transit and at rest." },
-  { title: "Grounded, cited answers", desc: "Assistants answer from your approved content and show their sources — and say so when they don't know." },
-  { title: "People decide high-stakes outcomes", desc: "Grades, feedback that counts and safeguarding flags go to an educator for review before anything reaches a learner." },
-  { title: "Evaluated before release", desc: "Every release is tested against an evaluation set of real tasks, and doesn't ship if quality drops." },
-  { title: "Fairness reviews", desc: "We test outputs across learner groups, languages and abilities, and report what we find — including what we can't yet fix." },
-  { title: "Accessible by default", desc: "Interfaces are designed and tested against WCAG 2.2 AA, with keyboard, screen-reader and captioning support." },
-  { title: "Safeguarding young learners", desc: "Age-appropriate content filters, escalation paths for concerning conversations and settings agreed with your safeguarding lead." },
-  { title: "Transparent to learners", desc: "Learners can always tell when they are talking to AI, what it can and can't do, and how to reach a person." },
+  { title: "Encrypted everywhere", desc: "Data is encrypted in transit and at rest, in the cloud region you choose." },
+  { title: "Least-privilege access", desc: "Single sign-on, multi-factor authentication and role-based permissions — people and services see only what they need." },
+  { title: "Secrets kept out of code", desc: "Keys and passwords live in a secrets manager, never in the repository, a chat thread or an email." },
+  { title: "Only the data it needs", desc: "We collect the fields a feature needs and nothing more, and build prototypes on a sample — de-identified where we can." },
+  { title: "Your code, your repository", desc: "Source code lives in a repository you own from the first commit, not one we lend you access to." },
+  { title: "Your cloud, in your name", desc: "Infrastructure runs in your own AWS, Azure or Google Cloud account, so you hold the keys and the bills." },
+  { title: "No training on your data", desc: "AI providers are used under terms that exclude your data from model training, and we don't train on it for anyone else." },
+  { title: "Reviewed before launch", desc: "Code is reviewed, dependencies are scanned and the security setup is checked before anything goes live." },
+];
+
+/** How AI features are kept accurate, accountable and under your control. */
+export const aiSafeguards = [
+  { title: "Grounded answers, with sources", desc: "Assistants answer from your approved documents and link to the source — and say so when they don't know." },
+  { title: "A person approves what matters", desc: "Payments, messages to customers, record changes and other consequential actions wait for human approval, by rules you set." },
+  { title: "Evaluated before every release", desc: "Each change is tested against real examples from your business, and doesn't ship if quality drops." },
+  { title: "Logged and reviewable", desc: "AI requests, answers and actions are logged, so you can see what happened, when, and what it was based on." },
 ];
 
 export const neverDo = [
-  "Use your data, or your learners' data, to train models for anyone else",
-  "Sell or share personal data",
-  "Release AI-generated grades without an educator's review",
+  "Use your data to train AI models for anyone but you",
+  "Sell or share your data",
+  "Keep your code, cloud accounts or credentials in our name",
+  "Let AI take a consequential action without the approval you've set",
+  "Ship an AI change that hasn't passed its evaluations",
   "Name clients, show their logos or publish their work without written permission",
-  "Hide that a learner is talking to an AI",
-  "Ship a model change that hasn't passed the evaluation suite",
 ];
 
 /** Data lifecycle: what happens to data at each stage. */
 export const dataLifecycle = [
-  { title: "Collect", desc: "Only the fields a feature needs, agreed in a data map during discovery. Identifiers are minimised or pseudonymised where possible." },
-  { title: "Process", desc: "Models run under enterprise terms that exclude training on your data, or inside your own cloud when data must stay there." },
-  { title: "Store", desc: "Encrypted at rest in the region you choose, with role-based access that respects your existing permissions." },
+  { title: "Collect", desc: "Only the fields a feature needs, agreed in a data map before we build. Identifiers are minimized or removed where the task allows." },
+  { title: "Process", desc: "AI models run under business terms that exclude training on your data, or inside your own cloud when data must stay there." },
+  { title: "Store", desc: "Encrypted at rest in your own cloud account and region, with role-based access that respects your existing permissions." },
   { title: "Retain", desc: "Kept only as long as the purpose requires — retention periods are set with you and written into the runbooks." },
-  { title: "Delete", desc: "Removed on schedule or on request, including backups and logs, with confirmation when it is done." },
+  { title: "Delete", desc: "Removed on schedule or on request — including the sample data used for a prototype, backups and logs — with confirmation when it's done." },
 ];
 
-/** Regulations and standards we design around — not certifications. */
+/** Requirements we design around — not certifications. */
 export const policies = [
-  { name: "FERPA", desc: "US student education records: access controls and disclosure rules mapped with your registrar or compliance team." },
-  { name: "COPPA", desc: "Children under 13 in the US: parental-consent flows and data limits designed in when younger learners are involved." },
-  { name: "GDPR / UK GDPR", desc: "Lawful basis, data-subject rights, data-processing agreements and regional hosting for European and UK learners." },
-  { name: "WCAG 2.2", desc: "Accessibility of every interface we ship, tested with assistive technologies." },
-  { name: "Your AI-use policy", desc: "Your institution's rules on AI in teaching, assessment and work — we design the product to follow them." },
+  { name: "HIPAA", desc: "For healthcare work, we design to support HIPAA requirements: access controls, audit logs, encryption, and hosting and AI providers that offer a business associate agreement." },
+  { name: "PCI DSS", desc: "Card payments go through Stripe, so card numbers never touch your servers or ours — which keeps your PCI scope as small as possible." },
+  { name: "Privacy laws", desc: "Data-processing agreements, regional hosting and access or deletion requests, handled when GDPR, CCPA or similar laws apply." },
+  { name: "NDAs & confidentiality", desc: "We sign your NDA, or offer ours, before you share anything sensitive — and confidentiality continues after the project ends." },
+  { name: "Your security review", desc: "We answer your vendor security questions, follow your IT policies, and your team can review the code at any time." },
 ];
 
 export const policiesNote =
-  "We design and build to support these requirements, working with your compliance team. They describe what we design for — they are not certifications, and compliance remains a shared responsibility with your organisation.";
+  "We design and build to support these requirements, working with your compliance or IT team. They describe what we design for — they are not certifications, and compliance remains a shared responsibility with your organization.";

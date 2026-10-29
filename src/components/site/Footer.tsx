@@ -1,6 +1,6 @@
-import { ArrowUp, ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowUp, ArrowUpRight, CalendarDays, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
-import { company, industries, industryPath, legalLinks, servicePath, services, sitePages, socials, solutionPath, solutions, startEnquiry } from "@/data/company";
+import { company, industries, industryPath, legalLinks, servicePath, services, sitePages, socials, solutionPath, solutions } from "@/data/company";
 import { projectPath } from "@/data/projects";
 import { useInView } from "@/hooks/use-motion";
 import { useProjects } from "@/hooks/use-projects";
@@ -10,7 +10,7 @@ import SocialIcon from "./SocialIcon";
 const linkCls = "foot-link text-sm text-ink-2 transition-colors hover:text-ink";
 const headCls = "text-xs font-semibold uppercase tracking-[0.14em] text-subtle";
 
-// Company column: every page that isn't a solution, project, service or audience
+// Company column: every page that isn't a service, solution, project or industry
 const companyPages = sitePages.filter((p) => !["/solutions", "/projects", "/services", "/industries"].includes(p.to));
 
 function LinkColumn({ title, to, links, className = "" }: { title: string; to?: string; links: { to: string; label: string }[]; className?: string }) {
@@ -59,20 +59,20 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
                   <span className="live-dot" /> {company.availability}
                 </span>
                 <h2 className="mt-5 max-w-xl font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem]">
-                  Ready to bring AI into your learning experience?
+                  Ready to hand off the busywork?
                 </h2>
                 <p className="mt-4 max-w-lg text-white/80">
-                  Book a free discovery call. Tell us what your learners need — we reply within {company.responseTime}.
+                  Book a free call with a senior engineer. If software can take the task off your plate, the first two weeks of building are on us.
                 </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
-                <button
-                  onClick={() => startEnquiry()}
+                <Link
+                  to="/book"
                   className="btn group bg-white px-6 py-3.5 font-semibold text-[#3730a3] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
                 >
-                  Start a project
-                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </button>
+                  Book a call
+                  <CalendarDays className="h-4 w-4" />
+                </Link>
                 <a href={`mailto:${company.email}`} className="btn border border-white/30 bg-white/10 px-6 py-3.5 text-white backdrop-blur hover:bg-white/20">
                   Email us
                 </a>
@@ -91,7 +91,7 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
               </span>
             </div>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-2">
-              AI tutors, assessment, analytics and training for the schools, universities and companies that teach.
+              Custom AI tools, web and mobile apps, and desktop software that take the busywork off your team.
             </p>
             <ul className="mt-7 grid max-w-sm gap-2.5">
               {socials.map((s) => (
@@ -114,14 +114,14 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
             </ul>
           </div>
 
+          <LinkColumn title="Services" to="/services" links={services.map((x) => ({ to: servicePath(x), label: x.title }))} />
           <div className="space-y-9">
             <LinkColumn title="Solutions" to="/solutions" links={solutions.map((x) => ({ to: solutionPath(x), label: x.title }))} />
-            <LinkColumn title="Projects" to="/projects" links={footerProjects} />
+            <LinkColumn title="Our work" to="/projects" links={footerProjects} />
           </div>
-          <LinkColumn title="Services" to="/services" links={services.map((x) => ({ to: servicePath(x), label: x.title }))} />
           <LinkColumn title="Company" links={companyPages} />
           <div className="space-y-9">
-            <LinkColumn title="Who we serve" to="/industries" links={industries.map((x) => ({ to: industryPath(x), label: x.title }))} />
+            <LinkColumn title="Industries" to="/industries" links={industries.map((x) => ({ to: industryPath(x), label: x.title }))} />
             <LinkColumn title="Legal" links={[...legalLinks, { to: "/terms#credits", label: "Image credits" }]} />
           </div>
         </div>
@@ -131,7 +131,7 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
             © {year} {company.legalName}. All rights reserved.
           </p>
           <p className="inline-flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-sun" /> Built to help people learn better.
+            <Sparkles className="h-4 w-4 text-sun" /> Built to give teams their week back.
           </p>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

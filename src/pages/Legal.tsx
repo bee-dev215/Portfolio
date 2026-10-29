@@ -4,7 +4,6 @@ import { imageCredits } from "@/data/company";
 import { LegalDocKey, legalDocs } from "@/data/legal";
 import PageShell from "@/components/site/PageShell";
 import { Breadcrumbs } from "@/components/site/PageHero";
-import { usePhotos } from "@/hooks/use-photos";
 import { useProjects } from "@/hooks/use-projects";
 import { useTeam } from "@/hooks/use-team";
 
@@ -13,16 +12,15 @@ const CREDITS = { id: "credits", heading: "Image credits" };
 export default function Legal({ doc }: { doc: LegalDocKey }) {
   const d = legalDocs[doc];
   const toc = doc === "terms" ? [...d.sections, CREDITS] : d.sections;
-  const photos = usePhotos();
-  const { team, ready: teamReady } = useTeam();
-  const { projects, ready: projectsReady } = useProjects();
+  const { team } = useTeam();
+  const { projects } = useProjects();
 
-  // Credit only the photos the site still shows: not ones replaced in the admin, nor portraits and project photos it no longer uses
+  // Credit only the photos the site still shows: not portraits or project photos it no longer uses
   const credits = imageCredits.filter(({ file }) => {
     const path = `/images/${file}`;
-    if (file.startsWith("team/")) return !teamReady || team.some((m) => m.photo === path);
-    if (file.startsWith("proj-")) return !projectsReady || projects.some((p) => p.image === path || p.gallery.src === path);
-    return !photos.replaced(file);
+    if (file.startsWith("team/")) return team.some((m) => m.photo === path);
+    if (file.startsWith("proj-")) return projects.some((p) => p.image === path || p.gallery.src === path);
+    return true;
   });
 
   return (
@@ -85,7 +83,7 @@ export default function Legal({ doc }: { doc: LegalDocKey }) {
             {doc === "terms" && (
               <section id={CREDITS.id} className="mt-12 scroll-mt-24 border-t border-line pt-8">
                 <h2 className="font-display text-2xl font-bold">{CREDITS.heading}</h2>
-                <p className="mt-4 leading-relaxed text-ink-2">Photography on this site is used under the free licences of Freepik (now Magnific) and Pexels. Thank you to the creators:</p>
+                <p className="mt-4 leading-relaxed text-ink-2">Photography on this site is used under the free licenses of Freepik (now Magnific) and Pexels. Thank you to the creators:</p>
                 <ul className="mt-5 divide-y divide-line rounded-2xl border border-line bg-surface">
                   {credits.map((c) => (
                     <li key={c.file} className="flex flex-col gap-1 px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">

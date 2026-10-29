@@ -2,12 +2,13 @@ import { scrollToId } from "@/data/company";
 
 /** Options in the contact form's "What can we help with?" menu. */
 export const CONTACT_SUBJECTS = [
-  "New AI product",
-  "AI tutor or assistant",
-  "Learning analytics",
-  "LMS integration",
-  "AI training for our team",
-  "Partnership",
+  "Automate a task or workflow",
+  "AI tool or assistant",
+  "Web app or SaaS product",
+  "Mobile app",
+  "Desktop software",
+  "Data, dashboards & reporting",
+  "Rescue or modernize a project",
   "Something else",
 ] as const;
 
@@ -19,7 +20,7 @@ export interface ContactPrefill {
 }
 
 /** Fired on window to fill the contact form's subject and message (replacing what is there). */
-export const PREFILL_EVENT = "gsedu:prefill-contact";
+export const PREFILL_EVENT = "jovano:prefill-contact";
 
 /** Fills the contact form on this page, then scrolls to it. */
 export const prefillContact = (detail: ContactPrefill) => {

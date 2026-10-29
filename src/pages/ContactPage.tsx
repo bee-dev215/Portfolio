@@ -1,41 +1,44 @@
-import { ArrowRight, CalendarCheck, ClipboardList, Clock, Handshake, PenLine } from "lucide-react";
+import { ArrowRight, CalendarDays, ClipboardList, Clock, Gift, Handshake, PenLine } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
 import Contact from "@/components/site/Contact";
 import ProjectScoper from "@/components/contact/ProjectScoper";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
-import { company, scrollToId } from "@/data/company";
+import { company, offer, scrollToId } from "@/data/company";
 import { faqs } from "@/data/faq";
 
 const facts = [
   { icon: Clock, k: "Reply time", v: `Within ${company.responseTime}` },
-  { icon: CalendarCheck, k: "First step", v: "A free discovery call" },
+  { icon: Gift, k: "First step", v: `A free call — then ${offer.badge.toLowerCase()}` },
   { icon: Handshake, k: "Engagements", v: company.engagements },
 ];
 
 // Questions people usually ask before getting in touch
-const beforeYouWrite = faqs.filter((f) => f.featured && f.category !== "AI & quality").slice(0, 4);
+const beforeYouWrite = faqs.filter((f) => f.featured).slice(0, 4);
 
 export default function ContactPage() {
   return (
-    <PageShell title="Contact" description={`Tell ${company.name} about your learners and your project — an engineer replies within ${company.responseTime}.`}>
+    <PageShell title="Contact" description={`Tell ${company.name} what your team does by hand, or what you need built — a senior engineer replies within ${company.responseTime}.`}>
       <PageHero
         crumbs={[{ label: "Contact" }]}
         eyebrow="Contact"
         title={
           <>
-            Let's plan what <span className="gradient-text">your learners need.</span>
+            Let's take something <span className="gradient-text">off your plate.</span>
           </>
         }
-        lead={`Planning an AI tutor, modernising a platform or training your team? Tell us about it — an engineer, not a salesperson, will reply within ${company.responseTime}.`}
+        lead={`Busywork to automate, an app to build or a project to rescue? Tell us about it — a senior engineer, not a salesperson, replies within ${company.responseTime}. Or skip the email and book a call.`}
         actions={
           <>
-            <button onClick={() => scrollToId("scoper")} className="btn btn-primary px-7 py-3.5">
+            <Link to="/book" className="btn btn-primary px-7 py-3.5">
+              <CalendarDays className="h-4 w-4" /> Book a call
+            </Link>
+            <button onClick={() => scrollToId("scoper")} className="btn btn-secondary px-7 py-3.5">
               <ClipboardList className="h-4 w-4" /> Plan your project
             </button>
             <button onClick={() => scrollToId("contact")} className="btn btn-secondary px-7 py-3.5">
-              <PenLine className="h-4 w-4" /> Write to us directly
+              <PenLine className="h-4 w-4" /> Write to us
             </button>
           </>
         }
@@ -60,7 +63,7 @@ export default function ContactPage() {
             <p className="mt-6 border-t border-line pt-5 text-sm leading-relaxed text-ink-2">
               We keep client work confidential — see how in{" "}
               <Link to="/responsible-ai" className="font-semibold text-brand-text underline-offset-2 hover:underline">
-                Responsible AI
+                Security & AI
               </Link>
               .
             </p>

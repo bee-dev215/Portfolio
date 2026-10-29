@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { ArrowUpRight, Briefcase, Check, GraduationCap, LucideIcon, Repeat, Users } from "lucide-react";
-import { startEnquiry } from "@/data/company";
+import { ArrowUpRight, Briefcase, Check, FlaskConical, LucideIcon, Repeat, Users } from "lucide-react";
+import { bookCall } from "@/data/company";
 import { EngagementModel, engagementModels } from "@/data/company-pages";
 
-const icons: Record<EngagementModel["key"], LucideIcon> = { project: Briefcase, retainer: Repeat, training: GraduationCap };
+const icons: Record<EngagementModel["key"], LucideIcon> = { prototype: FlaskConical, project: Briefcase, team: Repeat };
 
 /** Three ways to engage: tabs pick one; the card compares what it's for, how it's priced and what you get. */
 export default function EngagementModels() {
@@ -58,8 +58,8 @@ export default function EngagementModels() {
                 </div>
               ))}
             </dl>
-            <button onClick={() => startEnquiry(`a ${m.name.toLowerCase()}`)} className="btn btn-primary relative mt-9 px-6 py-3 text-sm">
-              Discuss a {m.name.toLowerCase()} <ArrowUpRight className="h-4 w-4" />
+            <button onClick={() => bookCall(m.name)} className="btn btn-primary relative mt-9 px-6 py-3 text-sm">
+              Book a call <ArrowUpRight className="h-4 w-4" />
             </button>
           </div>
 
