@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { CalendarDays, Check, Copy, Loader2, Send } from "lucide-react";
+import { CalendarDays, Check, Loader2, Send } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { booking, company, ENQUIRE_EVENT, nextSteps } from "@/data/company";
@@ -8,6 +8,7 @@ import { useAvailability } from "@/hooks/use-availability";
 import { dayParts, localZone, timeLabel } from "@/lib/booking-time";
 import { emailInbox, sendToCrm, tag } from "@/lib/leads";
 import { saveMessage } from "@/lib/messagesApi";
+import { copyLine, directLines, tipCls } from "./reach";
 import Reveal, { SectionHeading } from "./Reveal";
 
 const EMPTY = { name: "", email: "", company: "", phone: "", subject: CONTACT_SUBJECTS[0] as string, message: "" };
@@ -17,51 +18,35 @@ type Form = typeof EMPTY;
 const forTopic = (topic: string) => (f: Form) =>
   f.message.trim() ? f : { ...f, subject: CONTACT_SUBJECTS[0], message: `We'd like to talk about ${topic} for our business. ` };
 
-/** "Skip the form": email and phone written as one sentence, with copy buttons for people who have no mail app set up. */
-function DirectLine() {
-  const [copied, setCopied] = useState<string | null>(null);
-
-  const copy = async (key: string, value: string) => {
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopied(key);
-      toast.success(`Copied ${value}`);
-      setTimeout(() => setCopied(null), 1600);
-    } catch {
-      toast.error("Could not copy to clipboard");
-    }
-  };
-
-  const copies = [
-    { key: "email", label: "Copy email", value: company.email },
-    { key: "phone", label: "Copy number", value: company.phone },
-  ];
+/** "How do you want to reach us?": email, phone and booking as three action tiles. */
+function ReachUs() {
+  const shortest = Math.min(...booking.callTypes.map((t) => t.minutes));
+  const tile = "group relative flex flex-col rounded-2xl border border-line bg-surface p-3.5 transition-colors hover:border-brand/50 hover:bg-brand-soft/50 sm:p-4";
+  const icon = "grid h-10 w-10 place-items-center rounded-xl bg-brand-soft text-brand-text transition-colors group-hover:bg-brand group-hover:text-on-brand";
+  const title = "mt-3 font-display text-sm font-bold sm:mt-4 sm:text-base";
+  const note = "mt-0.5 hidden text-xs leading-snug text-subtle sm:block";
 
   return (
-    <div className="card p-6 sm:p-7">
-      <p className="text-xs font-semibold uppercase tracking-wider text-subtle">Skip the form</p>
-      <p className="mt-3 font-display text-[1.3rem] font-semibold leading-[1.65] text-subtle sm:text-2xl sm:leading-[1.6]">
-        Email{" "}
-        <a href={`mailto:${company.email}`} className="hl-link font-bold text-ink [overflow-wrap:anywhere]">
-          {company.email}
-        </a>{" "}
-        or call{" "}
-        <a href={company.phoneHref} className="hl-link whitespace-nowrap font-bold text-ink">
-          {company.phone}
-        </a>
-        .
-      </p>
-      <div className="mt-5 flex flex-wrap gap-2">
-        {copies.map((c) => (
-          <button
-            key={c.key}
-            onClick={() => copy(c.key, c.value)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-line bg-raised/70 px-3.5 py-1.5 text-xs font-semibold text-ink-2 transition-colors hover:border-brand/50 hover:text-brand-text"
-          >
-            {copied === c.key ? <Check className="h-3.5 w-3.5 text-brand-text" /> : <Copy className="h-3.5 w-3.5" />}
-            {copied === c.key ? "Copied" : c.label}
-          </button>
+    <div className="card p-5 sm:p-6">
+      <p className="text-xs font-semibold uppercase tracking-wider text-subtle">How do you want to reach us?</p>
+      <div className="mt-4 grid grid-cols-3 gap-2.5">
+        {directLines.map((l) => (
+          <a key={l.key} href={l.href} onClick={() => copyLine(l.value)} className={tile}>
+            <span className={icon}>
+              <l.icon className="h-[18px] w-[18px]" />
+            </span>
+            <span className={title}>{l.label}</span>
+            <span className={note}>{l.note}</span>
+            <span className={tipCls}>{l.value}</span>
+          </a>
         ))}
+        <Link to="/book" className={tile}>
+          <span className={icon}>
+            <CalendarDays className="h-[18px] w-[18px]" />
+          </span>
+          <span className={title}>Book a call</span>
+          <span className={note}>Free {shortest}-minute call</span>
+        </Link>
       </div>
     </div>
   );
@@ -252,7 +237,7 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
         <div className={`grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12 ${showHeading ? "mt-14" : ""}`}>
           <div className="space-y-4">
             <Reveal variant="left">
-              <DirectLine />
+              <ReachUs />
             </Reveal>
 
             <Reveal delay={80} variant="left">

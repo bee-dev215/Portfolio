@@ -412,13 +412,6 @@ html[data-theme="dark"] .site-root, .on-dark {
 .field:focus { border-color: rgb(var(--brand-rgb) / .6); box-shadow: 0 0 0 4px rgb(var(--brand-rgb) / .14); }
 .u-link { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .25s var(--ease); }
 .u-link:hover { background-size: 100% 1px; }
-/* Email and phone set in running text: a gradient underline that fills in behind the words on hover */
-.hl-link {
-  background: var(--grad) 0 100% / 100% 2px no-repeat; border-radius: .25rem; padding: 0 .12em 2px; margin: 0 -.12em;
-  -webkit-box-decoration-break: clone; box-decoration-break: clone;
-  transition: background-size .3s var(--ease), color .2s;
-}
-.hl-link:hover, .hl-link:focus-visible { background-size: 100% 100%; color: rgb(var(--on-brand-rgb)); }
 
 /* ---------- Status ---------- */
 .live-dot { position: relative; display: inline-flex; width: 8px; height: 8px; border-radius: 9999px; background: #22c55e; }

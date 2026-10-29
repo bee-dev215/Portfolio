@@ -5,6 +5,7 @@ import { projectPath } from "@/data/projects";
 import { scrollToTop } from "@/lib/scroll";
 import { useProjects } from "@/hooks/use-projects";
 import { Monogram, Wordmark } from "./Navbar";
+import { copyLine, directLines, tipCls } from "./reach";
 
 const linkCls = "foot-link text-sm text-ink-2 transition-colors hover:text-ink";
 const headCls = "text-xs font-semibold uppercase tracking-[0.14em] text-subtle";
@@ -92,14 +93,23 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
               Custom AI tools, web and mobile apps, and desktop software that take the busywork off your team.
             </p>
             <p className={`mt-9 ${headCls}`}>Get in touch</p>
-            <div className="mt-4 flex flex-col items-start gap-2 font-display text-lg font-bold text-ink">
-              <a href={`mailto:${company.email}`} className="hl-link">
-                {company.email}
-              </a>
-              <a href={company.phoneHref} className="hl-link">
-                {company.phone}
-              </a>
-            </div>
+            <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold">
+              {directLines.map((l) => (
+                <li key={l.key}>
+                  <a href={l.href} onClick={() => copyLine(l.value)} className="group relative inline-flex items-center gap-2 text-ink">
+                    <l.icon className="h-4 w-4 text-brand-text" />
+                    <span className="foot-link">{l.label}</span>
+                    <span className={tipCls}>{l.value}</span>
+                  </a>
+                </li>
+              ))}
+              <li>
+                <Link to="/book" className="inline-flex items-center gap-2 text-ink">
+                  <CalendarDays className="h-4 w-4 text-brand-text" />
+                  <span className="foot-link">Book a call</span>
+                </Link>
+              </li>
+            </ul>
           </div>
 
           <LinkColumn title="Services" to="/services" links={services.map((x) => ({ to: servicePath(x), label: x.title }))} />
