@@ -63,7 +63,7 @@ export default function Projects() {
                     <span className="absolute left-4 top-4 rounded-full bg-black/35 px-3 py-1 text-xs font-semibold text-white backdrop-blur sm:left-5 sm:top-5">
                       {audienceTitle(p)} · {p.year}
                     </span>
-                    <span className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition-colors group-hover:bg-white group-hover:text-[#3730a3] sm:right-5 sm:top-5">
+                    <span className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition-colors group-hover:bg-white group-hover:text-[#1e40af] sm:right-5 sm:top-5">
                       <ArrowUpRight className="h-4 w-4" />
                     </span>
                     <div className={`absolute inset-x-0 bottom-0 text-white ${big ? "p-6 sm:p-8" : "p-5"}`}>

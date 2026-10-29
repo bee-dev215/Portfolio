@@ -44,7 +44,7 @@ export default function Technology({ more = true }: { more?: boolean }) {
                   <div className="unveil absolute inset-0" style={{ "--unveil-delay": `${120 + i * 110}ms` } as CSSProperties}>
                     <img src={photos.src(image)} alt="" loading="lazy" width={640} height={400} className="img-zoom h-full w-full object-cover" />
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-[rgb(8_11_24/.88)] via-[rgb(8_11_24/.25)] via-45% to-transparent" aria-hidden="true" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[rgb(10_16_32/.88)] via-[rgb(10_16_32/.25)] via-45% to-transparent" aria-hidden="true" />
                   <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 p-5 text-white">
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/15 backdrop-blur">
                       <Icon className="h-5 w-5" />

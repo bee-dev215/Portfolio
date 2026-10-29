@@ -57,14 +57,15 @@ export default {
           foreground: 'hsl(var(--card-foreground))'
         },
         // Site theme, driven by the CSS variables on .site-root (light) / html[data-theme="dark"] (dark):
-        // canvas/surface/raised = backgrounds, ink/subtle = text, brand = indigo fills,
-        // brand-text = brand-coloured text, iris/sky = gradient partners, sun = warm accent
+        // canvas/surface/raised = backgrounds, ink/subtle = text, brand = blue fills,
+        // brand-text = brand-coloured text, iris/sky = gradient partners, sun = warm accent, line(-strong) = hairlines
         canvas: 'rgb(var(--canvas-rgb) / <alpha-value>)',
         surface: 'rgb(var(--surface-rgb) / <alpha-value>)',
         raised: 'rgb(var(--raised-rgb) / <alpha-value>)',
         ink: { DEFAULT: 'rgb(var(--ink-rgb) / <alpha-value>)', 2: 'rgb(var(--ink-2-rgb) / <alpha-value>)' },
         subtle: 'rgb(var(--subtle-rgb) / <alpha-value>)',
         line: 'var(--line)',
+        'line-strong': 'var(--line-strong)',
         brand: {
           DEFAULT: 'rgb(var(--brand-rgb) / <alpha-value>)',
           hi: 'rgb(var(--brand-hi-rgb) / <alpha-value>)',

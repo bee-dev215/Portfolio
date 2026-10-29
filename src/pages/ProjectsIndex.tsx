@@ -63,7 +63,7 @@ function FeaturedProject({ project }: { project: Project }) {
       <article className="card group grid overflow-hidden lg:grid-cols-[1.15fr_.85fr]">
         <Link to={projectPath(project)} className="relative block min-h-[16rem] overflow-hidden bg-raised" tabIndex={-1} aria-hidden="true">
           <img src={project.image} alt="" width={1280} height={800} className="img-zoom absolute inset-0 h-full w-full object-cover" />
-          <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-[#3730a3] backdrop-blur">
+          <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-[#1e40af] backdrop-blur">
             <Sparkles className="h-3.5 w-3.5" /> Featured project
           </span>
         </Link>

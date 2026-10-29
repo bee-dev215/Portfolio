@@ -178,7 +178,7 @@ export default function Process({ more = true }: { more?: boolean }) {
                   {/* Photo banner, with the phase number outlined over it (and the offer badge on the free phase) */}
                   <div className="relative h-36 overflow-hidden bg-raised sm:h-44">
                     <img src={photos.src(p.image)} alt="" loading="lazy" width={1280} height={800} className="stack-photo h-full w-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[rgb(8_11_24/.7)] via-[rgb(8_11_24/.15)] to-transparent" aria-hidden="true" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[rgb(10_16_32/.7)] via-[rgb(10_16_32/.15)] to-transparent" aria-hidden="true" />
                     {free && (
                       <span className="glass absolute left-7 top-4 inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-xs font-bold text-ink sm:left-10">
                         <Gift className="h-3.5 w-3.5 text-sun" /> {offer.badge}

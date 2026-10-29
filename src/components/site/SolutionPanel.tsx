@@ -66,7 +66,7 @@ export default function SolutionPanel({
           {solution.summary}
         </p>
         <div className="mt-6 flex items-center gap-4" style={{ "--i": 4 } as CSSProperties}>
-          <span className="sol-panel-cta btn bg-white px-5 py-2.5 text-sm text-[#1e1b4b]">
+          <span className="sol-panel-cta btn bg-white px-5 py-2.5 text-sm text-[#172554]">
             Explore solution <ArrowUpRight className="h-4 w-4" />
           </span>
           <span className="hidden truncate text-xs font-medium text-white/60 sm:block">{solution.tech.slice(0, 3).join(" · ")}</span>

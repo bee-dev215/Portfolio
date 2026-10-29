@@ -69,7 +69,7 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
               <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
                 <Link
                   to="/book"
-                  className="btn group bg-white px-6 py-3.5 font-semibold text-[#3730a3] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
+                  className="btn group bg-white px-6 py-3.5 font-semibold text-[#1e40af] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
                 >
                   Book a call
                   <CalendarDays className="h-4 w-4" />

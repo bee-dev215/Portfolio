@@ -64,7 +64,7 @@ export default function PageHero({
 }) {
   return (
     <section className="relative overflow-hidden px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:pb-24 lg:pt-36">
-      <div className="mesh pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div className="clouds pointer-events-none absolute inset-0" aria-hidden="true" />
       <div className="dot-grid pointer-events-none absolute inset-0 opacity-70" aria-hidden="true" />
 
       <div className={`relative mx-auto grid max-w-[1240px] grid-cols-[minmax(0,1fr)] items-center gap-12 ${aside ? "lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)] lg:gap-16" : ""}`}>

@@ -25,7 +25,7 @@ export default function CtaBand({
       <Reveal variant="scale" className="mx-auto max-w-[1240px]">
         <div className="relative overflow-hidden rounded-[2rem] bg-grad p-8 text-white sm:p-12 lg:p-14">
           <img src={photos.src("/images/cta-backdrop.webp")} alt="" loading="lazy" width={740} height={416} className="absolute inset-0 h-full w-full object-cover opacity-20 mix-blend-luminosity" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#312e81]/80 via-[#5b21b6]/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0b1b3f]/85 via-[#12295c]/55 to-transparent" />
           <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/20 blur-3xl" />
           <div className="relative flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
             <div>
@@ -33,7 +33,7 @@ export default function CtaBand({
               <h2 className="mt-3 max-w-2xl text-balance font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">{title}</h2>
             </div>
             <div className="flex shrink-0 flex-wrap gap-3">
-              <button onClick={() => bookCall(topic)} className="btn bg-white px-6 py-3.5 text-[#3730a3] shadow-lg hover:-translate-y-px">
+              <button onClick={() => bookCall(topic)} className="btn bg-white px-6 py-3.5 text-[#1e40af] shadow-lg hover:-translate-y-px">
                 {primaryLabel} <CalendarDays className="h-4 w-4" />
               </button>
               {secondary && (

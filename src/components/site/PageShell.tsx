@@ -1,6 +1,7 @@
 import { MouseEvent, ReactNode, useEffect, useLayoutEffect, useRef } from "react";
 import { useLocation, useNavigate, useNavigationType } from "react-router-dom";
 import { company, setNavigator } from "@/data/company";
+import { useSpotlight } from "@/hooks/use-motion";
 import { arriveAt, glideTo, scrollToElement, targetTop } from "@/lib/scroll";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
@@ -52,7 +53,7 @@ const retry = (fn: () => boolean) => {
  * Frame for every public page: skip link, navbar, main, footer and the back-to-top button.
  * Sets the document title and description, opens each page at the top (at its #section, or where the reader left it
  * when they come Back), glides #links on the page to their section, shows the footer's call-to-action card only on
- * pages that don't end with their own (CtaBand), and lets the site helpers (startEnquiry, openSolution) change page.
+ * pages that don't end with their own (CtaBand), lets the site helpers (startEnquiry, openSolution) change page, and runs the card spotlight.
  */
 export default function PageShell({
   title,
@@ -70,6 +71,7 @@ export default function PageShell({
   const { pathname, search, hash, key } = useLocation();
   const lastPath = useRef<string | null>(null);
   const lastSearch = useRef<string | null>(null);
+  useSpotlight();
 
   useEffect(() => {
     setNavigator(navigate);

@@ -71,6 +71,26 @@ export function useInView<T extends Element>({
 }
 
 /**
+ * Card spotlight: as a mouse moves over a hoverable card (`.card-hover` or `.spotlight`), writes the pointer's position
+ * inside it to `--mx` / `--my` so the card's soft glow follows the cursor. One listener for the whole page; skipped on
+ * touch screens and under reduced motion (the glow then sits in the middle of the card).
+ */
+export function useSpotlight() {
+  useEffect(() => {
+    if (!hasFinePointer() || prefersReducedMotion()) return;
+    const onMove = (e: PointerEvent) => {
+      const card = (e.target as Element | null)?.closest?.<HTMLElement>(".card-hover, .spotlight");
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      card.style.setProperty("--my", `${e.clientY - r.top}px`);
+    };
+    document.addEventListener("pointermove", onMove, { passive: true });
+    return () => document.removeEventListener("pointermove", onMove);
+  }, []);
+}
+
+/**
  * Writes the element's scroll progress (0–1) to the CSS variable `--p` on it, once per frame while it is on screen.
  * "through": 0 as its top enters the bottom of the viewport, 1 as its bottom leaves the top (parallax).
  * "enter": 0 as its top enters, 1 once its bottom is in view (fills that finish at the end of the page).

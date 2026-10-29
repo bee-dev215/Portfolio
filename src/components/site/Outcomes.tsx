@@ -266,7 +266,7 @@ export default function Outcomes() {
               <div className="flex flex-col items-start gap-4 lg:items-end">
                 <button
                   onClick={() => bookCall()}
-                  className="btn group bg-white px-6 py-3.5 font-semibold text-[#3730a3] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
+                  className="btn group bg-white px-6 py-3.5 font-semibold text-[#1e40af] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
                 >
                   Tell us yours — book a 15-minute call
                   <ArrowUpRight className="h-4 w-4" />

@@ -31,7 +31,7 @@ export default function Hero() {
 
   return (
     <section className="relative overflow-hidden pb-4 pt-28 sm:pt-32 lg:pt-36">
-      <div className="mesh pointer-events-none absolute inset-0 opacity-70" aria-hidden="true" />
+      <div className="clouds pointer-events-none absolute inset-0" aria-hidden="true" />
 
       <div className="relative mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-12 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,.88fr)] lg:gap-14">
         {/* message */}
@@ -57,10 +57,10 @@ export default function Hero() {
           </p>
 
           <div className="fade-up mt-8 flex flex-col gap-3 sm:flex-row" style={{ animationDelay: ".28s" }}>
-            <Link to="/book" className="btn btn-primary rounded-xl px-7 py-3.5">
+            <Link to="/book" className="btn btn-primary px-7 py-3.5">
               Book a free call <CalendarDays className="h-4 w-4" />
             </Link>
-            <Link to="/projects" className="btn btn-secondary rounded-xl px-7 py-3.5">
+            <Link to="/projects" className="btn btn-secondary px-7 py-3.5">
               See our work <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -93,7 +93,7 @@ export default function Hero() {
               height={600}
               className="aspect-[2/1] w-full object-cover sm:aspect-[2.4/1]"
             />
-            <figcaption className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-gradient-to-t from-[#080b18]/80 to-transparent px-4 pb-3.5 pt-12 text-white">
+            <figcaption className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-gradient-to-t from-[#0a1020]/80 to-transparent px-4 pb-3.5 pt-12 text-white">
               <span className="flex shrink-0 -space-x-2">
                 {faces.map((m) => (
                   <img key={m.name} src={photos.src(m.photo)} alt="" width={28} height={28} className="h-7 w-7 rounded-full bg-white/20 object-cover object-top ring-2 ring-white/90" />
@@ -108,7 +108,7 @@ export default function Hero() {
               <p className="gradient-text text-[11px] font-bold uppercase tracking-[.18em]">Engineering partner</p>
               <p className="mt-1.5 font-display text-xl font-bold leading-snug">From first call to production</p>
             </div>
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-500/25 dark:text-emerald-300">
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-500/25 [[data-theme=dark]_&]:text-emerald-300">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Direct senior access
             </span>
           </div>
@@ -166,7 +166,7 @@ export default function Hero() {
               <li key={p.slug}>
                 <Link
                   to={projectPath(p)}
-                  className="group flex h-full items-center gap-3.5 rounded-2xl border border-line bg-surface p-2.5 pr-4 transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-[0_12px_28px_-16px_rgb(var(--shadow-rgb)/.35)]"
+                  className="card-hover group flex h-full items-center gap-3.5 rounded-2xl border border-line bg-surface p-2.5 pr-4"
                 >
                   <img src={photos.src(p.image)} alt="" loading="lazy" width={64} height={48} className="h-12 w-16 shrink-0 rounded-xl object-cover" />
                   <span className="min-w-0 flex-1">
