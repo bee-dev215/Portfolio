@@ -47,7 +47,7 @@ export default function IndustryDetail() {
         aside={
           <div className="relative pb-10 sm:pb-0">
             <div className="shadow-soft overflow-hidden rounded-[2rem] border border-line bg-raised">
-              <img src={photos.src(industry.image)} alt={photos.alt(industry.image, industry.imageAlt)} width={740} height={555} className="aspect-[4/3] w-full object-cover" />
+              <img src={photos.src(industry.image)} alt={photos.alt(industry.image, industry.imageAlt)} width={740} height={555} style={{ objectPosition: industry.imageFocus }} className="aspect-[4/3] w-full object-cover" />
             </div>
             <div className="glass shadow-soft absolute -bottom-2 right-4 max-w-[16rem] rounded-2xl border border-line p-4 sm:-bottom-8 sm:-left-6 sm:right-auto">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-subtle">Where teams often start</p>

@@ -165,7 +165,7 @@ export default function SolutionsIndex() {
                     {industries.map((ind) => (
                       <th key={ind.key} scope="col" className="px-3 py-4 text-center">
                         <Link to={industryPath(ind)} className="inline-flex flex-col items-center gap-2 text-sm font-semibold text-ink transition-colors hover:text-brand-text">
-                          <img src={photos.src(ind.image)} alt="" loading="lazy" width={40} height={40} className="h-10 w-10 rounded-full object-cover" />
+                          <img src={photos.src(ind.image)} alt="" loading="lazy" width={40} height={40} style={{ objectPosition: ind.imageFocus }} className="h-10 w-10 rounded-full object-cover" />
                           {ind.title}
                         </Link>
                       </th>

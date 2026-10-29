@@ -315,6 +315,7 @@ export const solutions: Solution[] = [
 
 // ------------------------------------------------------------
 //  Industries — who we build for. Images live in public/images/ (4:5 crops).
+//  Wider frames (menu preview, cards, page heroes) crop them around imageFocus.
 // ------------------------------------------------------------
 
 export interface Industry {
@@ -326,6 +327,7 @@ export interface Industry {
   solutions: string[]; // solution titles; each opens that solution's details
   image: string;
   imageAlt: string;
+  imageFocus: string; // CSS object-position for landscape crops, so the faces near the top stay in frame
 }
 
 export const industries: Industry[] = [
@@ -338,6 +340,7 @@ export const industries: Industry[] = [
     solutions: ["AI Voice Agent", "Document AI", "Knowledge Assistant"],
     image: "/images/aud-healthcare.webp",
     imageAlt: "A smiling clinician in a white tunic using a tablet",
+    imageFocus: "50% 25%",
   },
   {
     key: "construction",
@@ -348,6 +351,7 @@ export const industries: Industry[] = [
     solutions: ["Field Operations App", "Document AI", "Reporting Autopilot"],
     image: "/images/aud-construction.webp",
     imageAlt: "An engineer in a hard hat and safety glasses reading a tablet on a renovation site",
+    imageFocus: "50% 20%",
   },
   {
     key: "real-estate",
@@ -358,6 +362,7 @@ export const industries: Industry[] = [
     solutions: ["Client Portal", "Document AI", "AI Voice Agent"],
     image: "/images/aud-real-estate.webp",
     imageAlt: "A real estate agent handing over house keys to new owners",
+    imageFocus: "50% 25%",
   },
   {
     key: "professional-services",
@@ -368,6 +373,7 @@ export const industries: Industry[] = [
     solutions: ["Knowledge Assistant", "Document AI", "Client Portal"],
     image: "/images/aud-professional.webp",
     imageAlt: "A professional reviewing documents at a desk in a modern office",
+    imageFocus: "50% 25%",
   },
   {
     key: "logistics",
@@ -378,6 +384,7 @@ export const industries: Industry[] = [
     solutions: ["Reporting Autopilot", "AI Voice Agent", "Field Operations App"],
     image: "/images/aud-logistics.webp",
     imageAlt: "A warehouse worker scanning packages between tall shelves",
+    imageFocus: "50% 25%",
   },
   {
     key: "startups",
@@ -388,6 +395,7 @@ export const industries: Industry[] = [
     solutions: ["Client Portal", "Knowledge Assistant"],
     image: "/images/aud-startups.webp",
     imageAlt: "A software team gathered around a laptop, reviewing a product idea",
+    imageFocus: "50% 25%",
   },
 ];
 

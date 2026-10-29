@@ -72,6 +72,7 @@ interface MenuItem {
   desc: string; // short line under the label in the phone menu
   blurb: string; // caption over the photo while the item is hovered
   image?: string;
+  focus?: string; // object-position for the photo, when its subject isn't centred
   icon?: LucideIcon;
   to: string;
 }
@@ -167,6 +168,7 @@ const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
       desc: ind.focus,
       blurb: ind.desc,
       image: ind.image,
+      focus: ind.imageFocus,
       to: industryPath(ind),
     })),
   },
@@ -222,7 +224,15 @@ function MenuPhoto({ group, peek, onClick }: { group: MenuGroup; peek: number | 
       {group.items.map(
         (it, i) =>
           it.image && (
-            <img key={it.key} src={it.image} alt="" width={640} height={400} className={`absolute inset-0 h-full w-full object-cover ${peek === i ? "opacity-100" : "opacity-0"}`} />
+            <img
+              key={it.key}
+              src={it.image}
+              alt=""
+              width={640}
+              height={400}
+              style={{ objectPosition: it.focus }}
+              className={`absolute inset-0 h-full w-full object-cover ${peek === i ? "opacity-100" : "opacity-0"}`}
+            />
           ),
       )}
       {/* Keyed by item so each change cross-fades */}
