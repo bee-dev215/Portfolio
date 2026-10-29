@@ -56,8 +56,8 @@ export default function Projects() {
                     to={projectPath(p)}
                     className={`proj-tile shadow-soft group relative block h-full overflow-hidden rounded-3xl bg-raised ${big ? "aspect-[4/3] sm:aspect-[16/9] lg:aspect-auto" : "aspect-[4/3] lg:aspect-auto"}`}
                   >
-                    <div className="unveil absolute inset-0" style={{ "--unveil-delay": `${big ? 80 : 160 + i * 70}ms` } as CSSProperties}>
-                      <img src={p.image} alt="" loading="lazy" width={big ? 1280 : 640} height={big ? 800 : 400} className="img-zoom h-full w-full object-cover" />
+                    <div className="unveil sheen absolute inset-0" style={{ "--unveil-delay": `${big ? 80 : 160 + i * 70}ms` } as CSSProperties}>
+                      <img src={p.image} alt="" loading="lazy" width={big ? 1280 : 640} height={big ? 800 : 400} className="h-full w-full object-cover" />
                     </div>
                     <div className="proj-tile-shade absolute inset-0" aria-hidden="true" />
                     <span className="absolute left-4 top-4 rounded-full bg-black/35 px-3 py-1 text-xs font-semibold text-white backdrop-blur sm:left-5 sm:top-5">

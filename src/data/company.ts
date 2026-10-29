@@ -705,16 +705,16 @@ export interface CompanyMenuItem {
   label: string;
   desc: string;
   to: string; // page route
-  image?: string; // preview photo; Team and Contact draw their own preview, others fall back to the icon
+  image: string; // photo shown in the top-bar menu while the item is hovered
 }
 
 export const companyMenu: CompanyMenuItem[] = [
   { key: "about", label: "About", desc: "Who we are, how we work with clients and what we stand for.", to: "/about", image: "/images/about-office.webp" },
   { key: "approach", label: "How we work", desc: "From a free call to a two-week prototype to production — and the ways to engage.", to: "/approach", image: "/images/phase-discover.webp" },
   { key: "technology", label: "Technology", desc: "The models, frameworks and cloud platforms we build with — and how we choose.", to: "/technology", image: "/images/tech-ai-abstract.webp" },
-  { key: "team", label: "Team", desc: "The senior engineers and designers you'll work with directly.", to: "/team" },
+  { key: "team", label: "Team", desc: "The senior engineers and designers you'll work with directly.", to: "/team", image: "/images/about-celebrate.webp" },
   { key: "responsible", label: "Security & AI", desc: "How we protect your data, your code and your customers.", to: "/responsible-ai", image: "/images/trust-security.webp" },
-  { key: "contact", label: "Contact", desc: `Tell us what's eating your week — we reply within ${company.responseTime}.`, to: "/contact" },
+  { key: "contact", label: "Contact", desc: `Tell us what's eating your week — we reply within ${company.responseTime}.`, to: "/contact", image: "/images/company-client.webp" },
 ];
 
 // Home page sections, in order (the navbar highlights the menu that covers the one in view)

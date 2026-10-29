@@ -4,7 +4,6 @@ import { company, industries, offer, servicePath, services } from "@/data/compan
 import { projectPath } from "@/data/projects";
 import { usePhotos } from "@/hooks/use-photos";
 import { useProjects } from "@/hooks/use-projects";
-import { useTeam } from "@/hooks/use-team";
 import { serviceIcons } from "./icons";
 
 const HERO_PHOTO = "/images/hero-work.webp";
@@ -26,7 +25,6 @@ const industryTitle = (key: string) => industries.find((i) => i.key === key)?.ti
 
 export default function Hero() {
   const photos = usePhotos();
-  const faces = useTeam().team.filter((m) => m.photo).slice(0, 4);
   const { projects } = useProjects();
 
   return (
@@ -94,11 +92,6 @@ export default function Hero() {
               className="aspect-[2/1] w-full object-cover sm:aspect-[2.4/1]"
             />
             <figcaption className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-gradient-to-t from-[#0a1020]/80 to-transparent px-4 pb-3.5 pt-12 text-white">
-              <span className="flex shrink-0 -space-x-2">
-                {faces.map((m) => (
-                  <img key={m.name} src={photos.src(m.photo)} alt="" width={28} height={28} className="h-7 w-7 rounded-full bg-white/20 object-cover object-top ring-2 ring-white/90" />
-                ))}
-              </span>
               <span className="text-[13px] font-medium leading-tight">You talk to the engineers who build it</span>
             </figcaption>
           </figure>

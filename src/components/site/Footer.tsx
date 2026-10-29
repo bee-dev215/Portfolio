@@ -1,8 +1,7 @@
-import { ArrowUp, ArrowUpRight, CalendarDays, Sparkles } from "lucide-react";
+import { ArrowUp, ArrowUpRight, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 import { company, industries, industryPath, legalLinks, servicePath, services, sitePages, socials, solutionPath, solutions } from "@/data/company";
 import { projectPath } from "@/data/projects";
-import { useInView } from "@/hooks/use-motion";
 import { scrollToTop } from "@/lib/scroll";
 import { useProjects } from "@/hooks/use-projects";
 import { Monogram, Wordmark } from "./Navbar";
@@ -33,8 +32,6 @@ function LinkColumn({ title, to, links, className = "" }: { title: string; to?: 
 
 export default function Footer({ cta = true }: { cta?: boolean }) {
   const year = new Date().getFullYear();
-  // Fills the wordmark once it is well into view at the end of the page
-  const [mark, filled] = useInView<HTMLDivElement>({ threshold: 0.6, rootMargin: "0px" });
   const { projects, ready } = useProjects();
   // Projects column: the featured ones, then a link to the rest
   const footerProjects = [
@@ -132,9 +129,6 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
           <p>
             © {year} {company.legalName}. All rights reserved.
           </p>
-          <p className="inline-flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-sun" /> Built to give teams their week back.
-          </p>
           <button
             onClick={() => scrollToTop()}
             data-back-to-top
@@ -145,15 +139,6 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
             <ArrowUp className="h-4 w-4" />
           </button>
         </div>
-      </div>
-
-      {/* Oversized wordmark that bleeds off the bottom edge */}
-      <div ref={mark} className={`wordmark-host -mx-5 sm:-mx-8 ${filled ? "is-filled" : ""}`} aria-hidden="true">
-        {["wordmark", "wordmark wordmark-fill"].map((cls) => (
-          <p key={cls} className={`${cls} select-none whitespace-nowrap text-center font-display font-extrabold leading-[0.8] tracking-tight`}>
-            {company.name}
-          </p>
-        ))}
       </div>
     </footer>
   );

@@ -263,8 +263,8 @@ export default function IndustryDetail() {
             {others.map((o, i) => (
               <Reveal key={o.key} delay={i * 70} className="h-full">
                 <Link to={industryPath(o)} className="card card-hover group relative block overflow-hidden">
-                  <div className="relative aspect-[4/5] overflow-hidden bg-raised">
-                    <img src={photos.src(o.image)} alt="" loading="lazy" width={392} height={490} className="img-zoom h-full w-full object-cover" />
+                  <div className="sheen relative aspect-[4/5] overflow-hidden bg-raised">
+                    <img src={photos.src(o.image)} alt="" loading="lazy" width={392} height={490} className="h-full w-full object-cover" />
                     <div className="photo-fade absolute inset-0" />
                     <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-white sm:p-5">
                       <div className="min-w-0">

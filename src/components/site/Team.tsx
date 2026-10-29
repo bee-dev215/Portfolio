@@ -1,10 +1,7 @@
-import { ArrowRight, Linkedin } from "lucide-react";
-import { Link } from "react-router-dom";
-import { company, TeamMember } from "@/data/company";
-import { useTeam } from "@/hooks/use-team";
-import Reveal, { SectionHeading } from "./Reveal";
+import { Linkedin } from "lucide-react";
+import { TeamMember } from "@/data/company";
 
-export const initials = (name: string) =>
+const initials = (name: string) =>
   name
     .split(/\s+/)
     .filter(Boolean)
@@ -15,7 +12,7 @@ export const initials = (name: string) =>
 
 function Portrait({ member }: { member: TeamMember }) {
   if (member.photo) {
-    return <img src={member.photo} alt={`${member.name}, ${member.role}`} loading="lazy" width={480} height={600} className="img-zoom h-full w-full object-cover" />;
+    return <img src={member.photo} alt={`${member.name}, ${member.role}`} loading="lazy" width={480} height={600} className="h-full w-full object-cover" />;
   }
   return (
     <div className="bg-grad grid h-full w-full place-items-center" aria-hidden="true">
@@ -28,7 +25,7 @@ function Portrait({ member }: { member: TeamMember }) {
 export function TeamCard({ member: m }: { member: TeamMember }) {
   return (
     <article className="card card-hover group flex h-full flex-col overflow-hidden">
-      <div className="unveil relative aspect-[4/5] overflow-hidden bg-raised">
+      <div className="unveil sheen relative aspect-[4/5] overflow-hidden bg-raised">
         <Portrait member={m} />
         {m.linkedin && (
           <a
@@ -57,51 +54,5 @@ export function TeamCard({ member: m }: { member: TeamMember }) {
         )}
       </div>
     </article>
-  );
-}
-
-/** Team section: the people in builtInTeam (src/data/company.ts). Renders nothing if nobody is listed. */
-export default function Team() {
-  const { team } = useTeam();
-
-  if (team.length === 0) return null;
-
-  return (
-    <section id="team" className="px-5 py-24 sm:px-8 lg:py-32">
-      <div className="mx-auto max-w-[1240px]">
-        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <SectionHeading
-            label="Team"
-            title={
-              <>
-                Senior engineers, <span className="gradient-text">one small team.</span>
-              </>
-            }
-          >
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-              AI, web, mobile, data and automation engineers, plus product design — working side by side on every {company.shortName} project, from the first call to support.
-            </p>
-          </SectionHeading>
-          <Reveal delay={100}>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-              <p className="flex items-center gap-2 text-sm font-medium text-subtle">
-                <span className="live-dot" /> {team.length} people · {company.availability.toLowerCase()}
-              </p>
-              <Link to="/team" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                Meet the team <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </Reveal>
-        </div>
-
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {team.map((m, i) => (
-            <Reveal key={m.name} delay={(i % 4) * 80} className="h-full">
-              <TeamCard member={m} />
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }

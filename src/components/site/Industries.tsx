@@ -35,8 +35,8 @@ export default function Industries() {
             <Reveal key={ind.key} delay={(i % 3) * 90} className="h-full">
               <article id={`audience-${ind.key}`} className="card card-hover group flex h-full scroll-mt-24 flex-col overflow-hidden">
                 {/* The 4:5 photos are cropped to 4:3 so three cards sit side by side */}
-                <div className="unveil relative aspect-[4/3] overflow-hidden bg-raised">
-                  <img src={photos.src(ind.image)} alt={photos.alt(ind.image, ind.imageAlt)} loading="lazy" width={392} height={490} className="img-zoom h-full w-full object-cover" />
+                <div className="unveil sheen relative aspect-[4/3] overflow-hidden bg-raised">
+                  <img src={photos.src(ind.image)} alt={photos.alt(ind.image, ind.imageAlt)} loading="lazy" width={392} height={490} className="h-full w-full object-cover" />
                   <div className="photo-fade absolute inset-0" aria-hidden="true" />
                   {/* The whole photo opens the industry page (the title link is the keyboard route) */}
                   <Link to={industryPath(ind)} tabIndex={-1} aria-hidden="true" className="absolute inset-0" />

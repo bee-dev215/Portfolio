@@ -140,8 +140,8 @@ export default function About() {
             <li key={g.src} className={i === 0 ? "sm:col-span-2 lg:row-span-2" : ""}>
               <Reveal delay={i * 80} variant={i === 0 ? "scale" : "up"} className="h-full">
                 <figure className="shadow-soft group relative h-full overflow-hidden rounded-3xl bg-raised">
-                  <div className="unveil h-full">
-                    <img src={photos.src(g.src)} alt={photos.alt(g.src, g.alt)} loading="lazy" width={1280} height={800} className={`img-zoom h-full w-full object-cover ${i === 0 ? "aspect-[4/3] lg:aspect-auto" : "aspect-[16/10] lg:aspect-auto"}`} />
+                  <div className="unveil sheen h-full">
+                    <img src={photos.src(g.src)} alt={photos.alt(g.src, g.alt)} loading="lazy" width={1280} height={800} className={`h-full w-full object-cover ${i === 0 ? "aspect-[4/3] lg:aspect-auto" : "aspect-[16/10] lg:aspect-auto"}`} />
                   </div>
                   <div className="photo-fade absolute inset-0" aria-hidden="true" />
                   <figcaption className={`absolute inset-x-0 bottom-0 p-5 font-medium text-white ${i === 0 ? "text-base sm:p-7" : "text-sm"}`}>{g.caption}</figcaption>

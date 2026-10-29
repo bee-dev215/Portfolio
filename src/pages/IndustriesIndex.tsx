@@ -62,8 +62,8 @@ export default function IndustriesIndex() {
               <article className="card card-hover group relative flex h-full flex-col overflow-hidden">
                 {/* The whole card opens the industry page; the title link is the keyboard route, the chips stay separate */}
                 <Link to={industryPath(ind)} tabIndex={-1} aria-hidden="true" className="absolute inset-0 z-[1]" />
-                <div className="relative aspect-[16/10] overflow-hidden bg-raised">
-                  <img src={photos.src(ind.image)} alt={photos.alt(ind.image, ind.imageAlt)} loading="lazy" width={620} height={388} className="img-zoom h-full w-full object-cover" />
+                <div className="sheen relative aspect-[16/10] overflow-hidden bg-raised">
+                  <img src={photos.src(ind.image)} alt={photos.alt(ind.image, ind.imageAlt)} loading="lazy" width={620} height={388} className="h-full w-full object-cover" />
                   <div className="photo-fade absolute inset-0" aria-hidden="true" />
                   <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-7">
                     <p className="text-xs font-semibold uppercase tracking-wider text-white/80">{ind.focus}</p>

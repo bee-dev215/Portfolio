@@ -164,8 +164,8 @@
    Light-first "sky" theme: an airy blue-white canvas, white cards with blue-tinted shadows, slate
    ink, and one brand gradient (blue → sky) for primary actions, highlights and data; dark swaps in
    deep navy. Amber ("sun") is a small warm accent for highlights — the free-prototype offer,
-   badges, progress — never a fill. Motion is calm: rise-ins on scroll, small lifts and a pointer
-   spotlight on hover, a light sweep across primary buttons, slow drifting light behind the page.
+   badges, progress — never a fill. Motion is calm: rise-ins on scroll, a brand border, pointer
+   spotlight and photo sweep on hover (nothing zooms), a light sweep across primary buttons, slow drifting light behind the page.
    ============================================================ */
 .site-root, .on-dark {
   /* Colour tokens as RGB channels so Tailwind opacity modifiers (bg-surface/80) work.
@@ -357,7 +357,7 @@ html[data-theme="dark"] .site-root, .on-dark {
 
 /* ---------- Surfaces ---------- */
 .card { border-radius: 1.375rem; border: 1px solid var(--line); background: rgb(var(--surface-rgb)); box-shadow: var(--shadow-card); }
-.card-hover { position: relative; transition: transform .25s var(--ease), scale .2s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease); }
+.card-hover { position: relative; transition: scale .2s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease); }
 /* Spotlight: a soft sky-blue glow follows the pointer across a hoverable card (useSpotlight writes --mx / --my).
    Add .spotlight to give the glow to something that isn't a .card-hover */
 .card-hover::after, .spotlight::after {
@@ -366,9 +366,10 @@ html[data-theme="dark"] .site-root, .on-dark {
   opacity: 0; transition: opacity .3s;
 }
 .spotlight { position: relative; }
-/* Hover lifts only where there is a real pointer, so a tapped card doesn't stay lifted on a phone */
+/* Hover feedback only where there is a real pointer, so a tapped card doesn't stay lit on a phone. Cards stay put:
+   the border turns brand blue, the shadow deepens and the spotlight follows the pointer */
 @media (hover: hover) and (pointer: fine) {
-  .card-hover:hover { transform: translateY(-3px); border-color: var(--accent-line); box-shadow: var(--shadow-card-lg); }
+  .card-hover:hover { border-color: var(--accent-line); box-shadow: var(--shadow-card-lg); }
   .card-hover:hover::after, .spotlight:hover::after { opacity: 1; }
 }
 .glass { background: rgb(var(--surface-rgb) / .72); backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4); }
@@ -418,8 +419,17 @@ html[data-theme="dark"] .site-root, .on-dark {
 @keyframes ping { 75%, 100% { transform: scale(2.4); opacity: 0; } }
 
 /* ---------- Photography ---------- */
-.img-zoom { transition: transform .7s var(--ease); }
-.group:hover .img-zoom { transform: scale(1.045); }
+/* Photos in hoverable cards don't zoom: a band of light sweeps across once on hover or keyboard focus (the primary
+   button's sweep). Put .sheen on the photo's frame; the band starts and ends outside it, so leaving snaps it back unseen */
+.sheen { position: relative; }
+.sheen::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(105deg, transparent 42%, rgb(255 255 255 / .4) 50%, transparent 58%) 100% 0 / 300% 100% no-repeat;
+}
+@media (hover: hover) and (pointer: fine) {
+  :is(.group:hover .sheen, .sheen.group:hover)::after { background-position: 0 0; transition: background-position .9s var(--ease); }
+}
+:is(.group:focus-visible .sheen, .sheen.group:focus-visible)::after { background-position: 0 0; transition: background-position .9s var(--ease); }
 .photo-fade { pointer-events: none; background: linear-gradient(to bottom, rgb(10 16 32 / 0) 35%, rgb(10 16 32 / .78)); }
 
 }
@@ -438,9 +448,9 @@ html[data-theme="dark"] .site-root, .on-dark {
 .word { display: inline-block; opacity: 0; transform: translateY(.4em); filter: blur(6px); transition: opacity .7s var(--ease), transform .8s var(--ease), filter .7s var(--ease); transition-delay: calc(var(--rv-delay, 0ms) + 80ms + var(--w, 0) * 60ms); }
 .rv-in .word { opacity: 1; transform: none; filter: blur(0); }
 
-/* Photo unveil: a curtain wipes up while the photo settles from a slight zoom (`scale` leaves the hover transform free) */
+/* Photo unveil: a curtain wipes up while the photo settles from a slight zoom */
 .unveil { clip-path: inset(100% 0 0 0); transition: clip-path 1s cubic-bezier(.65, 0, .35, 1) calc(var(--rv-delay, 0ms) + var(--unveil-delay, 120ms)); }
-.unveil img { scale: 1.15; transition: scale 1.6s var(--ease) calc(var(--rv-delay, 0ms) + var(--unveil-delay, 120ms)), transform .7s var(--ease); }
+.unveil img { scale: 1.15; transition: scale 1.6s var(--ease) calc(var(--rv-delay, 0ms) + var(--unveil-delay, 120ms)); }
 .rv-in .unveil { clip-path: inset(-100px); } /* ends past the edges so drop shadows aren't cut off */
 .rv-in .unveil img { scale: 1; }
 
@@ -449,24 +459,6 @@ html[data-theme="dark"] .site-root, .on-dark {
 
 /* Scroll progress line along the bottom of the navbar */
 .scroll-line { transform: scaleX(var(--progress, 0)); transform-origin: left; }
-
-/* Footer wordmark: an outline, oversized and fading out as it bleeds off the bottom edge. Once in view, a gradient fill
-   flows out from the centre to both ends behind a soft edge (the mask widens), then keeps drifting slowly */
-.wordmark-host {
-  container-type: inline-size; position: relative; margin-top: 1.5rem; height: 7.4cqw; overflow: hidden;
-  mask-image: linear-gradient(to bottom, #000 35%, transparent 95%); -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 95%);
-}
-.wordmark { font-size: 10.2cqw; color: transparent; -webkit-text-stroke: 1px rgb(var(--brand-text-rgb) / .28); }
-.wordmark-fill {
-  position: absolute; inset: 0 0 auto; -webkit-text-stroke: 0;
-  background: linear-gradient(90deg, rgb(var(--brand-rgb)), rgb(var(--iris-rgb)), rgb(var(--sky-rgb)), rgb(var(--iris-rgb)), rgb(var(--brand-rgb))) 0 0 / 200% 100%;
-  -webkit-background-clip: text; background-clip: text;
-  --fill-mask: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
-  mask: var(--fill-mask) 50% 0 / 0% 100% no-repeat; -webkit-mask: var(--fill-mask) 50% 0 / 0% 100% no-repeat;
-  transition: mask-size 2.4s cubic-bezier(.5, 0, .2, 1), -webkit-mask-size 2.4s cubic-bezier(.5, 0, .2, 1);
-}
-.wordmark-host.is-filled .wordmark-fill { mask-size: 160% 100%; -webkit-mask-size: 160% 100%; animation: wordmark-flow 12s linear infinite; }
-@keyframes wordmark-flow { to { background-position: 200% 0; } }
 
 /* Footer details */
 .foot-cta { box-shadow: 0 40px 80px -40px rgb(var(--brand-rgb) / .8), inset 0 1px 0 rgb(255 255 255 / .2); }
@@ -548,6 +540,11 @@ a.card-hover:active, button.card-hover:active { scale: .985; }
 @keyframes mega-in { from { opacity: 0; transform: translateY(-6px); } }
 .mega-swap { animation: mega-swap .25s var(--ease) both; }
 @keyframes mega-swap { from { opacity: 0; } }
+/* The menu photo: top-right corner cut off, a navy wash under the caption, a slow zoom on hover */
+.mega-feature { clip-path: polygon(0 0, calc(100% - 36px) 0, 100% 36px, 100% 100%, 0 100%); }
+.mega-feature::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(100deg, rgb(11 27 63 / .88), rgb(11 27 63 / .55) 60%, rgb(11 27 63 / .3)); }
+.mega-feature img { transition: opacity .3s, transform .6s var(--ease); }
+.mega-feature:hover img { transform: scale(1.04); }
 
 /* Staggered children (set --i on each child) */
 .stagger > * { opacity: 0; transform: translateY(8px); }
@@ -605,9 +602,8 @@ a.card-hover:active, button.card-hover:active { scale: .985; }
   .sol-panel, .sol-panel.is-active { flex: 1 1 0; min-width: 0; height: auto; }
   .sol-panel.is-active { flex-grow: 5; }
 }
-.sol-panel-img { transform: scale(1.12); filter: saturate(.55); transition: transform 1.2s var(--ease), filter .8s var(--ease); }
-.sol-panel.is-active .sol-panel-img { transform: none; filter: none; }
-.sol-panel.is-active:hover .sol-panel-img { transform: scale(1.04); }
+.sol-panel-img { filter: saturate(.55); transition: filter .8s var(--ease); }
+.sol-panel.is-active .sol-panel-img { filter: none; }
 .sol-panel-tint { pointer-events: none; background: linear-gradient(to top, rgb(10 16 32 / .8), rgb(var(--brand-rgb) / .35)); transition: opacity .6s var(--ease); }
 .sol-panel.is-active .sol-panel-tint { opacity: 0; }
 .sol-panel-spine { transition: opacity .4s var(--ease) .35s; }
@@ -665,9 +661,8 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
   .unveil img { scale: none; }
   .drift { translate: none; }
   .scroll-line { display: none; }
-  .wordmark-fill { mask-size: 160% 100%; -webkit-mask-size: 160% 100%; transition: none; animation: none !important; }
-  .img-zoom, .card-hover, .btn { transition: none; }
-  .group:hover .img-zoom, .card-hover:hover { transform: none; }
+  .card-hover, .btn { transition: none; }
+  .sheen::after { display: none; }
   .marquee, .live-dot::after, .caret::after, .typing > i, .msg-in, .bar-grow, .modal-in, .kenburns, .mega-in, .mega-swap { animation: none; }
   .viewer-rise > * { opacity: 1; transform: none; animation: none; }
   .site-root :is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up, .lucide-arrow-down, .lucide-arrow-up-right, .lucide-chevron-right, .lucide-chevron-left, .lucide-send) { translate: none; }
@@ -678,10 +673,11 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
   .flow-step { opacity: 1; transform: none; animation: none !important; }
   .flow-pulse { display: none; }
   .proj-tile-shade, .proj-tile-more { transition: none; }
+  .mega-feature img { transition: none; }
+  .mega-feature:hover img { transform: none; }
   .stack-inner, .stack-num, .stack-item { transform: none; translate: none; opacity: 1; transition: none; }
   .stack-photo { scale: none; transition: none; }
   .sol-panel, .sol-panel-img, .sol-panel-tint, .sol-panel-spine, .sol-panel-body > * { clip-path: none; transition: none; }
-  .sol-panel-img, .sol-panel.is-active:hover .sol-panel-img { transform: none; }
 }
 
 /* A site photo has no src while its replacement (if any) loads: see usePhotos() */

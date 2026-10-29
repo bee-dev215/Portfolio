@@ -205,8 +205,8 @@ export default function SolutionViewer({
               <ArrowLeft className="h-4 w-4" />
             </button>
             <button onClick={() => go("next")} className="group flex min-w-0 flex-1 items-center gap-4 rounded-2xl p-2 text-left transition-colors hover:bg-raised">
-              <span className="h-12 w-16 shrink-0 overflow-hidden rounded-xl bg-raised">
-                {upNext.image && <img src={photos.src(upNext.image)} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />}
+              <span className="sheen h-12 w-16 shrink-0 overflow-hidden rounded-xl bg-raised">
+                {upNext.image && <img src={photos.src(upNext.image)} alt="" className="h-full w-full object-cover" />}
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-xs font-semibold uppercase tracking-wider text-subtle">Next</span>

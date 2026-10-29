@@ -1,5 +1,5 @@
 import { FocusEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Building2, CalendarDays, ChevronDown, Cpu, LucideIcon, Mail, Menu, Phone, Route, ShieldCheck, Users, X } from "lucide-react";
+import { ArrowRight, Building2, CalendarDays, ChevronDown, Cpu, LucideIcon, Mail, Menu, Route, ShieldCheck, Users, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   bookCall,
@@ -17,7 +17,6 @@ import {
 import { Project, projectPath } from "@/data/projects";
 import { useProjects } from "@/hooks/use-projects";
 import { usePhotos } from "@/hooks/use-photos";
-import { useTeam } from "@/hooks/use-team";
 import { serviceIcons } from "./icons";
 import ThemeToggle from "./ThemeToggle";
 
@@ -70,10 +69,9 @@ const companyIcons: Record<CompanyMenuKey, LucideIcon> = { about: Building2, app
 interface MenuItem {
   key: string;
   label: string;
-  desc: string; // short line under the label
-  blurb: string; // longer text in the preview
+  desc: string; // short line under the label in the phone menu
+  blurb: string; // caption over the photo while the item is hovered
   image?: string;
-  preview?: "team" | "contact"; // drawn previews for items without a photo
   icon?: LucideIcon;
   to: string;
 }
@@ -81,21 +79,30 @@ interface MenuItem {
 interface MenuGroup {
   key: string;
   label: string;
-  intro: string; // one line under the panel's heading
+  eyebrow: string; // small caps line above the items
+  caption: string; // over the photo until an item is hovered
+  image: string; // the menu's own photo
   paths: string[]; // the trigger lights up on these pages…
   sections: string[]; // …and while one of these home sections is in view
   all: { label: string; to: string };
   items: MenuItem[];
 }
 
+const numberWords = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
+
+/** 8 → "Eight", for the menu eyebrows */
+const spell = (n: number) => numberWords[n] ?? String(n);
+
 /** The Our work menu, built from the projects. */
 const projectsMenu = (projects: Project[], ready: boolean): MenuGroup => ({
   key: "projects",
   label: "Our work",
-  intro: "Software we've built to take busywork off people's desks",
+  eyebrow: ready ? `${spell(projects.length)} case studies` : "Case studies",
+  caption: "Software we've built to take busywork off people's desks, from field apps to AI assistants.",
+  image: "/images/tech-code.webp",
   paths: ["/projects"],
   sections: ["projects"],
-  all: { label: ready ? `All ${projects.length} projects` : "All projects", to: "/projects" },
+  all: { label: "All projects", to: "/projects" },
   items: projects.map((p) => ({
     key: `project-${p.slug}`,
     label: p.title,
@@ -111,10 +118,12 @@ const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
   {
     key: "services",
     label: "Services",
-    intro: "Engineering from a two-week prototype to production",
+    eyebrow: `${spell(services.length)} engineering services`,
+    caption: "From a two-week prototype to production: AI, custom web, mobile and desktop software, automation, cloud and data.",
+    image: "/images/svc-build.webp",
     paths: ["/services"],
     sections: ["services"],
-    all: { label: `All ${services.length} services`, to: "/services" },
+    all: { label: "All services", to: "/services" },
     items: services.map((s) => ({
       key: `service-${s.key}`,
       label: s.title,
@@ -128,10 +137,12 @@ const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
   {
     key: "solutions",
     label: "Solutions",
-    intro: "Ready-made starting points for the most common busywork",
+    eyebrow: `${spell(solutions.length)} ready-made solutions`,
+    caption: "Ready-made starting points for the most common busywork, fitted to your own documents, tools and team.",
+    image: "/images/about-pairing.webp",
     paths: ["/solutions"],
     sections: ["solutions"],
-    all: { label: `All ${solutions.length} solutions`, to: "/solutions" },
+    all: { label: "All solutions", to: "/solutions" },
     items: solutions.map((s) => ({
       key: `solution-${s.id}`,
       label: s.title,
@@ -144,10 +155,12 @@ const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
   {
     key: "industries",
     label: "Industries",
-    intro: "Teams whose weeks we give back",
+    eyebrow: `${spell(industries.length)} industries we serve`,
+    caption: "Teams whose weeks we give back — in clinics, on job sites, in offices and in warehouses.",
+    image: "/images/hero-work.webp",
     paths: ["/industries"],
     sections: ["industries"],
-    all: { label: `All ${industries.length} industries`, to: "/industries" },
+    all: { label: "All industries", to: "/industries" },
     items: industries.map((ind) => ({
       key: `industry-${ind.key}`,
       label: ind.title,
@@ -160,9 +173,11 @@ const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
   {
     key: "company",
     label: "Company",
-    intro: "Who we are, how we work and how to reach us",
+    eyebrow: `Inside ${company.name}`,
+    caption: "Who we are, how we work and how to reach us — senior engineers you talk to directly.",
+    image: "/images/company-team.webp",
     paths: [...companyMenu.map((c) => c.to), "/faq"],
-    sections: ["process", "technology", "company", "team", "faq", "contact"],
+    sections: ["process", "technology", "company", "faq", "contact"],
     all: { label: "Questions & answers", to: "/faq" },
     items: companyMenu.map((c) => ({
       key: `company-${c.key}`,
@@ -170,7 +185,6 @@ const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
       desc: c.desc,
       blurb: c.desc,
       image: c.image,
-      preview: c.key === "team" || c.key === "contact" ? c.key : undefined,
       icon: companyIcons[c.key],
       to: c.to,
     })),
@@ -179,87 +193,43 @@ const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
 
 const preloaded = new Set<string>();
 
-/** Warms the browser cache for a menu's preview photos, so hovering never shows an empty frame. */
+/** Warms the browser cache for a menu's photos, so hovering never shows an empty frame. */
 function preload(group: MenuGroup) {
-  for (const it of group.items) {
-    if (!it.image || preloaded.has(it.image)) continue;
-    preloaded.add(it.image);
-    new Image().src = it.image;
+  for (const src of [group.image, ...group.items.map((it) => it.image)]) {
+    if (!src || preloaded.has(src)) continue;
+    preloaded.add(src);
+    new Image().src = src;
   }
 }
 
 // ------------------------------------------------------------
-//  Preview column
+//  Menu photo
 // ------------------------------------------------------------
 
-const frame = "relative grid aspect-[16/9] w-full place-items-center overflow-hidden rounded-2xl border border-line";
-
-function TeamPreview() {
-  const { team } = useTeam();
-  const faces = team.filter((m) => m.photo).slice(0, 5);
-  const more = team.length - faces.length;
+/** The menu's photo and caption; the hovered item's photo and blurb fade in over them. */
+function MenuPhoto({ group, peek, onClick }: { group: MenuGroup; peek: number | null; onClick: () => void }) {
+  const current = peek === null ? undefined : group.items[peek];
   return (
-    <div className={`${frame} bg-brand-soft`}>
-      <div className="mesh absolute inset-0 opacity-70" />
-      <div className="relative flex items-center">
-        {faces.map((m, i) => (
-          <img key={m.name} src={m.photo} alt="" width={52} height={52} className={`h-[52px] w-[52px] rounded-full border-[3px] border-surface object-cover ${i ? "-ml-4" : ""}`} />
-        ))}
-        {more > 0 && <span className="-ml-4 grid h-[52px] w-[52px] place-items-center rounded-full border-[3px] border-surface bg-grad text-sm font-bold text-white">+{more}</span>}
-      </div>
-    </div>
-  );
-}
-
-function ContactPreview() {
-  return (
-    <div className={`${frame} bg-brand-soft p-5`}>
-      <div className="mesh absolute inset-0 opacity-70" />
-      <ul className="relative w-full space-y-2 text-sm">
-        <li className="flex items-center gap-2.5 font-semibold">
-          <span className="grid h-7 w-7 place-items-center">
-            <span className="live-dot" />
-          </span>
-          {company.availability}
-        </li>
-        <li className="flex items-center gap-2.5 text-ink-2">
-          <Mail className="h-7 w-7 rounded-lg bg-surface p-1.5 text-brand-text" /> <span className="truncate">{company.email}</span>
-        </li>
-        <li className="flex items-center gap-2.5 text-ink-2">
-          <Phone className="h-7 w-7 rounded-lg bg-surface p-1.5 text-brand-text" /> {company.phone}
-        </li>
-      </ul>
-    </div>
-  );
-}
-
-function IconPreview({ icon: Icon }: { icon: LucideIcon }) {
-  return (
-    <div className={`${frame} bg-brand-soft`}>
-      <div className="mesh absolute inset-0 opacity-70" />
-      <span className="icon-tile relative h-16 w-16 rounded-2xl">
-        <Icon className="h-8 w-8" />
-      </span>
-    </div>
-  );
-}
-
-function Preview({ item }: { item: MenuItem }) {
-  return (
-    // Keyed by item so each change cross-fades
-    <div key={item.key} className="mega-swap">
-      {item.preview === "team" ? (
-        <TeamPreview />
-      ) : item.preview === "contact" ? (
-        <ContactPreview />
-      ) : item.image ? (
-        <img src={item.image} alt="" width={300} height={169} className={`${frame} bg-raised object-cover`} />
-      ) : (
-        item.icon && <IconPreview icon={item.icon} />
+    // Mouse users can click the photo too; keyboard and screen-reader users already have the item's own link
+    <Link
+      to={current?.to ?? group.all.to}
+      onClick={onClick}
+      tabIndex={-1}
+      aria-hidden="true"
+      className="mega-feature relative flex min-h-[260px] items-center overflow-hidden bg-raised p-8 text-white hover:text-white"
+    >
+      <img src={group.image} alt="" width={640} height={400} className="absolute inset-0 h-full w-full object-cover" />
+      {group.items.map(
+        (it, i) =>
+          it.image && (
+            <img key={it.key} src={it.image} alt="" width={640} height={400} className={`absolute inset-0 h-full w-full object-cover ${peek === i ? "opacity-100" : "opacity-0"}`} />
+          ),
       )}
-      <p className="mt-4 font-display text-base font-bold tracking-tight">{item.label}</p>
-      <p className="mt-1 line-clamp-4 text-sm leading-relaxed text-subtle">{item.blurb}</p>
-    </div>
+      {/* Keyed by item so each change cross-fades */}
+      <span key={current?.key ?? "menu"} className="mega-swap relative z-[2] line-clamp-5 max-w-[440px] font-display text-lg font-semibold leading-[1.55]">
+        {current?.blurb ?? group.caption}
+      </span>
+    </Link>
   );
 }
 
@@ -274,7 +244,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false); // phone menu
   const [expanded, setExpanded] = useState<string | null>(null); // phone menu: the group shown
   const [menu, setMenu] = useState<string | null>(null); // desktop: the open group
-  const [peek, setPeek] = useState(0); // desktop: the previewed item
+  const [peek, setPeek] = useState<number | null>(null); // desktop: the hovered item, shown in the photo
   const [fresh, setFresh] = useState(false); // the panel drops in only when opening from closed
   const { projects, ready } = useProjects();
   const photos = usePhotos();
@@ -297,7 +267,7 @@ export default function Navbar() {
     preload(menus.find((g) => g.key === key)!);
     setFresh(menu === null);
     setMenu(key);
-    setPeek(0);
+    setPeek(null);
   };
 
   const hide = () => {
@@ -369,7 +339,11 @@ export default function Navbar() {
       onKeyDown={onKeyDown}
       onBlur={onBlur}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled || open || menu ? "glass border-b border-line shadow-[0_8px_30px_-20px_rgb(var(--shadow-rgb)/.5)]" : "border-b border-transparent"
+        menu
+          ? "border-b border-line bg-surface"
+          : scrolled || open
+            ? "glass border-b border-line shadow-[0_8px_30px_-20px_rgb(var(--shadow-rgb)/.5)]"
+            : "border-b border-transparent"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-[1240px] items-center gap-4 px-5 sm:px-8 lg:h-[72px]">
@@ -385,12 +359,11 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <nav className="mx-auto hidden items-center gap-1 rounded-full border border-line bg-surface/60 p-1 lg:flex" aria-label="Primary">
+        <nav className="mx-auto hidden self-stretch lg:flex" aria-label="Primary">
           {menus.map((g) => {
             const isOpen = menu === g.key;
-            const current = g.items[Math.min(peek, g.items.length - 1)];
             return (
-              <div key={g.key}>
+              <div key={g.key} className="flex">
                 <button
                   ref={(el) => (triggers.current[g.key] = el)}
                   onPointerEnter={(e) => {
@@ -401,9 +374,10 @@ export default function Navbar() {
                   onClick={() => onTriggerClick(g.key)}
                   aria-expanded={isOpen}
                   aria-controls={`menu-${g.key}`}
-                  className={`flex items-center gap-1 rounded-full py-1.5 pl-4 pr-3 text-sm font-medium transition-colors ${
-                    isOpen ? "bg-brand-soft text-brand-text" : isActive(g) ? "text-brand-text hover:bg-raised" : "text-ink-2 hover:bg-raised hover:text-ink"
-                  }`}
+                  // The underline sits on the header's bottom edge, above the scroll progress line; while a menu is open only its trigger has one
+                  className={`relative flex items-center gap-1 whitespace-nowrap px-2.5 font-display text-sm font-semibold transition-colors after:absolute after:inset-x-2 after:-bottom-px after:z-[1] after:h-0.5 after:bg-brand-text after:transition-transform after:duration-200 xl:px-4 xl:text-[15px] xl:after:inset-x-3 ${
+                    isOpen || isActive(g) ? "text-brand-text" : "text-ink hover:text-brand-text"
+                  } ${isOpen || (!menu && isActive(g)) ? "after:scale-x-100" : "after:scale-x-0"}`}
                 >
                   {g.label}
                   <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
@@ -411,48 +385,38 @@ export default function Navbar() {
 
                 {/* The panel follows its trigger in the DOM, so Tab walks from a trigger into its menu */}
                 {isOpen && (
-                  <div id={`menu-${g.key}`} className={`absolute inset-x-0 top-full px-5 pt-2 sm:px-8 ${fresh ? "mega-in" : ""}`}>
-                    {/* Three columns: what the menu covers, its items (text only; photos show in the preview), and the preview */}
-                    <div className="shadow-soft mx-auto grid max-w-[1240px] grid-cols-[210px_1fr_270px] overflow-hidden rounded-3xl border border-line bg-surface xl:grid-cols-[240px_1fr_300px]">
-                      <div key={g.key} className="mega-swap flex flex-col justify-between gap-8 border-r border-line bg-raised/50 p-6">
-                        <div>
-                          <p className="font-display text-xl font-bold tracking-tight">{g.label}</p>
-                          <p className="mt-2 text-sm leading-relaxed text-subtle">{g.intro}</p>
-                          <Link to={g.all.to} onClick={close} className="group mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                            {g.all.label} <ArrowRight className="h-4 w-4" />
-                          </Link>
-                        </div>
-                        <div className="border-t border-line pt-4 text-sm">
-                          <p className="text-subtle">Not sure where to start?</p>
-                          <button onClick={book} className="u-link mt-1 font-semibold text-ink">
-                            Book a free call
-                          </button>
-                        </div>
+                  <div id={`menu-${g.key}`} onPointerLeave={() => setPeek(null)} className={`shadow-soft absolute inset-x-0 top-full border-t border-line bg-surface ${fresh ? "mega-in" : ""}`}>
+                    {/* The full width of the page: the photo on the left, the items in two columns on the right */}
+                    <div className="mega-swap mx-auto grid max-w-[1240px] grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] gap-8 px-5 pb-10 pt-9 sm:px-8 xl:gap-12">
+                      <MenuPhoto group={g} peek={peek} onClick={close} />
+                      <div className="border-l border-line pl-7">
+                        <p className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-subtle">{g.eyebrow}</p>
+                        <ul className="grid grid-cols-2 gap-x-8 gap-y-1">
+                          {g.items.map((it, i) => (
+                            <li key={it.key}>
+                              <Link
+                                to={it.to}
+                                onPointerEnter={() => setPeek(i)}
+                                onFocus={() => setPeek(i)}
+                                onClick={close}
+                                className={`block py-2.5 font-display text-base font-medium leading-snug transition-[color,transform] duration-150 ${
+                                  peek === i ? "translate-x-[3px] text-brand-text" : "text-ink"
+                                }`}
+                              >
+                                {it.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                        <Link
+                          to={g.all.to}
+                          onFocus={() => setPeek(null)}
+                          onClick={close}
+                          className="mt-[18px] inline-flex items-center gap-1.5 font-display text-[15px] font-semibold text-brand-text"
+                        >
+                          {g.all.label} <ArrowRight className="h-4 w-4" />
+                        </Link>
                       </div>
-                      <ul key={`${g.key}-items`} className="mega-swap grid grid-cols-2 content-start gap-1 p-4 xl:p-5">
-                        {g.items.map((it, i) => (
-                          <li key={it.key}>
-                            <Link
-                              to={it.to}
-                              onPointerEnter={() => setPeek(i)}
-                              onFocus={() => setPeek(i)}
-                              onClick={close}
-                              className={`block h-full rounded-xl px-4 py-3 transition-colors ${peek === i ? "bg-raised" : ""}`}
-                            >
-                              <span className={`block font-display text-[15px] font-semibold leading-snug transition-colors ${peek === i ? "text-brand-text" : ""}`}>{it.label}</span>
-                              <span className="mt-0.5 line-clamp-2 block text-[13px] leading-snug text-subtle">{it.desc}</span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                      {/* Mouse users can click the preview too; keyboard and screen-reader users already have the item's own link */}
-                      <aside className="border-l border-line p-5" aria-hidden="true">
-                        {current && (
-                          <Link to={current.to} onClick={close} tabIndex={-1} className="block">
-                            <Preview item={current} />
-                          </Link>
-                        )}
-                      </aside>
                     </div>
                   </div>
                 )}
@@ -463,7 +427,7 @@ export default function Navbar() {
 
         <div className="ml-auto flex items-center gap-2 lg:ml-0">
           <ThemeToggle />
-          <Link to="/book" className="btn btn-primary hidden px-5 py-2.5 text-sm sm:inline-flex">
+          <Link to="/book" className="btn btn-primary hidden whitespace-nowrap px-5 py-2.5 text-sm sm:inline-flex">
             Book a call <CalendarDays className="h-4 w-4" />
           </Link>
           <button

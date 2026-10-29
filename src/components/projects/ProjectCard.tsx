@@ -8,8 +8,8 @@ import { serviceIcons } from "@/components/site/icons";
 export default function ProjectCard({ project, compact = false }: { project: Project; compact?: boolean }) {
   return (
     <Link to={projectPath(project)} className="card card-hover group flex h-full flex-col overflow-hidden">
-      <div className="relative aspect-[16/10] overflow-hidden bg-raised">
-        <img src={project.image} alt="" loading="lazy" width={640} height={400} className="img-zoom h-full w-full object-cover" />
+      <div className="sheen relative aspect-[16/10] overflow-hidden bg-raised">
+        <img src={project.image} alt="" loading="lazy" width={640} height={400} className="h-full w-full object-cover" />
         <div className="photo-fade absolute inset-0" aria-hidden="true" />
         <span className="absolute left-4 top-4 rounded-full bg-black/35 px-3 py-1 text-xs font-semibold text-white backdrop-blur">{audienceTitle(project)}</span>
         <span className="absolute right-4 top-4 rounded-full bg-black/35 px-2.5 py-1 text-xs font-semibold tabular-nums text-white backdrop-blur">{project.year}</span>

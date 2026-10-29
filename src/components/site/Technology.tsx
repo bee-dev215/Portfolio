@@ -41,8 +41,8 @@ export default function Technology({ more = true }: { more?: boolean }) {
             <li key={title}>
               <Reveal delay={i * 90} className="h-full">
                 <div className="shadow-soft group relative aspect-[16/11] overflow-hidden rounded-3xl bg-raised md:aspect-[4/5] lg:aspect-[16/12]">
-                  <div className="unveil absolute inset-0" style={{ "--unveil-delay": `${120 + i * 110}ms` } as CSSProperties}>
-                    <img src={photos.src(image)} alt="" loading="lazy" width={640} height={400} className="img-zoom h-full w-full object-cover" />
+                  <div className="unveil sheen absolute inset-0" style={{ "--unveil-delay": `${120 + i * 110}ms` } as CSSProperties}>
+                    <img src={photos.src(image)} alt="" loading="lazy" width={640} height={400} className="h-full w-full object-cover" />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-[rgb(10_16_32/.88)] via-[rgb(10_16_32/.25)] via-45% to-transparent" aria-hidden="true" />
                   <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 p-5 text-white">

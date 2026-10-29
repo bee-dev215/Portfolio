@@ -45,9 +45,9 @@ function HeroMosaic({ projects }: { projects: Project[] }) {
         <Link
           key={p.slug}
           to={projectPath(p)}
-          className={`shadow-soft group relative block overflow-hidden rounded-3xl bg-raised ${i % 2 ? "translate-y-8" : ""}`}
+          className={`sheen shadow-soft group relative block overflow-hidden rounded-3xl bg-raised ${i % 2 ? "translate-y-8" : ""}`}
         >
-          <img src={p.image} alt={p.imageAlt} width={640} height={400} className="img-zoom aspect-[4/5] w-full object-cover" />
+          <img src={p.image} alt={p.imageAlt} width={640} height={400} className="aspect-[4/5] w-full object-cover" />
           <div className="photo-fade absolute inset-0" aria-hidden="true" />
           <p className="absolute inset-x-0 bottom-0 p-4 font-display text-sm font-bold leading-tight text-white sm:text-base">{p.title}</p>
         </Link>
@@ -61,8 +61,8 @@ function FeaturedProject({ project }: { project: Project }) {
   return (
     <Reveal variant="scale">
       <article className="card group grid overflow-hidden lg:grid-cols-[1.15fr_.85fr]">
-        <Link to={projectPath(project)} className="relative block min-h-[16rem] overflow-hidden bg-raised" tabIndex={-1} aria-hidden="true">
-          <img src={project.image} alt="" width={1280} height={800} className="img-zoom absolute inset-0 h-full w-full object-cover" />
+        <Link to={projectPath(project)} className="sheen relative block min-h-[16rem] overflow-hidden bg-raised" tabIndex={-1} aria-hidden="true">
+          <img src={project.image} alt="" width={1280} height={800} className="absolute inset-0 h-full w-full object-cover" />
           <span className="absolute left-5 top-5 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-[#1e40af] backdrop-blur">
             <Sparkles className="h-3.5 w-3.5" /> Featured project
           </span>

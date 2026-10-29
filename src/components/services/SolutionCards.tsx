@@ -14,8 +14,8 @@ export default function SolutionCards({ titles }: { titles: string[] }) {
       {list.map((s, i) => (
         <Reveal key={s.id} delay={i * 80} className="h-full">
           <Link to={solutionPath(s)} className="card card-hover group flex h-full flex-col overflow-hidden">
-            <div className="relative aspect-[16/10] overflow-hidden bg-raised">
-              <img src={photos.src(s.image)} alt="" loading="lazy" width={480} height={300} className="img-zoom h-full w-full object-cover" />
+            <div className="sheen relative aspect-[16/10] overflow-hidden bg-raised">
+              <img src={photos.src(s.image)} alt="" loading="lazy" width={480} height={300} className="h-full w-full object-cover" />
               <span className="glass absolute left-3 top-3 rounded-full px-3 py-1 text-[11px] font-semibold text-ink">{s.category}</span>
             </div>
             <div className="flex flex-1 flex-col p-5 sm:p-6">

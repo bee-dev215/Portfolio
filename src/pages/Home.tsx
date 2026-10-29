@@ -8,7 +8,6 @@ import Outcomes from "@/components/site/Outcomes";
 import Process from "@/components/site/Process";
 import Technology from "@/components/site/Technology";
 import Company from "@/components/site/Company";
-import Team from "@/components/site/Team";
 import TrustBand from "@/components/site/TrustBand";
 import Faq from "@/components/site/Faq";
 import Contact from "@/components/site/Contact";
@@ -39,7 +38,6 @@ export default function Home() {
       <Process />
       <Technology />
       <Company />
-      <Team />
       <TrustBand />
       <Faq />
       <Contact />
