@@ -1,6 +1,4 @@
 import {
-  ArrowRight,
-  ArrowUpRight,
   Ban,
   Cloud,
   EyeOff,
@@ -72,10 +70,10 @@ export default function ResponsibleAi() {
         actions={
           <>
             <button onClick={() => bookCall("Security & data protection")} className="btn btn-primary px-7 py-3.5">
-              Book a call <ArrowUpRight className="h-4 w-4" />
+              Book a call
             </button>
             <a href="#lifecycle" className="btn btn-secondary px-7 py-3.5">
-              Follow your data <ArrowRight className="h-4 w-4" />
+              Follow your data
             </a>
           </>
         }
@@ -128,7 +126,7 @@ export default function ResponsibleAi() {
           >
             <p className="mt-5 text-lg leading-relaxed text-ink-2">AI is only useful when you can check it. These safeguards are built into every assistant and agent we ship.</p>
             <Link to="/technology" className="btn btn-secondary mt-8 px-6 py-3 text-sm">
-              How we test AI <ArrowRight className="h-4 w-4" />
+              How we test AI
             </Link>
           </SectionHeading>
           <ol className="grid gap-4 sm:grid-cols-2">
@@ -206,7 +204,7 @@ export default function ResponsibleAi() {
               </span>
               <h2 className="mt-5 font-display text-3xl font-bold leading-tight tracking-tight sm:text-4xl">Client work stays off the record.</h2>
               <Link to="/about" className="u-link mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                Why you won't see client logos <ArrowRight className="h-4 w-4" />
+                Why you won't see client logos
               </Link>
             </div>
             <ul className="space-y-6">

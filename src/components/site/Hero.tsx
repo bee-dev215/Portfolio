@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, CalendarDays, Gift, GitBranch, ShieldCheck, Timer } from "lucide-react";
+import { CalendarDays, Gift, GitBranch, ShieldCheck, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { company, industries, offer, servicePath, services } from "@/data/company";
 import { projectPath } from "@/data/projects";
@@ -59,7 +59,7 @@ export default function Hero() {
               Book a free call <CalendarDays className="h-4 w-4" />
             </Link>
             <Link to="/projects" className="btn btn-secondary px-7 py-3.5">
-              See our work <ArrowRight className="h-4 w-4" />
+              See our work
             </Link>
           </div>
 
@@ -68,8 +68,8 @@ export default function Hero() {
               <Link to="/book" className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[13px] font-semibold transition-colors hover:border-brand/30">
                 <Gift className="h-3.5 w-3.5 text-sun" /> {offer.badge}
                 <span className="text-subtle">·</span>
-                <span className="inline-flex items-center gap-1 text-brand-text">
-                  Free prototype <ArrowUpRight className="h-3 w-3" />
+                <span className="text-brand-text">
+                  Free prototype
                 </span>
               </Link>
             </li>
@@ -126,7 +126,6 @@ export default function Hero() {
                       <span className="block truncate text-[15px] font-semibold">{service.title}</span>
                       <span className="block truncate text-[13px] text-subtle">{line}</span>
                     </span>
-                    <ArrowUpRight className="h-4 w-4 shrink-0 text-subtle transition-colors group-hover:text-brand-text" />
                   </Link>
                 </li>
               );
@@ -136,7 +135,7 @@ export default function Hero() {
           <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-4 text-[13px]">
             <span className="truncate text-subtle">{industries.slice(0, 3).map((i) => i.title).join(" · ")}</span>
             <Link to="/services" className="inline-flex shrink-0 items-center gap-1 font-semibold transition-colors hover:text-brand-text">
-              All {services.length} services <ArrowRight className="h-3.5 w-3.5" />
+              All {services.length} services
             </Link>
           </div>
         </aside>
@@ -151,7 +150,7 @@ export default function Hero() {
               <p className="mt-1 text-sm text-subtle">Built for teams in healthcare, construction, real estate, legal and e-commerce.</p>
             </div>
             <Link to="/projects" className="inline-flex items-center gap-1 text-sm font-semibold text-brand-text">
-              All case studies <ArrowRight className="h-3.5 w-3.5" />
+              All case studies
             </Link>
           </div>
           <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -166,7 +165,6 @@ export default function Hero() {
                     <span className="block truncate text-sm font-semibold">{p.title}</span>
                     <span className="block truncate text-xs text-subtle">{industryTitle(p.audience)}</span>
                   </span>
-                  <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-subtle transition-colors group-hover:text-brand-text" />
                 </Link>
               </li>
             ))}

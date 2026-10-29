@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Check, Plug, ShieldCheck } from "lucide-react";
+import { Check, Plug, ShieldCheck } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -37,7 +37,7 @@ export default function IndustryDetail() {
         actions={
           <>
             <button onClick={() => bookCall(industry.title)} className="btn btn-primary px-7 py-3.5">
-              Book a call <ArrowUpRight className="h-4 w-4" />
+              Book a call
             </button>
             <button onClick={() => scrollToId("use-cases")} className="btn btn-secondary px-7 py-3.5">
               See use cases
@@ -222,7 +222,7 @@ export default function IndustryDetail() {
               }
             >
               <button onClick={() => startEnquiry(industry.title)} className="btn btn-secondary mt-8 px-6 py-3 text-sm">
-                Send us your question <ArrowUpRight className="h-4 w-4" />
+                Send us your question
               </button>
             </SectionHeading>
           </div>
@@ -254,7 +254,7 @@ export default function IndustryDetail() {
             />
             <Reveal>
               <Link to="/industries" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-                All industries <ArrowRight className="h-4 w-4" />
+                All industries
               </Link>
             </Reveal>
           </div>
@@ -271,7 +271,6 @@ export default function IndustryDetail() {
                         <p className="font-display text-lg font-bold leading-tight sm:text-xl">{o.title}</p>
                         <p className="mt-0.5 text-xs text-white/80">{o.focus}</p>
                       </div>
-                      <ArrowUpRight className="h-5 w-5 shrink-0" />
                     </div>
                   </div>
                 </Link>

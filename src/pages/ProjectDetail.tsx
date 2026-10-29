@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Clock, Gauge, Layers, ShieldCheck, Target, Users, Workflow } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Clock, Gauge, Layers, ShieldCheck, Target, Users, Workflow } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -71,7 +71,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
         actions={
           <>
             <button onClick={() => bookCall(project.title)} className="btn btn-primary px-7 py-3.5">
-              Book a call <ArrowUpRight className="h-4 w-4" />
+              Book a call
             </button>
             <button onClick={() => scrollToSection("architecture")} className="btn btn-secondary px-7 py-3.5">
               <Workflow className="h-4 w-4" /> See the architecture
@@ -295,7 +295,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
             </SectionHeading>
             <Reveal delay={100}>
               <Link to="/technology" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-                Our technology <ArrowRight className="h-4 w-4" />
+                Our technology
               </Link>
             </Reveal>
           </div>
@@ -345,7 +345,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
                   ))}
                 </ul>
                 <Link to="/responsible-ai" className="u-link mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                  How we handle security & AI <ArrowRight className="h-4 w-4" />
+                  How we handle security & AI
                 </Link>
               </div>
             </Reveal>
@@ -398,7 +398,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
             <div className="flex flex-wrap items-end justify-between gap-4">
               <h2 className="font-display text-3xl font-bold tracking-tight">Related projects</h2>
               <Link to="/projects" className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                All {projects.length} projects <ArrowRight className="h-4 w-4" />
+                All {projects.length} projects
               </Link>
             </div>
             <div className="mt-8 grid gap-6 md:grid-cols-3">

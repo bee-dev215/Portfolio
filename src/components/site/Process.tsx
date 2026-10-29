@@ -1,5 +1,5 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
-import { ArrowRight, Check, Gift } from "lucide-react";
+import { Check, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
 import { offer, phases } from "@/data/company";
 import { isFreePhase } from "@/data/company-pages";
@@ -115,7 +115,7 @@ export default function Process({ more = true }: { more?: boolean }) {
             </p>
             {more && (
               <Link to="/approach" className="btn btn-secondary mt-8 px-6 py-3 text-sm">
-                How we work <ArrowRight className="h-4 w-4" />
+                How we work
               </Link>
             )}
           </SectionHeading>

@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Project } from "@/data/projects";
 import { useProjects } from "@/hooks/use-projects";
@@ -20,7 +19,7 @@ export default function ProjectStrip({ match, title, lead, band = false }: { mat
           </SectionHeading>
           <Reveal delay={100}>
             <Link to="/projects" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-              All {projects.length} projects <ArrowRight className="h-4 w-4" />
+              All {projects.length} projects
             </Link>
           </Reveal>
         </div>

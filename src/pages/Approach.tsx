@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, ClipboardCheck, FileText, Gift, GitBranch, KeyRound, Kanban, LucideIcon, NotebookPen, Presentation, ScrollText, ShieldCheck, UserCheck, Users } from "lucide-react";
+import { ClipboardCheck, FileText, Gift, GitBranch, KeyRound, Kanban, LucideIcon, NotebookPen, Presentation, ScrollText, ShieldCheck, UserCheck, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -57,10 +57,10 @@ export default function Approach() {
         actions={
           <>
             <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
-              Book a call <ArrowUpRight className="h-4 w-4" />
+              Book a call
             </button>
             <a href="#engage" className="btn btn-secondary px-7 py-3.5">
-              Ways to engage <ArrowRight className="h-4 w-4" />
+              Ways to engage
             </a>
           </>
         }

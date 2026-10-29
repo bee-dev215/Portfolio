@@ -1,4 +1,4 @@
-import { ArrowUp, ArrowUpRight, CalendarDays } from "lucide-react";
+import { ArrowUp, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 import { company, industries, industryPath, legalLinks, servicePath, services, sitePages, socials, solutionPath, solutions } from "@/data/company";
 import { projectPath } from "@/data/projects";
@@ -106,7 +106,6 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
                       <span className="block text-[11px] font-medium uppercase tracking-wider text-subtle">{s.label}</span>
                       <span className="block truncate text-sm font-medium text-ink">{s.handle}</span>
                     </span>
-                    <ArrowUpRight className="ml-auto h-4 w-4 shrink-0 text-subtle transition-colors group-hover:text-brand-text" />
                   </a>
                 </li>
               ))}

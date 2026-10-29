@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowUpRight, Check, Info, Minus } from "lucide-react";
+import { Check, Info, Minus } from "lucide-react";
 import { bookCall } from "@/data/company";
 import { approachPriority, ModelApproachKey, modelApproaches, selectorQuestions } from "@/data/company-pages";
 
@@ -123,7 +123,7 @@ export default function ModelSelector() {
             A starting point for discussion, not a recommendation. The final choice is made with you, and proven in the prototype on your own data.
           </p>
           <button onClick={() => bookCall(`Model choice (${best.name.toLowerCase()})`)} className="btn btn-secondary mt-5 px-5 py-2.5 text-sm">
-            Talk it through with an engineer <ArrowUpRight className="h-4 w-4" />
+            Talk it through with an engineer
           </button>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -42,10 +42,10 @@ export default function TeamPage() {
         actions={
           <>
             <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
-              Book a call <ArrowUpRight className="h-4 w-4" />
+              Book a call
             </button>
             <Link to="/about" className="btn btn-secondary px-7 py-3.5">
-              About {company.shortName} <ArrowRight className="h-4 w-4" />
+              About {company.shortName}
             </Link>
           </>
         }
@@ -77,7 +77,7 @@ export default function TeamPage() {
           >
             <p className="mt-5 text-lg leading-relaxed text-ink-2">Small teams, sized to the work — the mix of roles changes with what you need.</p>
             <Link to="/approach" className="btn btn-secondary mt-8 px-6 py-3 text-sm">
-              How we work <ArrowRight className="h-4 w-4" />
+              How we work
             </Link>
           </SectionHeading>
           <ul className="divide-y divide-line overflow-hidden rounded-3xl border border-line bg-surface">

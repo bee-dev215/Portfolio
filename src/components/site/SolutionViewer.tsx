@@ -1,5 +1,5 @@
 import { CSSProperties, useEffect, useRef } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Solution, bookCall, solutionPath } from "@/data/company";
 import { supportsViewTransitions } from "@/hooks/use-motion";
@@ -186,11 +186,11 @@ export default function SolutionViewer({
 
           <div className="viewer-rise mt-10 flex flex-wrap gap-3" style={rise(540)}>
             <button onClick={book} className="btn btn-primary px-6 py-3.5 text-sm">
-              Book a call <ArrowUpRight className="h-4 w-4" />
+              Book a call
             </button>
             {/* Leaving the page unmounts the viewer, which releases the scroll lock */}
             <Link to={solutionPath(solution)} className="btn btn-secondary px-6 py-3.5 text-sm" style={{ "--i": 1 } as CSSProperties}>
-              Read the full page <ArrowRight className="h-4 w-4" />
+              Read the full page
             </Link>
           </div>
         </div>

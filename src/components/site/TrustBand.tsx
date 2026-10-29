@@ -1,4 +1,4 @@
-import { ArrowRight, EyeOff, GitBranch, LockKeyhole, ShieldCheck, UserCheck } from "lucide-react";
+import { EyeOff, GitBranch, LockKeyhole, ShieldCheck, UserCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import Reveal from "./Reveal";
 import { usePhotos } from "@/hooks/use-photos";
@@ -35,7 +35,7 @@ export default function TrustBand() {
               </div>
               <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 lg:mt-auto lg:pt-8">
                 <Link to="/responsible-ai" className="btn btn-primary px-6 py-3 text-sm">
-                  How we protect your data <ArrowRight className="h-4 w-4" />
+                  How we protect your data
                 </Link>
                 <p className="text-sm text-subtle">Client work stays confidential.</p>
               </div>

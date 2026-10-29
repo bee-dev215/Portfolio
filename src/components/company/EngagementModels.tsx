@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowUpRight, Briefcase, Check, FlaskConical, LucideIcon, Repeat, Users } from "lucide-react";
+import { Briefcase, Check, FlaskConical, LucideIcon, Repeat, Users } from "lucide-react";
 import { bookCall } from "@/data/company";
 import { EngagementModel, engagementModels } from "@/data/company-pages";
 
@@ -59,7 +59,7 @@ export default function EngagementModels() {
               ))}
             </dl>
             <button onClick={() => bookCall(m.name)} className="btn btn-primary relative mt-9 px-6 py-3 text-sm">
-              Book a call <ArrowUpRight className="h-4 w-4" />
+              Book a call
             </button>
           </div>
 

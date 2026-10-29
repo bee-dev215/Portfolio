@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, ArrowUpRight, Building2, Check, Gift, HardHat, Headset, Hourglass, LucideIcon, Receipt, Rocket } from "lucide-react";
+import { Building2, Check, Gift, HardHat, Headset, Hourglass, LucideIcon, Receipt, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { bookCall, offer, solutionPath, solutions } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
@@ -214,7 +214,7 @@ export default function Outcomes() {
                             to={solutionPath(s)}
                             className="group inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-semibold text-ink transition-colors hover:border-brand/40 hover:text-brand-text"
                           >
-                            {s.title} <ArrowRight className="h-3.5 w-3.5" />
+                            {s.title}
                           </Link>
                         </li>
                       ))}
@@ -242,7 +242,7 @@ export default function Outcomes() {
                 {!after && (
                   <li className="px-3 pt-2 sm:px-4">
                     <button onClick={() => setMode("after")} className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                      See the same week after <ArrowRight className="h-4 w-4" />
+                      See the same week after
                     </button>
                   </li>
                 )}
@@ -269,10 +269,9 @@ export default function Outcomes() {
                   className="btn group bg-white px-6 py-3.5 font-semibold text-[#1e40af] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
                 >
                   Tell us yours — book a 15-minute call
-                  <ArrowUpRight className="h-4 w-4" />
                 </button>
                 <Link to="/approach" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-white/85 transition-colors hover:text-white">
-                  How the prototype works <ArrowRight className="h-4 w-4" />
+                  How the prototype works
                 </Link>
               </div>
             </div>

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { OPEN_SOLUTION_EVENT, bookCall, solutions } from "@/data/company";
 import SolutionPanel from "./SolutionPanel";
@@ -117,7 +116,7 @@ export default function Solutions() {
         <Reveal delay={60}>
           <div className="mt-6 flex justify-center">
             <Link to="/solutions" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-              Compare all {solutions.length} solutions <ArrowRight className="h-4 w-4" />
+              Compare all {solutions.length} solutions
             </Link>
           </div>
         </Reveal>
@@ -137,10 +136,10 @@ export default function Solutions() {
               </div>
               <div className="flex flex-wrap gap-3">
                 <button onClick={() => bookCall()} className="btn bg-white px-6 py-3.5 text-[#1e40af] shadow-lg hover:-translate-y-px">
-                  Book a call <ArrowUpRight className="h-4 w-4" />
+                  Book a call
                 </button>
                 <Link to="/approach" className="btn border border-white/40 px-6 py-3.5 text-white hover:bg-white/10">
-                  How we work <ArrowRight className="h-4 w-4" />
+                  How we work
                 </Link>
               </div>
             </div>

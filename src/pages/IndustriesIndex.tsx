@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Cable, Check, KeyRound, PhoneCall, Target, UserCheck } from "lucide-react";
+import { Cable, Check, KeyRound, PhoneCall, Target, UserCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -36,7 +36,7 @@ export default function IndustriesIndex() {
         actions={
           <>
             <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
-              Book a call <ArrowUpRight className="h-4 w-4" />
+              Book a call
             </button>
             <Link to="/solutions" className="btn btn-secondary px-7 py-3.5">
               Explore solutions
@@ -48,7 +48,7 @@ export default function IndustriesIndex() {
           {industries.map((ind) => (
             <li key={ind.key}>
               <Link to={industryPath(ind)} className="chip px-3.5 py-1.5 text-sm transition-colors hover:border-brand/40 hover:bg-brand-soft hover:text-brand-text">
-                {ind.title} <ArrowRight className="h-3 w-3" />
+                {ind.title}
               </Link>
             </li>
           ))}
@@ -89,12 +89,12 @@ export default function IndustriesIndex() {
                       const s = solutions.find((x) => x.title === t);
                       return s ? (
                         <Link key={t} to={solutionPath(s)} className="chip relative z-[2] transition-colors hover:border-brand/40 hover:bg-brand-soft hover:text-brand-text">
-                          {t} <ArrowUpRight className="h-3 w-3" />
+                          {t}
                         </Link>
                       ) : null;
                     })}
                     <span className="ml-auto inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                      Use cases & examples <ArrowRight className="h-4 w-4" />
+                      Use cases & examples
                     </span>
                   </div>
                 </div>
@@ -163,7 +163,7 @@ export default function IndustriesIndex() {
           <Reveal delay={200}>
             <p className="mt-10 text-center">
               <Link to="/responsible-ai" className="u-link inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                How we handle security & AI <ArrowUpRight className="h-4 w-4" />
+                How we handle security & AI
               </Link>
             </p>
           </Reveal>

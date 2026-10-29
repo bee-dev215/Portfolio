@@ -1,4 +1,3 @@
-import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Solution, solutionPath } from "@/data/company";
 import { usePhotos } from "@/hooks/use-photos";
@@ -23,9 +22,6 @@ export default function SolutionCard({ solution, compact = false }: { solution: 
         <div className="mt-auto flex items-center justify-between gap-3 pt-5 text-sm">
           <span className="text-subtle">
             {solution.capabilities.length} capabilities · {solution.deliverables.length} deliverables
-          </span>
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-soft text-brand-text transition-colors group-hover:bg-grad group-hover:text-white">
-            <ArrowUpRight className="h-4 w-4" />
           </span>
         </div>
       </div>

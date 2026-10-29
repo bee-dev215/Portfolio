@@ -48,7 +48,7 @@ export default function SolutionsIndex() {
         actions={
           <>
             <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
-              Book a call <ArrowRight className="h-4 w-4" />
+              Book a call
             </button>
             <a href="#fit" className="btn btn-secondary px-7 py-3.5">
               Which solution fits?
@@ -129,7 +129,7 @@ export default function SolutionsIndex() {
                   Clear filters
                 </button>
                 <button onClick={() => bookCall(query || undefined)} className="btn btn-primary px-5 py-2.5 text-sm">
-                  Book a call <ArrowRight className="h-4 w-4" />
+                  Book a call
                 </button>
               </div>
             </div>

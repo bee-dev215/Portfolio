@@ -1,5 +1,5 @@
 import { CSSProperties, useEffect, useRef } from "react";
-import { ArrowUpRight, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Solution } from "@/data/company";
 import { usePhotos } from "@/hooks/use-photos";
 
@@ -67,7 +67,7 @@ export default function SolutionPanel({
         </p>
         <div className="mt-6 flex items-center gap-4" style={{ "--i": 4 } as CSSProperties}>
           <span className="sol-panel-cta btn bg-white px-5 py-2.5 text-sm text-[#172554]">
-            Explore solution <ArrowUpRight className="h-4 w-4" />
+            Explore solution
           </span>
           <span className="hidden truncate text-xs font-medium text-white/60 sm:block">{solution.tech.slice(0, 3).join(" · ")}</span>
         </div>

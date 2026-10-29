@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { ArrowRight, BrainCircuit, Cloud, Code2, Database, Layers, LucideIcon, MonitorSmartphone } from "lucide-react";
+import { BrainCircuit, Cloud, Code2, Database, Layers, LucideIcon, MonitorSmartphone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { stackGroups } from "@/data/company";
 import { usePhotos } from "@/hooks/use-photos";
@@ -89,7 +89,7 @@ export default function Technology({ more = true }: { more?: boolean }) {
         {more && (
           <Reveal delay={100} className="mt-12 flex justify-center">
             <Link to="/technology" className="btn btn-secondary px-6 py-3 text-sm">
-              How we choose models and evaluate them <ArrowRight className="h-4 w-4" />
+              How we choose models and evaluate them
             </Link>
           </Reveal>
         )}

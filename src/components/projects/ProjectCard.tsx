@@ -1,4 +1,3 @@
-import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { services } from "@/data/company";
 import { audienceTitle, Project, projectPath } from "@/data/projects";
@@ -31,9 +30,6 @@ export default function ProjectCard({ project, compact = false }: { project: Pro
               );
             })}
           </ul>
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-soft text-brand-text transition-colors group-hover:bg-grad group-hover:text-white">
-            <ArrowUpRight className="h-4 w-4" />
-          </span>
         </div>
       </div>
     </Link>

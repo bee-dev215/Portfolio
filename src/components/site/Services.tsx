@@ -1,4 +1,3 @@
-import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { bookCall, company, services, stats } from "@/data/company";
 import ServiceCard from "@/components/services/ServiceCard";
@@ -23,10 +22,10 @@ export default function Services() {
           <Reveal delay={100}>
             <div className="flex shrink-0 flex-wrap gap-3">
               <Link to="/services" className="btn btn-primary px-6 py-3 text-sm">
-                All {services.length} services <ArrowRight className="h-4 w-4" />
+                All {services.length} services
               </Link>
               <button onClick={() => bookCall()} className="btn btn-secondary px-6 py-3 text-sm">
-                Book a call <ArrowUpRight className="h-4 w-4" />
+                Book a call
               </button>
             </div>
           </Reveal>

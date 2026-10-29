@@ -1,5 +1,5 @@
 import { CSSProperties, useState } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Layers, MessageSquareText, Package, Plus, Plug, Target, Users, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Layers, MessageSquareText, Package, Plus, Plug, Target, Users, X } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -101,7 +101,7 @@ function SolutionPage({ index }: { index: number }) {
         actions={
           <>
             <button onClick={() => bookCall(solution.title)} className="btn btn-primary px-7 py-3.5">
-              Book a call about {solution.title} <ArrowRight className="h-4 w-4" />
+              Book a call about {solution.title}
             </button>
             <button onClick={() => scrollToSection("sample")} className="btn btn-secondary px-7 py-3.5">
               <MessageSquareText className="h-4 w-4" /> See a sample
@@ -368,7 +368,6 @@ function SolutionPage({ index }: { index: number }) {
                           <span className="block font-display font-bold leading-tight">{a.title}</span>
                           <span className="mt-0.5 block truncate text-xs text-subtle">{a.focus}</span>
                         </span>
-                        <ArrowUpRight className="h-4 w-4 shrink-0 text-subtle transition-colors group-hover:text-brand-text" />
                       </Link>
                     </Reveal>
                   </li>
@@ -393,10 +392,10 @@ function SolutionPage({ index }: { index: number }) {
             <p className="mt-5 text-lg leading-relaxed text-ink-2">The things teams ask most before they start.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <button onClick={() => startEnquiry(solution.title)} className="btn btn-secondary px-6 py-3 text-sm">
-                Ask your own question <ArrowUpRight className="h-4 w-4" />
+                Ask your own question
               </button>
               <Link to="/faq" className="btn px-4 py-3 text-sm text-brand-text hover:bg-raised">
-                All questions <ArrowRight className="h-4 w-4" />
+                All questions
               </Link>
             </div>
           </SectionHeading>
@@ -446,7 +445,7 @@ function SolutionPage({ index }: { index: number }) {
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <h2 className="font-display text-3xl font-bold tracking-tight">Often paired with</h2>
                 <Link to="/solutions" className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                  All {solutions.length} solutions <ArrowRight className="h-4 w-4" />
+                  All {solutions.length} solutions
                 </Link>
               </div>
               <div className="mt-8 grid gap-6 md:grid-cols-3">

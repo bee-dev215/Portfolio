@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarDays, ClipboardList, Clock, Gift, Handshake, PenLine } from "lucide-react";
+import { CalendarDays, ClipboardList, Clock, Gift, Handshake, PenLine } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -93,7 +93,7 @@ export default function ContactPage() {
             />
             <Reveal delay={80}>
               <Link to="/faq" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-                All {faqs.length} questions <ArrowRight className="h-4 w-4" />
+                All {faqs.length} questions
               </Link>
             </Reveal>
           </div>
@@ -106,7 +106,7 @@ export default function ContactPage() {
                     <h3 className="mt-2 font-display text-lg font-bold leading-snug">{f.q}</h3>
                     <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-ink-2">{f.a}</p>
                     <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-semibold text-brand-text">
-                      Read the answer <ArrowRight className="h-4 w-4" />
+                      Read the answer
                     </span>
                   </Link>
                 </Reveal>

@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { ArrowRight, CalendarDays } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 import { bookCall } from "@/data/company";
 import { usePhotos } from "@/hooks/use-photos";
@@ -38,7 +38,7 @@ export default function CtaBand({
               </button>
               {secondary && (
                 <Link to={secondary.to} className="btn border border-white/40 px-6 py-3.5 text-white hover:bg-white/10">
-                  {secondary.label} <ArrowRight className="h-4 w-4" />
+                  {secondary.label}
                 </Link>
               )}
             </div>

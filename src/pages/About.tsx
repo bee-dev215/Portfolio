@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Compass, EyeOff, KeyRound, Lock, LucideIcon, Presentation, ScrollText, Users } from "lucide-react";
+import { Compass, EyeOff, KeyRound, Lock, LucideIcon, Presentation, ScrollText, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -65,10 +65,10 @@ export default function About() {
         actions={
           <>
             <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
-              Book a call <ArrowUpRight className="h-4 w-4" />
+              Book a call
             </button>
             <Link to="/team" className="btn btn-secondary px-7 py-3.5">
-              Meet the team <ArrowRight className="h-4 w-4" />
+              Meet the team
             </Link>
           </>
         }
@@ -131,7 +131,7 @@ export default function About() {
           </SectionHeading>
           <Reveal delay={100}>
             <Link to="/projects" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-              See our projects <ArrowRight className="h-4 w-4" />
+              See our projects
             </Link>
           </Reveal>
         </div>
@@ -198,7 +198,7 @@ export default function About() {
           </SectionHeading>
           <Reveal delay={100}>
             <Link to="/approach" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-              How we work <ArrowRight className="h-4 w-4" />
+              How we work
             </Link>
           </Reveal>
         </div>
@@ -242,7 +242,7 @@ export default function About() {
           >
             <p className="mt-5 text-lg leading-relaxed text-ink-2">Our clients share customer records, financial documents and products that haven't launched. Keeping that private comes first.</p>
             <Link to="/responsible-ai" className="btn btn-secondary mt-8 px-6 py-3 text-sm">
-              How we protect client work <ArrowRight className="h-4 w-4" />
+              How we protect client work
             </Link>
           </SectionHeading>
           <div className="space-y-4">

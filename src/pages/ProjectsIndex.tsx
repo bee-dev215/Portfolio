@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowRight, ArrowUpRight, Check, KeyRound, Lock, LucideIcon, MousePointerClick, PhoneCall, Search, Sparkles, UserCheck, X } from "lucide-react";
+import { Check, KeyRound, Lock, LucideIcon, MousePointerClick, PhoneCall, Search, Sparkles, UserCheck, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -87,7 +87,7 @@ function FeaturedProject({ project }: { project: Project }) {
           </ul>
           <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-7">
             <Link to={projectPath(project)} className="btn btn-primary px-6 py-3 text-sm">
-              Read the case study <ArrowRight className="h-4 w-4" />
+              Read the case study
             </Link>
             {solution && (
               <Link to={solutionPath(solution)} className="u-link text-sm font-semibold text-brand-text">
@@ -144,10 +144,10 @@ export default function ProjectsIndex() {
         actions={
           <>
             <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
-              Book a call <ArrowUpRight className="h-4 w-4" />
+              Book a call
             </button>
             <a href="#all-projects" className="btn btn-secondary px-7 py-3.5">
-              Browse projects <ArrowRight className="h-4 w-4" />
+              Browse projects
             </a>
           </>
         }
@@ -234,7 +234,7 @@ export default function ProjectsIndex() {
                   Clear filters
                 </button>
                 <button onClick={() => bookCall(query || undefined)} className="btn btn-primary px-5 py-2.5 text-sm">
-                  Book a call <ArrowUpRight className="h-4 w-4" />
+                  Book a call
                 </button>
               </div>
             </div>
@@ -257,7 +257,7 @@ export default function ProjectsIndex() {
           </SectionHeading>
           <Reveal delay={100}>
             <Link to="/approach" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-              How we work <ArrowRight className="h-4 w-4" />
+              How we work
             </Link>
           </Reveal>
         </div>

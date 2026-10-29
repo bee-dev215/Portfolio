@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { industries, industryPath, openSolution } from "@/data/company";
 import { usePhotos } from "@/hooks/use-photos";
@@ -25,7 +25,7 @@ export default function Industries() {
           </SectionHeading>
           <Reveal delay={100}>
             <Link to="/industries" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-              All {industries.length} industries <ArrowRight className="h-4 w-4" />
+              All {industries.length} industries
             </Link>
           </Reveal>
         </div>
@@ -61,7 +61,7 @@ export default function Industries() {
                     ))}
                   </ul>
                   <Link to={industryPath(ind)} className="u-link mt-5 inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-brand-text">
-                    Use cases & examples<span className="sr-only"> in {ind.title}</span> <ArrowRight className="h-4 w-4" />
+                    Use cases & examples<span className="sr-only"> in {ind.title}</span>
                   </Link>
                   <div className="mt-auto pt-6">
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-subtle">Related solutions</p>
@@ -72,7 +72,7 @@ export default function Industries() {
                           onClick={() => openSolution(t)}
                           className="chip transition-colors hover:border-brand/40 hover:bg-brand-soft hover:text-brand-text"
                         >
-                          {t} <ArrowUpRight className="h-3 w-3" />
+                          {t}
                         </button>
                       ))}
                     </div>

@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { ArrowRight, ArrowUpRight, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { bookCall, industries } from "@/data/company";
 import { audienceTitle, projectPath } from "@/data/projects";
@@ -31,10 +31,10 @@ export default function Projects() {
           </SectionHeading>
           <Reveal delay={100} className="flex shrink-0 flex-wrap gap-3">
             <button onClick={() => bookCall()} className="btn btn-primary px-6 py-3 text-sm">
-              Book a call <ArrowUpRight className="h-4 w-4" />
+              Book a call
             </button>
             <Link to="/projects" className="btn btn-secondary px-6 py-3 text-sm">
-              All {ready && `${projects.length} `}projects <ArrowRight className="h-4 w-4" />
+              All {ready && `${projects.length} `}projects
             </Link>
           </Reveal>
         </div>
@@ -62,9 +62,6 @@ export default function Projects() {
                     <div className="proj-tile-shade absolute inset-0" aria-hidden="true" />
                     <span className="absolute left-4 top-4 rounded-full bg-black/35 px-3 py-1 text-xs font-semibold text-white backdrop-blur sm:left-5 sm:top-5">
                       {audienceTitle(p)} · {p.year}
-                    </span>
-                    <span className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition-colors group-hover:bg-white group-hover:text-[#1e40af] sm:right-5 sm:top-5">
-                      <ArrowUpRight className="h-4 w-4" />
                     </span>
                     <div className={`absolute inset-x-0 bottom-0 text-white ${big ? "p-6 sm:p-8" : "p-5"}`}>
                       <p className="text-xs font-medium text-white/75">{p.client}</p>

@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { ArrowRight, ArrowUpRight, CalendarDays, Check, Copy, Loader2, Send } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Check, Copy, Loader2, Send } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { booking, company, ENQUIRE_EVENT, nextSteps, socials } from "@/data/company";
@@ -60,7 +60,7 @@ function NextTimes() {
         )
       )}
       <Link to="/book" className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-        See all times <ArrowRight className="h-4 w-4" />
+        See all times
       </Link>
     </div>
   );

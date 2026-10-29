@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ArrowRight, Mail, MessageCircleQuestion, Phone, Search, X } from "lucide-react";
+import { Mail, MessageCircleQuestion, Phone, Search, X } from "lucide-react";
 import { toast } from "sonner";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -174,7 +174,7 @@ export default function FaqPage() {
                       Clear search
                     </button>
                     <button onClick={() => startEnquiry()} className="btn btn-primary px-5 py-2.5 text-sm">
-                      Ask us directly <ArrowRight className="h-4 w-4" />
+                      Ask us directly
                     </button>
                   </div>
                 </div>
@@ -244,7 +244,7 @@ export default function FaqPage() {
                       </li>
                     </ul>
                     <button onClick={() => bookCall()} className="btn btn-primary mt-5 w-full py-3 text-sm">
-                      Book a call <ArrowRight className="h-4 w-4" />
+                      Book a call
                     </button>
                     <button onClick={() => startEnquiry()} className="mt-3 w-full text-center text-sm font-semibold text-brand-text">
                       Or send us a message

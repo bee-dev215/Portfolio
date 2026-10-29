@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, UserRound } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, UserRound } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -38,7 +38,7 @@ export default function ServiceDetail() {
         actions={
           <>
             <button onClick={() => bookCall(service.title)} className="btn btn-primary px-7 py-3.5">
-              Book a call <ArrowRight className="h-4 w-4" />
+              Book a call
             </button>
             <button onClick={() => scrollToId("included")} className="btn btn-secondary px-7 py-3.5">
               What's included
@@ -152,7 +152,7 @@ export default function ServiceDetail() {
           </ol>
           <Reveal delay={200}>
             <Link to="/approach" className="u-link mt-10 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-              How every engagement runs <ArrowUpRight className="h-4 w-4" />
+              How every engagement runs
             </Link>
           </Reveal>
         </div>
@@ -189,7 +189,7 @@ export default function ServiceDetail() {
             </ul>
             <Reveal>
               <Link to="/team" className="u-link mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                Meet the team <ArrowUpRight className="h-4 w-4" />
+                Meet the team
               </Link>
             </Reveal>
           </div>
@@ -220,7 +220,7 @@ export default function ServiceDetail() {
             </div>
             <Reveal>
               <Link to="/technology" className="u-link mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                How we choose technology <ArrowUpRight className="h-4 w-4" />
+                How we choose technology
               </Link>
             </Reveal>
           </div>
@@ -261,7 +261,7 @@ export default function ServiceDetail() {
               }
             >
               <button onClick={() => startEnquiry(service.title)} className="btn btn-secondary mt-8 px-6 py-3 text-sm">
-                Ask your own <ArrowUpRight className="h-4 w-4" />
+                Ask your own
               </button>
             </SectionHeading>
           </div>

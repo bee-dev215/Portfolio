@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, ArrowUpRight, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { bookCall, company } from "@/data/company";
 import { faqs as allFaqs } from "@/data/faq";
@@ -36,10 +36,10 @@ export default function Faq() {
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               <button onClick={() => bookCall()} className="btn btn-secondary px-6 py-3 text-sm">
-                Book a call <ArrowUpRight className="h-4 w-4" />
+                Book a call
               </button>
               <Link to="/faq" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                All {allFaqs.length} questions <ArrowRight className="h-4 w-4" />
+                All {allFaqs.length} questions
               </Link>
             </div>
           </SectionHeading>

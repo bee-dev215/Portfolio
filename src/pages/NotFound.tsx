@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import { sitePages } from "@/data/company";
@@ -23,7 +23,7 @@ export default function NotFound() {
             {sitePages.map((p) => (
               <li key={p.to}>
                 <Link to={p.to} className="chip px-3.5 py-1.5 text-sm transition-colors hover:border-brand/40 hover:text-brand-text">
-                  {p.label} <ArrowRight className="h-3 w-3" />
+                  {p.label}
                 </Link>
               </li>
             ))}

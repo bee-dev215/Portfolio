@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, ArrowUpRight, CalendarRange, Check, FileCheck2, FlaskConical } from "lucide-react";
+import { CalendarRange, Check, FileCheck2, FlaskConical } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -53,7 +53,7 @@ export default function ServicesIndex() {
         actions={
           <>
             <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
-              Book a call <ArrowRight className="h-4 w-4" />
+              Book a call
             </button>
             <Link to="/approach" className="btn btn-secondary px-7 py-3.5">
               How we work
@@ -188,7 +188,7 @@ export default function ServicesIndex() {
             ))}
             <Reveal delay={260}>
               <Link to="/approach" className="u-link inline-flex items-center gap-1.5 pt-2 text-sm font-semibold text-brand-text">
-                See how an engagement runs <ArrowUpRight className="h-4 w-4" />
+                See how an engagement runs
               </Link>
             </Reveal>
           </div>

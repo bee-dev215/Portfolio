@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { ArrowRight, Compass, KeyRound, LucideIcon, Presentation, Users } from "lucide-react";
+import { Compass, KeyRound, LucideIcon, Presentation, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { company, companyFile, principles } from "@/data/company";
 import { useScrollProgress } from "@/hooks/use-motion";
@@ -80,10 +80,10 @@ export default function Company() {
           <Reveal delay={120}>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/about" className="btn btn-secondary px-6 py-3 text-sm">
-                About {company.shortName} <ArrowRight className="h-4 w-4" />
+                About {company.shortName}
               </Link>
               <Link to="/responsible-ai" className="btn px-4 py-3 text-sm text-brand-text hover:bg-brand-soft">
-                How we protect your data <ArrowRight className="h-4 w-4" />
+                How we protect your data
               </Link>
             </div>
           </Reveal>

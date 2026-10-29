@@ -1,4 +1,3 @@
-import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { solutionPath, solutions } from "@/data/company";
 import Reveal from "@/components/site/Reveal";
@@ -23,7 +22,7 @@ export default function SolutionCards({ titles }: { titles: string[] }) {
               <h3 className="mt-2 font-display text-xl font-bold tracking-tight">{s.title}</h3>
               <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-ink-2">{s.summary}</p>
               <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-semibold text-brand-text">
-                Explore the solution <ArrowUpRight className="h-4 w-4" />
+                Explore the solution
               </span>
             </div>
           </Link>

@@ -1,5 +1,5 @@
 import { FocusEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowRight, Building2, CalendarDays, ChevronDown, Cpu, LucideIcon, Mail, Menu, Route, ShieldCheck, Users, X } from "lucide-react";
+import { Building2, CalendarDays, ChevronDown, Cpu, LucideIcon, Mail, Menu, Route, ShieldCheck, Users, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   bookCall,
@@ -414,7 +414,7 @@ export default function Navbar() {
                           onClick={close}
                           className="mt-[18px] inline-flex items-center gap-1.5 font-display text-[15px] font-semibold text-brand-text"
                         >
-                          {g.all.label} <ArrowRight className="h-4 w-4" />
+                          {g.all.label}
                         </Link>
                       </div>
                     </div>
@@ -480,7 +480,7 @@ export default function Navbar() {
                     })}
                     <li>
                       <Link to={g.all.to} onClick={close} className="inline-flex items-center gap-1.5 px-2 pt-2 text-sm font-semibold text-brand-text">
-                        {g.all.label} <ArrowRight className="h-4 w-4" />
+                        {g.all.label}
                       </Link>
                     </li>
                   </ul>

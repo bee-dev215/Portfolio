@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, BrainCircuit, Cloud, Code2, Database, Layers, LucideIcon, MonitorSmartphone } from "lucide-react";
+import { BrainCircuit, Cloud, Code2, Database, Layers, LucideIcon, MonitorSmartphone } from "lucide-react";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
@@ -53,10 +53,10 @@ export default function TechnologyPage() {
         actions={
           <>
             <a href="#choose" className="btn btn-primary px-7 py-3.5">
-              Try the model selector <ArrowRight className="h-4 w-4" />
+              Try the model selector
             </a>
             <button onClick={() => bookCall("Technology choices")} className="btn btn-secondary px-7 py-3.5">
-              Ask an engineer <ArrowUpRight className="h-4 w-4" />
+              Ask an engineer
             </button>
           </>
         }
