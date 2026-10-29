@@ -105,7 +105,7 @@ export const builtInProjects: Project[] = [
     imageAlt: "A site manager in a hard hat checks a tablet on a construction site",
     gallery: {
       src: "/images/proj-site-report-app-2.webp",
-      alt: "A project team reviews plans together in a site office",
+      alt: "Two engineers in hard hats review plans together on site",
       caption: "Project managers see every job's reports in one place and one format, ready to send rather than rewrite.",
     },
     featured: true,
@@ -162,7 +162,7 @@ export const builtInProjects: Project[] = [
     ],
     stack: ["Azure Document Intelligence", "Claude", "Python", "FastAPI", "PostgreSQL", "React"],
     image: "/images/proj-invoice-intake-automation.webp",
-    imageAlt: "An accountant works through a stack of invoices at a desk beside a laptop",
+    imageAlt: "An accountant checks invoice figures on a calculator beside a laptop",
     gallery: {
       src: "/images/proj-invoice-intake-automation-2.webp",
       alt: "A modern residential apartment building",
@@ -225,7 +225,7 @@ export const builtInProjects: Project[] = [
     imageAlt: "A doctor takes a phone call at her desk while typing on a laptop",
     gallery: {
       src: "/images/proj-clinic-call-assistant-2.webp",
-      alt: "Two healthcare workers with stethoscopes work together on a laptop and a tablet",
+      alt: "A clinician in scrubs goes over details on a tablet with a patient",
       caption: "Every call arrives as a short written summary, so the morning starts with answers instead of voicemail.",
     },
     featured: true,
@@ -282,7 +282,7 @@ export const builtInProjects: Project[] = [
     ],
     stack: [".NET", "Office.js", "Azure OpenAI", "pgvector", "Python", "Azure"],
     image: "/images/proj-contract-review-assistant.webp",
-    imageAlt: "A lawyer reviews a contract at a desk",
+    imageAlt: "A lawyer highlights a contract at her desk",
     gallery: {
       src: "/images/proj-contract-review-assistant-2.webp",
       alt: "Four colleagues gather around a laptop at a wooden table, reviewing documents and notes together",
@@ -399,7 +399,7 @@ export const builtInProjects: Project[] = [
     ],
     stack: ["TypeScript", "Node.js", "PostgreSQL", "GitHub Actions", "Terraform", "AWS"],
     image: "/images/proj-saas-platform-rescue.webp",
-    imageAlt: "Colleagues lean in around a monitor in a bright office, discussing the results on screen",
+    imageAlt: "Four engineers gather around a laptop in a bright office, one taking notes as they work through the results",
     gallery: {
       src: "/images/proj-saas-platform-rescue-2.webp",
       alt: "A team arranges sticky notes on a glass wall in a modern office",

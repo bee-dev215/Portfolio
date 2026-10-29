@@ -43,10 +43,10 @@ export const practices: Practice[] = [
 /** "Inside the studio" photos on /about. The first one is shown large. */
 export const studioGallery = [
   { src: "/images/about-office.webp", alt: "A bright studio with plants, where one person works at a laptop while two colleagues review notes by the window", caption: "The studio — engineers and designers in one room" },
-  { src: "/images/about-pairing.webp", alt: "Two engineers working through code together at one laptop", caption: "Pairing on a document-processing pipeline" },
+  { src: "/images/about-pairing.webp", alt: "Two engineers working through code together at one monitor", caption: "Pairing on a document-processing pipeline" },
   { src: "/images/about-research.webp", alt: "A woman with a tablet talking through a prototype with a colleague at a laptop", caption: "Walking a client through their prototype" },
   { src: "/images/about-remote.webp", alt: "Colleagues at a conference table on a video call with a remote teammate", caption: "Weekly demo with a client team" },
-  { src: "/images/about-celebrate.webp", alt: "Three colleagues sharing a high-five around a laptop", caption: "Shipping day" },
+  { src: "/images/about-celebrate.webp", alt: "A team trading high-fives across their laptops", caption: "Shipping day" },
 ];
 
 /** Why the site shows no client logos or case-study names. */

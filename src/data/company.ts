@@ -188,22 +188,6 @@ export const stackGroups = [
   { title: "Cloud & DevOps", items: ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes", "Terraform"] },
 ];
 
-// Capabilities scrolling under the hero
-export const ticker = [
-  "AI agents",
-  "Document AI",
-  "Web apps",
-  "Mobile apps",
-  "Desktop software",
-  "Workflow automation",
-  "Integrations",
-  "Voice AI",
-  "Dashboards",
-  "Cloud & DevOps",
-  "Data pipelines",
-  "Legacy modernization",
-];
-
 // ------------------------------------------------------------
 //  Solutions — packaged starting points we adapt per client.
 //  Images live in public/images/ (16:10).
@@ -364,7 +348,7 @@ export const industries: Industry[] = [
     work: ["Patient calls & scheduling", "Intake & referral paperwork", "Clinical note drafting"],
     solutions: ["AI Voice Agent", "Document AI", "Knowledge Assistant"],
     image: "/images/aud-healthcare.webp",
-    imageAlt: "A smiling doctor in a white coat using a tablet",
+    imageAlt: "A smiling clinician in a white tunic using a tablet",
   },
   {
     key: "construction",
@@ -374,7 +358,7 @@ export const industries: Industry[] = [
     work: ["Daily reports & inspections", "RFIs, submittals & document control", "Estimating & takeoff support"],
     solutions: ["Field Operations App", "Document AI", "Reporting Autopilot"],
     image: "/images/aud-construction.webp",
-    imageAlt: "A site manager in a hard hat checking plans on a tablet at a construction site",
+    imageAlt: "An engineer in a hard hat and safety glasses reading a tablet on a renovation site",
   },
   {
     key: "real-estate",
@@ -414,7 +398,7 @@ export const industries: Industry[] = [
     work: ["MVPs & new products", "AI features in your product", "Rescue & scale-up engineering"],
     solutions: ["Client Portal", "Knowledge Assistant"],
     image: "/images/aud-startups.webp",
-    imageAlt: "A software team brainstorming product ideas in an office",
+    imageAlt: "A software team gathered around a laptop, reviewing a product idea",
   },
 ];
 
@@ -585,10 +569,10 @@ export const builtInTeam: TeamMember[] = [
     focus: ["Data pipelines", "dbt", "Dashboards"],
   },
   {
-    name: "Amara Nwosu",
+    name: "Grace Park",
     role: "Automation & desktop engineer",
     bio: "Automates the copy-paste between systems and builds desktop tools and Office add-ins where the work really happens.",
-    photo: "/images/team/amara.webp",
+    photo: "/images/team/grace.webp",
     focus: ["Automation", ".NET", "Office add-ins"],
   },
   {
@@ -624,9 +608,10 @@ export const stats = [
 // Descriptions of the site photos that aren't decorative and aren't described elsewhere in this file.
 // A replacement chosen in the admin can override them (see usePhotos).
 export const photoAlts = {
-  "company-team.webp": "A product team mapping ideas on a whiteboard with sticky notes",
-  "company-client.webp": "Two colleagues on a video call with a client at a laptop",
+  "company-team.webp": "Two colleagues mapping ideas with sticky notes on a board",
+  "company-client.webp": "Two colleagues waving to a client on a video call at a laptop",
   "trust-security.webp": "An engineer reviewing code on two monitors in a quiet office",
+  "hero-work.webp": "Four colleagues gathered around a laptop, working through a plan together",
 };
 
 // ------------------------------------------------------------
@@ -646,52 +631,51 @@ export interface ImageCredit {
 export const imageCredits: ImageCredit[] = [
   { file: "sol-knowledge.webp", subject: "Knowledge Assistant — colleagues reviewing work on screen", author: "Apunto Group", href: "https://www.pexels.com/photo/focused-colleagues-working-on-project-in-office-7752873/", source: "Pexels" },
   { file: "sol-analytics.webp", subject: "Reporting Autopilot — a team reviewing a dashboard", author: "Muhammad Jawadur Rahman", href: "https://www.pexels.com/photo/brainstorming-during-presentation-15096572/", source: "Pexels" },
-  { file: "aud-startups.webp", subject: "Startups & SaaS — software engineers brainstorming", author: "DC Studio", href: "https://www.magnific.com/free-photo/team-software-engineers-doing-brainstorming-office_417798983.htm" },
-  { file: "company-team.webp", subject: "Company — team mapping ideas on a whiteboard", author: "Thirdman", href: "https://www.pexels.com/photo/colleagues-planning-a-business-5257576/", source: "Pexels" },
-  { file: "cta-backdrop.webp", subject: "Banner — engineers and AI", author: "DC Studio", href: "https://www.magnific.com/free-photo/engineers-brainstorming-ways-use-ai_190325729.htm" },
+  { file: "aud-startups.webp", subject: "Startups & SaaS card — software team gathered around a laptop in front of a large screen in a bright office", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/group-of-people-looking-at-silver-laptop-7988216/", source: "Pexels" },
+  { file: "company-team.webp", subject: "Company page, product team — two colleagues mapping ideas with colourful sticky notes on a board", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/creative-team-brainstorming-with-colored-notes-39219856/", source: "Pexels" },
+  { file: "cta-backdrop.webp", subject: "CTA banner backdrop — engineer studying glowing blue data on a large screen in a dark room", author: "Sylvain Cls", href: "https://www.pexels.com/photo/man-in-sunglasses-and-screen-5866051/", source: "Pexels" },
   { file: "svc-llm.webp", subject: "AI & machine learning — chat prompt to a language model (Visualising AI artwork by Wes Cockx)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-illustration-depicts-language-models-which-generate-text-it-was-created-by-wes-cockx-as-part-of-the-visualising-ai-project-l-18069695/", source: "Pexels" },
-  { file: "svc-analytics.webp", subject: "Data engineering & analytics — analyst reviewing dashboards on two monitors", author: "Kampus Production", href: "https://www.pexels.com/photo/woman-in-yellow-long-sleeve-shirt-looking-at-computer-data-8204355/", source: "Pexels" },
-  { file: "svc-evaluation.webp", subject: "Project rescue & modernization — engineer carefully reviewing code", author: "Naboth Otieno", href: "https://www.pexels.com/photo/man-working-with-computers-19805877/", source: "Pexels" },
+  { file: "svc-analytics.webp", subject: "Data engineering & analytics — analyst reviewing charts across several monitors and a tablet", author: "AlphaTradeZone", href: "https://www.pexels.com/photo/man-in-white-shirt-wearing-in-front-of-the-computer-and-holding-a-digital-tablet-5831269/", source: "Pexels" },
+  { file: "svc-evaluation.webp", subject: "Project rescue & modernization — engineer carefully reviewing code on screen", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/a-man-looking-at-a-computer-screen-with-data-6963944/", source: "Pexels" },
   { file: "svc-build.webp", subject: "Two engineers building together at a monitor", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/young-professionals-working-with-computers-7988745/", source: "Pexels" },
   { file: "tech-datacenter.webp", subject: "Data centre — aisle of server racks", author: "Brett Sayles", href: "https://www.pexels.com/photo/server-racks-on-data-center-4508751/", source: "Pexels" },
   { file: "tech-code.webp", subject: "Code on screen — developer at a dual-monitor standing desk", author: "Christina Morillo", href: "https://www.pexels.com/photo/woman-sitting-in-front-laptop-1181677/", source: "Pexels" },
   { file: "tech-ai-abstract.webp", subject: "Abstract AI visual — iridescent glass shapes (Visualising AI artwork by Wes Cockx)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-image-visualises-artificial-general-intelligence-or-agi-it-was-created-by-wes-cockx-as-part-of-the-visualising-ai-project-l-17486102/", source: "Pexels" },
-  { file: "hero-ai.webp", subject: "Abstract AI tile — blue and violet data blocks (Visualising AI artwork by Rose Pilkington)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-image-visualises-the-input-and-output-of-neural-networks-and-how-ai-systems-perceive-data-it-was-created-by-rose-pilkington-17485706/", source: "Pexels" },
-  { file: "proj-saas-platform-rescue.webp", subject: "SaaS Platform Rescue — engineers reviewing results together at a monitor", author: "Tiger Lily", href: "https://www.pexels.com/photo/colleagues-looking-at-the-screen-7109095/", source: "Pexels" },
+  { file: "proj-saas-platform-rescue.webp", subject: "SaaS Platform Rescue — engineers working through results together at a laptop", author: "Artem Podrez", href: "https://www.pexels.com/photo/people-looking-at-the-screen-of-a-laptop-8519253/", source: "Pexels" },
   { file: "proj-saas-platform-rescue-2.webp", subject: "SaaS Platform Rescue — team mapping findings on a glass wall", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/collaborative-office-team-brainstorming-39204849/", source: "Pexels" },
-  { file: "proj-clinic-call-assistant-2.webp", subject: "Clinic Call Assistant — healthcare workers using a laptop and tablet", author: "Thirdman", href: "https://www.pexels.com/photo/healthcare-professionals-working-on-their-gadgets-while-sitting-next-to-each-other-5327654/", source: "Pexels" },
-  { file: "about-pairing.webp", subject: "About — engineers pair-programming", author: "Diva Plavalaguna", href: "https://www.pexels.com/photo/men-looking-at-the-screen-of-a-laptop-6147360/", source: "Pexels" },
+  { file: "proj-clinic-call-assistant-2.webp", subject: "Clinic Call Assistant project — clinician in scrubs going over a tablet with a patient at a clinic", author: "Cedric Fauntleroy", href: "https://www.pexels.com/photo/a-doctor-and-a-patient-looking-at-a-tablet-4266938/", source: "Pexels" },
+  { file: "about-pairing.webp", subject: "About — engineers pair-programming at one screen", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/men-working-on-a-computer-7988742/", source: "Pexels" },
   { file: "about-research.webp", subject: "About — walking a client through a prototype", author: "Yan Krukau", href: "https://www.pexels.com/photo/women-sitting-at-the-meeting-table-with-laptop-and-digital-tablet-8837735/", source: "Pexels" },
   { file: "about-remote.webp", subject: "About — hybrid team meeting on video call", author: "MART PRODUCTION", href: "https://www.pexels.com/photo/a-group-of-people-in-a-meeting-using-video-call-7644076/", source: "Pexels" },
   { file: "about-office.webp", subject: "About — bright, plant-filled studio", author: "Thirdman", href: "https://www.pexels.com/photo/man-and-woman-having-a-conversation-7653773/", source: "Pexels" },
-  { file: "about-celebrate.webp", subject: "About — team celebrating a launch", author: "Andrea Piacquadio", href: "https://www.pexels.com/photo/smiling-diverse-employees-of-different-ages-using-laptop-and-cooperating-on-project-in-office-3866342/", source: "Pexels" },
-  { file: "phase-discover.webp", subject: "Delivery phase — Discover", author: "fauxels", href: "https://www.pexels.com/photo/group-of-people-gathered-around-wooden-table-3184360/", source: "Pexels" },
+  { file: "about-celebrate.webp", subject: "About page, launch celebration — team cheering and high-fiving across a table of laptops", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/office-team-having-a-meeting-in-the-room-7988238/", source: "Pexels" },
+  { file: "phase-discover.webp", subject: "Delivery phase — Discover (workshop around a meeting table)", author: "Thirdman", href: "https://www.pexels.com/photo/a-group-of-people-having-a-meeting-in-the-office-7652176/", source: "Pexels" },
   { file: "phase-prototype.webp", subject: "Delivery phase — Prototype", author: "Akshar Dave🌻", href: "https://www.pexels.com/photo/a-person-holding-black-smartphone-11780441/", source: "Pexels" },
   { file: "phase-build.webp", subject: "Delivery phase — Build", author: "ThisIsEngineering", href: "https://www.pexels.com/photo/woman-coding-on-computer-3861958/", source: "Pexels" },
-  { file: "phase-improve.webp", subject: "Delivery phase — Support (reviewing metrics)", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/creative-team-meeting-analyzing-business-growth-39190577/", source: "Pexels" },
-  { file: "aud-healthcare.webp", subject: "Healthcare — smiling doctor in a white coat using a tablet", author: "Tessy Agbonome", href: "https://www.pexels.com/photo/smiling-doctor-sitting-with-tablet-19963124/", source: "Pexels" },
+  { file: "phase-improve.webp", subject: "Delivery phase — Support (reviewing metrics on a wall screen)", author: "Artem Podrez", href: "https://www.pexels.com/photo/a-woman-doing-a-presentation-at-a-meeting-5716030/", source: "Pexels" },
+  { file: "aud-healthcare.webp", subject: "Healthcare industry card — smiling clinician in a white medical tunic using a tablet", author: "Tima Miroshnichenko", href: "https://www.pexels.com/photo/female-dentist-looking-at-an-ipad-5355855/", source: "Pexels" },
   { file: "proj-clinic-call-assistant.webp", subject: "After-Hours Clinic Call Assistant — doctor taking a phone call at her desk while typing on a laptop", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/female-doctor-using-laptop-and-phone-in-office-39192373/", source: "Pexels" },
-  { file: "sol-voice-agent.webp", subject: "AI Voice Agent — call-center agent with a headset taking a call at her desk", author: "Jep Gambardella", href: "https://www.pexels.com/photo/woman-working-as-a-call-center-agent-7689734/", source: "Pexels" },
-  { file: "hero-work.webp", subject: "Hero tile — relaxed office manager smiling at her laptop", author: "Mizuno K", href: "https://www.pexels.com/photo/smiling-woman-sitting-behind-a-desk-and-using-laptop-12912112/", source: "Pexels" },
-  { file: "company-client.webp", subject: "Company — two colleagues on a video call at a laptop", author: "RDNE Stock project", href: "https://www.pexels.com/photo/businesswomen-holding-a-ceramic-mug-sitting-and-having-video-conference-using-a-computer-laptop-7491548/", source: "Pexels" },
+  { file: "sol-voice-agent.webp", subject: "AI Voice Agent — call-center agent with a headset taking a call at her desk", author: "Kampus Production", href: "https://www.pexels.com/photo/woman-sitting-behind-a-table-working-as-call-center-agent-8204396/", source: "Pexels" },
+  { file: "hero-work.webp", subject: "Hero — a product team working through a plan together at a laptop", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/colleagues-having-a-discussion-7988694/", source: "Pexels" },
+  { file: "company-client.webp", subject: "Company page, client calls — two colleagues waving to a client on a laptop video call (laptop logo retouched out)", author: "Karola G", href: "https://www.pexels.com/photo/happy-people-talking-on-video-call-on-computer-5908491/", source: "Pexels" },
   { file: "trust-security.webp", subject: "Security & AI — engineer reviewing code on dual monitors in a calm office", author: "Ofspace LLC, Culture", href: "https://www.pexels.com/photo/a-man-sitting-at-a-desk-with-two-monitors-16323580/", source: "Pexels" },
   { file: "phase-launch.webp", subject: "Delivery phase — Launch (team celebrating at a laptop)", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/team-celebrating-success-with-a-laptop-39204861/", source: "Pexels" },
   { file: "svc-platform.webp", subject: "Custom software & SaaS — developer writing HTML on a large monitor", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/back-view-shot-of-a-man-working-on-his-computer-7988113/", source: "Pexels" },
   { file: "svc-mobile.webp", subject: "Mobile app development — app running on a phone stand beside a laptop and monitors full of code", author: "Firos nv", href: "https://www.pexels.com/photo/a-close-up-shot-of-a-smartphone-beside-a-laptop-8171308/", source: "Pexels" },
   { file: "svc-desktop.webp", subject: "Desktop software — engineer working on a 3D CAD model across two screens", author: "ThisIsEngineering", href: "https://www.pexels.com/photo/engineer-working-in-office-19895882/", source: "Pexels" },
   { file: "svc-automation.webp", subject: "Business process automation — data flowing through a chain of processing stages (Visualising AI artwork by Novoto Studio)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-image-was-inspired-by-neural-networks-used-in-deep-learning-it-was-created-by-novoto-studio-as-part-of-the-visualising-ai-pr-17483874/", source: "Pexels" },
-  { file: "svc-cloud.webp", subject: "Cloud & DevOps — engineer with a laptop in a server room", author: "Christina Morillo", href: "https://www.pexels.com/photo/software-engineer-using-laptop-1181341/", source: "Pexels" },
-  { file: "aud-construction.webp", subject: "Construction — engineer in a hard hat and hi-vis vest holding a tablet on a city building site", author: "Mikael Blomkvist", href: "https://www.pexels.com/photo/a-woman-wearing-a-personal-protective-clothing-8961018/", source: "Pexels" },
-  { file: "sol-field-app.webp", subject: "Field Operations App — construction worker in a hard hat and safety vest checking a phone on a steel-frame site", author: "Provisionshots LLC", href: "https://www.pexels.com/photo/man-in-yellow-vest-wearing-a-blue-hard-hat-10923553/", source: "Pexels" },
+  { file: "svc-cloud.webp", subject: "Cloud & DevOps — engineer at a terminal in a server room", author: "panumas nikhomkhai", href: "https://www.pexels.com/photo/it-technician-working-in-data-center-server-room-37605911/", source: "Pexels" },
+  { file: "aud-construction.webp", subject: "Construction industry card — engineer in a white hard hat and safety glasses checking a tablet on a renovation site", author: "Tima Miroshnichenko", href: "https://www.pexels.com/photo/man-in-black-and-white-plaid-button-up-shirt-wearing-white-hard-hat-6474492/", source: "Pexels" },
+  { file: "sol-field-app.webp", subject: "Field Operations App — site worker in a hard hat and safety glasses checking a tablet in a building under renovation", author: "Tima Miroshnichenko", href: "https://www.pexels.com/photo/woman-wearing-white-helmet-while-holding-a-tablet-inside-the-house-6474469/", source: "Pexels" },
   { file: "proj-site-report-app.webp", subject: "Daily Site Report App — site manager in a hard hat reviewing a tablet in a building under renovation", author: "Tima Miroshnichenko", href: "https://www.pexels.com/photo/woman-wearing-white-helmet-while-holding-a-tablet-inside-the-house-6474459/", source: "Pexels" },
-  { file: "proj-site-report-app-2.webp", subject: "Daily Site Report App — project team in hard hats reviewing plans around a site-office table", author: "Harrun Muhammad", href: "https://www.pexels.com/photo/team-of-engineers-discuss-construction-plans-37198884/", source: "Pexels" },
+  { file: "proj-site-report-app-2.webp", subject: "Daily Site Report App project — two-person project team in hard hats reviewing plans on a solar installation site", author: "Gustavo Fring", href: "https://www.pexels.com/photo/electricians-inspecting-the-solar-panels-4254169/", source: "Pexels" },
   { file: "aud-real-estate.webp", subject: "Real estate — agent handing house keys to new owners outside a property", author: "Thirdman", href: "https://www.pexels.com/photo/an-agent-handing-the-key-to-the-owners-8470805/", source: "Pexels" },
-  { file: "proj-invoice-intake-automation.webp", subject: "Invoice Intake Automation — accountant working through invoices with a laptop and calculator", author: "RDNE Stock project", href: "https://www.pexels.com/photo/a-man-sitting-at-the-table-7821710/", source: "Pexels" },
+  { file: "proj-invoice-intake-automation.webp", subject: "Invoice Intake Automation project — accountant checking figures on a calculator beside a laptop and a stack of paperwork", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/a-woman-computing-with-a-calculator-8297069/", source: "Pexels" },
   { file: "proj-invoice-intake-automation-2.webp", subject: "Invoice Intake Automation — modern apartment building with balconies against a blue sky", author: "Jan van der Wolf", href: "https://www.pexels.com/photo/modern-apartment-building-against-clear-blue-sky-37224965/", source: "Pexels" },
-  { file: "sol-client-portal.webp", subject: "Client Portal — couple on a sofa at home looking at a laptop together", author: "Mizuno K", href: "https://www.pexels.com/photo/man-and-woman-sitting-on-a-couch-in-a-living-room-and-using-laptop-12788350/", source: "Pexels" },
+  { file: "sol-client-portal.webp", subject: "Client Portal — couple at home looking at a laptop together in front of their sofa", author: "Gustavo Fring", href: "https://www.pexels.com/photo/couple-watching-movie-on-laptop-3912439/", source: "Pexels" },
   { file: "sol-document-ai.webp", subject: "Document AI — office worker sorting a tall stack of paper files next to a laptop", author: "Pavel Danilyuk", href: "https://www.pexels.com/photo/woman-working-in-an-office-7654448/", source: "Pexels" },
   { file: "aud-professional.webp", subject: "Professional services — professional reviewing documents at a desk in a modern office", author: "ANTONI SHKRABA production", href: "https://www.pexels.com/photo/man-wearing-black-coat-holding-documents-8278848/", source: "Pexels" },
-  { file: "proj-contract-review-assistant.webp", subject: "Contract Review Desktop Assistant — lawyer marking up a contract at a desk", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/side-view-of-a-woman-writing-on-the-contract-8730368/", source: "Pexels" },
+  { file: "proj-contract-review-assistant.webp", subject: "Contract Review Desktop Assistant project — lawyer highlighting a contract at her office desk", author: "RDNE Stock project", href: "https://www.pexels.com/photo/a-female-lawyer-writing-on-documents-7841463/", source: "Pexels" },
   { file: "proj-contract-review-assistant-2.webp", subject: "Contract Review Desktop Assistant — colleagues reviewing documents together at a table", author: "Kindel Media", href: "https://www.pexels.com/photo/people-working-together-on-the-table-7651829/", source: "Pexels" },
   { file: "aud-logistics.webp", subject: "Logistics & e-commerce — warehouse worker scanning stock between racks", author: "Tiger Lily", href: "https://www.pexels.com/photo/photo-of-man-using-digital-tablet-4484150/", source: "Pexels" },
   { file: "proj-order-operations-hub.webp", subject: "Order Operations Hub — warehouse worker taping up an order box for shipping", author: "Tima Miroshnichenko", href: "https://www.pexels.com/photo/woman-in-white-crew-neck-t-shirt-holding-white-and-red-ceramic-mug-6169030/", source: "Pexels" },
@@ -699,10 +683,10 @@ export const imageCredits: ImageCredit[] = [
   { file: "team/martin.webp", subject: "Team portrait — Martin Keller (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/portrait-positive-confident-businessman_3584960.htm" },
   { file: "team/kenji.webp", subject: "Team portrait — Kenji Watanabe (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/content-confident-handsome-asian-businessman-looking-camera_3583387.htm" },
   { file: "team/mei.webp", subject: "Team portrait — Mei Lin Chen (placeholder)", author: "benzoix", href: "https://www.magnific.com/free-photo/young-asian-woman-professional-entrepreneur-standing-office-clothing-smiling-looking-confident-white-background_23649170.htm" },
-  { file: "team/marcus.webp", subject: "Team portrait — Marcus Bello (placeholder)", author: "wayhomestudio", href: "https://www.magnific.com/free-photo/prosperous-businessman-keeps-hands-crossed-has-satisfied-expression_10521289.htm" },
+  { file: "team/marcus.webp", subject: "Team portrait — Marcus Bello (placeholder)", author: "Bruno Curly", href: "https://www.pexels.com/photo/portrait-of-man-wearing-grey-polo-shirt-26125923/", source: "Pexels" },
   { file: "team/sofia.webp", subject: "Team portrait — Sofia Marín (placeholder)", author: "tonodiaz", href: "https://www.magnific.com/free-photo/portrait-attractive-hispanic-businesswoman-with-her-arms-crossed-against-white-background-with-lot-copy-space_27507512.htm" },
   { file: "team/hannah.webp", subject: "Team portrait — Hannah Lindqvist (placeholder)", author: "wayhomestudio", href: "https://www.magnific.com/free-photo/cheerful-beautiful-european-female-with-pleasant-smile_12086582.htm" },
-  { file: "team/amara.webp", subject: "Team portrait — Amara Nwosu (placeholder)", author: "pch.vector", href: "https://www.magnific.com/free-photo/happy-successful-female-agent_6101390.htm" },
+  { file: "team/grace.webp", subject: "Team portrait — Grace Park (placeholder)", author: "Tran Nhu Tuan", href: "https://www.pexels.com/photo/confident-businesswoman-in-professional-attire-29995622/", source: "Pexels" },
   { file: "team/owen.webp", subject: "Team portrait — Owen Brady (placeholder)", author: "cookie_studio", href: "https://www.magnific.com/free-photo/handsome-bearded-redhead-guy-posing-against-white-wall-with-glasses_11104169.htm" },
 ];
 
