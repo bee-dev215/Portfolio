@@ -329,6 +329,14 @@ html[data-theme="dark"] .site-root, .on-dark {
 }
 @keyframes cloud-drift { from { transform: translateX(-2.5%); } to { transform: translateX(3%); } }
 @keyframes waves-drift { to { background-position-x: -1440px; } }
+/* Home hero network map (NetworkMap.tsx): the dotted world and its traffic on two stacked canvases, sized to the map's
+   proportions (the canvases fade their own edges) */
+.net-map {
+  height: max(400px, 41.67vw);
+  animation: net-in 1.6s var(--ease) .2s both;
+}
+.net-map canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+@keyframes net-in { from { opacity: 0; } }
 
 /* ---------- Brand ---------- */
 /* The gradient only paints inside the box, so pad it past the glyphs (descenders, overhangs) and cancel the padding with
@@ -654,7 +662,7 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
 @keyframes vt-recede { to { transform: scale(.92); filter: brightness(.5); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-bg::before, .clouds::before, .clouds::after, .gradient-text { animation: none; }
+  .site-bg::before, .clouds::before, .clouds::after, .gradient-text, .net-map { animation: none; }
   .btn-primary::after { display: none; }
   .rv, .fade-up, .stagger > *, .word { opacity: 1; transform: none; filter: none; transition: none; animation: none !important; }
   .unveil { clip-path: none; transition: none; }

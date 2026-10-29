@@ -5,6 +5,7 @@ import { projectPath } from "@/data/projects";
 import { usePhotos } from "@/hooks/use-photos";
 import { useProjects } from "@/hooks/use-projects";
 import { serviceIcons } from "./icons";
+import NetworkMap from "./NetworkMap";
 
 const HERO_PHOTO = "/images/hero-work.webp";
 
@@ -30,6 +31,7 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden pb-4 pt-28 sm:pt-32 lg:pt-36">
       <div className="clouds pointer-events-none absolute inset-0" aria-hidden="true" />
+      <NetworkMap />
 
       <div className="relative mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-12 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,.88fr)] lg:gap-14">
         {/* message */}
