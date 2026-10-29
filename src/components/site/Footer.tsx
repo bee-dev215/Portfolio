@@ -1,11 +1,10 @@
 import { ArrowUp, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
-import { company, industries, industryPath, legalLinks, servicePath, services, sitePages, socials, solutionPath, solutions } from "@/data/company";
+import { company, industries, industryPath, legalLinks, servicePath, services, sitePages, solutionPath, solutions } from "@/data/company";
 import { projectPath } from "@/data/projects";
 import { scrollToTop } from "@/lib/scroll";
 import { useProjects } from "@/hooks/use-projects";
 import { Monogram, Wordmark } from "./Navbar";
-import SocialIcon from "./SocialIcon";
 
 const linkCls = "foot-link text-sm text-ink-2 transition-colors hover:text-ink";
 const headCls = "text-xs font-semibold uppercase tracking-[0.14em] text-subtle";
@@ -92,24 +91,15 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-2">
               Custom AI tools, web and mobile apps, and desktop software that take the busywork off your team.
             </p>
-            <ul className="mt-7 grid max-w-sm gap-2.5">
-              {socials.map((s) => (
-                <li key={s.key}>
-                  <a
-                    href={s.href}
-                    className="group flex items-center gap-3 rounded-2xl border border-line bg-surface/60 p-3 pr-4 transition-colors hover:border-brand/50 hover:bg-surface"
-                  >
-                    <span className="icon-tile h-9 w-9 shrink-0 rounded-xl">
-                      <SocialIcon name={s.key} className="h-4 w-4" />
-                    </span>
-                    <span className="min-w-0 leading-tight">
-                      <span className="block text-[11px] font-medium uppercase tracking-wider text-subtle">{s.label}</span>
-                      <span className="block truncate text-sm font-medium text-ink">{s.handle}</span>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <p className={`mt-9 ${headCls}`}>Get in touch</p>
+            <div className="mt-4 flex flex-col items-start gap-2 font-display text-lg font-bold text-ink">
+              <a href={`mailto:${company.email}`} className="hl-link">
+                {company.email}
+              </a>
+              <a href={company.phoneHref} className="hl-link">
+                {company.phone}
+              </a>
+            </div>
           </div>
 
           <LinkColumn title="Services" to="/services" links={services.map((x) => ({ to: servicePath(x), label: x.title }))} />

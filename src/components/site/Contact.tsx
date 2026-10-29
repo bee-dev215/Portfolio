@@ -1,14 +1,13 @@
 import { FormEvent, useEffect, useState } from "react";
-import { ArrowUpRight, CalendarDays, Check, Copy, Loader2, Send } from "lucide-react";
+import { CalendarDays, Check, Copy, Loader2, Send } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { booking, company, ENQUIRE_EVENT, nextSteps, socials } from "@/data/company";
+import { booking, company, ENQUIRE_EVENT, nextSteps } from "@/data/company";
 import { CONTACT_SUBJECTS, ContactPrefill, PREFILL_EVENT } from "@/components/contact/form";
 import { useAvailability } from "@/hooks/use-availability";
 import { dayParts, localZone, timeLabel } from "@/lib/booking-time";
 import { emailInbox, sendToCrm, tag } from "@/lib/leads";
 import { saveMessage } from "@/lib/messagesApi";
-import SocialIcon from "./SocialIcon";
 import Reveal, { SectionHeading } from "./Reveal";
 
 const EMPTY = { name: "", email: "", company: "", phone: "", subject: CONTACT_SUBJECTS[0] as string, message: "" };
@@ -17,6 +16,56 @@ type Form = typeof EMPTY;
 // Pre-fills the message for a topic, unless the visitor has already started writing
 const forTopic = (topic: string) => (f: Form) =>
   f.message.trim() ? f : { ...f, subject: CONTACT_SUBJECTS[0], message: `We'd like to talk about ${topic} for our business. ` };
+
+/** "Skip the form": email and phone written as one sentence, with copy buttons for people who have no mail app set up. */
+function DirectLine() {
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const copy = async (key: string, value: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(key);
+      toast.success(`Copied ${value}`);
+      setTimeout(() => setCopied(null), 1600);
+    } catch {
+      toast.error("Could not copy to clipboard");
+    }
+  };
+
+  const copies = [
+    { key: "email", label: "Copy email", value: company.email },
+    { key: "phone", label: "Copy number", value: company.phone },
+  ];
+
+  return (
+    <div className="card p-6 sm:p-7">
+      <p className="text-xs font-semibold uppercase tracking-wider text-subtle">Skip the form</p>
+      <p className="mt-3 font-display text-[1.3rem] font-semibold leading-[1.65] text-subtle sm:text-2xl sm:leading-[1.6]">
+        Email{" "}
+        <a href={`mailto:${company.email}`} className="hl-link font-bold text-ink [overflow-wrap:anywhere]">
+          {company.email}
+        </a>{" "}
+        or call{" "}
+        <a href={company.phoneHref} className="hl-link whitespace-nowrap font-bold text-ink">
+          {company.phone}
+        </a>
+        .
+      </p>
+      <div className="mt-5 flex flex-wrap gap-2">
+        {copies.map((c) => (
+          <button
+            key={c.key}
+            onClick={() => copy(c.key, c.value)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-line bg-raised/70 px-3.5 py-1.5 text-xs font-semibold text-ink-2 transition-colors hover:border-brand/50 hover:text-brand-text"
+          >
+            {copied === c.key ? <Check className="h-3.5 w-3.5 text-brand-text" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied === c.key ? "Copied" : c.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 /** "Prefer to talk?": the next few open call times, each opening the booking page at that time. */
 function NextTimes() {
@@ -74,7 +123,6 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
-  const [copied, setCopied] = useState<string | null>(null);
   // Honeypot: hidden from people, so anything typed here came from a bot
   const [trap, setTrap] = useState("");
   const [params] = useSearchParams();
@@ -179,17 +227,6 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
     }
   };
 
-  const copy = async (key: string, value: string) => {
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopied(key);
-      toast.success(`Copied ${value}`);
-      setTimeout(() => setCopied(null), 1600);
-    } catch {
-      toast.error("Could not copy to clipboard");
-    }
-  };
-
   const label = "mb-1.5 block text-sm font-semibold text-ink";
   const err = "border-red-400 focus:border-red-400";
 
@@ -214,33 +251,15 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
 
         <div className={`grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12 ${showHeading ? "mt-14" : ""}`}>
           <div className="space-y-4">
-            {socials.map((s, i) => (
-              <Reveal key={s.key} delay={i * 80} variant="left">
-                <div className="card card-hover flex items-center gap-4 p-5">
-                  <span className="icon-tile h-12 w-12 shrink-0">
-                    <SocialIcon name={s.key} className="h-5 w-5" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs font-semibold uppercase tracking-wider text-subtle">{s.label}</div>
-                    <a href={s.href} className="u-link mt-0.5 block truncate font-display text-lg font-bold">
-                      {s.handle}
-                    </a>
-                  </div>
-                  <button onClick={() => copy(s.key, s.handle)} className="grid h-9 w-9 place-items-center rounded-full text-subtle transition-colors hover:bg-raised hover:text-brand-text" aria-label={`Copy ${s.label}`}>
-                    {copied === s.key ? <Check className="h-4 w-4 text-brand-text" /> : <Copy className="h-4 w-4" />}
-                  </button>
-                  <a href={s.href} className="grid h-9 w-9 place-items-center rounded-full text-subtle transition-colors hover:bg-raised hover:text-brand-text" aria-label={`Open ${s.label}`}>
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                </div>
-              </Reveal>
-            ))}
+            <Reveal variant="left">
+              <DirectLine />
+            </Reveal>
 
-            <Reveal delay={socials.length * 80} variant="left">
+            <Reveal delay={80} variant="left">
               <NextTimes />
             </Reveal>
 
-            <Reveal delay={(socials.length + 1) * 80} variant="left">
+            <Reveal delay={160} variant="left">
               <div className="card p-6">
                 <p className="text-xs font-semibold uppercase tracking-wider text-subtle">What happens next</p>
                 <ol className="mt-4 space-y-5">

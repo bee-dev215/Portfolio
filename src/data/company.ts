@@ -82,20 +82,6 @@ export const booking = {
   ] as CallType[],
 };
 
-export type SocialKey = "email" | "phone";
-
-export interface SocialLink {
-  key: SocialKey;
-  label: string;
-  handle: string;
-  href: string;
-}
-
-export const socials: SocialLink[] = [
-  { key: "email", label: "Email", handle: company.email, href: `mailto:${company.email}` },
-  { key: "phone", label: "Phone", handle: company.phone, href: company.phoneHref },
-];
-
 // ------------------------------------------------------------
 //  Services — the engineering capabilities we offer
 // ------------------------------------------------------------
