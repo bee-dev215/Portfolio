@@ -34,7 +34,7 @@ npm run lint
 | Privacy policy and terms of use (`/privacy`, `/terms`) | [`src/data/legal.ts`](src/data/legal.ts) |
 | Photography | [`public/images/`](public/images/) |
 | Page title and social preview tags | [`index.html`](index.html) |
-| Logo | `Monogram` in [`src/components/site/Navbar.tsx`](src/components/site/Navbar.tsx) and [`public/favicon.svg`](public/favicon.svg) (same artwork) |
+| Logo | The original is [`public/images/logo.png`](public/images/logo.png) (art on solid black). The site uses pieces cut from it: `logo-mark.webp` (the tile J), `logo-mark-dark.webp` (the same with its navy shading lifted to blue, for dark backgrounds), `logo-wordmark.webp` (a mask tinted with the text colour) and `favicon.png`, drawn by `Monogram` and `Wordmark` in [`src/components/site/Navbar.tsx`](src/components/site/Navbar.tsx) with the `.logo-mark` / `.logo-wordmark` styles in [`src/index.css`](src/index.css). Re-cut them if the logo changes. |
 | Colour theme (light by default, plus dark; navy primary buttons, indigo → violet → sky highlights) | tokens in [`tailwind.config.ts`](tailwind.config.ts) and `.site-root` in [`src/index.css`](src/index.css) |
 
 ### Photo files

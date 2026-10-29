@@ -313,7 +313,7 @@ export default function ServiceDetail() {
                   {dir === "prev" ? (
                     <ArrowLeft className="h-5 w-5 shrink-0 text-subtle transition-transform group-hover:-translate-x-0.5 group-hover:text-brand-text" />
                   ) : (
-                    <ArrowRight className="h-5 w-5 shrink-0 text-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-brand-text" />
+                    <ArrowRight className="h-5 w-5 shrink-0 text-subtle transition-colors group-hover:text-brand-text" />
                   )}
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand-text">
                     <Icon className="h-5 w-5" />

@@ -26,7 +26,7 @@ export default function ServiceCard({ service, compact = false }: { service: Ser
           <span className={`icon-tile ${compact ? "h-11 w-11" : "h-12 w-12"} ${service.image ? `ring-4 ring-surface ${compact ? "-mt-[46px]" : "-mt-[54px]"}` : ""}`}>
             <Icon className={compact ? "h-5 w-5" : "h-6 w-6"} />
           </span>
-          {!service.image && <ArrowUpRight className="h-5 w-5 text-subtle transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand-text" />}
+          {!service.image && <ArrowUpRight className="h-5 w-5 text-subtle transition-colors group-hover:text-brand-text" />}
         </div>
         <h3 className={`font-display font-bold leading-snug tracking-tight ${compact ? "mt-4 text-lg" : "mt-5 text-2xl"}`}>{service.title}</h3>
         <p className={`mt-2.5 leading-relaxed text-ink-2 ${compact ? "line-clamp-3 text-sm" : ""}`}>{service.desc}</p>

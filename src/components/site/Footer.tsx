@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { company, industries, industryPath, legalLinks, servicePath, services, sitePages, socials, solutionPath, solutions } from "@/data/company";
 import { projectPath } from "@/data/projects";
 import { useInView } from "@/hooks/use-motion";
+import { scrollToTop } from "@/lib/scroll";
 import { useProjects } from "@/hooks/use-projects";
-import { Monogram } from "./Navbar";
+import { Monogram, Wordmark } from "./Navbar";
 import SocialIcon from "./SocialIcon";
 
 const linkCls = "foot-link text-sm text-ink-2 transition-colors hover:text-ink";
@@ -84,10 +85,11 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
         <div className={`${cta ? "mt-16 lg:mt-20" : ""} grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:grid-cols-[1.5fr_1fr_1.15fr_.9fr_.9fr]`}>
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
             <div className="flex items-center gap-3">
-              <Monogram className="h-10 w-10" />
+              <Monogram className="h-11 w-11" />
               <span className="leading-tight">
-                <span className="block font-display text-xl font-extrabold tracking-tight">{company.name}</span>
-                <span className="block text-xs text-subtle">{company.discipline}</span>
+                <span className="sr-only">{company.name}</span>
+                <Wordmark className="h-[22px]" />
+                <span className="mt-1 block text-xs text-subtle">{company.discipline}</span>
               </span>
             </div>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-2">
@@ -107,7 +109,7 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
                       <span className="block text-[11px] font-medium uppercase tracking-wider text-subtle">{s.label}</span>
                       <span className="block truncate text-sm font-medium text-ink">{s.handle}</span>
                     </span>
-                    <ArrowUpRight className="ml-auto h-4 w-4 shrink-0 text-subtle transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand-text" />
+                    <ArrowUpRight className="ml-auto h-4 w-4 shrink-0 text-subtle transition-colors group-hover:text-brand-text" />
                   </a>
                 </li>
               ))}
@@ -134,12 +136,13 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
             <Sparkles className="h-4 w-4 text-sun" /> Built to give teams their week back.
           </p>
           <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="group grid h-11 w-11 place-items-center rounded-full border border-line bg-surface/70 text-ink transition-colors hover:border-brand/60 hover:bg-brand hover:text-white"
+            onClick={() => scrollToTop()}
+            data-back-to-top
+            className="grid h-11 w-11 place-items-center rounded-full border border-line bg-surface/70 text-ink transition-[background-color,border-color,color,scale] hover:border-brand/60 hover:bg-brand hover:text-white active:scale-95"
             aria-label="Back to top"
             title="Back to top"
           >
-            <ArrowUp className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" />
+            <ArrowUp className="h-4 w-4" />
           </button>
         </div>
       </div>

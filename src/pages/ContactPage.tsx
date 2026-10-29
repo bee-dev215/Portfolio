@@ -106,7 +106,7 @@ export default function ContactPage() {
                     <h3 className="mt-2 font-display text-lg font-bold leading-snug">{f.q}</h3>
                     <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-ink-2">{f.a}</p>
                     <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-semibold text-brand-text">
-                      Read the answer <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                      Read the answer <ArrowRight className="h-4 w-4" />
                     </span>
                   </Link>
                 </Reveal>

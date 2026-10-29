@@ -26,7 +26,9 @@ function useScrollState() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
       setScrolled(window.scrollY > 8);
       const max = document.documentElement.scrollHeight - window.innerHeight;
       document.documentElement.style.setProperty("--progress", max > 0 ? (window.scrollY / max).toFixed(4) : "0");
@@ -37,10 +39,14 @@ function useScrollState() {
       }
       setActive(current);
     };
-    onScroll();
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
@@ -49,15 +55,11 @@ function useScrollState() {
   return { active, scrolled };
 }
 
-/** Logo mark: gradient tile with a J and a spark. public/favicon.svg is the same artwork. */
-export const Monogram = ({ className = "h-9 w-9" }: { className?: string }) => (
-  <span className={`bg-grad grid shrink-0 place-items-center rounded-xl text-white shadow-[0_8px_18px_-8px_rgb(var(--brand-rgb)/.7)] ${className}`}>
-    <svg viewBox="0 0 64 64" className="h-full w-full" fill="currentColor" aria-hidden="true">
-      <path d="M38.5 16v20a11 11 0 0 1-22 0" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" />
-      <path d="M49 11Q50.1 16.9 56 18Q50.1 19.1 49 25Q47.9 19.1 42 18Q47.9 16.9 49 11Z" />
-    </svg>
-  </span>
-);
+/** Logo mark: the tile J from public/images/logo.png, fitted inside the box. public/images/favicon.png is the same artwork. */
+export const Monogram = ({ className = "h-9 w-9" }: { className?: string }) => <span aria-hidden="true" className={`logo-mark block shrink-0 ${className}`} />;
+
+/** The "Jovano" wordmark from the logo; set its height, the width follows. */
+export const Wordmark = ({ className = "h-[19px]" }: { className?: string }) => <span aria-hidden="true" className={`logo-wordmark block ${className}`} />;
 
 // ------------------------------------------------------------
 //  Menus, built from the site data
@@ -361,6 +363,7 @@ export default function Navbar() {
   return (
     <header
       ref={headerRef}
+      data-site-header
       onPointerLeave={(e) => e.pointerType === "mouse" && menu && hideSoon()}
       onPointerEnter={cancelClose}
       onKeyDown={onKeyDown}
@@ -372,14 +375,13 @@ export default function Navbar() {
       <div className="mx-auto flex h-16 max-w-[1240px] items-center gap-4 px-5 sm:px-8 lg:h-[72px]">
         <Link
           to="/"
-          onClick={() => home && window.scrollTo({ top: 0, behavior: "smooth" })}
           className="flex shrink-0 items-center gap-2.5 text-left"
           aria-label={`${company.legalName} — home`}
         >
-          <Monogram />
+          <Monogram className="h-10 w-10" />
           <span className="leading-tight">
-            <span className="block font-display text-lg font-extrabold tracking-tight">{company.name}</span>
-            <span className="hidden text-[11px] font-medium text-subtle sm:block">Software & AI engineering</span>
+            <Wordmark />
+            <span className="mt-1 hidden text-[11px] font-medium text-subtle sm:block">Software & AI engineering</span>
           </span>
         </Link>
 
@@ -417,7 +419,7 @@ export default function Navbar() {
                           <p className="font-display text-xl font-bold tracking-tight">{g.label}</p>
                           <p className="mt-2 text-sm leading-relaxed text-subtle">{g.intro}</p>
                           <Link to={g.all.to} onClick={close} className="group mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                            {g.all.label} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                            {g.all.label} <ArrowRight className="h-4 w-4" />
                           </Link>
                         </div>
                         <div className="border-t border-line pt-4 text-sm">

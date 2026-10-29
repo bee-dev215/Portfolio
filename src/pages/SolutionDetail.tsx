@@ -13,6 +13,7 @@ import { bookCall, industries, industryPath, offer, solutionPath, solutions, sta
 import { SolutionFaq, solutionDetails } from "@/data/solution-details";
 import NotFound from "@/pages/NotFound";
 import { usePhotos } from "@/hooks/use-photos";
+import { scrollToSection } from "@/lib/scroll";
 
 const SECTIONS: NavSection[] = [
   { id: "overview", label: "Overview" },
@@ -89,11 +90,6 @@ function SolutionPage({ index }: { index: number }) {
     mainEntity: detail.faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   });
 
-  const seeSample = () => {
-    const el = document.getElementById("sample");
-    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - SECTION_OFFSET + 8, behavior: "smooth" });
-  };
-
   return (
     <PageShell title={solution.title} description={solution.summary}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchema }} />
@@ -107,7 +103,7 @@ function SolutionPage({ index }: { index: number }) {
             <button onClick={() => bookCall(solution.title)} className="btn btn-primary px-7 py-3.5">
               Book a call about {solution.title} <ArrowRight className="h-4 w-4" />
             </button>
-            <button onClick={seeSample} className="btn btn-secondary px-7 py-3.5">
+            <button onClick={() => scrollToSection("sample")} className="btn btn-secondary px-7 py-3.5">
               <MessageSquareText className="h-4 w-4" /> See a sample
             </button>
           </>

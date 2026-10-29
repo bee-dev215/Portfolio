@@ -5,6 +5,9 @@
 //  industries, process, stack, team).
 // ============================================================
 
+import { startNavigation } from "@/lib/route-preload";
+import { scrollToSection } from "@/lib/scroll";
+
 export const company = {
   name: "Jovano",
   shortName: "Jovano",
@@ -743,9 +746,9 @@ export const legalLinks = [
   { to: "/terms", label: "Terms of use" },
 ];
 
+/** Glides to a section of the current page (see src/lib/scroll.ts). */
 export const scrollToId = (id: string) => {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  scrollToSection(id);
 };
 
 // The router's navigate function, registered by PageShell, so the helpers below can change page.
@@ -753,7 +756,11 @@ let navigateTo: ((to: string) => void) | null = null;
 export const setNavigator = (fn: ((to: string) => void) | null) => {
   navigateTo = fn;
 };
-const go = (to: string) => (navigateTo ? navigateTo(to) : window.location.assign(to));
+const go = (to: string) => {
+  if (!navigateTo) return window.location.assign(to);
+  startNavigation(to);
+  navigateTo(to);
+};
 
 /**
  * Fired on window to open a solution's details in place; detail is the solution title.

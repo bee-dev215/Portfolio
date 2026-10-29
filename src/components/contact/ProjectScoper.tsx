@@ -164,7 +164,7 @@ export default function ProjectScoper() {
               <p className="mt-3 max-w-sm leading-relaxed text-ink-2">Four quick questions. We'll turn your answers into a brief in the form below — you can edit it before sending.</p>
               <button type="button" onClick={() => bookCall()} className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
                 <CalendarClock className="h-4 w-4" /> Prefer to talk? Book a call
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="h-3.5 w-3.5" />
               </button>
 
               <ol className="mt-8 hidden space-y-1 lg:block" aria-label="Steps">

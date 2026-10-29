@@ -10,6 +10,7 @@ import { reserveCall, SlotTakenError } from "@/lib/bookingApi";
 import { allZones, CalendarEvent, dayKey, dayLabel, dayParts, downloadIcs, googleCalendarUrl, localZone, timeLabel, whenLabel, zoneName } from "@/lib/booking-time";
 import { emailInbox, sendToCrm, tag } from "@/lib/leads";
 import { saveMessage } from "@/lib/messagesApi";
+import { glideTo, targetTop } from "@/lib/scroll";
 
 type Step = "time" | "details" | "done";
 
@@ -86,8 +87,8 @@ export default function BookingWidget() {
     setStep(next);
     // Keep the top of the widget in view on phones, where the steps are long
     requestAnimationFrame(() => {
-      const box = top.current?.getBoundingClientRect();
-      if (box && box.top < 0) top.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const el = top.current;
+      if (el && el.getBoundingClientRect().top < 0) glideTo(() => targetTop(el));
     });
   };
 

@@ -36,10 +36,13 @@ export function viewTransition(update: () => void, kind?: string): Promise<void>
 
 // ---------- Hooks ----------
 
-/** Flips to true once the element scrolls into view. */
+/**
+ * Flips to true once the element scrolls into view. By default that is as soon as its top passes the lower tenth of
+ * the window, so tall blocks reveal as promptly as short ones.
+ */
 export function useInView<T extends Element>({
-  threshold = 0.1,
-  rootMargin = "0px 0px -40px 0px",
+  threshold = 0,
+  rootMargin = "0px 0px -10% 0px",
 }: { threshold?: number; rootMargin?: string } = {}) {
   const ref = useRef<T>(null);
   const [inView, setInView] = useState(false);

@@ -117,7 +117,7 @@ export default function Solutions() {
         <Reveal delay={60}>
           <div className="mt-6 flex justify-center">
             <Link to="/solutions" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-              Compare all {solutions.length} solutions <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              Compare all {solutions.length} solutions <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </Reveal>

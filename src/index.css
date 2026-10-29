@@ -90,10 +90,6 @@
     @apply border-border;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
-
   body {
     @apply bg-background text-foreground font-sans dark:bg-background dark:text-foreground;
   }
@@ -202,6 +198,8 @@
   --brand: rgb(var(--brand-rgb));
   --grad: linear-gradient(110deg, rgb(var(--brand-rgb)), rgb(var(--iris-rgb)) 55%, rgb(var(--sky-rgb)));
   --ease: cubic-bezier(.22, .61, .36, 1);
+  --ease-out: cubic-bezier(.16, 1, .3, 1); /* fast start, long soft landing: scroll reveals and sliding indicators */
+  --logo-mark: url("/images/logo-mark.webp");
   color: var(--ink);
   color-scheme: var(--scheme);
 }
@@ -231,6 +229,7 @@ html[data-theme="dark"] .site-root, .on-dark {
   --line: rgb(var(--line-rgb) / var(--line-a));
   --brand: rgb(var(--brand-rgb));
   --grad: linear-gradient(110deg, rgb(var(--brand-rgb)), rgb(var(--iris-rgb)) 55%, rgb(var(--sky-rgb)));
+  --logo-mark: url("/images/logo-mark-dark.webp"); /* the J's navy shading lifted to blue so it reads on dark */
   color: var(--ink);
 }
 .site-root {
@@ -244,7 +243,7 @@ html[data-theme="dark"] .site-root, .on-dark {
 .site-root ::selection { background: rgb(var(--brand-rgb) / .2); }
 .site-root :focus-visible { outline: 2px solid rgb(var(--brand-rgb)); outline-offset: 3px; border-radius: 8px; }
 .site-root .rounded-full:focus-visible { border-radius: 9999px; } /* pills and round buttons keep their shape */
-.site-root main:focus-visible { outline: none; } /* skip-link target */
+.site-root main:focus-visible, .site-root [tabindex="-1"]:focus-visible { outline: none; } /* skip-link and jump targets (they get .landed) */
 
 /* Component classes live in Tailwind's components layer so utilities (hidden, rounded-3xl, px-3…) can override them */
 @layer components {
@@ -274,6 +273,13 @@ html[data-theme="dark"] .site-root, .on-dark {
   padding: .12em .06em .18em; margin: -.12em -.06em -.18em; -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
 .bg-grad { background: var(--grad); }
+/* Logo, cut from public/images/logo.png: the tile J (swapped per theme via --logo-mark) and the "Jovano" wordmark,
+   which is a mask so it takes the text colour. Size them with a height; the width follows. */
+.logo-mark { aspect-ratio: 419 / 515; background: var(--logo-mark) center / contain no-repeat; }
+.logo-wordmark {
+  aspect-ratio: 1365 / 315; background-color: currentColor;
+  -webkit-mask: url("/images/logo-wordmark.webp") center / contain no-repeat; mask: url("/images/logo-wordmark.webp") center / contain no-repeat;
+}
 /* 1px gradient border on a rounded element (set a background on the element itself) */
 .grad-border { position: relative; }
 .grad-border::before {
@@ -286,25 +292,31 @@ html[data-theme="dark"] .site-root, .on-dark {
   border-radius: 1.25rem; border: 1px solid var(--line); background: rgb(var(--surface-rgb));
   box-shadow: 0 1px 2px rgb(var(--shadow-rgb) / calc(.04 * var(--shadow-k))), 0 8px 24px -12px rgb(var(--shadow-rgb) / calc(.12 * var(--shadow-k)));
 }
-.card-hover { transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease); }
-.card-hover:hover {
-  transform: translateY(-4px); border-color: rgb(var(--brand-rgb) / .3);
-  box-shadow: 0 2px 4px rgb(var(--shadow-rgb) / calc(.05 * var(--shadow-k))), 0 24px 48px -20px rgb(var(--brand-rgb) / calc(.28 * var(--shadow-k)));
+.card-hover { transition: transform .35s var(--ease), scale .2s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease); }
+/* Hover lifts only where there is a real pointer, so a tapped card doesn't stay lifted on a phone */
+@media (hover: hover) and (pointer: fine) {
+  .card-hover:hover {
+    transform: translateY(-4px); border-color: rgb(var(--brand-rgb) / .3);
+    box-shadow: 0 2px 4px rgb(var(--shadow-rgb) / calc(.05 * var(--shadow-k))), 0 24px 48px -20px rgb(var(--brand-rgb) / calc(.28 * var(--shadow-k)));
+  }
 }
 .glass { background: rgb(var(--surface-rgb) / .72); backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4); }
 .shadow-soft { box-shadow: 0 30px 60px -30px rgb(var(--shadow-rgb) / calc(.35 * var(--shadow-k))), 0 12px 24px -16px rgb(var(--shadow-rgb) / calc(.18 * var(--shadow-k))); }
 
 /* ---------- Controls ---------- */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: 9999px;
-  font-weight: 600; transition: transform .2s var(--ease), box-shadow .2s var(--ease), background-color .2s, border-color .2s, color .2s;
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: 9999px; font-weight: 600;
+  transition: transform .2s var(--ease), scale .15s var(--ease), box-shadow .2s var(--ease), background-color .2s, border-color .2s, color .2s, opacity .2s;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none;
 }
-.btn:active { transform: translateY(1px); }
-/* Solid ink: deep navy on light pages, near-white on dark ones; it turns brand indigo on hover */
+.btn:disabled, .btn[aria-disabled="true"] { cursor: not-allowed; opacity: .55; box-shadow: none; }
+/* Solid ink: deep navy on light pages, near-white on dark ones; it turns brand indigo on hover (and while pressed) */
 .btn-primary { background-color: var(--ink); color: rgb(var(--canvas-rgb)); box-shadow: 0 10px 24px -12px rgb(var(--shadow-rgb) / .6); }
-.btn-primary:hover { background-color: rgb(var(--brand-rgb)); color: rgb(var(--on-brand-rgb)); box-shadow: 0 14px 30px -10px rgb(var(--brand-rgb) / .6); transform: translateY(-1px); }
 .btn-secondary { border: 1px solid var(--line); background: rgb(var(--surface-rgb)); color: var(--ink); }
-.btn-secondary:hover { border-color: rgb(var(--brand-rgb) / .4); color: rgb(var(--brand-text-rgb)); transform: translateY(-1px); }
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover:not(:disabled) { background-color: rgb(var(--brand-rgb)); color: rgb(var(--on-brand-rgb)); box-shadow: 0 14px 30px -10px rgb(var(--brand-rgb) / .6); transform: translateY(-1px); }
+  .btn-secondary:hover:not(:disabled) { border-color: rgb(var(--brand-rgb) / .4); color: rgb(var(--brand-text-rgb)); transform: translateY(-1px); }
+}
 .eyebrow {
   display: inline-flex; align-items: center; gap: .5rem; border-radius: 9999px; padding: .375rem .875rem;
   border: 1px solid rgb(var(--brand-rgb) / .18); background: rgb(var(--brand-soft-rgb)); color: rgb(var(--brand-text-rgb));
@@ -334,11 +346,12 @@ html[data-theme="dark"] .site-root, .on-dark {
 }
 
 /* ---------- Motion ---------- */
-/* Scroll reveal: a short fade-up (left/right slide in from the side, scale settles from 96%) */
-.rv { opacity: 0; transform: translateY(20px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
-.rv-left { transform: translateX(-24px); }
-.rv-right { transform: translateX(24px); }
-.rv-scale { transform: scale(.96); }
+/* Scroll reveal: a fade-up that starts briskly and settles softly, triggered as the block's top passes the lower
+   tenth of the window (left/right slide in from the side, scale settles from 95%) */
+.rv { opacity: 0; transform: translateY(28px); transition: opacity .6s var(--ease), transform .9s var(--ease-out); }
+.rv-left { transform: translateX(-32px); }
+.rv-right { transform: translateX(32px); }
+.rv-scale { transform: scale(.95); }
 .rv-clip { transform: none; }
 .rv.rv-in { opacity: 1; transform: none; }
 
@@ -387,6 +400,65 @@ html[data-theme="dark"] .site-root, .on-dark {
 }
 .foot-link { background: linear-gradient(rgb(var(--brand-text-rgb)), rgb(var(--brand-text-rgb))) 0 100% / 0 1px no-repeat; transition: background-size .25s var(--ease), color .2s; padding-bottom: 1px; }
 .foot-link:hover { background-size: 100% 1px; }
+
+/* ---------- Feedback: buttons and in-page jumps ---------- */
+/* Buttons press in when clicked or tapped (`scale`, so it composes with any hover lift or utility transform);
+   the primary one also turns indigo while pressed, the clearest cue a touch screen gets */
+.btn:active:not(:disabled) { scale: .97; }
+.btn-primary:active:not(:disabled) { background-color: rgb(var(--brand-hi-rgb)); color: rgb(var(--on-brand-rgb)); }
+a.card-hover:active, button.card-hover:active { scale: .985; }
+
+/* Direction icons lean the way their link, button or clickable card (.group) goes while it is hovered or keyboard-focused */
+@media (hover: hover) and (pointer: fine) {
+  .site-root :is(a, button, .group):hover { --lean: 1; }
+}
+.site-root :is(a, button):focus-visible, .site-root .group:has(:focus-visible) { --lean: 1; }
+.site-root :is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up, .lucide-arrow-down, .lucide-arrow-up-right, .lucide-chevron-right, .lucide-chevron-left, .lucide-send) {
+  transition: translate .25s var(--ease), color .2s;
+}
+.site-root :is(.lucide-arrow-right, .lucide-chevron-right) { translate: calc(var(--lean, 0) * 3px) 0; }
+.site-root :is(.lucide-arrow-left, .lucide-chevron-left) { translate: calc(var(--lean, 0) * -3px) 0; }
+.site-root .lucide-arrow-up { translate: 0 calc(var(--lean, 0) * -3px); }
+.site-root .lucide-arrow-down { translate: 0 calc(var(--lean, 0) * 3px); }
+.site-root :is(.lucide-arrow-up-right, .lucide-send) { translate: calc(var(--lean, 0) * 2px) calc(var(--lean, 0) * -2px); }
+
+/* Where an in-page jump lands (markLanding in src/lib/scroll.ts): a section's eyebrow pill rings twice,
+   a card glows, anything else takes a brief tint */
+.landed { animation: landed-tint 1.6s var(--ease) both; }
+.eyebrow.landed { animation: landed-ring 1s var(--ease) 2; }
+.card.landed, [data-land].landed { animation: landed-glow 1.8s var(--ease) both; }
+@keyframes landed-ring {
+  0% { box-shadow: 0 0 0 0 rgb(var(--brand-rgb) / .5); }
+  100% { box-shadow: 0 0 0 14px rgb(var(--brand-rgb) / 0); }
+}
+@keyframes landed-glow { 0%, 55% { border-color: rgb(var(--brand-rgb) / .6); box-shadow: 0 0 0 4px rgb(var(--brand-rgb) / .18); } }
+@keyframes landed-tint { 0%, 40% { background-color: rgb(var(--brand-rgb) / .06); } }
+
+/* Floating back-to-top: rises in once the reader is well down the page; the ring fills with the page's progress */
+.scroll-top {
+  opacity: 0; translate: 0 12px; scale: .9; pointer-events: none; -webkit-tap-highlight-color: transparent;
+  transition: opacity .3s var(--ease), translate .3s var(--ease), scale .2s var(--ease), color .2s, border-color .2s;
+}
+.scroll-top.is-shown { opacity: 1; translate: none; scale: 1; pointer-events: auto; }
+.scroll-top.is-shown:active { scale: .9; }
+@media (hover: hover) and (pointer: fine) {
+  .scroll-top:hover { color: rgb(var(--brand-text-rgb)); border-color: rgb(var(--brand-rgb) / .35); }
+}
+.scroll-top-track { fill: none; stroke: var(--line); stroke-width: 2.5; }
+.scroll-top-ring { fill: none; stroke: rgb(var(--brand-rgb)); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--progress, 0)); }
+
+/* Section bar: the highlight pill slides between links (once it has been placed) */
+.section-pill.is-placed { transition: transform .45s var(--ease-out), width .45s var(--ease-out); }
+
+/* Page loading bar (RouteProgress). It lives outside .site-root, so it spells out the brand gradient */
+.route-bar {
+  position: fixed; inset: 0 0 auto; z-index: 100; height: 3px; transform-origin: left; pointer-events: none;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed 55%, #0ea5e9); box-shadow: 0 0 12px rgb(79 70 229 / .55);
+  animation: route-load 8s cubic-bezier(.08, .7, .2, 1) .12s both; /* the delay keeps quick loads from flashing it */
+}
+.route-bar.is-done { animation: route-done .45s var(--ease, ease-out) both; }
+@keyframes route-load { from { transform: scaleX(0); } to { transform: scaleX(.92); } }
+@keyframes route-done { from { transform: scaleX(.92); } 50% { transform: scaleX(1); opacity: 1; } to { transform: scaleX(1); opacity: 0; } }
 
 /* Hero entrance */
 .fade-up { opacity: 0; transform: translateY(16px); animation: fadeup .8s var(--ease) forwards; }
@@ -517,6 +589,11 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
   .group:hover .img-zoom, .card-hover:hover { transform: none; }
   .marquee, .live-dot::after, .caret::after, .typing > i, .msg-in, .bar-grow, .modal-in, .kenburns, .mega-in, .mega-swap { animation: none; }
   .viewer-rise > * { opacity: 1; transform: none; animation: none; }
+  .site-root :is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up, .lucide-arrow-down, .lucide-arrow-up-right, .lucide-chevron-right, .lucide-chevron-left, .lucide-send) { translate: none; }
+  .btn:active:not(:disabled), a.card-hover:active, button.card-hover:active, .scroll-top, .scroll-top.is-shown:active { scale: none; translate: none; }
+  .eyebrow.landed { animation: landed-glow 1.8s linear both; }
+  .section-pill.is-placed, .scroll-top { transition: opacity .2s; }
+  .route-bar { animation: none; transform: scaleX(.6); }
   .flow-step { opacity: 1; transform: none; animation: none !important; }
   .flow-pulse { display: none; }
   .proj-tile-shade, .proj-tile-more { transition: none; }
@@ -524,7 +601,6 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
   .stack-photo { scale: none; transition: none; }
   .sol-panel, .sol-panel-img, .sol-panel-tint, .sol-panel-spine, .sol-panel-body > * { clip-path: none; transition: none; }
   .sol-panel-img, .sol-panel.is-active:hover .sol-panel-img { transform: none; }
-  html { scroll-behavior: auto; }
 }
 
 /* A site photo has no src while its replacement (if any) loads: see usePhotos() */

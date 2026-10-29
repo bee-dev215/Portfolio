@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { offer, phases } from "@/data/company";
 import { isFreePhase } from "@/data/company-pages";
 import { prefersReducedMotion } from "@/hooks/use-motion";
+import { glideTo, markLanding } from "@/lib/scroll";
 import { usePhotos } from "@/hooks/use-photos";
 import Reveal, { SectionHeading } from "./Reveal";
 
@@ -25,7 +26,7 @@ function Activity({ text }: { text: string }) {
 /**
  * Scroll-driven stack: each phase card pins in place and the next one slides up over it.
  * Writes --cover (0–1, how far the next card has covered this one) on every card and
- * reports the phase currently on top, so nothing here needs a click.
+ * reports the phase currently on top; the phase map beside it can also glide straight to a phase.
  */
 function useCardStack(count: number) {
   const cards = useRef<(HTMLElement | null)[]>([]);
@@ -72,13 +73,29 @@ function useCardStack(count: number) {
     };
   }, [count]);
 
-  return { cards, active, progress };
+  // Glides to the point where a card has just pinned on top of the stack. A pinned card's own box sits at its pin,
+  // so its resting place is worked out from the list's top and the cards before it
+  const goTo = (i: number) => {
+    const list = cards.current[0]?.parentElement;
+    const card = cards.current[i];
+    if (!list || !card) return;
+    const restingTop = () => {
+      let y = list.getBoundingClientRect().top + window.scrollY;
+      for (const el of cards.current.slice(0, i)) if (el) y += el.offsetHeight + parseFloat(getComputedStyle(el).marginBottom);
+      return y;
+    };
+    glideTo(() => restingTop() - (STICKY_TOP + i * STACK_STEP) + 1).then((arrived) => {
+      if (arrived) markLanding(card.firstElementChild as HTMLElement);
+    });
+  };
+
+  return { cards, active, progress, goTo };
 }
 
 /** The delivery phases, with the free prototype marked. `more` adds a link to the full approach page (off on that page itself). */
 export default function Process({ more = true }: { more?: boolean }) {
   const photos = usePhotos();
-  const { cards, active, progress } = useCardStack(phases.length);
+  const { cards, active, progress, goTo } = useCardStack(phases.length);
 
   return (
     <section id="process" className="band px-5 py-24 sm:px-8 lg:py-32">
@@ -114,29 +131,31 @@ export default function Process({ more = true }: { more?: boolean }) {
               {phases.map((p, i) => {
                 const state = i === active ? "now" : i < active ? "done" : "next";
                 return (
-                  <li key={p.id} className="relative flex items-center gap-4 py-2" aria-current={state === "now" ? "step" : undefined}>
-                    <span
-                      className={`stack-node relative z-[1] grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full text-sm font-bold ${
-                        state === "now"
-                          ? "is-now bg-grad text-white"
-                          : state === "done"
-                            ? "bg-brand-soft text-brand-text"
-                            : "border border-line bg-surface text-subtle"
-                      }`}
-                    >
-                      {state === "done" ? <Check className="h-4 w-4" /> : i + 1}
-                    </span>
-                    <span className={`transition-all duration-500 ${state === "now" ? "translate-x-1" : "opacity-60"}`}>
-                      <span className="flex items-center gap-2 font-display text-lg font-bold text-ink">
-                        {p.name}
-                        {isFreePhase(p) && (
-                          <span className="chip border-sun/30 bg-sun/10 px-2 py-0.5 text-[11px] font-semibold text-ink">
-                            <Gift className="h-3 w-3 text-sun" /> Free
-                          </span>
-                        )}
+                  <li key={p.id} aria-current={state === "now" ? "step" : undefined}>
+                    <button onClick={() => goTo(i)} className="group relative flex w-full items-center gap-4 rounded-2xl py-2 pr-3 text-left">
+                      <span
+                        className={`stack-node relative z-[1] grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full text-sm font-bold ${
+                          state === "now"
+                            ? "is-now bg-grad text-white"
+                            : state === "done"
+                              ? "bg-brand-soft text-brand-text"
+                              : "border border-line bg-surface text-subtle"
+                        }`}
+                      >
+                        {state === "done" ? <Check className="h-4 w-4" /> : i + 1}
                       </span>
-                      <span className="block text-sm text-subtle">{p.title}</span>
-                    </span>
+                      <span className={`transition-all duration-500 ${state === "now" ? "translate-x-1" : "opacity-60 group-hover:translate-x-1 group-hover:opacity-100"}`}>
+                        <span className="flex items-center gap-2 font-display text-lg font-bold text-ink">
+                          {p.name}
+                          {isFreePhase(p) && (
+                            <span className="chip border-sun/30 bg-sun/10 px-2 py-0.5 text-[11px] font-semibold text-ink">
+                              <Gift className="h-3 w-3 text-sun" /> Free
+                            </span>
+                          )}
+                        </span>
+                        <span className="block text-sm text-subtle">{p.title}</span>
+                      </span>
+                    </button>
                   </li>
                 );
               })}

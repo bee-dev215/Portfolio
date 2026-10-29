@@ -39,7 +39,7 @@ export default function Faq() {
                 Book a call <ArrowUpRight className="h-4 w-4" />
               </button>
               <Link to="/faq" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                All {allFaqs.length} questions <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                All {allFaqs.length} questions <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </SectionHeading>

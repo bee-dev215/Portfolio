@@ -271,7 +271,7 @@ export default function IndustryDetail() {
                         <p className="font-display text-lg font-bold leading-tight sm:text-xl">{o.title}</p>
                         <p className="mt-0.5 text-xs text-white/80">{o.focus}</p>
                       </div>
-                      <ArrowUpRight className="h-5 w-5 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                      <ArrowUpRight className="h-5 w-5 shrink-0" />
                     </div>
                   </div>
                 </Link>

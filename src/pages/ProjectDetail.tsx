@@ -13,6 +13,7 @@ import { serviceIcons } from "@/components/site/icons";
 import { bookCall, industries, industryPath, servicePath, services, solutionPath, solutions } from "@/data/company";
 import { audienceTitle, Project, projectPath } from "@/data/projects";
 import { useProjects } from "@/hooks/use-projects";
+import { scrollToSection } from "@/lib/scroll";
 import NotFound from "./NotFound";
 
 const SECTIONS: NavSection[] = [
@@ -60,11 +61,6 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
     { k: "Team", v: project.team },
   ];
 
-  const jump = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - SECTION_OFFSET + 8, behavior: "smooth" });
-  };
-
   return (
     <PageShell title={project.title} description={project.summary}>
       <PageHero
@@ -77,7 +73,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
             <button onClick={() => bookCall(project.title)} className="btn btn-primary px-7 py-3.5">
               Book a call <ArrowUpRight className="h-4 w-4" />
             </button>
-            <button onClick={() => jump("architecture")} className="btn btn-secondary px-7 py-3.5">
+            <button onClick={() => scrollToSection("architecture")} className="btn btn-secondary px-7 py-3.5">
               <Workflow className="h-4 w-4" /> See the architecture
             </button>
           </>
