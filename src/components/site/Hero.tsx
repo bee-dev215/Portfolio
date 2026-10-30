@@ -1,10 +1,10 @@
-import { CalendarDays, Gift, GitBranch, ShieldCheck, Timer } from "lucide-react";
+import { CalendarDays, Gift, GitBranch, ShieldCheck, Timer, Workflow } from "lucide-react";
 import { Link } from "react-router-dom";
 import { company, industries, offer, servicePath, services } from "@/data/company";
 import { projectPath } from "@/data/projects";
 import { usePhotos } from "@/hooks/use-photos";
 import { useProjects } from "@/hooks/use-projects";
-import { serviceIcons } from "./icons";
+import { industryIcons, serviceIcons } from "./icons";
 import NetworkMap from "./NetworkMap";
 
 const HERO_PHOTO = "/images/hero-work.webp";
@@ -156,20 +156,25 @@ export default function Hero() {
             </Link>
           </div>
           <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {projects.map((p) => (
-              <li key={p.slug}>
-                <Link
-                  to={projectPath(p)}
-                  className="card-hover group flex h-full items-center gap-3.5 rounded-2xl border border-line bg-surface p-2.5 pr-4"
-                >
-                  <img src={photos.src(p.image)} alt="" loading="lazy" width={64} height={48} className="h-12 w-16 shrink-0 rounded-xl object-cover" />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-semibold">{p.title}</span>
-                    <span className="block truncate text-xs text-subtle">{industryTitle(p.audience)}</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
+            {projects.map((p) => {
+              const Icon = industryIcons[p.audience] ?? Workflow;
+              return (
+                <li key={p.slug}>
+                  <Link
+                    to={projectPath(p)}
+                    className="card-hover group flex h-full items-center gap-3.5 rounded-2xl border border-line bg-surface p-2.5 pr-4"
+                  >
+                    <span className="icon-tile h-12 w-12 shrink-0 rounded-xl" aria-hidden="true">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-semibold">{p.title}</span>
+                      <span className="block truncate text-xs text-subtle">{industryTitle(p.audience)}</span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
