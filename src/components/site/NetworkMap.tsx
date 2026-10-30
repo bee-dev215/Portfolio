@@ -47,7 +47,7 @@ const LINKS: [Hub, Hub][] = [
 
 const MIN_MAP_W = 960; // narrower screens show part of a map this wide…
 const NARROW_CENTER = -20; // …centred on the Atlantic, where the busiest cables cross (longitude)
-const ALONG = [0.25, 0.5, 0.75]; // where each route's particles sit, as a share of the way between its hubs
+const ALONG = [0.5]; // where each route's particles sit, as a share of the way between its hubs
 // Edge fade, baked into the drawing (a CSS mask would re-composite the whole layer every frame): full strength inside
 // an ellipse around the middle, easing out toward the sides and bottom, and clear of the header at the top.
 // Fractions of the canvas size.
