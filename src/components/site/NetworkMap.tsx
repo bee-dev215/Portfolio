@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/hooks/use-motion";
 import { LAND } from "./world-land";
 
-// Exchange points the traffic runs between, as [longitude, latitude]
+// Exchange points of the network, as [longitude, latitude]
 const HUBS = {
   sfo: [-122.4, 37.8],
   dal: [-96.8, 32.8],
@@ -34,7 +34,7 @@ const HUBS = {
 type Hub = keyof typeof HUBS;
 const HUB_KEYS = Object.keys(HUBS) as Hub[];
 
-// Where traffic can travel: land trunks and the big subsea cables. They are never drawn; packets just follow them.
+// Land trunks and the big subsea cables between the hubs. They are never drawn; their particles sit along them.
 // Pairs more than 180° apart cross the Pacific and wrap around the map's edges.
 const LINKS: [Hub, Hub][] = [
   ["sfo", "chi"], ["sfo", "dal"], ["chi", "nyc"], ["dal", "mia"], ["dal", "mex"], ["nyc", "mia"],
@@ -47,36 +47,18 @@ const LINKS: [Hub, Hub][] = [
 
 const MIN_MAP_W = 960; // narrower screens show part of a map this wide…
 const NARROW_CENTER = -20; // …centred on the Atlantic, where the busiest cables cross (longitude)
-const SPEED = 0.26; // packet speed, px per ms
-const SIGNAL = 1000; // a hub's Wi-Fi-style signal, from its first arc lighting to the last fading, ms
-const SEND = 420; // the packet sets off this far into its hub's signal, ms
-const RIPPLE = 1300; // delivery rings, ms
-const FLOW = 0.028; // speed of the faint background traffic, px per ms
-const BLINK = 140; // packets pulse once every 2π × this many ms (≈ 0.9 s)
+const ALONG = [0.25, 0.5, 0.75]; // where each route's particles sit, as a share of the way between its hubs
 // Edge fade, baked into the drawing (a CSS mask would re-composite the whole layer every frame): full strength inside
 // an ellipse around the middle, easing out toward the sides and bottom, and clear of the header at the top.
 // Fractions of the canvas size.
 const EDGE = { x: 0.5, y: 0.46, rx: 0.68, ry: 0.78, from: 0.55, top: [0.04, 0.2] } as const;
 
 type Pt = { x: number; y: number };
-type Link = { a: number; b: number; p0: Pt; c: Pt; p1: Pt; len: number; shifts: number[] };
-type Hop = { li: number; dir: 1 | -1 };
-type Packet = { route: number[]; hops: Hop[]; hop: number; flying: boolean; until: number; done: boolean };
-type Flight = Hop & { t0: number; dur: number };
-type Signal = { node: number; angle: number; t0: number };
-type Ripple = { node: number; t0: number };
+// A light at a fixed spot: its edge fade, and the period (ms per radian) and phase of its blink
+type Light = Pt & { edge: number; period: number; phase: number };
 
 const rgba = (c: string, a: number) => `rgb(${c} / ${a})`;
-const easeInOut = (t: number) => 0.5 - Math.cos(Math.PI * t) / 2;
-const easeOut = (t: number) => 1 - (1 - t) ** 3;
 const wave = (t: number) => 0.5 + 0.5 * Math.sin(t); // 0…1
-const pick = <T,>(list: T[]) => list[Math.floor(Math.random() * list.length)];
-
-/** Point on a link's path, t from 0 (hub a) to 1 (hub b). */
-const at = ({ p0, c, p1 }: Link, t: number): Pt => {
-  const u = 1 - t;
-  return { x: u * u * p0.x + 2 * u * t * c.x + t * t * p1.x, y: u * u * p0.y + 2 * u * t * c.y + t * t * p1.y };
-};
 
 /** Brand colours as RGB channels, read from the site tokens so the map follows the light/dark theme. */
 const palette = (el: Element) => {
@@ -93,11 +75,9 @@ const palette = (el: Element) => {
 };
 
 /**
- * Hero backdrop: a dotted world map with a global broadband network running over it, drawn without lines. Faint dots
- * drift between countries all the time; every so often a hub sends a packet: it gives off a Wi-Fi-style signal
- * pointed where the packet is going, the packet travels there as a softly blinking dot, the next hub signals it on, and
- * the destination answers with soft rings. Pauses off screen; under reduced motion it draws the map and hubs once and
- * stays still.
+ * Hero backdrop: a dotted world map with a global broadband network on it. The hubs breathe gently and particles sit
+ * along the routes between them, each softly blinking on its own beat; nothing travels. Pauses off screen; under
+ * reduced motion it draws everything once and stays still.
  */
 export default function NetworkMap() {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -114,22 +94,29 @@ export default function NetworkMap() {
     const land = Uint8Array.from(atob(LAND.bits), (ch) => ch.charCodeAt(0));
     let pal = palette(wrap);
     let w = 0, h = 0, dpr = 1, mapW = 0, cell = 0, x0 = 0, y0 = 0;
-    let nodes: Pt[] = [];
-    let links: Link[] = [];
-    let routes: { to: number; hop: Hop }[][] = [];
-
-    // Simulation state, on its own clock so a paused map resumes where it left off
-    let now = 0;
-    let nextSpawn = 0;
-    let packets: Packet[] = [];
-    let flights: Flight[] = [];
-    let signals: Signal[] = [];
-    let ripples: Ripple[] = [];
-    const flash = HUB_KEYS.map(() => -Infinity);
+    let hubs: Light[] = [];
+    let particles: Light[] = [];
+    let now = 0; // own clock, so a paused map picks up where it left off
 
     const project = (lon: number, lat: number): Pt => ({
       x: x0 + ((lon + 180) / LAND.step) * cell,
       y: y0 + ((LAND.top - lat) / LAND.step) * cell,
+    });
+
+    const fade = (x: number, y: number) => {
+      const d = Math.hypot((x / w - EDGE.x) / EDGE.rx, (y / h - EDGE.y) / EDGE.ry);
+      const side = (1 - d) / (1 - EDGE.from);
+      const top = (y / h - EDGE.top[0]) / (EDGE.top[1] - EDGE.top[0]);
+      return Math.max(0, Math.min(1, side, top));
+    };
+
+    // Fixed per index, so the lights keep their rhythm through resizes
+    const light = ({ x, y }: Pt, i: number, period: number): Light => ({
+      x,
+      y,
+      edge: fade(x, y),
+      period: period * (0.75 + ((i * 37) % 11) / 20),
+      phase: i * 2.39,
     });
 
     const layout = () => {
@@ -145,34 +132,29 @@ export default function NetworkMap() {
         cv.height = Math.round(h * dpr);
       }
 
-      nodes = HUB_KEYS.map((k) => project(HUBS[k][0], HUBS[k][1]));
-      links = LINKS.map(([ka, kb]) => {
+      hubs = HUB_KEYS.map((k, n) => light(project(HUBS[k][0], HUBS[k][1]), n, 900));
+      particles = LINKS.flatMap(([ka, kb]) => {
         const [lonA, latA] = HUBS[ka];
         let [lonB] = HUBS[kb];
         if (lonB - lonA > 180) lonB -= 360;
         else if (lonA - lonB > 180) lonB += 360;
         const p0 = project(lonA, latA);
         const p1 = project(lonB, HUBS[kb][1]);
-        // Bow each path upward, away from the map, like a great-circle route
-        const dx = p1.x - p0.x, dy = p1.y - p0.y, chord = Math.hypot(dx, dy);
+        // Bow each route upward, away from the map, like a great-circle path
+        const dx = p1.x - p0.x, dy = p1.y - p0.y;
         const sign = dx < 0 ? -1 : 1;
         const c = { x: (p0.x + p1.x) / 2 + sign * dy * 0.22, y: (p0.y + p1.y) / 2 - sign * dx * 0.22 };
         const shifts = p1.x > x0 + mapW ? [0, -mapW] : p1.x < x0 ? [0, mapW] : [0];
-        const len = (chord + Math.hypot(c.x - p0.x, c.y - p0.y) + Math.hypot(p1.x - c.x, p1.y - c.y)) / 2;
-        return { a: HUB_KEYS.indexOf(ka), b: HUB_KEYS.indexOf(kb), p0, c, p1, len, shifts };
-      });
-      routes = nodes.map((_, n) =>
-        links.flatMap((l, li): { to: number; hop: Hop }[] =>
-          l.a === n ? [{ to: l.b, hop: { li, dir: 1 } }] : l.b === n ? [{ to: l.a, hop: { li, dir: -1 } }] : []
-        )
-      );
-    };
-
-    const fade = (x: number, y: number) => {
-      const d = Math.hypot((x / w - EDGE.x) / EDGE.rx, (y / h - EDGE.y) / EDGE.ry);
-      const side = (1 - d) / (1 - EDGE.from);
-      const top = (y / h - EDGE.top[0]) / (EDGE.top[1] - EDGE.top[0]);
-      return Math.max(0, Math.min(1, side, top));
+        return ALONG.flatMap((t) => {
+          const u = 1 - t;
+          const x = u * u * p0.x + 2 * u * t * c.x + t * t * p1.x;
+          const y = u * u * p0.y + 2 * u * t * c.y + t * t * p1.y;
+          return shifts.map((s) => ({ x: x + s, y }));
+        });
+      })
+        .filter(({ x }) => x > -10 && x < w + 10)
+        .map((pt, i) => light(pt, i, 420))
+        .filter((p) => p.edge > 0);
     };
 
     // The still layer: land dots, each a touch lighter or darker for texture
@@ -218,173 +200,43 @@ export default function NetworkMap() {
       c.globalCompositeOperation = "source-over";
     };
 
-    // A hub signals a packet on: its Wi-Fi arcs face the way the packet will leave
-    const signal = (node: number, { li, dir }: Hop, t0: number) => {
-      const { p0, c, p1 } = links[li];
-      const from = dir === 1 ? p0 : p1;
-      signals.push({ node, angle: Math.atan2(c.y - from.y, c.x - from.x), t0 });
-      flash[node] = t0;
-    };
-
-    const spawn = () => {
-      for (let tries = 0; tries < 8; tries++) {
-        const route = [Math.floor(Math.random() * nodes.length)];
-        const hops: Hop[] = [];
-        const want = 2 + Math.floor(Math.random() * 3);
-        while (hops.length < want) {
-          const next = routes[route[route.length - 1]].filter((r) => !route.includes(r.to));
-          if (!next.length) break;
-          const { to, hop } = pick(next);
-          route.push(to);
-          hops.push(hop);
-        }
-        if (hops.length < 2) continue;
-        packets.push({ route, hops, hop: 0, flying: false, until: now + SEND, done: false });
-        signal(route[0], hops[0], now);
-        return;
-      }
-    };
-
-    const step = () => {
-      if (now >= nextSpawn) {
-        if (packets.length < (w < 640 ? 4 : 8)) spawn();
-        nextSpawn = now + 650 + Math.random() * 900;
-      }
-      for (const p of packets) {
-        if (now < p.until) continue;
-        if (!p.flying) {
-          const hop = p.hops[p.hop];
-          const dur = 500 + links[hop.li].len / SPEED;
-          flights.push({ ...hop, t0: p.until, dur });
-          p.flying = true;
-          p.until += dur;
-        } else {
-          const node = p.route[++p.hop];
-          p.flying = false;
-          if (p.hop === p.hops.length) {
-            ripples.push({ node, t0: p.until });
-            flash[node] = p.until;
-            p.done = true;
-          } else {
-            signal(node, p.hops[p.hop], p.until);
-            p.until += SEND;
-          }
-        }
-      }
-      packets = packets.filter((p) => !p.done);
-      flights = flights.filter((f) => now - f.t0 < f.dur);
-      signals = signals.filter((s) => now - s.t0 < SIGNAL);
-      ripples = ripples.filter((r) => now - r.t0 < RIPPLE);
-    };
-
     // Fills in the current fillStyle; callers vary only globalAlpha, so the canvas isn't re-parsing a colour per dot
     const dot = (x: number, y: number, r: number) => {
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fill();
     };
+    const level = (l: Light) => wave(now / l.period + l.phase);
 
     const paintLive = () => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
-      ctx.lineCap = "round";
-      const lineInk = rgba(pal.line, 1), glowInk = rgba(pal.glow, 1), headInk = rgba(pal.head, 1);
-
-      // Background traffic: a couple of faint dots always drifting between each pair of hubs, glimmering as they go
-      ctx.fillStyle = lineInk;
-      links.forEach((l, li) => {
-        for (let k = 0; k < 2; k++) {
-          const f = ((now * FLOW) / l.len + k / 2 + li * 0.37) % 1;
-          const pt = at(l, li % 2 ? f : 1 - f);
-          const glimmer = 0.35 + 0.65 * wave(now / 420 + li * 2.3 + k * 3.1);
-          for (const s of l.shifts) {
-            ctx.globalAlpha = fade(pt.x + s, pt.y) * glimmer * (pal.dark ? 0.5 : 0.4);
-            dot(pt.x + s, pt.y, 1.2);
-          }
-        }
-      });
-
       ctx.globalCompositeOperation = pal.dark ? "lighter" : "source-over";
 
-      // Wi-Fi signals: three arcs lighting one after another from the hub outward, then fading
-      ctx.strokeStyle = rgba(pal.line, pal.dark ? 0.85 : 0.7);
-      ctx.lineWidth = 1.8;
-      for (const sg of signals) {
-        const { x, y } = nodes[sg.node];
-        const edge = fade(x, y);
-        for (let i = 0; i < 3; i++) {
-          const e = (now - sg.t0 - i * 130) / (SIGNAL - 2 * 130);
-          if (e < 0 || e >= 1) continue;
-          ctx.globalAlpha = edge * (e < 0.15 ? e / 0.15 : 1 - (e - 0.15) / 0.85);
-          ctx.beginPath();
-          ctx.arc(x, y, 6.5 + i * 5.5 + e * 3, sg.angle - 0.8, sg.angle + 0.8);
-          ctx.stroke();
-        }
+      // Particles: a soft glow that swells as each one blinks on, then the dot itself
+      ctx.fillStyle = rgba(pal.glow, 1);
+      for (const p of particles) {
+        ctx.globalAlpha = p.edge * level(p) ** 2 * 0.35;
+        dot(p.x, p.y, 5);
+      }
+      ctx.fillStyle = rgba(pal.line, 1);
+      for (const p of particles) {
+        ctx.globalAlpha = p.edge * (0.15 + 0.75 * level(p));
+        dot(p.x, p.y, 1.6);
       }
 
-      // Packets: a softly blinking dot with a short wake of fainter dots
-      for (const f of flights) {
-        const k = (now - f.t0) / f.dur;
-        if (k < 0) continue;
-        const l = links[f.li];
-        const t = easeInOut(Math.min(k, 1));
-        const along = (u: number) => at(l, f.dir === 1 ? u : 1 - u);
-        const head = along(t);
-        const blink = wave((now - f.t0) / BLINK - Math.PI / 2);
-        for (const s of l.shifts) {
-          const edge = fade(head.x + s, head.y);
-          if (!edge) continue;
-          ctx.fillStyle = lineInk;
-          for (let j = 3; j >= 1; j--) {
-            const u = t - j * 0.035;
-            if (u <= 0) continue;
-            const pt = along(u);
-            ctx.globalAlpha = edge * (0.6 - j * 0.16) * 0.9;
-            dot(pt.x + s, pt.y, 2.3 - j * 0.4);
-          }
-          ctx.globalAlpha = edge;
-          const r = 10 + blink * 6;
-          const halo = ctx.createRadialGradient(head.x + s, head.y, 0, head.x + s, head.y, r);
-          halo.addColorStop(0, rgba(pal.glow, 0.35 + blink * 0.45));
-          halo.addColorStop(1, rgba(pal.glow, 0));
-          ctx.fillStyle = halo;
-          ctx.fillRect(head.x + s - r, head.y - r, r * 2, r * 2);
-          ctx.fillStyle = headInk;
-          ctx.globalAlpha = edge * (0.65 + blink * 0.35);
-          dot(head.x + s, head.y, 2.7);
-        }
+      // Hubs breathe gently, each on its own beat
+      ctx.fillStyle = rgba(pal.glow, 1);
+      for (const hub of hubs) {
+        const b = level(hub);
+        ctx.globalAlpha = hub.edge * (0.12 + b * 0.16);
+        dot(hub.x, hub.y, 4 + b * 2);
       }
-
-      // Delivery: two soft rings spread out from the destination
-      ctx.strokeStyle = rgba(pal.glow, pal.dark ? 0.7 : 0.8);
-      ctx.lineWidth = 1.3;
-      for (const r of ripples) {
-        const { x, y } = nodes[r.node];
-        const edge = fade(x, y);
-        for (let i = 0; i < 2; i++) {
-          const e = (now - r.t0 - i * 220) / (RIPPLE - 220);
-          if (e < 0 || e >= 1) continue;
-          ctx.globalAlpha = edge * (1 - e);
-          ctx.beginPath();
-          ctx.arc(x, y, 3 + easeOut(e) * 22, 0, Math.PI * 2);
-          ctx.stroke();
-        }
+      ctx.fillStyle = rgba(pal.head, 1);
+      for (const hub of hubs) {
+        ctx.globalAlpha = hub.edge * 0.85;
+        dot(hub.x, hub.y, 2.1);
       }
-
-      // Hubs breathe gently, each on its own beat, and brighten whenever they send or receive
-      const glowOf = (n: number) => Math.max(0, 1 - (now - flash[n]) / 1000);
-      ctx.fillStyle = glowInk;
-      nodes.forEach(({ x, y }, n) => {
-        const g = glowOf(n);
-        const breath = wave(now / 900 + n * 1.7);
-        ctx.globalAlpha = fade(x, y) * (0.1 + breath * 0.12 + g * 0.3);
-        dot(x, y, 4 + breath * 1.5 + g * 3);
-      });
-      ctx.fillStyle = headInk;
-      nodes.forEach(({ x, y }, n) => {
-        ctx.globalAlpha = fade(x, y) * (0.7 + glowOf(n) * 0.3);
-        dot(x, y, 2.1);
-      });
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = "source-over";
     };
@@ -395,7 +247,6 @@ export default function NetworkMap() {
     const frame = (t: number) => {
       now += Math.min(t - (last || t), 64);
       last = t;
-      step();
       paintLive();
       raf = requestAnimationFrame(frame);
     };
@@ -416,10 +267,6 @@ export default function NetworkMap() {
     };
 
     layout();
-    if (!still) {
-      // Run the network for a few seconds up front so the first frame already has traffic on it
-      for (let i = 0; i < 100; i++, now += 50) step();
-    }
     redraw();
 
     const resize = new ResizeObserver(() => {
