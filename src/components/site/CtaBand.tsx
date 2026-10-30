@@ -33,7 +33,7 @@ export default function CtaBand({
               <p className="text-sm font-semibold text-white/80">{kicker}</p>
               <h2 className="mt-3 max-w-2xl text-balance font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">{title}</h2>
             </div>
-            <div className="flex shrink-0 flex-col items-start gap-5 lg:items-end">
+            <div className="flex shrink-0 flex-col items-start gap-5 lg:items-center">
               <div className="flex flex-wrap gap-3">
                 <button onClick={() => bookCall(topic)} className="btn bg-white px-6 py-3.5 text-[#1e40af] shadow-lg hover:-translate-y-px">
                   {primaryLabel} <CalendarDays className="h-4 w-4" />

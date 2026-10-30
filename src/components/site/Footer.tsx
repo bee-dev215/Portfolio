@@ -54,17 +54,14 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
             <div className="foot-cta-glow pointer-events-none absolute inset-0" aria-hidden="true" />
             <div className="relative grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
               <div>
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur">
-                  <span className="live-dot" /> {company.availability}
-                </span>
-                <h2 className="mt-5 max-w-xl font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem]">
+                <h2 className="max-w-xl font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem]">
                   Ready to hand off the busywork?
                 </h2>
                 <p className="mt-4 max-w-lg text-white/80">
                   Book a free call with a senior engineer. If software can take the task off your plate, the first two weeks of building are on us.
                 </p>
               </div>
-              <div className="flex flex-col items-start gap-5 lg:items-end">
+              <div className="flex flex-col items-start gap-5 lg:items-center lg:justify-self-end">
                 <Link
                   to="/book"
                   className="btn group bg-white px-6 py-3.5 font-semibold text-[#1e40af] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
