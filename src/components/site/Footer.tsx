@@ -5,7 +5,8 @@ import { projectPath } from "@/data/projects";
 import { scrollToTop } from "@/lib/scroll";
 import { useProjects } from "@/hooks/use-projects";
 import { Monogram, Wordmark } from "./Navbar";
-import { copyLine, directLines, tipCls } from "./reach";
+import ContactLine from "./ContactLine";
+import { copyLine, directLines } from "./reach";
 
 const linkCls = "foot-link text-sm text-ink-2 transition-colors hover:text-ink";
 const headCls = "text-xs font-semibold uppercase tracking-[0.14em] text-subtle";
@@ -63,7 +64,7 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
                   Book a free call with a senior engineer. If software can take the task off your plate, the first two weeks of building are on us.
                 </p>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+              <div className="flex flex-col items-start gap-5 lg:items-end">
                 <Link
                   to="/book"
                   className="btn group bg-white px-6 py-3.5 font-semibold text-[#1e40af] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
@@ -71,9 +72,7 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
                   Book a call
                   <CalendarDays className="h-4 w-4" />
                 </Link>
-                <a href={`mailto:${company.email}`} className="btn border border-white/30 bg-white/10 px-6 py-3.5 text-white backdrop-blur hover:bg-white/20">
-                  Email us
-                </a>
+                <ContactLine />
               </div>
             </div>
           </div>
@@ -93,20 +92,17 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
               Custom AI tools, web and mobile apps, and desktop software that take the busywork off your team.
             </p>
             <p className={`mt-9 ${headCls}`}>Get in touch</p>
-            <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold">
+            <ul className="mt-4 space-y-3">
               {directLines.map((l) => (
                 <li key={l.key}>
-                  <a href={l.href} onClick={() => copyLine(l.value)} className="group relative inline-flex items-center gap-2 text-ink">
-                    <l.icon className="h-4 w-4 text-brand-text" />
-                    <span className="foot-link">{l.label}</span>
-                    <span className={tipCls}>{l.value}</span>
+                  <a href={l.href} onClick={() => copyLine(l.value)} className={linkCls}>
+                    {l.value}
                   </a>
                 </li>
               ))}
               <li>
-                <Link to="/book" className="inline-flex items-center gap-2 text-ink">
-                  <CalendarDays className="h-4 w-4 text-brand-text" />
-                  <span className="foot-link">Book a call</span>
+                <Link to="/book" className={linkCls}>
+                  Book a call
                 </Link>
               </li>
             </ul>

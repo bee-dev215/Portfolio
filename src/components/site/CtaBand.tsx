@@ -3,6 +3,7 @@ import { CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 import { bookCall } from "@/data/company";
 import { usePhotos } from "@/hooks/use-photos";
+import ContactLine from "./ContactLine";
 import Reveal from "./Reveal";
 
 /** Closing call to action for inner pages: a gradient card with "Book a call" and an optional second link. */
@@ -32,15 +33,18 @@ export default function CtaBand({
               <p className="text-sm font-semibold text-white/80">{kicker}</p>
               <h2 className="mt-3 max-w-2xl text-balance font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">{title}</h2>
             </div>
-            <div className="flex shrink-0 flex-wrap gap-3">
-              <button onClick={() => bookCall(topic)} className="btn bg-white px-6 py-3.5 text-[#1e40af] shadow-lg hover:-translate-y-px">
-                {primaryLabel} <CalendarDays className="h-4 w-4" />
-              </button>
-              {secondary && (
-                <Link to={secondary.to} className="btn border border-white/40 px-6 py-3.5 text-white hover:bg-white/10">
-                  {secondary.label}
-                </Link>
-              )}
+            <div className="flex shrink-0 flex-col items-start gap-5 lg:items-end">
+              <div className="flex flex-wrap gap-3">
+                <button onClick={() => bookCall(topic)} className="btn bg-white px-6 py-3.5 text-[#1e40af] shadow-lg hover:-translate-y-px">
+                  {primaryLabel} <CalendarDays className="h-4 w-4" />
+                </button>
+                {secondary && (
+                  <Link to={secondary.to} className="btn border border-white/40 px-6 py-3.5 text-white hover:bg-white/10">
+                    {secondary.label}
+                  </Link>
+                )}
+              </div>
+              <ContactLine />
             </div>
           </div>
         </div>

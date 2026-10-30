@@ -2,7 +2,7 @@ import { Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { company } from "@/data/company";
 
-/** Email and phone as actions. The address and number aren't printed: they show on hover and are copied when clicked. */
+/** Email and phone. Clicking either one also copies it. */
 export const directLines = [
   { key: "email", label: "Email us", note: `Reply within ${company.responseTime}`, value: company.email, href: `mailto:${company.email}`, icon: Mail },
   { key: "phone", label: "Call us", note: "Talk it through with the team", value: company.phone, href: company.phoneHref, icon: Phone },
