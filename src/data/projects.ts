@@ -24,6 +24,25 @@ export interface ProjectFeature {
   desc: string;
 }
 
+/** Icon names for architecture steps; ProjectFlow maps each to a Lucide icon. */
+export type FlowIcon =
+  | "phone" | "voice" | "chat" | "calendar" | "summary"
+  | "mobile" | "sync" | "draft" | "review" | "dashboard"
+  | "inbox" | "scan" | "checks" | "post"
+  | "word" | "server" | "library" | "model"
+  | "sources" | "pipeline" | "database" | "alert"
+  | "repo" | "tests" | "staging" | "cloud" | "monitor";
+
+export interface FlowStep {
+  label: string;
+  detail: string;
+  icon: FlowIcon;
+  kind?: "ai" | "people"; // AI steps glow; "people" marks where a person reads or decides
+  sends?: string; // what passes to the next step
+  returns?: string; // what the next step sends back, for two-way links
+  exit?: string; // a side path out of this step, e.g. urgent calls to the on-call line
+}
+
 export interface Project {
   slug: string; // URL: /projects/<slug>
   title: string;
@@ -39,7 +58,8 @@ export interface Project {
   brief: string[]; // what the client asked for, agreed on the first call
   steps: ProjectStep[];
   built: ProjectFeature[];
-  flow: { label: string; detail: string }[]; // how the system fits together, in order
+  flow: FlowStep[]; // how the system fits together, in order
+  flowLoop?: string; // what the last step feeds back into the first, if anything
   safeguards: string[];
   measures: string[]; // what success was judged on — no figures, so nothing reads as a published result
   stack: string[];
@@ -82,11 +102,11 @@ export const builtInProjects: Project[] = [
       { title: "Office dashboard", desc: "Every job's reports, photos and open issues in one place, searchable by date, trade and location." },
     ],
     flow: [
-      { label: "Field app", detail: "React Native app with on-device storage" },
-      { label: "Sync service", detail: "Queued uploads that resume when signal returns" },
-      { label: "Drafting", detail: "Speech-to-text, then a structured report draft" },
-      { label: "Review", detail: "The superintendent checks and signs the report" },
-      { label: "Procore & dashboard", detail: "Filed to the job's daily log and the office dashboard" },
+      { label: "Field app", detail: "React Native app with on-device storage", icon: "mobile", sends: "Voice notes & photos" },
+      { label: "Sync service", detail: "Queued uploads that resume when signal returns", icon: "sync", sends: "Audio & photos" },
+      { label: "Drafting", detail: "Speech-to-text, then a structured report draft", icon: "draft", kind: "ai", sends: "Draft report" },
+      { label: "Review", detail: "The superintendent checks and signs the report", icon: "review", kind: "people", sends: "Signed report" },
+      { label: "Procore & dashboard", detail: "Filed to the job's daily log and the office dashboard", icon: "dashboard" },
     ],
     safeguards: [
       "Nothing is filed until the superintendent has reviewed and signed the report",
@@ -142,11 +162,11 @@ export const builtInProjects: Project[] = [
       { title: "Review and approval", desc: "Exceptions highlighted against the source document; approvers accept, correct or reject on one screen." },
     ],
     flow: [
-      { label: "Intake", detail: "Invoice inbox and vendor portals" },
-      { label: "Extraction", detail: "Fields and line items read from each document" },
-      { label: "Checks", detail: "Vendor, property and duplicate checks against existing records" },
-      { label: "Review app", detail: "The accounts team approves, corrects or rejects" },
-      { label: "Posting", detail: "Approved bills posted to the property management system" },
+      { label: "Intake", detail: "Invoice inbox and vendor portals", icon: "inbox", sends: "PDFs, scans & photos" },
+      { label: "Extraction", detail: "Fields and line items read from each document", icon: "scan", kind: "ai", sends: "Fields & line items" },
+      { label: "Checks", detail: "Vendor, property and duplicate checks against existing records", icon: "checks", sends: "Coded invoice & flags" },
+      { label: "Review app", detail: "The accounts team approves, corrects or rejects", icon: "review", kind: "people", sends: "Approved bill", exit: "Rejected invoices are never posted" },
+      { label: "Posting", detail: "Approved bills posted to the property management system", icon: "post" },
     ],
     safeguards: [
       "No invoice is posted or paid until a person approves it",
@@ -202,11 +222,11 @@ export const builtInProjects: Project[] = [
       { title: "Call summaries", desc: "Every call arrives as a short written summary on the patient's record or in the morning queue." },
     ],
     flow: [
-      { label: "Phone line", detail: "After-hours and overflow calls routed through Twilio" },
-      { label: "Speech", detail: "Streaming speech-to-text and a natural voice" },
-      { label: "Conversation", detail: "Answers from approved clinic information, with escalation rules checked on every turn" },
-      { label: "Scheduling", detail: "Practice-system API for availability and bookings" },
-      { label: "Summaries", detail: "Written summaries and transcripts for the front desk" },
+      { label: "Phone line", detail: "After-hours and overflow calls routed through Twilio", icon: "phone", sends: "Caller's voice", returns: "Spoken reply" },
+      { label: "Speech", detail: "Streaming speech-to-text and a natural voice", icon: "voice", kind: "ai", sends: "Live transcript", returns: "Reply text" },
+      { label: "Conversation", detail: "Answers from approved clinic information, with escalation rules checked on every turn", icon: "chat", kind: "ai", sends: "Booking request", returns: "Open slots", exit: "Urgent or clinical calls go straight to the on-call line" },
+      { label: "Scheduling", detail: "Practice-system API for availability and bookings", icon: "calendar", sends: "Transcript & outcome" },
+      { label: "Summaries", detail: "Written summaries and transcripts for the front desk", icon: "summary", kind: "people" },
     ],
     safeguards: [
       "Never gives medical advice: symptoms and clinical questions go to a person",
@@ -262,11 +282,11 @@ export const builtInProjects: Project[] = [
       { title: "Matter-aware search", desc: "Questions answered across past agreements the user is already allowed to open." },
     ],
     flow: [
-      { label: "Word add-in", detail: "Reads the open contract and shows flags beside each clause" },
-      { label: "Review service", detail: "Runs in the firm's own Azure tenant" },
-      { label: "Playbook & precedents", detail: "Indexed with the firm's document permissions" },
-      { label: "Model", detail: "Private deployment under terms that exclude training on firm data" },
-      { label: "Lawyer review", detail: "Comments accepted, edited or dismissed in Word" },
+      { label: "Word add-in", detail: "Reads the open contract and shows flags beside each clause", icon: "word", sends: "Contract clauses" },
+      { label: "Review service", detail: "Runs in the firm's own Azure tenant", icon: "server", sends: "Clause search", returns: "Permitted precedents" },
+      { label: "Playbook & precedents", detail: "Indexed with the firm's document permissions", icon: "library", sends: "Clause & sources" },
+      { label: "Model", detail: "Private deployment under terms that exclude training on firm data", icon: "model", kind: "ai", sends: "Cited flags" },
+      { label: "Lawyer review", detail: "Comments accepted, edited or dismissed in Word", icon: "review", kind: "people" },
     ],
     safeguards: [
       "Client documents processed only on firm-controlled infrastructure, never in public AI tools",
@@ -321,11 +341,11 @@ export const builtInProjects: Project[] = [
       { title: "Weekly summary", desc: "A plain-language report on orders, delays and returns, drafted from the checked data every Monday." },
     ],
     flow: [
-      { label: "Sources", detail: "Shopify, ShipStation, the 3PL's API and NetSuite" },
-      { label: "Pipelines", detail: "Scheduled and webhook loads, modeled with dbt" },
-      { label: "Warehouse", detail: "One checked source of truth in PostgreSQL" },
-      { label: "Rules & alerts", detail: "Exception rules with alerts to Slack and email" },
-      { label: "Dashboards", detail: "Live dashboards and the AI-drafted weekly report" },
+      { label: "Sources", detail: "Shopify, ShipStation, the 3PL's API and NetSuite", icon: "sources", sends: "Orders, stock & shipments" },
+      { label: "Pipelines", detail: "Scheduled and webhook loads, modeled with dbt", icon: "pipeline", sends: "Modeled tables" },
+      { label: "Warehouse", detail: "One checked source of truth in PostgreSQL", icon: "database", sends: "Checked data" },
+      { label: "Rules & alerts", detail: "Exception rules with alerts to Slack and email", icon: "alert", sends: "Exceptions & totals", exit: "Stuck or mismatched orders go to the exception queue, assigned to an owner" },
+      { label: "Dashboards", detail: "Live dashboards and the AI-drafted weekly report", icon: "dashboard", kind: "people" },
     ],
     safeguards: [
       "Read-only access to the source systems, apart from the actions the team approved",
@@ -379,12 +399,13 @@ export const builtInProjects: Project[] = [
       { title: "Monitoring and docs", desc: "Error tracking, uptime alerts, an architecture overview and runbooks for the next engineer." },
     ],
     flow: [
-      { label: "Repository", detail: "Company-owned GitHub, with branch protection and code review" },
-      { label: "CI/CD", detail: "GitHub Actions running tests on every change" },
-      { label: "Staging", detail: "A copy of production for demos and release checks" },
-      { label: "Production", detail: "Containers in the company's own AWS account, defined in Terraform" },
-      { label: "Monitoring", detail: "Error tracking, uptime and cost alerts" },
+      { label: "Repository", detail: "Company-owned GitHub, with branch protection and code review", icon: "repo", kind: "people", sends: "Reviewed change" },
+      { label: "CI/CD", detail: "GitHub Actions running tests on every change", icon: "tests", sends: "Tested build" },
+      { label: "Staging", detail: "A copy of production for demos and release checks", icon: "staging", sends: "Checked release" },
+      { label: "Production", detail: "Containers in the company's own AWS account, defined in Terraform", icon: "cloud", sends: "Errors, uptime & cost" },
+      { label: "Monitoring", detail: "Error tracking, uptime and cost alerts", icon: "monitor" },
     ],
+    flowLoop: "Alerts become the next small fix in the repository",
     safeguards: [
       "No big-bang rewrite: every change shipped in small, reversible steps",
       "Production data copied to staging only in anonymized form",

@@ -300,7 +300,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
             </Reveal>
           </div>
           <div className="mt-12">
-            <ProjectFlow flow={project.flow} />
+            <ProjectFlow flow={project.flow} loop={project.flowLoop} />
           </div>
           <Reveal delay={120}>
             <div className="mt-8 flex flex-wrap items-center gap-2">

@@ -629,19 +629,70 @@ a.card-hover:active, button.card-hover:active { scale: .985; }
 .proj-tile:hover .proj-tile-more, .proj-tile:focus-visible .proj-tile-more { grid-template-rows: 1fr; opacity: 1; }
 @media (hover: none) { .proj-tile-more { display: none; } }
 
-/* Project flow: the steps rise in one after another, then a pulse travels each connector (down on phones, across on desktop) */
+/* Project flow: the steps rise in one after another, then dots travel each link with what it carries
+   (down on narrow screens, across at xl). Two-way links get a second lane running back; a loop runs under the row */
 .flow-step { opacity: 0; transform: translateY(10px); }
 .rv-in .flow-step { animation: fadeup .55s var(--ease) forwards; animation-delay: calc(120ms + var(--i, 0) * 90ms); }
-.flow-line { left: 50%; top: 0; bottom: 0; width: 2px; translate: -50% 0; }
-.flow-pulse { left: 50%; top: 0; translate: -50% 0; opacity: 0; box-shadow: 0 0 12px rgb(var(--brand-rgb) / .8); }
-.rv-in .flow-pulse { animation: flow-y 2.6s var(--ease) var(--d, 0s) infinite; }
+.flow-ai { border-color: rgb(var(--brand-rgb) / .35); box-shadow: var(--shadow-card), 0 0 0 4px rgb(var(--brand-rgb) / .06); }
+.flow-ai .flow-icon::after { content: ""; position: absolute; inset: -4px; border-radius: 15px; border: 2px solid rgb(var(--sky-rgb) / .55); opacity: 0; }
+.rv-in .flow-ai .flow-icon::after { animation: flow-ring 2.4s var(--ease) calc(.9s + var(--i, 0) * 90ms) infinite; }
+@keyframes flow-ring { from { opacity: .9; scale: 1; } to { opacity: 0; scale: 1.3; } }
+
+.flow-link { height: 4.75rem; }
+.flow-lane { position: absolute; top: 6px; bottom: 6px; left: 50%; width: 2px; translate: -50% 0; background: linear-gradient(rgb(var(--brand-rgb) / .2), rgb(var(--sky-rgb) / .65)); }
+.flow-back { background: linear-gradient(rgb(var(--sky-rgb) / .65), rgb(var(--brand-rgb) / .2)); }
+.is-two-way .flow-fwd { left: calc(50% + 6px); }
+.is-two-way .flow-back { left: calc(50% - 6px); }
+/* Arrowheads: forward lanes point to the next step, back lanes to the previous one */
+.flow-lane::after { content: ""; position: absolute; left: 50%; translate: -50% 0; border: 5px solid transparent; }
+.flow-fwd::after { bottom: -4px; border-bottom: 0; border-top: 6px solid rgb(var(--sky-rgb)); }
+.flow-back::after { top: -4px; border-top: 0; border-bottom: 6px solid rgb(var(--sky-rgb)); }
+.flow-dot { position: absolute; left: 50%; top: 0; width: 8px; height: 8px; border-radius: 50%; translate: -50% 0; opacity: 0; background: var(--grad); box-shadow: 0 0 12px rgb(var(--brand-rgb) / .8); }
+.rv-in .flow-link .flow-dot { animation: flow-y 2.6s var(--ease) var(--d, 0s) infinite; }
+.rv-in .flow-back .flow-dot { animation-direction: reverse; }
+.flow-tag {
+  position: absolute; top: 50%; translate: 0 -50%; max-width: calc(50% - 22px); padding: 2px 8px; border-radius: 8px;
+  border: 1px solid var(--line); background: rgb(var(--surface-rgb)); font-size: 11px; font-weight: 600; line-height: 1.35; color: rgb(var(--ink-2-rgb));
+}
+.flow-tag-fwd { left: calc(50% + 18px); }
+.flow-tag-back { right: calc(50% + 18px); text-align: right; color: rgb(var(--subtle-rgb)); }
 @keyframes flow-y { 15%, 80% { opacity: 1; } to { top: calc(100% - 8px); opacity: 0; } }
 @keyframes flow-x { 15%, 80% { opacity: 1; } to { left: calc(100% - 8px); opacity: 0; } }
-@media (min-width: 1024px) {
-  .flow-line { inset: 50% 6px auto; width: auto; height: 2px; translate: 0 -50%; }
-  .flow-pulse { top: 50%; left: 0; translate: 0 -50%; }
-  .rv-in .flow-pulse { animation-name: flow-x; }
+
+.flow-loop { display: flex; justify-content: center; margin-top: 1rem; }
+.flow-loop > .flow-dot { display: none; }
+.flow-loop-tag {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; border: 1px solid rgb(var(--brand-rgb) / .3);
+  background: rgb(var(--surface-rgb)); font-size: 12px; font-weight: 600; color: rgb(var(--ink-2-rgb)); box-shadow: var(--shadow-card);
 }
+
+@media (min-width: 1280px) {
+  .flow-link { --gap: 92px; width: var(--gap); height: auto; }
+  .flow-lane { top: 50%; bottom: auto; left: 8px; right: 8px; width: auto; height: 2px; translate: 0 -50%; background: linear-gradient(90deg, rgb(var(--brand-rgb) / .2), rgb(var(--sky-rgb) / .65)); }
+  .flow-back { background: linear-gradient(90deg, rgb(var(--sky-rgb) / .65), rgb(var(--brand-rgb) / .2)); }
+  .is-two-way .flow-fwd { left: 8px; top: calc(50% - 6px); }
+  .is-two-way .flow-back { left: 8px; top: calc(50% + 6px); }
+  .flow-lane::after { left: auto; top: 50%; translate: 0 -50%; }
+  .flow-fwd::after { right: -4px; bottom: auto; border: 5px solid transparent; border-right: 0; border-left: 6px solid rgb(var(--sky-rgb)); }
+  .flow-back::after { left: -4px; border: 5px solid transparent; border-left: 0; border-right: 6px solid rgb(var(--sky-rgb)); }
+  .flow-dot { top: 50%; left: 0; translate: 0 -50%; }
+  .rv-in .flow-link .flow-dot { animation-name: flow-x; }
+  .flow-tag { top: auto; left: 50%; right: auto; translate: -50% 0; width: max-content; max-width: calc(var(--gap) - 4px); text-align: center; }
+  .flow-tag-fwd { bottom: calc(50% + 12px); }
+  .flow-tag-back { top: calc(50% + 12px); }
+
+  /* The loop: down from the last step, back along the bottom, up into the first (centre to centre) */
+  .flow-loop {
+    --edge: calc((100% - (var(--n) - 1) * 92px) / var(--n) / 2);
+    position: relative; display: block; height: 2.75rem; margin: 0 var(--edge);
+    border: 2px dashed rgb(var(--brand-rgb) / .35); border-top: 0; border-radius: 0 0 20px 20px;
+  }
+  .flow-loop::before { content: ""; position: absolute; left: -7px; top: -4px; border: 6px solid transparent; border-top: 0; border-bottom: 7px solid rgb(var(--sky-rgb)); }
+  .flow-loop-tag { position: absolute; left: 50%; bottom: 0; translate: -50% 50%; white-space: nowrap; }
+  .flow-loop > .flow-dot { display: block; top: auto; bottom: -5px; left: auto; right: 0; translate: 50% 0; }
+  .rv-in .flow-loop > .flow-dot { animation: flow-loop 4s var(--ease) 2.4s infinite; }
+}
+@keyframes flow-loop { 10%, 85% { opacity: 1; } to { right: 100%; opacity: 0; } }
 
 /* Viewer: the open photo breathes slowly */
 .kenburns { animation: kenburns 14s ease-in-out infinite alternate; }
@@ -679,7 +730,8 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
   .section-pill.is-placed, .scroll-top { transition: opacity .2s; }
   .route-bar { animation: none; transform: scaleX(.6); }
   .flow-step { opacity: 1; transform: none; animation: none !important; }
-  .flow-pulse { display: none; }
+  .flow-dot { display: none !important; }
+  .rv-in .flow-ai .flow-icon::after { animation: none; }
   .proj-tile-shade, .proj-tile-more { transition: none; }
   .mega-feature img { transition: none; }
   .mega-feature:hover img { transform: none; }
