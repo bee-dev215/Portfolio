@@ -1,17 +1,15 @@
 import { Link } from "react-router-dom";
 import { Service, servicePath } from "@/data/company";
 import { serviceIcons } from "@/components/site/icons";
-import { usePhotos } from "@/hooks/use-photos";
 
 /** A service as a linked card: photo (when it has one), icon, title, description and (optionally) what's included. */
 export default function ServiceCard({ service, compact = false }: { service: Service; compact?: boolean }) {
-  const photos = usePhotos();
   const Icon = serviceIcons[service.key];
   return (
     <Link to={servicePath(service)} className="card card-hover group relative flex h-full flex-col overflow-hidden">
       {service.image && (
         <div className={`sheen relative overflow-hidden bg-raised ${compact ? "aspect-[16/9]" : "aspect-[16/8]"}`}>
-          <img src={photos.src(service.image)} alt="" loading="lazy" width={640} height={400} className="h-full w-full object-cover" />
+          <img src={service.image} alt="" loading="lazy" width={640} height={400} className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-[rgb(10_16_32/.35)] to-transparent" aria-hidden="true" />
         </div>
       )}

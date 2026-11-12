@@ -9,10 +9,9 @@ import SampleExchange from "@/components/solutions/SampleExchange";
 import SectionNav, { NavSection, SECTION_OFFSET } from "@/components/solutions/SectionNav";
 import SolutionCard from "@/components/solutions/SolutionCard";
 import ProjectStrip from "@/components/projects/ProjectStrip";
-import { bookCall, industries, industryPath, offer, solutionPath, solutions, startEnquiry } from "@/data/company";
+import { bookCall, offer, solutionPath, solutions, startEnquiry } from "@/data/company";
 import { SolutionFaq, solutionDetails } from "@/data/solution-details";
 import NotFound from "@/pages/NotFound";
-import { usePhotos } from "@/hooks/use-photos";
 import { scrollToSection } from "@/lib/scroll";
 
 const SECTIONS: NavSection[] = [
@@ -76,13 +75,10 @@ export default function SolutionDetail() {
 }
 
 function SolutionPage({ index }: { index: number }) {
-  const photos = usePhotos();
   const solution = solutions[index];
   const detail = solutionDetails[solution.slug];
   const prev = solutions[(index - 1 + solutions.length) % solutions.length];
   const next = solutions[(index + 1) % solutions.length];
-  const audiences = industries.filter((i) => i.solutions.includes(solution.title));
-  const related = detail.related.map((r) => solutions.find((s) => s.slug === r)).filter((s): s is (typeof solutions)[number] => Boolean(s));
 
   const faqSchema = JSON.stringify({
     "@context": "https://schema.org",
@@ -111,7 +107,7 @@ function SolutionPage({ index }: { index: number }) {
         aside={
           <div className="relative pb-10 sm:pb-0 sm:pr-10">
             <div className="shadow-soft overflow-hidden rounded-[2rem] bg-raised">
-              {solution.image && <img src={photos.src(solution.image)} alt="" width={1280} height={800} className="aspect-[4/3] w-full object-cover" />}
+              {solution.image && <img src={solution.image} alt="" width={1280} height={800} className="aspect-[4/3] w-full object-cover" />}
             </div>
             <div className="glass shadow-soft absolute -bottom-2 left-4 right-4 rounded-2xl border border-line p-4 sm:-bottom-8 sm:left-auto sm:right-0 sm:w-72">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-subtle">At a glance</p>
@@ -354,27 +350,6 @@ function SolutionPage({ index }: { index: number }) {
               </div>
             </Reveal>
           </div>
-
-          {audiences.length > 0 && (
-            <div className="mt-16">
-              <h3 className="font-display text-2xl font-bold tracking-tight">Who it's for</h3>
-              <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {audiences.map((a, i) => (
-                  <li key={a.key}>
-                    <Reveal delay={i * 70} className="h-full">
-                      <Link to={industryPath(a)} className="card card-hover group flex h-full items-center gap-4 p-3 pr-4">
-                        <img src={photos.src(a.image)} alt="" loading="lazy" width={64} height={64} className="h-16 w-16 shrink-0 rounded-xl object-cover" />
-                        <span className="min-w-0 flex-1">
-                          <span className="block font-display font-bold leading-tight">{a.title}</span>
-                          <span className="mt-0.5 block truncate text-xs text-subtle">{a.focus}</span>
-                        </span>
-                      </Link>
-                    </Reveal>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
       </section>
 
@@ -415,7 +390,7 @@ function SolutionPage({ index }: { index: number }) {
         lead="Projects that started from this solution, then grew into something specific to the client."
       />
 
-      {/* Previous / next and related */}
+      {/* Previous / next */}
       <section className="px-5 py-20 sm:px-8 lg:py-24">
         <div className="mx-auto max-w-[1240px]">
           <nav aria-label="More solutions" className="grid gap-4 sm:grid-cols-2">
@@ -435,28 +410,10 @@ function SolutionPage({ index }: { index: number }) {
                   <span className="block text-xs font-semibold uppercase tracking-wider text-subtle">{dir}</span>
                   <span className="block truncate font-display text-lg font-bold">{s.title}</span>
                 </span>
-                {s.image && <img src={photos.src(s.image)} alt="" loading="lazy" width={96} height={64} className="hidden h-14 w-20 shrink-0 rounded-xl object-cover sm:block" />}
+                {s.image && <img src={s.image} alt="" loading="lazy" width={96} height={64} className="hidden h-14 w-20 shrink-0 rounded-xl object-cover sm:block" />}
               </Link>
             ))}
           </nav>
-
-          {related.length > 0 && (
-            <div className="mt-20">
-              <div className="flex flex-wrap items-end justify-between gap-4">
-                <h2 className="font-display text-3xl font-bold tracking-tight">Often paired with</h2>
-                <Link to="/solutions" className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                  All {solutions.length} solutions
-                </Link>
-              </div>
-              <div className="mt-8 grid gap-6 md:grid-cols-3">
-                {related.map((s, i) => (
-                  <Reveal key={s.slug} delay={i * 80} className="h-full">
-                    <SolutionCard solution={s} compact />
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </section>
 

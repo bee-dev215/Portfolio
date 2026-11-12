@@ -1,4 +1,4 @@
-import { BrainCircuit, Cloud, Code2, Database, Layers, LucideIcon, MonitorSmartphone } from "lucide-react";
+import { BrainCircuit, Code2, Database, Layers, LucideIcon } from "lucide-react";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
@@ -12,7 +12,7 @@ import { bookCall, company, stackGroups } from "@/data/company";
 import { standards } from "@/data/company-pages";
 
 // Same order as stackGroups (matches the Technology section)
-const groupIcons: LucideIcon[] = [BrainCircuit, Layers, Code2, MonitorSmartphone, Database, Cloud];
+const groupIcons: LucideIcon[] = [BrainCircuit, Layers, Code2, Database];
 
 function StackSummary() {
   return (

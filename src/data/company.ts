@@ -1,8 +1,7 @@
 // ============================================================
-//  SITE CONTENT — Jovano, software & applied-AI engineering.
+//  SITE CONTENT — Jovano, an AI & software engineering company.
 //  Edit this single file to update the public site
-//  (company details, the free-prototype offer, call booking, services, solutions,
-//  industries, process, stack, team).
+//  (company details, the free-prototype offer, call booking, services, solutions, process, stack, team).
 // ============================================================
 
 import { startNavigation } from "@/lib/route-preload";
@@ -14,7 +13,7 @@ export const company = {
   legalName: "Jovano LLC",
   initials: "J",
   entity: "Limited liability company",
-  discipline: "Software & AI engineering",
+  discipline: "AI & software engineering",
   email: "terabyte5050@gmail.com",
   phone: "+1 (480) 271 8467",
   phoneHref: "tel:+14802718467",
@@ -22,11 +21,11 @@ export const company = {
   responseTime: "one business day",
   engagements: "Free two-week prototype · Fixed-scope builds · Dedicated teams",
   tagline:
-    "Jovano is a small senior team that builds custom AI tools, web and mobile apps, and desktop software — so the repetitive work that eats your team's week runs on its own.",
+    "Jovano is a small senior team that builds AI agents, automations and custom software — so the repetitive work that eats your team's week runs on its own.",
   intro:
-    "One team from first call to production: we find the busywork worth automating, prove it with a working prototype, then engineer it properly and look after it.",
+    "AI that does real work, automation that connects your systems, and the custom software around both — built by one senior team, from the first call to production.",
   about: [
-    "Jovano is a software and applied-AI engineering company. We build the tools that take busywork off people's desks — the re-typing, chasing, copying and reporting that quietly eat a team's week — for healthcare, construction, real estate, professional services, logistics and growing software companies.",
+    "Jovano is an AI and software engineering company. We build AI agents, automations and the custom software around them — the tools that take the re-typing, chasing, copying and answering off people's desks, for growing businesses and software companies.",
     "We start with a task, not a technology. A short call to understand what's slowing your team down, a working prototype on your own data within two weeks, and only then a plan for the full build. You judge us by software you can click, not by slides.",
     "You work directly with the senior engineers who write the code, and everything we build is yours: source code, cloud accounts and documentation, from the first day. We stay as long as you need us — and make sure you don't have to.",
   ],
@@ -40,7 +39,7 @@ export const company = {
 export const offer = {
   badge: "First two weeks on us",
   title: "A working prototype in two weeks — on us",
-  desc: "Tell us the task that eats your week. If software can take it off your plate, we build a working prototype on your own data in two weeks, free of charge. If it's worth building properly, we quote the rest; if not, you've lost nothing.",
+  desc: "Tell us the task that eats your week. If AI or software can take it off your plate, we build a working prototype on your own data in two weeks, free of charge. If it's worth building properly, we quote the rest; if not, you've lost nothing.",
 };
 
 // ------------------------------------------------------------
@@ -71,7 +70,7 @@ export const booking = {
       key: "intro",
       label: "Quick intro chat",
       minutes: 15,
-      desc: "Tell us the task that eats your week. We'll tell you honestly whether software can take it off your plate.",
+      desc: "Tell us the task that eats your week. We'll tell you honestly whether AI or software can take it off your plate.",
     },
     {
       key: "discovery",
@@ -83,10 +82,10 @@ export const booking = {
 };
 
 // ------------------------------------------------------------
-//  Services — the engineering capabilities we offer
+//  Services — the three things we do
 // ------------------------------------------------------------
 
-export type ServiceKey = "ai" | "web" | "mobile" | "desktop" | "automation" | "cloud" | "data" | "rescue";
+export type ServiceKey = "ai" | "automation" | "software";
 
 export interface Service {
   key: ServiceKey;
@@ -94,73 +93,33 @@ export interface Service {
   title: string;
   desc: string;
   includes: string[];
-  image?: string; // photo for the service card, menu preview and service page (public/images/svc-*.webp, 16:10); without one they show the icon
+  image: string; // photo for the menu preview and the service page (public/images/svc-*.webp, 16:10)
 }
 
 export const services: Service[] = [
   {
     key: "ai",
-    slug: "ai-machine-learning",
-    title: "AI & machine learning",
-    desc: "Practical AI that does real work — assistants grounded in your documents, agents that use your tools, and vision and speech models — measured before it ships.",
-    includes: ["LLM apps & agents", "RAG over your data", "Vision & speech"],
+    slug: "ai-agents-assistants",
+    title: "AI agents & assistants",
+    desc: "Assistants that answer from your own documents, agents that use your tools, and voice agents that pick up the phone — tested on your real cases before they ship.",
+    includes: ["LLM apps & agents", "RAG over your data", "Voice & chat agents"],
     image: "/images/svc-llm.webp",
   },
   {
-    key: "web",
-    slug: "custom-software-development",
-    title: "Custom software & SaaS",
-    desc: "Web applications, portals and SaaS products built around how your business actually runs — with the APIs and integrations behind them.",
-    includes: ["Web apps & portals", "SaaS products", "APIs & integrations"],
-    image: "/images/svc-platform.webp",
-  },
-  {
-    key: "mobile",
-    slug: "mobile-app-development",
-    title: "Mobile app development",
-    desc: "iOS and Android apps for customers and field teams — offline-first where signal is poor, with cameras, maps, scanning and push notifications.",
-    includes: ["iOS & Android", "Offline-first", "Camera & GPS"],
-    image: "/images/svc-mobile.webp",
-  },
-  {
-    key: "desktop",
-    slug: "desktop-software",
-    title: "Desktop software",
-    desc: "Windows, macOS and Linux applications and Office add-ins — for heavy files, local hardware, or data that must stay on the machine.",
-    includes: ["Windows & macOS", "Office add-ins", "Hardware & local data"],
-    image: "/images/svc-desktop.webp",
-  },
-  {
     key: "automation",
-    slug: "business-process-automation",
-    title: "Business process automation",
-    desc: "The copy-paste, re-typing and chasing handed to software — documents read, systems synced and people nudged, with a human approving what matters.",
-    includes: ["Workflow automation", "Document processing", "System integrations"],
+    slug: "ai-automation",
+    title: "AI workflow automation",
+    desc: "The re-typing, copy-paste and chasing handed to AI — documents read, systems updated and people nudged, with a person approving what matters.",
+    includes: ["Document processing", "Workflow automation", "System integrations"],
     image: "/images/svc-automation.webp",
   },
   {
-    key: "cloud",
-    slug: "cloud-devops",
-    title: "Cloud & DevOps",
-    desc: "Infrastructure that is secure, observable and cheap to run — set up as code in your own AWS, Azure or Google Cloud account.",
-    includes: ["AWS · Azure · GCP", "CI/CD pipelines", "Monitoring & cost"],
-    image: "/images/svc-cloud.webp",
-  },
-  {
-    key: "data",
-    slug: "data-engineering-analytics",
-    title: "Data engineering & analytics",
-    desc: "Your scattered spreadsheets and systems joined into one trustworthy source — with pipelines, dashboards and reports that update themselves.",
-    includes: ["Data pipelines", "Warehouses", "Dashboards & reports"],
-    image: "/images/svc-analytics.webp",
-  },
-  {
-    key: "rescue",
-    slug: "project-rescue-modernization",
-    title: "Project rescue & modernization",
-    desc: "Stalled builds, fragile legacy systems and code nobody wants to touch — audited, stabilized and moved forward without a risky rewrite.",
-    includes: ["Code & architecture audits", "Stabilization", "Legacy modernization"],
-    image: "/images/svc-evaluation.webp",
+    key: "software",
+    slug: "custom-software",
+    title: "Custom software & SaaS",
+    desc: "Web apps, internal tools and SaaS products built around how your business runs — including AI features in a product you already have, and builds that need rescuing.",
+    includes: ["Web apps & SaaS", "AI features in your product", "APIs, cloud & rescue"],
+    image: "/images/svc-platform.webp",
   },
 ];
 
@@ -169,16 +128,14 @@ export const services: Service[] = [
 // ------------------------------------------------------------
 
 export const stackGroups = [
-  { title: "AI models", items: ["OpenAI GPT", "Anthropic Claude", "Google Gemini", "Llama", "Mistral", "Whisper"] },
-  { title: "AI frameworks", items: ["LangChain", "LlamaIndex", "Hugging Face", "PyTorch", "OpenCV", "vLLM"] },
+  { title: "AI models", items: ["Anthropic Claude", "OpenAI GPT", "Google Gemini", "Llama", "Mistral", "Whisper"] },
+  { title: "AI frameworks", items: ["LangChain", "LlamaIndex", "Model Context Protocol", "Hugging Face", "vLLM", "OpenCV"] },
   { title: "Web & backend", items: ["TypeScript", "React", "Next.js", "Node.js", "Python", "FastAPI"] },
-  { title: "Mobile & desktop", items: ["React Native", "Flutter", "Swift", "Kotlin", "Electron", ".NET"] },
-  { title: "Data & integration", items: ["PostgreSQL", "pgvector", "Redis", "dbt", "Airflow", "n8n"] },
-  { title: "Cloud & DevOps", items: ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes", "Terraform"] },
+  { title: "Data & cloud", items: ["PostgreSQL", "pgvector", "Redis", "AWS", "Docker", "Terraform"] },
 ];
 
 // ------------------------------------------------------------
-//  Solutions — packaged starting points we adapt per client.
+//  Solutions — packaged AI starting points we adapt per client.
 //  Images live in public/images/ (16:10).
 // ------------------------------------------------------------
 
@@ -186,8 +143,9 @@ export interface Solution {
   id: number;
   slug: string; // URL: /solutions/<slug>
   title: string;
-  category: string; // where it works, used by the filter
+  category: string; // where it works
   domain: string;
+  service: ServiceKey; // the service it is delivered under
   summary: string;
   description: string;
   capabilities: string[];
@@ -203,9 +161,10 @@ export const solutions: Solution[] = [
     title: "Document AI",
     category: "Back office",
     domain: "Invoices · Forms · Contracts",
+    service: "automation",
     summary: "Paperwork in, clean data out — invoices, forms and contracts read, checked and posted to your systems, with a person approving the exceptions.",
     description:
-      "Document AI takes the documents your team re-types every day — invoices, intake forms, delivery notes, lease agreements, lab results — and turns them into structured data. It reads PDFs, scans and email attachments, checks each field against your rules and existing records, and posts the result to your accounting, CRM or practice-management system. Anything unusual lands in a review queue, so people only handle the exceptions.",
+      "Document AI takes the documents your team re-types every day — invoices, purchase orders, intake forms, delivery notes, contracts — and turns them into structured data. It reads PDFs, scans and email attachments, checks each field against your rules and existing records, and posts the result to your accounting, CRM or ERP. Anything unusual lands in a review queue, so people only handle the exceptions.",
     capabilities: [
       "Reads PDFs, scans, photos and email attachments",
       "Checks every field against your rules and existing records",
@@ -222,6 +181,7 @@ export const solutions: Solution[] = [
     title: "Knowledge Assistant",
     category: "Back office",
     domain: "RAG · Policies · Internal docs",
+    service: "ai",
     summary: "An assistant that answers your team's questions from your own manuals, policies and past work — always with a link to the source.",
     description:
       "Knowledge Assistant gives staff instant, cited answers from the documents your company already has: procedures, handbooks, specifications, past proposals and project files. It respects existing permissions through single sign-on, says so when it doesn't know, and works where your people already are — a web app, Microsoft Teams or Slack. Content owners see which questions are asked, so gaps get filled.",
@@ -241,9 +201,10 @@ export const solutions: Solution[] = [
     title: "AI Voice Agent",
     category: "Customer-facing",
     domain: "Calls · Chat · Scheduling",
+    service: "ai",
     summary: "Answers calls and chats around the clock, books appointments, qualifies leads and hands anything tricky to a person — with a written summary.",
     description:
-      "AI Voice Agent picks up when your team can't: after hours, at lunch, or when every line is busy. It answers common questions from your own information, books and reschedules appointments in your calendar or practice system, takes messages and qualifies new inquiries. Anything sensitive or unusual is passed to a person, and every conversation arrives as a short written summary instead of a voicemail.",
+      "AI Voice Agent picks up when your team can't: after hours, at lunch, or when every line is busy. It answers common questions from your own information, books and reschedules appointments in your calendar or scheduling system, takes messages and qualifies new inquiries. Anything sensitive or unusual is passed to a person, and every conversation arrives as a short written summary instead of a voicemail.",
     capabilities: [
       "Natural phone and chat conversations, day and night",
       "Books and reschedules in your calendar or scheduling system",
@@ -254,150 +215,10 @@ export const solutions: Solution[] = [
     deliverables: ["Voice & chat agent", "Calendar & CRM connectors", "Hand-off rules", "Call review dashboard"],
     image: "/images/sol-voice-agent.webp",
   },
-  {
-    id: 4,
-    slug: "field-operations-app",
-    title: "Field Operations App",
-    category: "Field teams",
-    domain: "Inspections · Site reports · Offline",
-    summary: "A mobile app for crews and inspectors — checklists, photos, signatures and site reports that work offline and reach the office the moment there's signal.",
-    description:
-      "Field Operations App replaces the clipboard, the camera roll and the evening spent typing up notes. Crews fill in checklists and daily reports on a phone or tablet, attach photos and signatures, and keep working without signal. When they reconnect, everything syncs to the office, and AI turns voice notes and photos into a tidy report your project managers can send without rewriting.",
-    capabilities: [
-      "Checklists, daily reports, photos and signatures",
-      "Works offline and syncs when back in signal",
-      "Voice notes turned into written reports",
-      "Office dashboard with every site and inspection",
-    ],
-    tech: ["React Native", "SQLite", "Node.js", "PostgreSQL", "Whisper", "AWS"],
-    deliverables: ["iOS & Android app", "Office web dashboard", "Report templates", "Offline sync service"],
-    image: "/images/sol-field-app.webp",
-  },
-  {
-    id: 5,
-    slug: "reporting-autopilot",
-    title: "Reporting Autopilot",
-    category: "Back office",
-    domain: "Dashboards · KPIs · Weekly summaries",
-    summary: "Connects the tools you already use, keeps the numbers in one place and writes the weekly report for you — so Monday morning starts with answers.",
-    description:
-      "Reporting Autopilot ends the spreadsheet stitching. It pulls data from your accounting, CRM, project, e-commerce and operations tools into one warehouse, checks it, and keeps live dashboards up to date. Each week it drafts a plain-language summary of what changed and why, and it can alert the right person the moment a number moves out of range.",
-    capabilities: [
-      "Connectors for accounting, CRM, e-commerce and project tools",
-      "One checked source of truth in your own database",
-      "Live dashboards for owners, managers and teams",
-      "AI-written weekly summaries and threshold alerts",
-    ],
-    tech: ["Python", "dbt", "PostgreSQL", "Airflow", "Metabase", "Claude / GPT"],
-    deliverables: ["Data pipeline & warehouse", "Dashboards", "Weekly summary & alerts", "Data dictionary"],
-    image: "/images/sol-analytics.webp",
-  },
-  {
-    id: 6,
-    slug: "client-portal",
-    title: "Client Portal",
-    category: "Customer-facing",
-    domain: "Web & mobile · Self-service",
-    summary: "A branded portal where your customers submit requests, share documents, sign, pay and check progress — instead of emailing and calling to ask.",
-    description:
-      "Client Portal gives your customers, tenants, patients or partners one place to deal with you. They submit requests and documents, sign and pay, and see the status of their job, case or order without picking up the phone. Behind it, requests flow into your existing systems, and your team gets a simple back office to answer and update them.",
-    capabilities: [
-      "Requests, documents, e-signatures and payments",
-      "Live status updates and notifications",
-      "Back office for your team, linked to your systems",
-      "Web first, with a mobile app when you need one",
-    ],
-    tech: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "Stripe", "AWS"],
-    deliverables: ["Customer portal", "Team back office", "Integrations", "Admin & reporting"],
-    image: "/images/sol-client-portal.webp",
-  },
 ];
 
-// ------------------------------------------------------------
-//  Industries — who we build for. Images live in public/images/ (4:5 crops).
-//  Wider frames (menu preview, cards, page heroes) crop them around imageFocus.
-// ------------------------------------------------------------
-
-export interface Industry {
-  key: string; // also the URL: /industries/<key>
-  title: string;
-  focus: string;
-  desc: string;
-  work: string[];
-  solutions: string[]; // solution titles; each opens that solution's details
-  image: string;
-  imageAlt: string;
-  imageFocus: string; // CSS object-position for landscape crops, so the faces near the top stay in frame
-}
-
-export const industries: Industry[] = [
-  {
-    key: "healthcare",
-    title: "Healthcare",
-    focus: "Clinics · Practices · Health-tech",
-    desc: "Less time on phones and paperwork, more time with patients — built with privacy and HIPAA requirements in mind from the first sketch.",
-    work: ["Patient calls & scheduling", "Intake & referral paperwork", "Clinical note drafting"],
-    solutions: ["AI Voice Agent", "Document AI", "Knowledge Assistant"],
-    image: "/images/aud-healthcare.webp",
-    imageAlt: "A smiling clinician in a white tunic using a tablet",
-    imageFocus: "50% 25%",
-  },
-  {
-    key: "construction",
-    title: "Construction",
-    focus: "Contractors · Subcontractors · Engineering",
-    desc: "Site reports, inspections and document control that work in the field and land in the office without anyone re-typing them.",
-    work: ["Daily reports & inspections", "RFIs, submittals & document control", "Estimating & takeoff support"],
-    solutions: ["Field Operations App", "Document AI", "Reporting Autopilot"],
-    image: "/images/aud-construction.webp",
-    imageAlt: "An engineer in a hard hat and safety glasses reading a tablet on a renovation site",
-    imageFocus: "50% 20%",
-  },
-  {
-    key: "real-estate",
-    title: "Real estate",
-    focus: "Brokerages · Property managers · Investors",
-    desc: "Leads answered in minutes, tenants served without phone tag, and leases and invoices processed while your team does the deals.",
-    work: ["Lead response & follow-up", "Tenant & owner portals", "Lease and invoice processing"],
-    solutions: ["Client Portal", "Document AI", "AI Voice Agent"],
-    image: "/images/aud-real-estate.webp",
-    imageAlt: "A real estate agent handing over house keys to new owners",
-    imageFocus: "50% 25%",
-  },
-  {
-    key: "professional-services",
-    title: "Professional services",
-    focus: "Law · Accounting · Insurance · Consulting",
-    desc: "Document-heavy work made faster and safer — review, intake and research tools that keep confidential files under your control.",
-    work: ["Document & contract review", "Client intake & onboarding", "Internal knowledge search"],
-    solutions: ["Knowledge Assistant", "Document AI", "Client Portal"],
-    image: "/images/aud-professional.webp",
-    imageAlt: "A professional reviewing documents at a desk in a modern office",
-    imageFocus: "50% 25%",
-  },
-  {
-    key: "logistics",
-    title: "Logistics & e-commerce",
-    focus: "Warehouses · Online retail · Distribution",
-    desc: "Orders, stock and shipments kept in sync across every system, with customers answered and exceptions caught before they cost you.",
-    work: ["Order & inventory sync", "Shipment tracking & updates", "Customer support automation"],
-    solutions: ["Reporting Autopilot", "AI Voice Agent", "Field Operations App"],
-    image: "/images/aud-logistics.webp",
-    imageAlt: "A warehouse worker scanning packages between tall shelves",
-    imageFocus: "50% 25%",
-  },
-  {
-    key: "startups",
-    title: "Startups & SaaS",
-    focus: "Founders · Product teams · Scale-ups",
-    desc: "A senior team that ships your MVP, adds AI to your product, or rescues a build that has stalled — without slowing your roadmap.",
-    work: ["MVPs & new products", "AI features in your product", "Rescue & scale-up engineering"],
-    solutions: ["Client Portal", "Knowledge Assistant"],
-    image: "/images/aud-startups.webp",
-    imageAlt: "A software team gathered around a laptop, reviewing a product idea",
-    imageFocus: "50% 25%",
-  },
-];
+/** The solutions delivered under a service. */
+export const solutionsFor = (key: ServiceKey) => solutions.filter((s) => s.service === key);
 
 // ------------------------------------------------------------
 //  Delivery process. Activities use "Label: detail" so the UI can emphasise the label.
@@ -508,8 +329,6 @@ export const principles = [
 // ------------------------------------------------------------
 //  Team. PLACEHOLDER PROFILES: fictional names on licensed stock portraits.
 //  Replace with your real team before launch — visitors will read these as your staff.
-//  The site shows the team from the database (edited at /admin → Team) and falls back to this
-//  list when it can't. supabase/setup.sql loads the same people as the database's starting team.
 //  photo: portrait in public/images/team/ (4:5); without one the card shows initials.
 // ------------------------------------------------------------
 
@@ -522,7 +341,7 @@ export interface TeamMember {
   focus?: string[]; // up to three specialities, shown as tags
 }
 
-export const builtInTeam: TeamMember[] = [
+export const team: TeamMember[] = [
   {
     name: "Martin Keller",
     role: "Founder & CEO",
@@ -547,35 +366,21 @@ export const builtInTeam: TeamMember[] = [
   {
     name: "Marcus Bello",
     role: "Senior full-stack engineer",
-    bio: "Turns prototypes into fast, reliable web apps and portals, and wires them into the systems clients already use.",
+    bio: "Turns prototypes into fast, reliable web apps and SaaS products, and wires them into the systems clients already use.",
     photo: "/images/team/marcus.webp",
     focus: ["React", "Node.js", "Integrations"],
   },
   {
-    name: "Sofia Marín",
-    role: "Mobile engineering lead",
-    bio: "Builds iOS and Android apps for customers and field crews — offline-first, camera-ready and easy to use with gloves on.",
-    photo: "/images/team/sofia.webp",
-    focus: ["React Native", "Swift", "Offline-first"],
-  },
-  {
-    name: "Hannah Lindqvist",
-    role: "Data engineer",
-    bio: "Joins scattered systems and spreadsheets into one reliable source, and builds the dashboards and reports on top.",
-    photo: "/images/team/hannah.webp",
-    focus: ["Data pipelines", "dbt", "Dashboards"],
-  },
-  {
     name: "Grace Park",
-    role: "Automation & desktop engineer",
-    bio: "Automates the copy-paste between systems and builds desktop tools and Office add-ins where the work really happens.",
+    role: "AI automation engineer",
+    bio: "Automates the copy-paste between systems — document pipelines, integrations and the agents that run them, with approvals built in.",
     photo: "/images/team/grace.webp",
-    focus: ["Automation", ".NET", "Office add-ins"],
+    focus: ["Automation", "Document AI", "Integrations"],
   },
   {
     name: "Owen Brady",
     role: "Product designer",
-    bio: "Shapes interfaces that make complex software feel simple, from first sketch to a design system your team can reuse.",
+    bio: "Shapes interfaces that make AI and complex software feel simple, from first sketch to a design system your team can reuse.",
     photo: "/images/team/owen.webp",
     focus: ["Product design", "UX research", "Prototyping"],
   },
@@ -595,21 +400,13 @@ export const companyFile = [
   { k: "Engagements", v: company.engagements },
 ];
 
+// Promises, not results: each one is made elsewhere on the site too
 export const stats = [
   { value: "2", label: "Weeks to a working prototype — on us" },
-  { value: String(services.length), label: "Engineering capabilities under one roof" },
-  { value: String(industries.length), label: "Industries we build for" },
-  { value: String(stackGroups.reduce((n, g) => n + g.items.length, 0)), label: "Tools across our stack" },
+  { value: "1", label: "Business day to a reply from an engineer" },
+  { value: "100%", label: "Of the code and cloud accounts in your name" },
+  { value: "0", label: "Account managers between you and the engineers" },
 ];
-
-// Descriptions of the site photos that aren't decorative and aren't described elsewhere in this file.
-// A replacement chosen in the admin can override them (see usePhotos).
-export const photoAlts = {
-  "company-team.webp": "Two colleagues mapping ideas with sticky notes on a board",
-  "company-client.webp": "Two colleagues waving to a client on a video call at a laptop",
-  "trust-security.webp": "An engineer reviewing code on two monitors in a quiet office",
-  "hero-work.webp": "Four colleagues gathered around a laptop, working through a plan together",
-};
 
 // ------------------------------------------------------------
 //  Photography credits. Freepik's (now Magnific) free licence requires attribution, so every
@@ -627,13 +424,9 @@ export interface ImageCredit {
 
 export const imageCredits: ImageCredit[] = [
   { file: "sol-knowledge.webp", subject: "Knowledge Assistant — colleagues reviewing work on screen", author: "Apunto Group", href: "https://www.pexels.com/photo/focused-colleagues-working-on-project-in-office-7752873/", source: "Pexels" },
-  { file: "sol-analytics.webp", subject: "Reporting Autopilot — a team reviewing a dashboard", author: "Muhammad Jawadur Rahman", href: "https://www.pexels.com/photo/brainstorming-during-presentation-15096572/", source: "Pexels" },
-  { file: "aud-startups.webp", subject: "Startups & SaaS card — software team gathered around a laptop in front of a large screen in a bright office", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/group-of-people-looking-at-silver-laptop-7988216/", source: "Pexels" },
   { file: "company-team.webp", subject: "Company page, product team — two colleagues mapping ideas with colourful sticky notes on a board", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/creative-team-brainstorming-with-colored-notes-39219856/", source: "Pexels" },
   { file: "cta-backdrop.webp", subject: "CTA banner backdrop — engineer studying glowing blue data on a large screen in a dark room", author: "Sylvain Cls", href: "https://www.pexels.com/photo/man-in-sunglasses-and-screen-5866051/", source: "Pexels" },
-  { file: "svc-llm.webp", subject: "AI & machine learning — chat prompt to a language model (Visualising AI artwork by Wes Cockx)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-illustration-depicts-language-models-which-generate-text-it-was-created-by-wes-cockx-as-part-of-the-visualising-ai-project-l-18069695/", source: "Pexels" },
-  { file: "svc-analytics.webp", subject: "Data engineering & analytics — analyst reviewing charts across several monitors and a tablet", author: "AlphaTradeZone", href: "https://www.pexels.com/photo/man-in-white-shirt-wearing-in-front-of-the-computer-and-holding-a-digital-tablet-5831269/", source: "Pexels" },
-  { file: "svc-evaluation.webp", subject: "Project rescue & modernization — engineer carefully reviewing code on screen", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/a-man-looking-at-a-computer-screen-with-data-6963944/", source: "Pexels" },
+  { file: "svc-llm.webp", subject: "AI agents & assistants — chat prompt to a language model (Visualising AI artwork by Wes Cockx)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-illustration-depicts-language-models-which-generate-text-it-was-created-by-wes-cockx-as-part-of-the-visualising-ai-project-l-18069695/", source: "Pexels" },
   { file: "svc-build.webp", subject: "Two engineers building together at a monitor", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/young-professionals-working-with-computers-7988745/", source: "Pexels" },
   { file: "tech-datacenter.webp", subject: "Data centre — aisle of server racks", author: "Brett Sayles", href: "https://www.pexels.com/photo/server-racks-on-data-center-4508751/", source: "Pexels" },
   { file: "tech-code.webp", subject: "Code on screen — developer at a dual-monitor standing desk", author: "Christina Morillo", href: "https://www.pexels.com/photo/woman-sitting-in-front-laptop-1181677/", source: "Pexels" },
@@ -650,45 +443,28 @@ export const imageCredits: ImageCredit[] = [
   { file: "phase-prototype.webp", subject: "Delivery phase — Prototype", author: "Akshar Dave🌻", href: "https://www.pexels.com/photo/a-person-holding-black-smartphone-11780441/", source: "Pexels" },
   { file: "phase-build.webp", subject: "Delivery phase — Build", author: "ThisIsEngineering", href: "https://www.pexels.com/photo/woman-coding-on-computer-3861958/", source: "Pexels" },
   { file: "phase-improve.webp", subject: "Delivery phase — Support (reviewing metrics on a wall screen)", author: "Artem Podrez", href: "https://www.pexels.com/photo/a-woman-doing-a-presentation-at-a-meeting-5716030/", source: "Pexels" },
-  { file: "aud-healthcare.webp", subject: "Healthcare industry card — smiling clinician in a white medical tunic using a tablet", author: "Tima Miroshnichenko", href: "https://www.pexels.com/photo/female-dentist-looking-at-an-ipad-5355855/", source: "Pexels" },
   { file: "proj-clinic-call-assistant.webp", subject: "After-Hours Clinic Call Assistant — doctor taking a phone call at her desk while typing on a laptop", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/female-doctor-using-laptop-and-phone-in-office-39192373/", source: "Pexels" },
   { file: "sol-voice-agent.webp", subject: "AI Voice Agent — call-center agent with a headset taking a call at her desk", author: "Kampus Production", href: "https://www.pexels.com/photo/woman-sitting-behind-a-table-working-as-call-center-agent-8204396/", source: "Pexels" },
-  { file: "hero-work.webp", subject: "Hero — a product team working through a plan together at a laptop", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/colleagues-having-a-discussion-7988694/", source: "Pexels" },
   { file: "company-client.webp", subject: "Company page, client calls — two colleagues waving to a client on a laptop video call (laptop logo retouched out)", author: "Karola G", href: "https://www.pexels.com/photo/happy-people-talking-on-video-call-on-computer-5908491/", source: "Pexels" },
   { file: "trust-security.webp", subject: "Security & AI — engineer reviewing code on dual monitors in a calm office", author: "Ofspace LLC, Culture", href: "https://www.pexels.com/photo/a-man-sitting-at-a-desk-with-two-monitors-16323580/", source: "Pexels" },
   { file: "phase-launch.webp", subject: "Delivery phase — Launch (team celebrating at a laptop)", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/team-celebrating-success-with-a-laptop-39204861/", source: "Pexels" },
   { file: "svc-platform.webp", subject: "Custom software & SaaS — developer writing HTML on a large monitor", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/back-view-shot-of-a-man-working-on-his-computer-7988113/", source: "Pexels" },
-  { file: "svc-mobile.webp", subject: "Mobile app development — app running on a phone stand beside a laptop and monitors full of code", author: "Firos nv", href: "https://www.pexels.com/photo/a-close-up-shot-of-a-smartphone-beside-a-laptop-8171308/", source: "Pexels" },
-  { file: "svc-desktop.webp", subject: "Desktop software — engineer working on a 3D CAD model across two screens", author: "ThisIsEngineering", href: "https://www.pexels.com/photo/engineer-working-in-office-19895882/", source: "Pexels" },
-  { file: "svc-automation.webp", subject: "Business process automation — data flowing through a chain of processing stages (Visualising AI artwork by Novoto Studio)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-image-was-inspired-by-neural-networks-used-in-deep-learning-it-was-created-by-novoto-studio-as-part-of-the-visualising-ai-pr-17483874/", source: "Pexels" },
-  { file: "svc-cloud.webp", subject: "Cloud & DevOps — engineer at a terminal in a server room", author: "panumas nikhomkhai", href: "https://www.pexels.com/photo/it-technician-working-in-data-center-server-room-37605911/", source: "Pexels" },
-  { file: "aud-construction.webp", subject: "Construction industry card — engineer in a white hard hat and safety glasses checking a tablet on a renovation site", author: "Tima Miroshnichenko", href: "https://www.pexels.com/photo/man-in-black-and-white-plaid-button-up-shirt-wearing-white-hard-hat-6474492/", source: "Pexels" },
-  { file: "sol-field-app.webp", subject: "Field Operations App — site worker in a hard hat and safety glasses checking a tablet in a building under renovation", author: "Tima Miroshnichenko", href: "https://www.pexels.com/photo/woman-wearing-white-helmet-while-holding-a-tablet-inside-the-house-6474469/", source: "Pexels" },
-  { file: "proj-site-report-app.webp", subject: "Daily Site Report App — site manager in a hard hat reviewing a tablet in a building under renovation", author: "Tima Miroshnichenko", href: "https://www.pexels.com/photo/woman-wearing-white-helmet-while-holding-a-tablet-inside-the-house-6474459/", source: "Pexels" },
-  { file: "proj-site-report-app-2.webp", subject: "Daily Site Report App project — two-person project team in hard hats reviewing plans on a solar installation site", author: "Gustavo Fring", href: "https://www.pexels.com/photo/electricians-inspecting-the-solar-panels-4254169/", source: "Pexels" },
-  { file: "aud-real-estate.webp", subject: "Real estate — agent handing house keys to new owners outside a property", author: "Thirdman", href: "https://www.pexels.com/photo/an-agent-handing-the-key-to-the-owners-8470805/", source: "Pexels" },
+  { file: "svc-automation.webp", subject: "AI workflow automation — data flowing through a chain of processing stages (Visualising AI artwork by Novoto Studio)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-image-was-inspired-by-neural-networks-used-in-deep-learning-it-was-created-by-novoto-studio-as-part-of-the-visualising-ai-pr-17483874/", source: "Pexels" },
   { file: "proj-invoice-intake-automation.webp", subject: "Invoice Intake Automation project — accountant checking figures on a calculator beside a laptop and a stack of paperwork", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/a-woman-computing-with-a-calculator-8297069/", source: "Pexels" },
   { file: "proj-invoice-intake-automation-2.webp", subject: "Invoice Intake Automation — modern apartment building with balconies against a blue sky", author: "Jan van der Wolf", href: "https://www.pexels.com/photo/modern-apartment-building-against-clear-blue-sky-37224965/", source: "Pexels" },
-  { file: "sol-client-portal.webp", subject: "Client Portal — couple at home looking at a laptop together in front of their sofa", author: "Gustavo Fring", href: "https://www.pexels.com/photo/couple-watching-movie-on-laptop-3912439/", source: "Pexels" },
   { file: "sol-document-ai.webp", subject: "Document AI — office worker sorting a tall stack of paper files next to a laptop", author: "Pavel Danilyuk", href: "https://www.pexels.com/photo/woman-working-in-an-office-7654448/", source: "Pexels" },
-  { file: "aud-professional.webp", subject: "Professional services — professional reviewing documents at a desk in a modern office", author: "ANTONI SHKRABA production", href: "https://www.pexels.com/photo/man-wearing-black-coat-holding-documents-8278848/", source: "Pexels" },
-  { file: "proj-contract-review-assistant.webp", subject: "Contract Review Desktop Assistant project — lawyer highlighting a contract at her office desk", author: "RDNE Stock project", href: "https://www.pexels.com/photo/a-female-lawyer-writing-on-documents-7841463/", source: "Pexels" },
-  { file: "proj-contract-review-assistant-2.webp", subject: "Contract Review Desktop Assistant — colleagues reviewing documents together at a table", author: "Kindel Media", href: "https://www.pexels.com/photo/people-working-together-on-the-table-7651829/", source: "Pexels" },
-  { file: "aud-logistics.webp", subject: "Logistics & e-commerce — warehouse worker scanning stock between racks", author: "Tiger Lily", href: "https://www.pexels.com/photo/photo-of-man-using-digital-tablet-4484150/", source: "Pexels" },
-  { file: "proj-order-operations-hub.webp", subject: "Order Operations Hub — warehouse worker taping up an order box for shipping", author: "Tima Miroshnichenko", href: "https://www.pexels.com/photo/woman-in-white-crew-neck-t-shirt-holding-white-and-red-ceramic-mug-6169030/", source: "Pexels" },
-  { file: "proj-order-operations-hub-2.webp", subject: "Order Operations Hub — person reviewing a dashboard on a laptop", author: "RDNE Stock project", href: "https://www.pexels.com/photo/person-using-black-laptop-on-table-7948012/", source: "Pexels" },
+  { file: "proj-contract-review-assistant.webp", subject: "Contract Review Assistant project — lawyer highlighting a contract at her office desk", author: "RDNE Stock project", href: "https://www.pexels.com/photo/a-female-lawyer-writing-on-documents-7841463/", source: "Pexels" },
+  { file: "proj-contract-review-assistant-2.webp", subject: "Contract Review Assistant — colleagues reviewing documents together at a table", author: "Kindel Media", href: "https://www.pexels.com/photo/people-working-together-on-the-table-7651829/", source: "Pexels" },
   { file: "team/martin.webp", subject: "Team portrait — Martin Keller (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/portrait-positive-confident-businessman_3584960.htm" },
   { file: "team/kenji.webp", subject: "Team portrait — Kenji Watanabe (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/content-confident-handsome-asian-businessman-looking-camera_3583387.htm" },
   { file: "team/mei.webp", subject: "Team portrait — Mei Lin Chen (placeholder)", author: "benzoix", href: "https://www.magnific.com/free-photo/young-asian-woman-professional-entrepreneur-standing-office-clothing-smiling-looking-confident-white-background_23649170.htm" },
   { file: "team/marcus.webp", subject: "Team portrait — Marcus Bello (placeholder)", author: "Bruno Curly", href: "https://www.pexels.com/photo/portrait-of-man-wearing-grey-polo-shirt-26125923/", source: "Pexels" },
-  { file: "team/sofia.webp", subject: "Team portrait — Sofia Marín (placeholder)", author: "tonodiaz", href: "https://www.magnific.com/free-photo/portrait-attractive-hispanic-businesswoman-with-her-arms-crossed-against-white-background-with-lot-copy-space_27507512.htm" },
-  { file: "team/hannah.webp", subject: "Team portrait — Hannah Lindqvist (placeholder)", author: "wayhomestudio", href: "https://www.magnific.com/free-photo/cheerful-beautiful-european-female-with-pleasant-smile_12086582.htm" },
   { file: "team/grace.webp", subject: "Team portrait — Grace Park (placeholder)", author: "Tran Nhu Tuan", href: "https://www.pexels.com/photo/confident-businesswoman-in-professional-attire-29995622/", source: "Pexels" },
   { file: "team/owen.webp", subject: "Team portrait — Owen Brady (placeholder)", author: "cookie_studio", href: "https://www.magnific.com/free-photo/handsome-bearded-redhead-guy-posing-against-white-wall-with-glasses_11104169.htm" },
 ];
 
 // ------------------------------------------------------------
-//  Top-bar menus. Services, Solutions and Industries list the data above;
+//  Top-bar menus. Services, Solutions and Our work list the data above;
 //  the Company menu is set here. Hovering an item previews it on the right.
 // ------------------------------------------------------------
 
@@ -712,14 +488,13 @@ export const companyMenu: CompanyMenuItem[] = [
 ];
 
 // Home page sections, in order (the navbar highlights the menu that covers the one in view)
-export const homeSections = ["busywork", "services", "solutions", "projects", "industries", "process", "technology", "company", "team", "faq", "contact"];
+export const homeSections = ["busywork", "services", "solutions", "projects", "process", "company", "faq", "contact"];
 
 // Every page, for the footer site map
 export const sitePages = [
   { to: "/services", label: "Services" },
   { to: "/solutions", label: "Solutions" },
   { to: "/projects", label: "Our work" },
-  { to: "/industries", label: "Industries" },
   { to: "/approach", label: "How we work" },
   { to: "/technology", label: "Technology" },
   { to: "/about", label: "About" },
@@ -730,10 +505,9 @@ export const sitePages = [
   { to: "/contact", label: "Contact" },
 ];
 
-// Page URLs, so every link to a solution, service or industry agrees
+// Page URLs, so every link to a solution or service agrees
 export const solutionPath = (s: Pick<Solution, "slug">) => `/solutions/${s.slug}`;
 export const servicePath = (s: Pick<Service, "slug">) => `/services/${s.slug}`;
-export const industryPath = (i: Pick<Industry, "key">) => `/industries/${i.key}`;
 
 export const legalLinks = [
   { to: "/privacy", label: "Privacy policy" },
@@ -754,18 +528,6 @@ const go = (to: string) => {
   if (!navigateTo) return window.location.assign(to);
   startNavigation(to);
   navigateTo(to);
-};
-
-/**
- * Fired on window to open a solution's details in place; detail is the solution title.
- * The Solutions section handles it by calling preventDefault(); on pages without it, the solution's page opens instead.
- */
-export const OPEN_SOLUTION_EVENT = "jovano:open-solution";
-
-export const openSolution = (title: string) => {
-  const handled = !window.dispatchEvent(new CustomEvent<string>(OPEN_SOLUTION_EVENT, { detail: title, cancelable: true }));
-  const s = solutions.find((x) => x.title === title);
-  if (!handled && s) go(solutionPath(s));
 };
 
 /**

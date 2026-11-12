@@ -1,9 +1,8 @@
 import { ArrowUp, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
-import { company, industries, industryPath, legalLinks, servicePath, services, sitePages, solutionPath, solutions } from "@/data/company";
-import { projectPath } from "@/data/projects";
+import { company, legalLinks, servicePath, services, sitePages, solutionPath, solutions } from "@/data/company";
+import { projectPath, projects } from "@/data/projects";
 import { scrollToTop } from "@/lib/scroll";
-import { useProjects } from "@/hooks/use-projects";
 import { Monogram, Wordmark } from "./Navbar";
 import ContactLine from "./ContactLine";
 import { copyLine, directLines } from "./reach";
@@ -11,8 +10,8 @@ import { copyLine, directLines } from "./reach";
 const linkCls = "foot-link text-sm text-ink-2 transition-colors hover:text-ink";
 const headCls = "text-xs font-semibold uppercase tracking-[0.14em] text-subtle";
 
-// Company column: every page that isn't a service, solution, project or industry
-const companyPages = sitePages.filter((p) => !["/solutions", "/projects", "/services", "/industries"].includes(p.to));
+// Company column: every page that isn't a service, solution or project
+const companyPages = sitePages.filter((p) => !["/solutions", "/projects", "/services"].includes(p.to));
 
 function LinkColumn({ title, to, links, className = "" }: { title: string; to?: string; links: { to: string; label: string }[]; className?: string }) {
   return (
@@ -33,11 +32,10 @@ function LinkColumn({ title, to, links, className = "" }: { title: string; to?: 
 
 export default function Footer({ cta = true }: { cta?: boolean }) {
   const year = new Date().getFullYear();
-  const { projects, ready } = useProjects();
   // Projects column: the featured ones, then a link to the rest
   const footerProjects = [
     ...projects.filter((p) => p.featured).map((p) => ({ to: projectPath(p), label: p.title })),
-    { to: "/projects", label: ready ? `All ${projects.length} projects` : "All projects" },
+    { to: "/projects", label: `All ${projects.length} projects` },
   ];
 
   return (
@@ -86,7 +84,7 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
               </span>
             </div>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-2">
-              Custom AI tools, web and mobile apps, and desktop software that take the busywork off your team.
+              AI agents, automations and custom software that take the busywork off your team.
             </p>
             <p className={`mt-9 ${headCls}`}>Get in touch</p>
             <ul className="mt-4 space-y-3">
@@ -111,10 +109,7 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
             <LinkColumn title="Our work" to="/projects" links={footerProjects} />
           </div>
           <LinkColumn title="Company" links={companyPages} />
-          <div className="space-y-9">
-            <LinkColumn title="Industries" to="/industries" links={industries.map((x) => ({ to: industryPath(x), label: x.title }))} />
-            <LinkColumn title="Legal" links={[...legalLinks, { to: "/terms#credits", label: "Image credits" }]} />
-          </div>
+          <LinkColumn title="Legal" links={[...legalLinks, { to: "/terms#credits", label: "Image credits" }]} />
         </div>
 
         <div className="mt-16 flex flex-col gap-5 border-t border-line py-7 text-sm text-subtle sm:flex-row sm:items-center sm:justify-between">

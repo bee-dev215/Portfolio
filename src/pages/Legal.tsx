@@ -1,19 +1,16 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { imageCredits } from "@/data/company";
+import { team, imageCredits } from "@/data/company";
 import { LegalDocKey, legalDocs } from "@/data/legal";
 import PageShell from "@/components/site/PageShell";
 import { Breadcrumbs } from "@/components/site/PageHero";
-import { useProjects } from "@/hooks/use-projects";
-import { useTeam } from "@/hooks/use-team";
+import { projects } from "@/data/projects";
 
 const CREDITS = { id: "credits", heading: "Image credits" };
 
 export default function Legal({ doc }: { doc: LegalDocKey }) {
   const d = legalDocs[doc];
   const toc = doc === "terms" ? [...d.sections, CREDITS] : d.sections;
-  const { team } = useTeam();
-  const { projects } = useProjects();
 
   // Credit only the photos the site still shows: not portraits or project photos it no longer uses
   const credits = imageCredits.filter(({ file }) => {

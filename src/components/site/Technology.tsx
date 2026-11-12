@@ -1,12 +1,11 @@
 import { CSSProperties } from "react";
-import { BrainCircuit, Cloud, Code2, Database, Layers, LucideIcon, MonitorSmartphone } from "lucide-react";
+import { BrainCircuit, Cloud, Code2, Database, Layers, LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { stackGroups } from "@/data/company";
-import { usePhotos } from "@/hooks/use-photos";
 import Reveal, { SectionHeading } from "./Reveal";
 
 // One icon per stack group, in the same order as stackGroups
-const icons: LucideIcon[] = [BrainCircuit, Layers, Code2, MonitorSmartphone, Database, Cloud];
+const icons: LucideIcon[] = [BrainCircuit, Layers, Code2, Database];
 
 // What the stack means for a client, in pictures
 const pillars = [
@@ -17,7 +16,6 @@ const pillars = [
 
 /** The stack, by group. `more` adds a link to the technology page (off on that page itself). */
 export default function Technology({ more = true }: { more?: boolean }) {
-  const photos = usePhotos();
 
   return (
     <section id="technology" className="px-5 py-24 sm:px-8 lg:py-32">
@@ -42,7 +40,7 @@ export default function Technology({ more = true }: { more?: boolean }) {
               <Reveal delay={i * 90} className="h-full">
                 <div className="shadow-soft group relative aspect-[16/11] overflow-hidden rounded-3xl bg-raised md:aspect-[4/5] lg:aspect-[16/12]">
                   <div className="unveil sheen absolute inset-0" style={{ "--unveil-delay": `${120 + i * 110}ms` } as CSSProperties}>
-                    <img src={photos.src(image)} alt="" loading="lazy" width={640} height={400} className="h-full w-full object-cover" />
+                    <img src={image} alt="" loading="lazy" width={640} height={400} className="h-full w-full object-cover" />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-[rgb(10_16_32/.88)] via-[rgb(10_16_32/.25)] via-45% to-transparent" aria-hidden="true" />
                   <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 p-5 text-white">
@@ -60,7 +58,7 @@ export default function Technology({ more = true }: { more?: boolean }) {
           ))}
         </ul>
 
-        <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-5 grid gap-5 md:grid-cols-2">
           {stackGroups.map((g, gi) => {
             const Icon = icons[gi % icons.length];
             return (

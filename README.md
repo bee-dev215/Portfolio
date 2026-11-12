@@ -1,11 +1,11 @@
 # Jovano — company website
 
-The public website of Jovano LLC, a software and applied-AI engineering company. Jovano builds custom AI tools, web and mobile apps, and desktop software that take busywork off teams in healthcare, construction, real estate, professional services, logistics and SaaS.
+The public website of Jovano LLC, an AI and software engineering company. Jovano builds AI agents and assistants, AI workflow automation, and the custom software around them — three services, one senior team.
 
 The site has:
 
 - a one-page overview at `/`
-- a page for every service, solution, project and industry
+- a page for each of the 3 services, 3 AI solutions and 4 projects
 - company pages: about, approach, technology, team, security & AI, FAQ and contact
 - a **call-booking page** at `/book`
 - privacy and terms pages
@@ -26,9 +26,9 @@ npm run lint
 
 | What | Where |
 | --- | --- |
-| Company details, contact info, the free-prototype offer, call-booking hours, services, solutions, industries, process, technology stack, principles, team, menus, stats, image credits | [`src/data/company.ts`](src/data/company.ts) |
-| Projects (case studies on the home page, `/projects` and `/projects/:slug`, and in the "Our work" strips on service, solution and industry pages) | [`src/data/projects.ts`](src/data/projects.ts) |
-| Extra detail on the service, solution and industry pages | [`src/data/service-details.ts`](src/data/service-details.ts), [`src/data/solution-details.ts`](src/data/solution-details.ts), [`src/data/industry-details.ts`](src/data/industry-details.ts) |
+| Company details, contact info, the free-prototype offer, call-booking hours, services, solutions, process, technology stack, principles, team, menus, stats, image credits | [`src/data/company.ts`](src/data/company.ts) |
+| Projects (case studies on the home page, `/projects` and `/projects/:slug`, and in the "Our work" strips on service and solution pages) | [`src/data/projects.ts`](src/data/projects.ts) |
+| Extra detail on the service and solution pages | [`src/data/service-details.ts`](src/data/service-details.ts) and [`src/data/solution-details.ts`](src/data/solution-details.ts) |
 | About, approach, technology, team and security page content | [`src/data/company-pages.ts`](src/data/company-pages.ts) |
 | Questions and answers (`/faq`; `featured` ones also on the home and contact pages) | [`src/data/faq.ts`](src/data/faq.ts) |
 | Privacy policy and terms of use (`/privacy`, `/terms`) | [`src/data/legal.ts`](src/data/legal.ts) |
@@ -49,10 +49,7 @@ All photos are WebP, in [`public/images/`](public/images/):
 | Process phases | `phase-*` | 16:10 |
 | About gallery | `about-*` | 16:10 |
 | Technology | `tech-*` | 16:10 |
-| Industries | `aud-*` | 4:5 |
-| Hero tiles | `hero-*` | |
 | Team portraits | `team/` | 4:5 |
-| Marquee thumbnails | `thumbs/` | 160×100 |
 
 ## Pages
 
@@ -62,7 +59,6 @@ All photos are WebP, in [`public/images/`](public/images/):
 | `/services`, `/services/:slug` | Services index, and one page per service |
 | `/solutions`, `/solutions/:slug` | Solutions index, and one page per solution |
 | `/projects`, `/projects/:slug` | Our work, and one case study per project |
-| `/industries`, `/industries/:key` | Industries, and one page per industry |
 | `/book` | Book a call (see below) |
 | `/about`, `/approach`, `/technology`, `/team`, `/responsible-ai`, `/faq`, `/contact` | Company pages (`/responsible-ai` is "Security & AI") |
 | `/privacy`, `/terms` | Legal |
@@ -72,7 +68,7 @@ Routes are declared in [`src/App.tsx`](src/App.tsx), and inner pages load on dem
 
 - Every page sits in `PageShell` (navbar, footer, title, scroll position) and starts with `PageHero`.
 - Home sections live in [`src/components/site/`](src/components/site/).
-- Slugs come from `src/data/company.ts` and `src/data/projects.ts`. Link with `servicePath`, `solutionPath`, `industryPath` and `projectPath` so URLs stay consistent.
+- Slugs come from `src/data/company.ts` and `src/data/projects.ts`. Link with `servicePath`, `solutionPath` and `projectPath` so URLs stay consistent.
 - "Book a call" buttons use `bookCall(topic?)`, which opens `/book` with the topic filled in.
 - `startEnquiry(topic?)` opens the contact form.
 
@@ -112,7 +108,7 @@ The Supabase client is configured in [`src/lib/supabase.ts`](src/lib/supabase.ts
 ## Before launch
 
 - **Projects:** the case studies in `src/data/projects.ts` are **placeholders**, written to show the kind of work the company does. Clients are described rather than named, and no results figures are given. Replace them with your real work, or confirm each detail, because visitors will read them as projects you delivered.
-- **Team:** the team shows **placeholder profiles**, fictional names on licensed stock portraits. Replace them in `builtInTeam` in `src/data/company.ts` (and the portraits in `public/images/team/`) with your real team.
+- **Team:** the team shows **placeholder profiles**, fictional names on licensed stock portraits. Replace them in `team` in `src/data/company.ts` (and the portraits in `public/images/team/`) with your real team.
 - **Offer:** the free two-week prototype (`offer` in `src/data/company.ts`) is a business promise shown across the site. Change or remove it there.
 - **Booking time zone:** booking times assume **Arizona time** (`booking.timezone`). Set your own, and your working hours, before launch.
 

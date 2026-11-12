@@ -36,7 +36,7 @@ export const faqs: Faq[] = [
     id: "prototype-fit",
     category: "The free prototype",
     q: "What kind of task fits a two-week prototype?",
-    a: "Repetitive work with a clear input and a clear result: reading invoices or forms, answering routine calls or questions, moving data between systems, turning field notes into reports, putting together a weekly summary. If the whole problem is bigger, we pick the slice that proves the idea. If software isn't the answer, we'll tell you on the call.",
+    a: "Repetitive work with a clear input and a clear result: reading invoices or forms, answering routine calls or questions, moving data between systems, answering questions from your own documents. If the whole problem is bigger, we pick the slice that proves the idea. If software isn't the answer, we'll tell you on the call.",
   },
   {
     id: "what-we-need",
@@ -129,7 +129,7 @@ export const faqs: Faq[] = [
     id: "data-security",
     category: "Security & data",
     q: "How do you keep our data secure?",
-    a: "Data is encrypted in transit and at rest, access is limited by role with single sign-on and multi-factor authentication, and secrets are kept out of code. For healthcare work we design to support HIPAA requirements, and card payments go through Stripe to keep your PCI scope small. We're happy to answer your security questionnaire, too.",
+    a: "Data is encrypted in transit and at rest, access is limited by role with single sign-on and multi-factor authentication, and secrets are kept out of code. When a project handles health information we design to support HIPAA requirements, and card payments go through Stripe to keep your PCI scope small. We're happy to answer your security questionnaire, too.",
   },
 
   // ---------- Pricing & timelines ----------

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { CalendarRange, Check, FileCheck2, FlaskConical } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
@@ -7,10 +6,7 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import ServiceCard from "@/components/services/ServiceCard";
 import { serviceIcons } from "@/components/site/icons";
-import { bookCall, company, offer, servicePath, services } from "@/data/company";
-import { ServiceGroup, serviceGroups } from "@/data/service-details";
-
-const byKey = (key: string) => services.find((s) => s.key === key)!;
+import { bookCall, company, offer, servicePath, services, solutionsFor } from "@/data/company";
 
 const engagements = [
   {
@@ -33,20 +29,17 @@ const engagements = [
 const everyService = ["Code, cloud accounts and docs in your name", "A working demo every week during the build", "Security and privacy planned from day one", "Training and handover for your team"];
 
 export default function ServicesIndex() {
-  const [filter, setFilter] = useState<ServiceGroup | "All">("All");
-  const shown = filter === "All" ? serviceGroups : serviceGroups.filter((g) => g.name === filter);
-
   return (
     <PageShell
       title="Services"
-      description={`${company.name} services: AI & machine learning, custom software & SaaS, mobile and desktop apps, business process automation, cloud & DevOps, data & analytics, and project rescue.`}
+      description={`${company.name} services: AI agents & assistants, AI workflow automation, and custom software & SaaS.`}
     >
       <PageHero
         crumbs={[{ label: "Services" }]}
         eyebrow="Services"
         title={
           <>
-            {services.length} ways to take <span className="gradient-text">busywork off your team.</span>
+            Three ways to take <span className="gradient-text">busywork off your team.</span>
           </>
         }
         lead={company.intro}
@@ -63,29 +56,24 @@ export default function ServicesIndex() {
         aside={
           <div className="card shadow-soft rounded-3xl p-6 sm:p-7">
             <p className="text-xs font-semibold uppercase tracking-wider text-subtle">At a glance</p>
-            <div className="mt-4 space-y-5">
-              {serviceGroups.map((g) => (
-                <div key={g.name}>
-                  <p className="font-display text-sm font-bold">{g.name}</p>
-                  <ul className="mt-2 grid gap-1 sm:grid-cols-2">
-                    {g.keys.map((k) => {
-                      const s = byKey(k);
-                      const Icon = serviceIcons[k];
-                      return (
-                        <li key={k}>
-                          <Link to={servicePath(s)} className="group flex items-center gap-2.5 rounded-xl p-2 text-sm text-ink-2 transition-colors hover:bg-raised hover:text-ink">
-                            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand-text transition-colors group-hover:bg-grad group-hover:text-white">
-                              <Icon className="h-4 w-4" />
-                            </span>
-                            <span className="leading-snug">{s.title}</span>
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ))}
-            </div>
+            <ul className="mt-4 space-y-2">
+              {services.map((sv) => {
+                const Icon = serviceIcons[sv.key];
+                return (
+                  <li key={sv.key}>
+                    <Link to={servicePath(sv)} className="group flex items-center gap-3 rounded-2xl p-2.5 transition-colors hover:bg-raised">
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand-text transition-colors group-hover:bg-grad group-hover:text-white">
+                        <Icon className="h-[18px] w-[18px]" />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block font-display font-bold leading-snug text-ink">{sv.title}</span>
+                        <span className="block truncate text-[13px] text-subtle">{solutionsFor(sv.key).map((x) => x.title).join(" · ") || sv.includes.join(" · ")}</span>
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         }
       />
@@ -101,44 +89,13 @@ export default function ServicesIndex() {
                 </>
               }
             />
-            <Reveal delay={80}>
-              <div className="-mx-5 flex gap-1 overflow-x-auto rounded-full border border-line bg-surface p-1 sm:mx-0" role="group" aria-label="Filter services">
-                {(["All", ...serviceGroups.map((g) => g.name)] as const).map((name) => (
-                  <button
-                    key={name}
-                    aria-pressed={filter === name}
-                    onClick={() => setFilter(name)}
-                    className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 ${
-                      filter === name ? "bg-grad text-white shadow-[0_8px_18px_-10px_rgb(var(--brand-rgb)/.8)]" : "text-ink-2 hover:text-ink"
-                    }`}
-                  >
-                    {name}
-                  </button>
-                ))}
-              </div>
-            </Reveal>
           </div>
 
-          <div key={filter} className="mt-12 space-y-14">
-            {shown.map((g) => (
-              <div key={g.name}>
-                <Reveal>
-                  <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-line pb-4">
-                    <h3 className="font-display text-xl font-bold">{g.name}</h3>
-                    <p className="text-sm text-ink-2">{g.desc}</p>
-                    <span className="ml-auto text-xs font-medium text-subtle">
-                      {g.keys.length} {g.keys.length === 1 ? "service" : "services"}
-                    </span>
-                  </div>
-                </Reveal>
-                <div className="mt-6 grid gap-5 md:grid-cols-2">
-                  {g.keys.map((k, i) => (
-                    <Reveal key={k} delay={(i % 2) * 80} className="h-full">
-                      <ServiceCard service={byKey(k)} />
-                    </Reveal>
-                  ))}
-                </div>
-              </div>
+          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+            {services.map((sv, i) => (
+              <Reveal key={sv.key} delay={i * 80} className="h-full">
+                <ServiceCard service={sv} />
+              </Reveal>
             ))}
           </div>
         </div>
@@ -155,7 +112,7 @@ export default function ServicesIndex() {
                 </>
               }
             >
-              <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">Every service can be used on its own or combined. Each project starts with a call and a prototype; after launch, support is there if you want it.</p>
+              <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">Every service can be used on its own or combined — most projects mix AI with the software around it. Each project starts with a call and a prototype; after launch, support is there if you want it.</p>
             </SectionHeading>
             <Reveal delay={100}>
               <p className="mt-8 text-xs font-semibold uppercase tracking-wider text-subtle">Included in every service</p>

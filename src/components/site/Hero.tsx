@@ -1,58 +1,48 @@
-import { CalendarDays, Gift, GitBranch, ShieldCheck, Timer, Workflow } from "lucide-react";
+import { CalendarDays, Gift, GitBranch, ShieldCheck, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
-import { company, industries, offer, servicePath, services } from "@/data/company";
-import { projectPath } from "@/data/projects";
-import { usePhotos } from "@/hooks/use-photos";
-import { useProjects } from "@/hooks/use-projects";
-import { industryIcons, serviceIcons } from "./icons";
-import NetworkMap from "./NetworkMap";
-
-const HERO_PHOTO = "/images/hero-work.webp";
-
-// The three capabilities in the hero panel, each with a one-line pitch
-const featured = [
-  { key: "ai", kicker: "Applied AI", line: "Assistants, agents and document AI that do real work" },
-  { key: "web", kicker: "Software", line: "Web, mobile and desktop apps for your business" },
-  { key: "automation", kicker: "Automation", line: "Busywork handed to software, with your OK" },
-] as const;
+import { company, offer, servicePath, services, stackGroups } from "@/data/company";
+import { serviceIcons } from "./icons";
+import AgentConsole from "./AgentConsole";
 
 const badges = [
-  { icon: GitBranch, label: "Senior-led engineering", tint: "text-iris" },
+  { icon: GitBranch, label: "Senior engineers only", tint: "text-iris" },
   { icon: ShieldCheck, label: "You own the code", tint: "text-emerald-500" },
   { icon: Timer, label: "Working software in two weeks", tint: "text-sky2" },
 ];
 
-const industryTitle = (key: string) => industries.find((i) => i.key === key)?.title ?? "";
+// Every tool in the stack, for the strip under the hero
+const tools = stackGroups.flatMap((g) => g.items);
 
 export default function Hero() {
-  const photos = usePhotos();
-  const { projects } = useProjects();
-
   return (
-    <section className="relative overflow-hidden pb-4 pt-28 sm:pt-32 lg:pt-36">
+    <section className="relative overflow-hidden pt-28 sm:pt-32 lg:pt-36">
       <div className="clouds pointer-events-none absolute inset-0" aria-hidden="true" />
-      <NetworkMap />
+      <div className="dot-grid pointer-events-none absolute inset-0 opacity-70" aria-hidden="true" />
 
-      <div className="relative mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-12 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,.88fr)] lg:gap-14">
+      <div className="relative mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-12 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)] lg:gap-14">
         {/* message */}
         <div>
-          <p className="fade-up inline-flex items-center gap-2.5 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[.14em] text-ink-2" style={{ animationDelay: ".05s" }}>
-            <span className="bg-grad h-2 w-2 rounded-full" /> {company.discipline} studio
-          </p>
+          <Link
+            to="/book"
+            className="fade-up group inline-flex items-center gap-2.5 rounded-full border border-line bg-surface py-1 pl-1 pr-3.5 text-[13px] font-semibold shadow-sm transition-colors hover:border-brand/40"
+            style={{ animationDelay: ".05s" }}
+          >
+            <span className="bg-grad inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+              <Gift className="h-3.5 w-3.5" /> Free
+            </span>
+            {offer.title}
+          </Link>
 
           <h1
-            className="fade-up mt-6 font-display text-[clamp(2.6rem,5.8vw,4.6rem)] font-extrabold leading-[1.02] tracking-[-0.035em]"
+            className="fade-up mt-7 font-display text-[clamp(2.5rem,5.2vw,4.25rem)] font-extrabold leading-[1.04] tracking-[-0.035em]"
             style={{ animationDelay: ".12s" }}
           >
-            Give your team
-            <br />
+            <span className="block">AI agents that</span>
+            <span className="block">give your team</span>
             <span className="gradient-text">its week back.</span>
           </h1>
 
-          <p className="fade-up mt-6 font-display text-lg font-bold tracking-tight sm:text-xl" style={{ animationDelay: ".18s" }}>
-            Custom software and applied AI, built by senior engineers.
-          </p>
-          <p className="fade-up mt-4 max-w-[600px] text-[17px] leading-relaxed text-ink-2" style={{ animationDelay: ".22s" }}>
+          <p className="fade-up mt-6 max-w-[580px] text-lg leading-relaxed text-ink-2" style={{ animationDelay: ".2s" }}>
             {company.tagline}
           </p>
 
@@ -65,116 +55,57 @@ export default function Hero() {
             </Link>
           </div>
 
-          <ul className="fade-up mt-7 flex flex-wrap gap-2" style={{ animationDelay: ".34s" }}>
-            <li>
-              <Link to="/book" className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[13px] font-semibold transition-colors hover:border-brand/30">
-                <Gift className="h-3.5 w-3.5 text-sun" /> {offer.badge}
-                <span className="text-subtle">·</span>
-                <span className="text-brand-text">
-                  Free prototype
-                </span>
-              </Link>
-            </li>
+          <ul className="fade-up mt-7 flex flex-wrap gap-x-5 gap-y-2" style={{ animationDelay: ".34s" }}>
             {badges.map(({ icon: Icon, label, tint }) => (
-              <li key={label} className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-[13px] font-medium text-ink-2">
-                <Icon className={`h-3.5 w-3.5 ${tint}`} /> {label}
+              <li key={label} className="inline-flex items-center gap-2 text-[13px] font-medium text-ink-2">
+                <Icon className={`h-4 w-4 ${tint}`} /> {label}
               </li>
             ))}
           </ul>
+
+          {/* The three services, as quick links */}
+          <nav aria-label="Services" className="fade-up mt-10 hidden gap-2 sm:grid sm:grid-cols-3" style={{ animationDelay: ".4s" }}>
+            {services.map((s) => {
+              const Icon = serviceIcons[s.key];
+              return (
+                <Link
+                  key={s.key}
+                  to={servicePath(s)}
+                  className="group flex items-center gap-3 rounded-2xl border border-line bg-surface/70 p-3 backdrop-blur transition-colors hover:border-brand/40 hover:bg-surface"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand-text transition-colors group-hover:bg-grad group-hover:text-white">
+                    <Icon className="h-[18px] w-[18px]" />
+                  </span>
+                  <span className="text-[13px] font-semibold leading-tight">{s.title}</span>
+                </Link>
+              );
+            })}
+          </nav>
         </div>
 
-        {/* what you get */}
-        <aside className="fade-up card shadow-soft rounded-[28px] p-5 sm:p-6" style={{ animationDelay: ".24s" }}>
-          <figure className="relative overflow-hidden rounded-2xl">
-            <img
-              src={photos.src(HERO_PHOTO)}
-              alt={photos.alt(HERO_PHOTO)}
-              width={1280}
-              height={600}
-              className="aspect-[2/1] w-full object-cover sm:aspect-[2.4/1]"
-            />
-            <figcaption className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-gradient-to-t from-[#0a1020]/80 to-transparent px-4 pb-3.5 pt-12 text-white">
-              <span className="text-[13px] font-medium leading-tight">You talk to the engineers who build it</span>
-            </figcaption>
-          </figure>
-
-          <div className="mt-5 flex items-start justify-between gap-4">
-            <div>
-              <p className="gradient-text text-[11px] font-bold uppercase tracking-[.18em]">Engineering partner</p>
-              <p className="mt-1.5 font-display text-xl font-bold leading-snug">From first call to production</p>
-            </div>
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-500/25 [[data-theme=dark]_&]:text-emerald-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Direct senior access
-            </span>
-          </div>
-
-          <ol className="mt-4 space-y-2.5">
-            {featured.map(({ key, kicker, line }, i) => {
-              const service = services.find((s) => s.key === key)!;
-              const Icon = serviceIcons[key];
-              return (
-                <li key={key}>
-                  <Link
-                    to={servicePath(service)}
-                    className="group flex items-center gap-3.5 rounded-2xl border border-line bg-raised/40 p-3.5 transition-colors hover:border-brand/30 hover:bg-surface"
-                  >
-                    <span className="icon-tile h-10 w-10 shrink-0 rounded-xl">
-                      <Icon className="h-[18px] w-[18px]" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[10.5px] font-bold uppercase tracking-[.14em] text-subtle">
-                        0{i + 1} · {kicker}
-                      </span>
-                      <span className="block truncate text-[15px] font-semibold">{service.title}</span>
-                      <span className="block truncate text-[13px] text-subtle">{line}</span>
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ol>
-
-          <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-4 text-[13px]">
-            <span className="truncate text-subtle">{industries.slice(0, 3).map((i) => i.title).join(" · ")}</span>
-            <Link to="/services" className="inline-flex shrink-0 items-center gap-1 font-semibold transition-colors hover:text-brand-text">
-              All {services.length} services
-            </Link>
-          </div>
-        </aside>
+        {/* the agent at work */}
+        <div className="fade-up relative" style={{ animationDelay: ".24s" }}>
+          <div className="bg-grad pointer-events-none absolute -inset-6 -z-10 rounded-[40px] opacity-20 blur-3xl" aria-hidden="true" />
+          <AgentConsole />
+        </div>
       </div>
 
-      {/* selected work */}
-      <div className="relative mx-auto mt-16 max-w-[1240px] px-5 sm:px-8 lg:mt-20">
-        <div className="border-t border-line pt-8">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[.18em] text-subtle">Selected work &amp; delivered platforms</p>
-              <p className="mt-1 text-sm text-subtle">Built for teams in healthcare, construction, real estate, legal and e-commerce.</p>
-            </div>
-            <Link to="/projects" className="inline-flex items-center gap-1 text-sm font-semibold text-brand-text">
-              All case studies
-            </Link>
-          </div>
-          <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {projects.map((p) => {
-              const Icon = industryIcons[p.audience] ?? Workflow;
-              return (
-                <li key={p.slug}>
-                  <Link
-                    to={projectPath(p)}
-                    className="card-hover group flex h-full items-center gap-3.5 rounded-2xl border border-line bg-surface p-2.5 pr-4"
-                  >
-                    <span className="icon-tile h-12 w-12 shrink-0 rounded-xl" aria-hidden="true">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-semibold">{p.title}</span>
-                      <span className="block truncate text-xs text-subtle">{industryTitle(p.audience)}</span>
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
+      {/* The tools we build with */}
+      <div className="marquee-host relative mt-20 border-y border-line bg-surface/60 py-5 backdrop-blur lg:mt-24">
+        <p className="mx-auto mb-4 max-w-[1240px] px-5 text-center text-[11px] font-bold uppercase tracking-[.18em] text-subtle sm:px-8">
+          Built with the models and tools you'd pick yourself
+        </p>
+        <div className="overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_10%,#000_90%,transparent)]">
+          <ul className="marquee flex w-max gap-3" aria-label="Tools we build with">
+            {[...tools, ...tools].map((t, i) => (
+              <li
+                key={`${t}-${i}`}
+                aria-hidden={i >= tools.length || undefined}
+                className="whitespace-nowrap rounded-full border border-line bg-surface px-4 py-1.5 font-display text-sm font-semibold text-ink-2"
+              >
+                {t}
+              </li>
+            ))}
           </ul>
         </div>
       </div>

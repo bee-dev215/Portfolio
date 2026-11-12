@@ -34,15 +34,6 @@
     --ring: 221 83% 53%;
 
     --radius: 0.5rem;
-
-    --sidebar-background: 220 23% 95%;
-    --sidebar-foreground: 215 25% 27%;
-    --sidebar-primary: 221 83% 53%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 90%;
-    --sidebar-accent-foreground: 215 25% 27%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 221 83% 53%;
   }
 
   .dark {
@@ -73,15 +64,6 @@
     --border: 208 22% 15%;
     --input: 208 22% 15%;
     --ring: 193 86% 28%;
-
-    --sidebar-background: 208 37% 7%;
-    --sidebar-foreground: 204 38% 92%;
-    --sidebar-primary: 193 86% 28%;
-    --sidebar-primary-foreground: 204 38% 92%;
-    --sidebar-accent: 207 35% 10%;
-    --sidebar-accent-foreground: 204 38% 92%;
-    --sidebar-border: 208 22% 15%;
-    --sidebar-ring: 193 86% 28%;
   }
 }
 
@@ -99,68 +81,11 @@
   }
 }
 
-.pf-reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.8s cubic-bezier(.2,.7,.2,1), transform 0.8s cubic-bezier(.2,.7,.2,1);
-}
-.pf-reveal.pf-visible {
-  opacity: 1;
-  transform: none;
-}
-
-.pf-no-scrollbar::-webkit-scrollbar { display: none; }
-.pf-no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
-
-@keyframes pf-blink { 50% { opacity: 0; } }
-.pf-caret { animation: pf-blink 1s step-end infinite; }
-
-@keyframes pf-spin-slow { to { transform: rotate(360deg); } }
-.pf-spin-slow { animation: pf-spin-slow 12s linear infinite; }
-
-@keyframes pf-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.pf-marquee { animation: pf-marquee 40s linear infinite; }
-
-@keyframes pf-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-.pf-float { animation: pf-float 6s ease-in-out infinite; }
-
 ::selection { background: rgba(16,185,129,0.35); color: #fff; }
-
-.markdown-editor {
-  @apply font-mono text-base leading-relaxed;
-}
-
-.markdown-preview {
-  @apply prose max-w-none prose-blue dark:prose-invert;
-}
-
-.markdown-preview pre {
-  @apply bg-secondary p-4 rounded-md overflow-x-auto;
-}
-
-.markdown-preview code {
-  @apply text-sm font-mono text-primary;
-}
-
-.markdown-preview h1,
-.markdown-preview h2,
-.markdown-preview h3,
-.markdown-preview h4,
-.markdown-preview h5,
-.markdown-preview h6 {
-  @apply font-sans font-semibold text-foreground;
-}
-
-.markdown-preview ul,
-.markdown-preview ol {
-  @apply my-4 ml-6;
-}
-
 
 /* ============================================================
    PUBLIC SITE — the Jovano design system
-   (the admin keeps the .pf-* styles above)
-
+   
    Light-first "sky" theme: an airy blue-white canvas, white cards with blue-tinted shadows, slate
    ink, and one brand gradient (blue → sky) for primary actions, highlights and data; dark swaps in
    deep navy. Amber ("sun") is a small warm accent for highlights — the free-prototype offer,
@@ -329,14 +254,6 @@ html[data-theme="dark"] .site-root, .on-dark {
 }
 @keyframes cloud-drift { from { transform: translateX(-2.5%); } to { transform: translateX(3%); } }
 @keyframes waves-drift { to { background-position-x: -1440px; } }
-/* Home hero network map (NetworkMap.tsx): the dotted world and its traffic on two stacked canvases, sized to the map's
-   proportions (the canvases fade their own edges) */
-.net-map {
-  height: max(400px, 41.67vw);
-  animation: net-in 1.6s var(--ease) .2s both;
-}
-.net-map canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-@keyframes net-in { from { opacity: 0; } }
 
 /* ---------- Brand ---------- */
 /* The gradient only paints inside the box, so pad it past the glyphs (descenders, overhangs) and cancel the padding with
@@ -559,15 +476,11 @@ a.card-hover:active, button.card-hover:active { scale: .985; }
 .rv-in .stagger > *, .stagger.is-in > * { animation: fadeup .5s var(--ease) forwards; animation-delay: calc(var(--rv-delay, 0ms) + 150ms + var(--i, 0) * 50ms); }
 
 /* Chat demo */
-.caret::after { content: ""; display: inline-block; width: 2px; height: 1em; margin-left: 2px; vertical-align: -.15em; background: currentColor; animation: blink 1s step-end infinite; }
-@keyframes blink { 50% { opacity: 0; } }
 .typing > i { display: inline-block; width: 6px; height: 6px; border-radius: 9999px; background: currentColor; opacity: .35; animation: typing 1.2s infinite; }
 .typing > i:nth-child(2) { animation-delay: .15s; }
 .typing > i:nth-child(3) { animation-delay: .3s; }
 @keyframes typing { 30% { opacity: 1; transform: translateY(-2px); } 60% { opacity: .35; transform: none; } }
 .msg-in { animation: fadeup .45s var(--ease) both; }
-.bar-grow { transform-origin: bottom; animation: bar-grow .9s var(--ease) both; }
-@keyframes bar-grow { from { transform: scaleY(0); } }
 
 /* Marquee (pauses on hover) */
 .marquee { animation: marquee 40s linear infinite; }
@@ -713,7 +626,7 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
 @keyframes vt-recede { to { transform: scale(.92); filter: brightness(.5); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-bg::before, .clouds::before, .clouds::after, .gradient-text, .net-map { animation: none; }
+  .site-bg::before, .clouds::before, .clouds::after, .gradient-text { animation: none; }
   .btn-primary::after { display: none; }
   .rv, .fade-up, .stagger > *, .word { opacity: 1; transform: none; filter: none; transition: none; animation: none !important; }
   .unveil { clip-path: none; transition: none; }
@@ -722,7 +635,7 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
   .scroll-line { display: none; }
   .card-hover, .btn { transition: none; }
   .sheen::after { display: none; }
-  .marquee, .live-dot::after, .caret::after, .typing > i, .msg-in, .bar-grow, .modal-in, .kenburns, .mega-in, .mega-swap { animation: none; }
+  .marquee, .live-dot::after, .typing > i, .msg-in, .modal-in, .kenburns, .mega-in, .mega-swap { animation: none; }
   .viewer-rise > * { opacity: 1; transform: none; animation: none; }
   .site-root :is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up, .lucide-arrow-down, .lucide-arrow-up-right, .lucide-chevron-right, .lucide-chevron-left, .lucide-send) { translate: none; }
   .btn:active:not(:disabled), a.card-hover:active, button.card-hover:active, .scroll-top, .scroll-top.is-shown:active { scale: none; translate: none; }
@@ -740,5 +653,3 @@ html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]:
   .sol-panel, .sol-panel-img, .sol-panel-tint, .sol-panel-spine, .sol-panel-body > * { clip-path: none; transition: none; }
 }
 
-/* A site photo has no src while its replacement (if any) loads: see usePhotos() */
-img:not([src]) { visibility: hidden; }

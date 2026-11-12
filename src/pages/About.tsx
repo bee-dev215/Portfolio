@@ -6,25 +6,21 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import PageSection from "@/components/company/PageSection";
 import { serviceIcons } from "@/components/site/icons";
-import { bookCall, company, companyFile, principles, servicePath, services } from "@/data/company";
+import { team, bookCall, company, companyFile, principles, servicePath, services } from "@/data/company";
 import { confidentiality, practices, studioGallery } from "@/data/company-pages";
-import { usePhotos } from "@/hooks/use-photos";
-import { useTeam } from "@/hooks/use-team";
 
 // Same order as `principles`
 const principleIcons: LucideIcon[] = [Compass, Users, Presentation, KeyRound];
 const confidentialityIcons: LucideIcon[] = [Lock, ScrollText, EyeOff];
 
 function HeroCollage() {
-  const photos = usePhotos();
-  const { team } = useTeam();
   return (
     <div className="relative pb-14 pr-6 sm:pr-14">
       <div className="shadow-soft overflow-hidden rounded-[2rem]">
-        <img src={photos.src("/images/company-team.webp")} alt={photos.alt("/images/company-team.webp")} width={740} height={555} className="aspect-[4/3] w-full object-cover" />
+        <img src="/images/company-team.webp" alt="Two colleagues mapping ideas with sticky notes on a board" width={740} height={555} className="aspect-[4/3] w-full object-cover" />
       </div>
       <div className="absolute bottom-0 right-0 w-[48%] overflow-hidden rounded-3xl border-4 border-canvas shadow-soft">
-        <img src={photos.src("/images/company-client.webp")} alt={photos.alt("/images/company-client.webp")} width={480} height={360} className="aspect-[4/3] w-full object-cover" />
+        <img src="/images/company-client.webp" alt="Two colleagues waving to a client on a video call at a laptop" width={480} height={360} className="aspect-[4/3] w-full object-cover" />
       </div>
       {/* Shown once the team has loaded */}
       {team.length > 0 && (
@@ -49,7 +45,6 @@ function HeroCollage() {
 }
 
 export default function About() {
-  const photos = usePhotos();
 
   return (
     <PageShell title="About" description={`${company.name}: ${company.discipline}. Who we are, what we stand for and how the company is organized.`}>
@@ -141,7 +136,7 @@ export default function About() {
               <Reveal delay={i * 80} variant={i === 0 ? "scale" : "up"} className="h-full">
                 <figure className="shadow-soft group relative h-full overflow-hidden rounded-3xl bg-raised">
                   <div className="unveil sheen h-full">
-                    <img src={photos.src(g.src)} alt={photos.alt(g.src, g.alt)} loading="lazy" width={1280} height={800} className={`h-full w-full object-cover ${i === 0 ? "aspect-[4/3] lg:aspect-auto" : "aspect-[16/10] lg:aspect-auto"}`} />
+                    <img src={g.src} alt={g.alt} loading="lazy" width={1280} height={800} className={`h-full w-full object-cover ${i === 0 ? "aspect-[4/3] lg:aspect-auto" : "aspect-[16/10] lg:aspect-auto"}`} />
                   </div>
                   <div className="photo-fade absolute inset-0" aria-hidden="true" />
                   <figcaption className={`absolute inset-x-0 bottom-0 p-5 font-medium text-white ${i === 0 ? "text-base sm:p-7" : "text-sm"}`}>{g.caption}</figcaption>
@@ -188,12 +183,12 @@ export default function About() {
             label="How we're organized"
             title={
               <>
-                Four practices, <span className="gradient-text">one team per project.</span>
+                Three practices, <span className="gradient-text">one team per project.</span>
               </>
             }
           >
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-              Every project draws on the practices it needs, so AI, product, infrastructure and support decisions are made together — not handed over the wall.
+              Every project draws on the practices it needs, so AI, automation and software decisions are made together — not handed over the wall.
             </p>
           </SectionHeading>
           <Reveal delay={100}>
@@ -202,7 +197,7 @@ export default function About() {
             </Link>
           </Reveal>
         </div>
-        <div className="mt-14 grid gap-5 md:grid-cols-2">
+        <div className="mt-14 grid gap-5 md:grid-cols-3">
           {practices.map((p, i) => (
             <Reveal key={p.title} delay={i * 80} className="h-full">
               <article className="card h-full p-7 sm:p-8">

@@ -7,7 +7,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollTop from "./ScrollTop";
 
-const DEFAULT_TITLE = `${company.name} — Custom Software & AI Engineering`;
+const DEFAULT_TITLE = `${company.name} — AI & Software Engineering`;
 
 // ---------- Scroll positions per history entry, so Back and Forward return the reader to where they were ----------
 const POSITIONS_KEY = "jovano-scroll";
@@ -53,7 +53,7 @@ const retry = (fn: () => boolean) => {
  * Frame for every public page: skip link, navbar, main, footer and the back-to-top button.
  * Sets the document title and description, opens each page at the top (at its #section, or where the reader left it
  * when they come Back), glides #links on the page to their section, shows the footer's call-to-action card only on
- * pages that don't end with their own (CtaBand), lets the site helpers (startEnquiry, openSolution) change page, and runs the card spotlight.
+ * pages that don't end with their own (CtaBand), lets the site helpers (startEnquiry, bookCall) change page, and runs the card spotlight.
  */
 export default function PageShell({
   title,

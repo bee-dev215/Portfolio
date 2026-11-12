@@ -16,27 +16,22 @@ export interface Practice {
   services: ServiceKey[]; // the service pages this practice delivers
 }
 
-/** How the company is organized: four practices that staff every project together. */
+/** How the company is organized: three practices, one per service, that staff every project together. */
 export const practices: Practice[] = [
   {
-    title: "AI & automation",
-    desc: "Assistants, agents and document tools that do real work, and the automations that move data between your systems — with a person approving what matters.",
-    services: ["ai", "automation"],
+    title: "AI",
+    desc: "Assistants, agents and voice agents that do real work — grounded in your own data, tested on your real cases and handing off to a person when they aren't sure.",
+    services: ["ai"],
   },
   {
-    title: "Product engineering",
-    desc: "The web apps, portals, mobile apps and desktop tools people use every day — designed with the people who'll use them and built to be maintained.",
-    services: ["web", "mobile", "desktop"],
+    title: "Automation",
+    desc: "Document reading, workflows and integrations that move data between your systems — with a person approving what matters and every run logged.",
+    services: ["automation"],
   },
   {
-    title: "Cloud & data",
-    desc: "Secure infrastructure set up as code in your own cloud account, and the pipelines, dashboards and reports that keep your numbers in one place.",
-    services: ["cloud", "data"],
-  },
-  {
-    title: "Rescue & support",
-    desc: "Stalled builds and fragile legacy systems audited and moved forward, and the software we launch monitored and improved for as long as you need us.",
-    services: ["rescue"],
+    title: "Software",
+    desc: "The web apps, SaaS products and cloud infrastructure around the AI — designed with the people who'll use them, built to be maintained, and rescued when they've stalled.",
+    services: ["software"],
   },
 ];
 
@@ -92,17 +87,17 @@ export const engagementModels: EngagementModel[] = [
     pricing: "Free",
     shape: "A short call, a one-page plan, two weeks of building on a sample of your real data, then a demo and an honest recommendation.",
     youGet: ["A working prototype on your own data", "Feedback from your team using it on real tasks", "A fixed-scope proposal, if it's worth building", "A straight answer if it isn't"],
-    team: ["A senior engineer who runs the call and the build", "An AI, web or mobile engineer, depending on the task"],
+    team: ["A senior engineer who runs the call and the build", "An AI or full-stack engineer, depending on the task"],
   },
   {
     key: "project",
     name: "Fixed-scope build",
     tagline: "The full system, engineered for production against a scope agreed up front.",
-    bestFor: "Turning a proven prototype into software your team relies on every day — or a new web app, mobile app or integration with a clear goal.",
+    bestFor: "Turning a proven prototype into software your team relies on every day — or a new AI feature, web app or integration with a clear goal.",
     pricing: "Fixed price, quoted after the prototype",
     shape: "Short iterations with a demo every week and automated tests on every change, then a staged launch and a full handover.",
     youGet: ["Production software, tested and monitored", "Source code in your repository, infrastructure in your cloud account", "Documentation and runbooks", "Training for the people who use and maintain it"],
-    team: ["A senior engineer as your single point of contact", "AI, full-stack or mobile engineers, as the work needs", "Product design support"],
+    team: ["A senior engineer as your single point of contact", "AI and full-stack engineers, as the work needs", "Product design support"],
   },
   {
     key: "team",
@@ -112,7 +107,7 @@ export const engagementModels: EngagementModel[] = [
     pricing: "Monthly, sized to the team",
     shape: "A shared backlog, regular releases and monitoring, with priorities set together each month.",
     youGet: ["Regular releases driven by your priorities", "Uptime, cost and AI-quality monitoring", "Support within agreed response times", "A monthly health report"],
-    team: ["Engineers from the original build", "Data, design or DevOps support as needed"],
+    team: ["Engineers from the original build", "Design or DevOps support as needed"],
   },
 ];
 
@@ -253,7 +248,7 @@ export const architecture = [
   { title: "Retrieval", desc: "Vector and keyword search over approved content", layer: "Data" },
   { title: "Model gateway", desc: "Routes each request to the right model", layer: "AI" },
   { title: "Guardrails", desc: "Policy, grounding and approval checks", layer: "AI" },
-  { title: "Your apps", desc: "An invoice agent, a voice agent, a knowledge assistant — web, mobile or desktop", layer: "Experience" },
+  { title: "Your apps", desc: "An invoice agent, a voice agent, a knowledge assistant — in a web app, Slack or Teams", layer: "Experience" },
   { title: "Analytics", desc: "Usage, quality, cost and audit logs", layer: "Insight" },
 ];
 
@@ -263,17 +258,16 @@ export const standards = [
   { name: "OAuth 2.0 & OpenID Connect", desc: "Single sign-on with Microsoft 365, Google Workspace, Okta and other identity providers." },
   { name: "Webhooks", desc: "Systems tell each other the moment something changes, instead of waiting for a nightly export." },
   { name: "Model Context Protocol", desc: "Connects AI assistants and agents to your tools and data through one open, permissioned interface." },
-  { name: "HL7 FHIR", desc: "Exchanges healthcare data with EHR and practice-management systems that support it." },
-  { name: "EDI, CSV & Excel", desc: "The file formats logistics, accounting and older systems still rely on, read and written reliably." },
+  { name: "CSV & Excel", desc: "The file formats accounting and older systems still rely on, read and written reliably." },
 ];
 
 // ------------------------------------------------------------
 //  Team
 // ------------------------------------------------------------
 
-export type Discipline = "Leadership" | "Engineering" | "AI & data" | "Mobile" | "Automation & desktop" | "Design";
+export type Discipline = "Leadership" | "Engineering" | "AI & automation" | "Design";
 
-export const disciplines: Discipline[] = ["Leadership", "Engineering", "AI & data", "Mobile", "Automation & desktop", "Design"];
+export const disciplines: Discipline[] = ["Leadership", "Engineering", "AI & automation", "Design"];
 
 /** Which disciplines a person belongs to, read from their role. */
 export function disciplinesOf(m: TeamMember): Discipline[] {
@@ -281,9 +275,7 @@ export function disciplinesOf(m: TeamMember): Discipline[] {
   const out: Discipline[] = [];
   if (/founder|ceo|cto|head of/.test(role)) out.push("Leadership");
   if (/engineer|developer|cto/.test(role)) out.push("Engineering");
-  if (/\bai\b|\bml\b|machine learning|data|analytics/.test(role)) out.push("AI & data");
-  if (/mobile|ios|android/.test(role)) out.push("Mobile");
-  if (/automation|desktop/.test(role)) out.push("Automation & desktop");
+  if (/\bai\b|\bml\b|machine learning|automation/.test(role)) out.push("AI & automation");
   if (/design/.test(role)) out.push("Design");
   return out;
 }
@@ -293,9 +285,7 @@ export const projectRoles = [
   { title: "Lead engineer", desc: "Your single point of contact: scope, architecture, schedule and decisions.", when: "Every project" },
   { title: "Full-stack engineer", desc: "The app, the APIs and the integrations with your systems.", when: "Every build" },
   { title: "AI engineer", desc: "Prompts, retrieval, agents, model integration and evaluations.", when: "AI work" },
-  { title: "Mobile engineer", desc: "iOS and Android apps, offline sync, cameras and maps.", when: "Mobile apps" },
-  { title: "Data engineer", desc: "Pipelines, warehouses, dashboards and reports.", when: "Data & reporting" },
-  { title: "Automation & desktop engineer", desc: "Automations between systems, desktop tools and Office add-ins.", when: "Automation work" },
+  { title: "Automation engineer", desc: "Document pipelines, workflows and the integrations between your systems.", when: "Automation work" },
   { title: "Product designer", desc: "Research with the people who'll use it, and interfaces that keep it simple.", when: "User-facing work" },
 ];
 
@@ -351,7 +341,7 @@ export const dataLifecycle = [
 
 /** Requirements we design around — not certifications. */
 export const policies = [
-  { name: "HIPAA", desc: "For healthcare work, we design to support HIPAA requirements: access controls, audit logs, encryption, and hosting and AI providers that offer a business associate agreement." },
+  { name: "HIPAA", desc: "When a project handles health information, we design to support HIPAA requirements: access controls, audit logs, encryption, and hosting and AI providers that offer a business associate agreement." },
   { name: "PCI DSS", desc: "Card payments go through Stripe, so card numbers never touch your servers or ours — which keeps your PCI scope as small as possible." },
   { name: "Privacy laws", desc: "Data-processing agreements, regional hosting and access or deletion requests, handled when GDPR, CCPA or similar laws apply." },
   { name: "NDAs & confidentiality", desc: "We sign your NDA, or offer ours, before you share anything sensitive — and confidentiality continues after the project ends." },

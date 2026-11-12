@@ -1,14 +1,11 @@
 import PageShell from "@/components/site/PageShell";
 import Hero from "@/components/site/Hero";
+import Outcomes from "@/components/site/Outcomes";
 import Services from "@/components/site/Services";
 import Solutions from "@/components/site/Solutions";
 import Projects from "@/components/site/Projects";
-import Industries from "@/components/site/Industries";
-import Outcomes from "@/components/site/Outcomes";
 import Process from "@/components/site/Process";
-import Technology from "@/components/site/Technology";
 import Company from "@/components/site/Company";
-import TrustBand from "@/components/site/TrustBand";
 import Faq from "@/components/site/Faq";
 import Contact from "@/components/site/Contact";
 import { company, services } from "@/data/company";
@@ -25,6 +22,10 @@ const orgSchema = JSON.stringify({
   knowsAbout: services.map((s) => s.title),
 });
 
+/**
+ * The landing page, in the order a visitor decides: what we do (hero), the problem (busywork), the three services,
+ * the AI solutions they start from, proof (work), how it runs (process), why us (company + security), questions, contact.
+ */
 export default function Home() {
   return (
     <PageShell footerCta>
@@ -34,11 +35,8 @@ export default function Home() {
       <Services />
       <Solutions />
       <Projects />
-      <Industries />
       <Process />
-      <Technology />
       <Company />
-      <TrustBand />
       <Faq />
       <Contact />
     </PageShell>

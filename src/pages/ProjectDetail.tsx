@@ -8,11 +8,9 @@ import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import SectionNav, { NavSection, SECTION_OFFSET } from "@/components/solutions/SectionNav";
 import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectFlow from "@/components/projects/ProjectFlow";
-import ProjectsLoading from "@/components/projects/ProjectsLoading";
 import { serviceIcons } from "@/components/site/icons";
-import { bookCall, industries, industryPath, servicePath, services, solutionPath, solutions } from "@/data/company";
-import { audienceTitle, Project, projectPath } from "@/data/projects";
-import { useProjects } from "@/hooks/use-projects";
+import { bookCall, servicePath, services, solutionPath, solutions } from "@/data/company";
+import { mainService, Project, projectPath, projects } from "@/data/projects";
 import { scrollToSection } from "@/lib/scroll";
 import NotFound from "./NotFound";
 
@@ -27,19 +25,17 @@ const SECTIONS: NavSection[] = [
 // Sections sit below the navbar and the sticky section bar when jumped to
 const anchor: CSSProperties = { scrollMarginTop: SECTION_OFFSET };
 
-/** Up to three other projects: same industry first, then those sharing the most services. */
+/** Up to three other projects, those sharing the most services first. */
 function relatedTo(project: Project, projects: Project[]) {
   const shared = (p: Project) => p.services.filter((k) => project.services.includes(k)).length;
   return projects
     .filter((p) => p !== project)
-    .sort((a, b) => Number(b.audience === project.audience) - Number(a.audience === project.audience) || shared(b) - shared(a))
+    .sort((a, b) => shared(b) - shared(a))
     .slice(0, 3);
 }
 
 export default function ProjectDetail() {
   const { slug } = useParams();
-  const { projects, ready } = useProjects();
-  if (!ready) return <ProjectsLoading title="Our work" />;
   const index = projects.findIndex((p) => p.slug === slug);
   if (index === -1) return <NotFound />;
   return <ProjectPage key={projects[index].slug} projects={projects} index={index} />;
@@ -49,7 +45,6 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
   const project = projects[index];
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
-  const audience = industries.find((i) => i.key === project.audience);
   const solution = solutions.find((s) => s.slug === project.solution);
   const used = project.services.map((k) => services.find((s) => s.key === k)).filter((s): s is (typeof services)[number] => Boolean(s));
   const related = relatedTo(project, projects);
@@ -65,7 +60,7 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
     <PageShell title={project.title} description={project.summary}>
       <PageHero
         crumbs={[{ label: "Our work", to: "/projects" }, { label: project.title }]}
-        eyebrow={`${audienceTitle(project)} · ${project.year}`}
+        eyebrow={`${mainService(project).title} · ${project.year}`}
         title={project.title}
         lead={project.summary}
         actions={
@@ -152,16 +147,6 @@ function ProjectPage({ projects, index }: { projects: Project[]; index: number }
                     <dd className="text-sm font-semibold sm:text-right">{v}</dd>
                   </div>
                 ))}
-                {audience && (
-                  <div className="flex flex-col gap-1 py-3.5 sm:flex-row sm:justify-between sm:gap-6">
-                    <dt className="text-sm text-subtle">Industry</dt>
-                    <dd className="text-sm font-semibold sm:text-right">
-                      <Link to={industryPath(audience)} className="u-link text-brand-text">
-                        {audience.title}
-                      </Link>
-                    </dd>
-                  </div>
-                )}
                 {solution && (
                   <div className="flex flex-col gap-1 py-3.5 last:pb-0 sm:flex-row sm:justify-between sm:gap-6">
                     <dt className="text-sm text-subtle">Started from</dt>

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Building2, Check, Gift, HardHat, Headset, Hourglass, LucideIcon, Receipt, Rocket } from "lucide-react";
+import { BookOpen, Check, Gift, Headset, Hourglass, LucideIcon, Receipt, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
-import { bookCall, offer, solutionPath, solutions } from "@/data/company";
+import { bookCall, offer, servicePath, services, type ServiceKey, solutionPath, solutions } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
 import "./Outcomes.css";
 
@@ -18,20 +18,29 @@ interface Role {
   icon: LucideIcon;
   week: string; // the card's heading
   intro: string;
-  solutions: string[]; // solution titles, linked to their pages
+  links: { label: string; to: string }[]; // the solutions and services that fix it
   before: Moment[];
   after: Moment[];
 }
 
+const solution = (title: string) => {
+  const s = solutions.find((x) => x.title === title)!;
+  return { label: s.title, to: solutionPath(s) };
+};
+const service = (key: ServiceKey) => {
+  const s = services.find((x) => x.key === key)!;
+  return { label: s.title, to: servicePath(s) };
+};
+
 // Illustrative, qualitative scenarios — no figures, so nothing here reads as a measured result
 const roles: Role[] = [
   {
-    key: "office",
-    label: "Office manager",
+    key: "finance",
+    label: "Finance & ops",
     icon: Receipt,
     week: "A week in the back office",
-    intro: "Keeps the back office of a growing trade business running — suppliers, invoices and the accounting system.",
-    solutions: ["Document AI", "Reporting Autopilot"],
+    intro: "Keeps the back office of a growing company running — suppliers, invoices and the accounting system.",
+    links: [solution("Document AI"), service("automation")],
     before: [
       { when: "Monday", text: "Supplier invoices pile up in the inbox. Each one is opened, read and re-typed into the accounting system." },
       { when: "Midweek", text: "A total doesn't match the purchase order, so it's back to the inbox to chase the supplier." },
@@ -44,75 +53,57 @@ const roles: Role[] = [
     ],
   },
   {
-    key: "site",
-    label: "Site manager",
-    icon: HardHat,
-    week: "A week on site",
-    intro: "Runs a busy construction site and owes the office a report at the end of every day.",
-    solutions: ["Field Operations App", "Reporting Autopilot"],
-    before: [
-      { when: "On site", text: "Photos on a phone, notes on a clipboard, signatures on paper — three places to look later." },
-      { when: "Evening", text: "The daily report gets typed up at the kitchen table, from memory and the camera roll." },
-      { when: "Next morning", text: "The office asks for inspection photos that are still on someone's phone." },
-    ],
-    after: [
-      { when: "On site", text: "Checklists, photos and signatures go into one app, even where there's no signal." },
-      { when: "Evening", text: "A quick voice note before leaving site becomes a tidy written report, ready to check and send." },
-      { when: "Next morning", text: "The office already has every photo, form and report, filed against the right job." },
-    ],
-  },
-  {
-    key: "clinic",
-    label: "Clinic front desk",
+    key: "support",
+    label: "Customer support",
     icon: Headset,
-    week: "A week at the front desk",
-    intro: "Answers the phones and keeps the schedule at a busy outpatient clinic.",
-    solutions: ["AI Voice Agent", "Document AI"],
+    week: "A week on the front line",
+    intro: "Answers the phones and the inbox for a busy service business with more customers every month.",
+    links: [solution("AI Voice Agent"), service("ai")],
     before: [
-      { when: "Opening time", text: "Every line is ringing, and the patients at the desk wait a little longer." },
+      { when: "Opening time", text: "Every line is ringing, and the same five questions take up most of the morning." },
       { when: "Lunch", text: "Calls go to voicemail, and the afternoon starts with a list of call-backs." },
-      { when: "End of day", text: "Intake forms and referral letters are still waiting to be typed into the system." },
+      { when: "After hours", text: "New customers who can't get through try the next business on the list." },
     ],
     after: [
-      { when: "Opening time", text: "Routine calls about bookings, changes and directions are answered straight away, so staff can focus on the people in front of them." },
+      { when: "Opening time", text: "Routine questions, bookings and changes are answered straight away, so the team can focus on the tricky ones." },
       { when: "Lunch", text: "Calls are still answered. Anything sensitive goes to a person, with a written summary instead of a voicemail." },
-      { when: "End of day", text: "Details from intake forms and referrals are already pulled out, waiting for staff to check and file." },
+      { when: "After hours", text: "Appointments are booked and new inquiries qualified, ready for the team in the morning." },
     ],
   },
   {
-    key: "property",
-    label: "Property manager",
-    icon: Building2,
-    week: "A week of tenant requests",
-    intro: "Looks after tenants, owners and a portfolio of rental homes.",
-    solutions: ["Client Portal", "Document AI", "AI Voice Agent"],
+    key: "team-lead",
+    label: "Team lead",
+    icon: BookOpen,
+    week: "A week of the same questions",
+    intro: "Leads a growing team whose know-how lives in handbooks, shared drives and a few people's heads.",
+    links: [solution("Knowledge Assistant"), service("ai")],
     before: [
-      { when: "Every day", text: "Repair requests arrive by text, email and phone — and some get lost on the way." },
-      { when: "Lease renewals", text: "Key dates and terms are hunted down in PDFs, one lease at a time." },
-      { when: "Month end", text: "Owners call to ask what's happening with their property." },
+      { when: "Every day", text: "Where's that document? What's the process for this? The same questions land in the same few inboxes." },
+      { when: "Onboarding", text: "New starters wait for someone senior to be free before they can get on with the work." },
+      { when: "Policy change", text: "An updated procedure goes out by email, and half the team keeps using the old one." },
     ],
     after: [
-      { when: "Every day", text: "Tenants log requests in one portal, with photos, and can see when the repair is booked." },
-      { when: "Lease renewals", text: "Dates and terms are pulled from every lease into one list, with reminders before they're due." },
-      { when: "Month end", text: "Owners check status, documents and statements in their own portal, without picking up the phone." },
+      { when: "Every day", text: "The team asks an assistant in Slack or Teams that answers from the company's own documents, with a link to the source." },
+      { when: "Onboarding", text: "New starters find answers on their own, and senior people get their afternoons back." },
+      { when: "Policy change", text: "The assistant answers from the current version the moment it's published, and says so when it doesn't know." },
     ],
   },
   {
-    key: "founder",
-    label: "Founder",
+    key: "product",
+    label: "Product team",
     icon: Rocket,
-    week: "A week running the company",
-    intro: "Runs a growing company whose numbers live in too many tools.",
-    solutions: ["Reporting Autopilot", "Knowledge Assistant"],
+    week: "A week on the roadmap",
+    intro: "Runs a SaaS product whose customers keep asking for AI, with a team already stretched by the roadmap.",
+    links: [service("software"), service("ai")],
     before: [
-      { when: "Monday morning", text: "Exports from accounting, the CRM and the online store are pasted into a spreadsheet to see how last week went." },
-      { when: "Midweek", text: "The same questions — where's that document, what's the process — land in the founder's inbox." },
-      { when: "Investor update", text: "Another weekend spent stitching charts together." },
+      { when: "Planning", text: "“AI assistant” has sat on the roadmap for two quarters. Nobody has the time to build it properly." },
+      { when: "Midweek", text: "A hackathon prototype works in the demo, then gives confident wrong answers on real customer data." },
+      { when: "Release day", text: "Nobody knows what each AI call costs, or how to tell if quality has slipped." },
     ],
     after: [
-      { when: "Monday morning", text: "A dashboard that updated itself overnight, and a plain-language summary of what changed." },
-      { when: "Midweek", text: "The team asks an assistant that answers from the company's own documents, with a link to the source." },
-      { when: "Investor update", text: "The numbers are already in one place, and the update starts from a draft, not a blank page." },
+      { when: "Planning", text: "A two-week prototype of the feature, inside the product, on a sample of real customer data." },
+      { when: "Midweek", text: "Answers are tested against real cases on every change, and the feature hands off when it isn't sure." },
+      { when: "Release day", text: "Cost, speed and quality are monitored from day one, and your engineers own the code." },
     ],
   },
 ];
@@ -124,7 +115,6 @@ export default function Outcomes() {
   const role = roles.find((r) => r.key === roleKey) ?? roles[0];
   const Icon = role.icon;
   const after = mode === "after";
-  const linked = role.solutions.map((t) => solutions.find((s) => s.title === t)).filter((s): s is (typeof solutions)[number] => !!s);
 
   return (
     <section id="busywork" className="relative overflow-hidden px-5 py-24 sm:px-8 lg:py-32">
@@ -201,20 +191,20 @@ export default function Outcomes() {
                     </span>
                     <span className="chip text-[11px] uppercase tracking-wider">Illustrative</span>
                   </div>
-                  <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-subtle">{after ? "With software doing the busywork" : "Today"}</p>
+                  <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-subtle">{after ? "With AI doing the busywork" : "Today"}</p>
                   <h3 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">{role.week}</h3>
                   <p className="mt-3 leading-relaxed text-ink-2">{role.intro}</p>
 
                   <div className="mt-8">
                     <p className="text-xs font-semibold uppercase tracking-wider text-subtle">See how</p>
                     <ul className="mt-3 flex flex-wrap gap-2">
-                      {linked.map((s) => (
-                        <li key={s.slug}>
+                      {role.links.map((l) => (
+                        <li key={l.to}>
                           <Link
-                            to={solutionPath(s)}
+                            to={l.to}
                             className="group inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-semibold text-ink transition-colors hover:border-brand/40 hover:text-brand-text"
                           >
-                            {s.title}
+                            {l.label}
                           </Link>
                         </li>
                       ))}

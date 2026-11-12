@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { services } from "@/data/company";
-import { audienceTitle, Project, projectPath } from "@/data/projects";
+import { mainService, Project, projectPath } from "@/data/projects";
 import { serviceIcons } from "@/components/site/icons";
 
 /** Photo card linking to a project's page — used on the projects index and in "related projects" strips. */
@@ -10,7 +10,7 @@ export default function ProjectCard({ project, compact = false }: { project: Pro
       <div className="sheen relative aspect-[16/10] overflow-hidden bg-raised">
         <img src={project.image} alt="" loading="lazy" width={640} height={400} className="h-full w-full object-cover" />
         <div className="photo-fade absolute inset-0" aria-hidden="true" />
-        <span className="absolute left-4 top-4 rounded-full bg-black/35 px-3 py-1 text-xs font-semibold text-white backdrop-blur">{audienceTitle(project)}</span>
+        <span className="absolute left-4 top-4 rounded-full bg-black/35 px-3 py-1 text-xs font-semibold text-white backdrop-blur">{mainService(project).title}</span>
         <span className="absolute right-4 top-4 rounded-full bg-black/35 px-2.5 py-1 text-xs font-semibold tabular-nums text-white backdrop-blur">{project.year}</span>
       </div>
       <div className="flex flex-1 flex-col p-5 sm:p-6">

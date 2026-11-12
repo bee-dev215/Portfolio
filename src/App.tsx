@@ -16,8 +16,6 @@ const ProjectsIndex = lazyPage(["/projects"], () => import("./pages/ProjectsInde
 const ProjectDetail = lazyPage(["/projects/:slug"], () => import("./pages/ProjectDetail"));
 const ServicesIndex = lazyPage(["/services"], () => import("./pages/ServicesIndex"));
 const ServiceDetail = lazyPage(["/services/:slug"], () => import("./pages/ServiceDetail"));
-const IndustriesIndex = lazyPage(["/industries"], () => import("./pages/IndustriesIndex"));
-const IndustryDetail = lazyPage(["/industries/:slug"], () => import("./pages/IndustryDetail"));
 const About = lazyPage(["/about"], () => import("./pages/About"));
 const Approach = lazyPage(["/approach"], () => import("./pages/Approach"));
 const TechnologyPage = lazyPage(["/technology"], () => import("./pages/TechnologyPage"));
@@ -83,8 +81,6 @@ const App = () => {
                 <Route path="/projects/:slug" element={<ProjectDetail />} />
                 <Route path="/services" element={<ServicesIndex />} />
                 <Route path="/services/:slug" element={<ServiceDetail />} />
-                <Route path="/industries" element={<IndustriesIndex />} />
-                <Route path="/industries/:slug" element={<IndustryDetail />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/approach" element={<Approach />} />
                 <Route path="/technology" element={<TechnologyPage />} />

@@ -5,7 +5,6 @@ import { offer, phases } from "@/data/company";
 import { isFreePhase } from "@/data/company-pages";
 import { prefersReducedMotion } from "@/hooks/use-motion";
 import { glideTo, markLanding } from "@/lib/scroll";
-import { usePhotos } from "@/hooks/use-photos";
 import Reveal, { SectionHeading } from "./Reveal";
 
 // Cards pin below the navbar, each a little lower than the last so the stack shows its edges
@@ -94,7 +93,6 @@ function useCardStack(count: number) {
 
 /** The delivery phases, with the free prototype marked. `more` adds a link to the full approach page (off on that page itself). */
 export default function Process({ more = true }: { more?: boolean }) {
-  const photos = usePhotos();
   const { cards, active, progress, goTo } = useCardStack(phases.length);
 
   return (
@@ -177,7 +175,7 @@ export default function Process({ more = true }: { more?: boolean }) {
                 <article className={`stack-inner card relative overflow-hidden ${free ? "grad-border" : ""}`}>
                   {/* Photo banner, with the phase number outlined over it (and the offer badge on the free phase) */}
                   <div className="relative h-36 overflow-hidden bg-raised sm:h-44">
-                    <img src={photos.src(p.image)} alt="" loading="lazy" width={1280} height={800} className="stack-photo h-full w-full object-cover" />
+                    <img src={p.image} alt="" loading="lazy" width={1280} height={800} className="stack-photo h-full w-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[rgb(10_16_32/.7)] via-[rgb(10_16_32/.15)] to-transparent" aria-hidden="true" />
                     {free && (
                       <span className="glass absolute left-7 top-4 inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-xs font-bold text-ink sm:left-10">

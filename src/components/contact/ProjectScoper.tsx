@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, CalendarClock, Check, ClipboardList, RotateCcw } from "lucide-react";
-import { bookCall, company, industries, services, solutions } from "@/data/company";
+import { bookCall, company, services, solutions } from "@/data/company";
 import { ContactSubject, prefillContact } from "./form";
 import "./ProjectScoper.css";
 
@@ -14,6 +14,9 @@ const stages = [
   { value: RESCUE, desc: "We have software that's stalled, fragile or overdue for an update." },
 ];
 
+// Who the software is for
+const users = ["Our team, internally", "Our customers", "Users of our own SaaS product"];
+
 const timelines = [
   { value: "No rush", desc: "We're planning ahead." },
   { value: "Next month or quarter", desc: "We'd like to start soon." },
@@ -22,16 +25,16 @@ const timelines = [
 
 interface Answers {
   building: string[];
-  audience: string[];
+  users: string[];
   stage: string;
   timeline: string;
 }
 
-const EMPTY: Answers = { building: [], audience: [], stage: "", timeline: "" };
+const EMPTY: Answers = { building: [], users: [], stage: "", timeline: "" };
 
 const STEPS = [
   { key: "building", title: "What do you need?", hint: "Pick any that apply." },
-  { key: "audience", title: "What kind of business are you?", hint: "Pick any that apply." },
+  { key: "users", title: "Who will use it?", hint: "Pick any that apply." },
   { key: "stage", title: "Where are you now?", hint: "Pick the closest." },
   { key: "timeline", title: "When would you like to start?", hint: "Pick the closest." },
 ] as const;
@@ -40,13 +43,12 @@ const STEPS = [
 function subjectFor(a: Answers): ContactSubject {
   const picked = new Set(services.filter((s) => a.building.includes(s.title)).map((s) => s.key));
   const has = (...titles: string[]) => titles.some((t) => a.building.includes(t));
-  if (a.stage === RESCUE || picked.has("rescue")) return "Rescue or modernize a project";
+  const forProduct = a.users.includes(users[2]);
+  if (a.stage === RESCUE) return "Rescue or modernize a project";
   if (picked.has("automation") || has("Document AI")) return "Automate a task or workflow";
-  if (picked.has("ai") || has("Knowledge Assistant", "AI Voice Agent")) return "AI tool or assistant";
-  if (picked.has("data") || has("Reporting Autopilot")) return "Data, dashboards & reporting";
-  if (picked.has("mobile") || has("Field Operations App")) return "Mobile app";
-  if (picked.has("desktop")) return "Desktop software";
-  if (picked.has("web") || picked.has("cloud") || has("Client Portal")) return "Web app or SaaS product";
+  if ((picked.has("ai") || has("Knowledge Assistant", "AI Voice Agent")) && forProduct) return "Add AI to our product";
+  if (picked.has("ai") || has("Knowledge Assistant", "AI Voice Agent")) return "AI agent or assistant";
+  if (picked.has("software")) return "Web app or SaaS product";
   return "Something else";
 }
 
@@ -57,7 +59,7 @@ function compose(a: Answers) {
     `Hello ${company.shortName} team,`,
     "",
     `What we need: ${list(a.building)}`,
-    `Industry: ${list(a.audience)}`,
+    `Who will use it: ${list(a.users)}`,
     `Where we are: ${a.stage || NOT_SURE}`,
     `Timeline: ${a.timeline || NOT_SURE}`,
     "",
@@ -125,7 +127,7 @@ export default function ProjectScoper() {
   };
 
   // "Not sure yet" and specific picks exclude each other
-  const toggle = (key: "building" | "audience", value: string) =>
+  const toggle = (key: "building" | "users", value: string) =>
     setA((prev) => {
       const cur = prev[key];
       if (value === NOT_SURE) return { ...prev, [key]: cur.includes(NOT_SURE) ? [] : [NOT_SURE] };
@@ -133,12 +135,12 @@ export default function ProjectScoper() {
       return { ...prev, [key]: next };
     });
 
-  const answered = [a.building.length > 0, a.audience.length > 0, !!a.stage, !!a.timeline];
+  const answered = [a.building.length > 0, a.users.length > 0, !!a.stage, !!a.timeline];
   const summary = step === STEPS.length;
   const clean = (items: string[]) => items.filter((v) => v !== NOT_SURE);
 
   const sendBrief = () => {
-    const answers = { ...a, building: clean(a.building), audience: clean(a.audience) };
+    const answers = { ...a, building: clean(a.building), users: clean(a.users) };
     prefillContact({ subject: subjectFor(answers), message: compose(answers) });
   };
 
@@ -235,12 +237,11 @@ export default function ProjectScoper() {
 
               {step === 1 && (
                 <div className="mt-6">
-                  <Group legend="Industries">
-                    {industries.map((ind) => (
-                      <Chip key={ind.key} label={ind.title} checked={a.audience.includes(ind.title)} onChange={() => toggle("audience", ind.title)} />
+                  <Group legend="Users">
+                    {users.map((u) => (
+                      <Chip key={u} label={u} checked={a.users.includes(u)} onChange={() => toggle("users", u)} />
                     ))}
-                    <Chip label="Something else" checked={a.audience.includes("Something else")} onChange={() => toggle("audience", "Something else")} />
-                    <Chip label={NOT_SURE} checked={a.audience.includes(NOT_SURE)} onChange={() => toggle("audience", NOT_SURE)} />
+                    <Chip label={NOT_SURE} checked={a.users.includes(NOT_SURE)} onChange={() => toggle("users", NOT_SURE)} />
                   </Group>
                 </div>
               )}
@@ -276,7 +277,7 @@ export default function ProjectScoper() {
                     It goes in the form as <span className="font-semibold text-ink">{subjectFor({ ...a, building: clean(a.building) })}</span>. Add a few lines about the task you'd like gone, then send.
                   </p>
                   <pre className="mt-5 whitespace-pre-wrap break-words rounded-2xl border border-line bg-raised/60 p-5 font-sans text-sm leading-relaxed text-ink-2">
-                    {compose({ ...a, building: clean(a.building), audience: clean(a.audience) })}
+                    {compose({ ...a, building: clean(a.building), users: clean(a.users) })}
                   </pre>
                 </div>
               )}

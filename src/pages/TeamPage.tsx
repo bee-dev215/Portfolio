@@ -6,14 +6,12 @@ import CtaBand from "@/components/site/CtaBand";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import PageSection from "@/components/company/PageSection";
 import TeamDirectory from "@/components/company/TeamDirectory";
-import { bookCall, company } from "@/data/company";
+import { team, bookCall, company } from "@/data/company";
 import { projectRoles, workingValues } from "@/data/company-pages";
-import { useTeam } from "@/hooks/use-team";
 
 function Mosaic() {
-  const { team, ready } = useTeam();
   // Empty frames hold the space while the team loads
-  const faces = ready ? team.filter((m) => m.photo).slice(0, 8).map((m) => m.photo) : Array<undefined>(8).fill(undefined);
+  const faces = team.filter((m) => m.photo).slice(0, 8).map((m) => m.photo);
   return (
     <div className="grid grid-cols-4 gap-3" aria-hidden="true">
       {faces.map((photo, i) => (
@@ -26,7 +24,6 @@ function Mosaic() {
 }
 
 export default function TeamPage() {
-  const { team, ready } = useTeam();
 
   return (
     <PageShell title="Team" description={`The senior engineers and designers at ${company.name} — the people you work with directly.`}>
@@ -49,17 +46,15 @@ export default function TeamPage() {
             </Link>
           </>
         }
-        aside={!ready || team.some((m) => m.photo) ? <Mosaic /> : undefined}
+        aside={team.some((m) => m.photo) ? <Mosaic /> : undefined}
       />
 
       <PageSection>
         <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <SectionHeading label="The people" title="Who you'll work with." />
-          {ready && (
-            <p className="flex items-center gap-2 text-sm font-medium text-subtle">
-              <span className="live-dot" /> {team.length} people · {company.availability.toLowerCase()}
-            </p>
-          )}
+          <p className="flex items-center gap-2 text-sm font-medium text-subtle">
+            <span className="live-dot" /> {team.length} people · {company.availability.toLowerCase()}
+          </p>
         </div>
         <TeamDirectory />
       </PageSection>

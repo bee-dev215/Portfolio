@@ -1,4 +1,4 @@
-import { FocusEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FocusEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { Building2, CalendarDays, ChevronDown, Cpu, LucideIcon, Mail, Menu, Route, ShieldCheck, Users, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -7,16 +7,12 @@ import {
   companyMenu,
   CompanyMenuKey,
   homeSections,
-  industries,
-  industryPath,
   servicePath,
   services,
   solutionPath,
   solutions,
 } from "@/data/company";
-import { Project, projectPath } from "@/data/projects";
-import { useProjects } from "@/hooks/use-projects";
-import { usePhotos } from "@/hooks/use-photos";
+import { projectPath, projects } from "@/data/projects";
 import { serviceIcons } from "./icons";
 import ThemeToggle from "./ThemeToggle";
 
@@ -95,11 +91,11 @@ const numberWords = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven"
 const spell = (n: number) => numberWords[n] ?? String(n);
 
 /** The Our work menu, built from the projects. */
-const projectsMenu = (projects: Project[], ready: boolean): MenuGroup => ({
+const projectsMenu: MenuGroup = {
   key: "projects",
   label: "Our work",
-  eyebrow: ready ? `${spell(projects.length)} case studies` : "Case studies",
-  caption: "Software we've built to take busywork off people's desks, from field apps to AI assistants.",
+  eyebrow: `${spell(projects.length)} case studies`,
+  caption: "AI agents, automations and software we've built to take busywork off people's desks.",
   image: "/images/tech-code.webp",
   paths: ["/projects"],
   sections: ["projects"],
@@ -112,15 +108,15 @@ const projectsMenu = (projects: Project[], ready: boolean): MenuGroup => ({
     image: p.image,
     to: projectPath(p),
   })),
-});
+};
 
-// The menus in order; Our work goes third, between these two and the rest
-const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
+// The menus in order
+const menus: MenuGroup[] = [
   {
     key: "services",
     label: "Services",
-    eyebrow: `${spell(services.length)} engineering services`,
-    caption: "From a two-week prototype to production: AI, custom web, mobile and desktop software, automation, cloud and data.",
+    eyebrow: `${spell(services.length)} services`,
+    caption: "AI agents and assistants, AI workflow automation, and the custom software around them — from a two-week prototype to production.",
     image: "/images/svc-build.webp",
     paths: ["/services"],
     sections: ["services"],
@@ -138,8 +134,8 @@ const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
   {
     key: "solutions",
     label: "Solutions",
-    eyebrow: `${spell(solutions.length)} ready-made solutions`,
-    caption: "Ready-made starting points for the most common busywork, fitted to your own documents, tools and team.",
+    eyebrow: `${spell(solutions.length)} AI solutions`,
+    caption: "Ready-made AI starting points for the most common busywork, fitted to your own documents, tools and team.",
     image: "/images/about-pairing.webp",
     paths: ["/solutions"],
     sections: ["solutions"],
@@ -153,25 +149,7 @@ const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
       to: solutionPath(s),
     })),
   },
-  {
-    key: "industries",
-    label: "Industries",
-    eyebrow: `${spell(industries.length)} industries we serve`,
-    caption: "Teams whose weeks we give back — in clinics, on job sites, in offices and in warehouses.",
-    image: "/images/hero-work.webp",
-    paths: ["/industries"],
-    sections: ["industries"],
-    all: { label: "All industries", to: "/industries" },
-    items: industries.map((ind) => ({
-      key: `industry-${ind.key}`,
-      label: ind.title,
-      desc: ind.focus,
-      blurb: ind.desc,
-      image: ind.image,
-      focus: ind.imageFocus,
-      to: industryPath(ind),
-    })),
-  },
+  projectsMenu,
   {
     key: "company",
     label: "Company",
@@ -179,7 +157,7 @@ const [servicesMenu, solutionsMenu, ...otherMenus]: MenuGroup[] = [
     caption: "Who we are, how we work and how to reach us — senior engineers you talk to directly.",
     image: "/images/company-team.webp",
     paths: [...companyMenu.map((c) => c.to), "/faq"],
-    sections: ["process", "technology", "company", "faq", "contact"],
+    sections: ["process", "company", "faq", "contact"],
     all: { label: "Questions & answers", to: "/faq" },
     items: companyMenu.map((c) => ({
       key: `company-${c.key}`,
@@ -256,13 +234,7 @@ export default function Navbar() {
   const [menu, setMenu] = useState<string | null>(null); // desktop: the open group
   const [peek, setPeek] = useState<number | null>(null); // desktop: the hovered item, shown in the photo
   const [fresh, setFresh] = useState(false); // the panel drops in only when opening from closed
-  const { projects, ready } = useProjects();
-  const photos = usePhotos();
-  // Built-in photos swapped for any replacements chosen in the admin
-  const menus = useMemo(
-    () => [servicesMenu, solutionsMenu, projectsMenu(projects, ready), ...otherMenus].map((g) => ({ ...g, items: g.items.map((it) => ({ ...it, image: photos.src(it.image) })) })),
-    [projects, ready, photos],
-  );
+
 
   const headerRef = useRef<HTMLElement>(null);
   const triggers = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -365,7 +337,7 @@ export default function Navbar() {
           <Monogram className="h-10 w-10" />
           <span className="leading-tight">
             <Wordmark />
-            <span className="mt-1 hidden text-[11px] font-medium text-subtle sm:block">Software & AI engineering</span>
+            <span className="mt-1 hidden text-[11px] font-medium text-subtle sm:block">{company.discipline}</span>
           </span>
         </Link>
 

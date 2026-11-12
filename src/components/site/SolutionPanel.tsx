@@ -1,7 +1,6 @@
 import { CSSProperties, useEffect, useRef } from "react";
 import { Plus } from "lucide-react";
 import { Solution } from "@/data/company";
-import { usePhotos } from "@/hooks/use-photos";
 
 const HOVER_INTENT_MS = 90; // sweeping the mouse across the row shouldn't open every panel on the way
 
@@ -22,7 +21,6 @@ export default function SolutionPanel({
   onActivate: () => void;
   onOpen: () => void;
 }) {
-  const photos = usePhotos();
   const timer = useRef<number>();
   const num = String(index + 1).padStart(2, "0");
 
@@ -39,7 +37,7 @@ export default function SolutionPanel({
     >
       {/* The viewer's photo morphs out of this frame and back into it */}
       <div data-solution-photo={solution.id} className="absolute inset-0 overflow-hidden rounded-[inherit]">
-        {solution.image && <img src={photos.src(solution.image)} alt="" loading="lazy" width={1280} height={800} className="sol-panel-img h-full w-full object-cover" />}
+        {solution.image && <img src={solution.image} alt="" loading="lazy" width={1280} height={800} className="sol-panel-img h-full w-full object-cover" />}
       </div>
       <div className="photo-fade absolute inset-0" />
       <div className="sol-panel-tint absolute inset-0" />
@@ -66,7 +64,7 @@ export default function SolutionPanel({
           {solution.summary}
         </p>
         <div className="mt-6 flex items-center gap-4" style={{ "--i": 4 } as CSSProperties}>
-          <span className="sol-panel-cta btn bg-white px-5 py-2.5 text-sm text-[#172554]">
+          <span className="sol-panel-cta btn shrink-0 whitespace-nowrap bg-white px-5 py-2.5 text-sm text-[#172554]">
             Explore solution
           </span>
           <span className="hidden truncate text-xs font-medium text-white/60 sm:block">{solution.tech.slice(0, 3).join(" · ")}</span>

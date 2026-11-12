@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Check, UserRound } from "lucide-react";
+import { Check, UserRound } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
@@ -9,29 +9,25 @@ import ServiceArt from "@/components/services/ServiceArt";
 import ServiceCard from "@/components/services/ServiceCard";
 import SolutionCards from "@/components/services/SolutionCards";
 import ProjectStrip from "@/components/projects/ProjectStrip";
-import { serviceIcons } from "@/components/site/icons";
-import { bookCall, scrollToId, servicePath, services, stackGroups, startEnquiry } from "@/data/company";
-import { serviceDetails, serviceGroups } from "@/data/service-details";
+import { bookCall, scrollToId, services, solutionsFor, stackGroups, startEnquiry } from "@/data/company";
+import { serviceDetails } from "@/data/service-details";
 import NotFound from "./NotFound";
 
 export default function ServiceDetail() {
   const { slug = "" } = useParams();
-  const index = services.findIndex((s) => s.slug === slug);
-  const service = services[index];
-  const detail = serviceDetails[slug];
-  if (!service || !detail) return <NotFound />;
+  const service = services.find((s) => s.slug === slug);
+  if (!service) return <NotFound />;
 
-  const group = serviceGroups.find((g) => g.keys.includes(service.key));
-  const prev = services[(index - 1 + services.length) % services.length];
-  const next = services[(index + 1) % services.length];
-  const related = detail.related.map((r) => services.find((s) => s.slug === r)).filter((s): s is (typeof services)[number] => Boolean(s));
+  const detail = serviceDetails[service.key];
+  const related = services.filter((s) => s.key !== service.key);
+  const linkedSolutions = solutionsFor(service.key);
   const tools = stackGroups.filter((g) => detail.stack.includes(g.title));
 
   return (
     <PageShell title={service.title} description={service.desc}>
       <PageHero
         crumbs={[{ label: "Services", to: "/services" }, { label: service.title }]}
-        eyebrow={group ? `Services · ${group.name}` : "Services"}
+        eyebrow="Services"
         title={service.title}
         lead={service.desc}
         aside={<ServiceArt service={service} />}
@@ -228,7 +224,7 @@ export default function ServiceDetail() {
       </section>
 
       {/* Solutions */}
-      {detail.solutions.length > 0 && (
+      {linkedSolutions.length > 0 && (
         <section className="px-5 py-20 sm:px-8 lg:py-28">
           <div className="mx-auto max-w-[1240px]">
             <SectionHeading
@@ -242,7 +238,7 @@ export default function ServiceDetail() {
               <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">Solutions that lean on this service: working starting points we adapt to your systems and data.</p>
             </SectionHeading>
             <div className="mt-12">
-              <SolutionCards titles={detail.solutions} />
+              <SolutionCards list={linkedSolutions} />
             </div>
           </div>
         </section>
@@ -283,14 +279,14 @@ export default function ServiceDetail() {
       <section className="px-5 py-20 sm:px-8 lg:py-28">
         <div className="mx-auto max-w-[1240px]">
           <SectionHeading
-            label="Often paired with"
+            label="The other two"
             title={
               <>
                 Services that <span className="gradient-text">work well together.</span>
               </>
             }
           />
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-4 sm:grid-cols-2">
             {related.map((s, i) => (
               <Reveal key={s.key} delay={i * 70} className="h-full">
                 <ServiceCard service={s} compact />
@@ -298,34 +294,6 @@ export default function ServiceDetail() {
             ))}
           </div>
 
-          <nav aria-label="More services" className="mt-14 grid gap-4 border-t border-line pt-10 sm:grid-cols-2">
-            {[
-              { s: prev, label: "Previous service", dir: "prev" as const },
-              { s: next, label: "Next service", dir: "next" as const },
-            ].map(({ s, label, dir }) => {
-              const Icon = serviceIcons[s.key];
-              return (
-                <Link
-                  key={dir}
-                  to={servicePath(s)}
-                  className={`card card-hover group flex items-center gap-4 p-5 ${dir === "next" ? "sm:flex-row-reverse sm:text-right" : ""}`}
-                >
-                  {dir === "prev" ? (
-                    <ArrowLeft className="h-5 w-5 shrink-0 text-subtle transition-transform group-hover:-translate-x-0.5 group-hover:text-brand-text" />
-                  ) : (
-                    <ArrowRight className="h-5 w-5 shrink-0 text-subtle transition-colors group-hover:text-brand-text" />
-                  )}
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand-text">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block text-xs font-semibold uppercase tracking-wider text-subtle">{label}</span>
-                    <span className="block truncate font-display font-bold">{s.title}</span>
-                  </span>
-                </Link>
-              );
-            })}
-          </nav>
         </div>
       </section>
 
