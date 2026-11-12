@@ -8,7 +8,8 @@ import Process from "@/components/site/Process";
 import Company from "@/components/site/Company";
 import Faq from "@/components/site/Faq";
 import Contact from "@/components/site/Contact";
-import { company, services } from "@/data/company";
+import KineticBand from "@/components/site/KineticBand";
+import { company, services, solutions } from "@/data/company";
 
 // Organization structured data, built from the same source as the page so the two never disagree
 const orgSchema = JSON.stringify({
@@ -33,8 +34,10 @@ export default function Home() {
       <Hero />
       <Outcomes />
       <Services />
+      <KineticBand words={[...services.map((s) => s.title), "Two-week prototypes"]} />
       <Solutions />
       <Projects />
+      <KineticBand reverse words={solutions.map((s) => s.title)} />
       <Process />
       <Company />
       <Faq />

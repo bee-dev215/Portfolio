@@ -1,13 +1,19 @@
 import { MouseEvent, ReactNode, useEffect, useLayoutEffect, useRef } from "react";
 import { useLocation, useNavigate, useNavigationType } from "react-router-dom";
 import { company, setNavigator } from "@/data/company";
-import { useSpotlight } from "@/hooks/use-motion";
+import { useInteractions, useSpotlight } from "@/hooks/use-motion";
 import { arriveAt, glideTo, scrollToElement, targetTop } from "@/lib/scroll";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollTop from "./ScrollTop";
+import CursorRing from "./CursorRing";
+import KineticBand from "./KineticBand";
+import StickyCta from "./StickyCta";
 
 const DEFAULT_TITLE = `${company.name} — AI & Software Engineering`;
+
+// The promises on the tape above the footer
+const signOff = ["Senior engineers only", "Working software in two weeks", "You own the code", "Runs in your cloud", "A person approves what matters", `Reply within ${company.responseTime}`];
 
 // ---------- Scroll positions per history entry, so Back and Forward return the reader to where they were ----------
 const POSITIONS_KEY = "jovano-scroll";
@@ -72,6 +78,7 @@ export default function PageShell({
   const lastPath = useRef<string | null>(null);
   const lastSearch = useRef<string | null>(null);
   useSpotlight();
+  useInteractions();
 
   useEffect(() => {
     setNavigator(navigate);
@@ -171,8 +178,12 @@ export default function PageShell({
       <main id="main" tabIndex={-1} className="outline-none">
         {children}
       </main>
+      {/* Every page signs off with the promises on a moving ink tape, just above the footer */}
+      <KineticBand tape words={signOff} speed={0.5} className="relative z-[1] -mb-4" />
       <Footer cta={footerCta} />
       <ScrollTop />
+      <StickyCta />
+      <CursorRing />
     </div>
   );
 }

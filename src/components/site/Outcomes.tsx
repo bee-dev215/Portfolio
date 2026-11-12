@@ -243,7 +243,7 @@ export default function Outcomes() {
 
         {/* The offer, and the call to book */}
         <Reveal delay={160} className="mt-6">
-          <div className="foot-cta bg-grad relative overflow-hidden rounded-3xl p-7 text-white sm:p-10">
+          <div className="foot-cta cta-flow relative overflow-hidden rounded-3xl p-7 text-white sm:p-10">
             <div className="foot-cta-glow pointer-events-none absolute inset-0" aria-hidden="true" />
             <div className="relative grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
               <div>
@@ -256,7 +256,7 @@ export default function Outcomes() {
               <div className="flex flex-col items-start gap-4 lg:items-end">
                 <button
                   onClick={() => bookCall()}
-                  className="btn group bg-white px-6 py-3.5 font-semibold text-[#1e40af] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
+                  className="btn magnetic group bg-volt px-6 py-3.5 font-semibold text-[#0b1020] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:bg-white"
                 >
                   Tell us yours — book a 15-minute call
                 </button>

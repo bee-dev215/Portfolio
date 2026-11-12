@@ -48,11 +48,11 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
       <div className="mx-auto max-w-[1240px]">
         {/* CTA card */}
         {cta && (
-          <div className="foot-cta bg-grad relative overflow-hidden rounded-[2rem] p-8 text-white sm:p-12 lg:p-14">
+          <div className="foot-cta cta-flow relative overflow-hidden rounded-[2rem] p-8 text-white sm:p-12 lg:p-16">
             <div className="foot-cta-glow pointer-events-none absolute inset-0" aria-hidden="true" />
             <div className="relative grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
               <div>
-                <h2 className="max-w-xl font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem]">
+                <h2 className="max-w-2xl font-display text-[clamp(2.1rem,5vw,4rem)] font-extrabold leading-[1] tracking-[-0.04em]">
                   Ready to hand off the busywork?
                 </h2>
                 <p className="mt-4 max-w-lg text-white/80">
@@ -62,7 +62,7 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
               <div className="flex flex-col items-start gap-5 lg:items-center lg:justify-self-end">
                 <Link
                   to="/book"
-                  className="btn group bg-white px-6 py-3.5 font-semibold text-[#1e40af] shadow-[0_14px_30px_-12px_rgb(0_0_0/.45)] hover:-translate-y-px"
+                  className="btn magnetic group bg-volt px-7 py-4 text-base font-semibold text-[#0b1020] shadow-[0_16px_34px_-12px_rgb(0_0_0/.5)] hover:bg-white"
                 >
                   Book a free call
                   <CalendarDays className="h-4 w-4" />

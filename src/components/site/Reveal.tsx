@@ -1,5 +1,6 @@
 import { CSSProperties, Children, Fragment, ReactElement, ReactNode, cloneElement, isValidElement } from "react";
 import { useInView } from "@/hooks/use-motion";
+import { isHighlight } from "./highlight";
 
 export type RevealVariant = "up" | "left" | "right" | "scale" | "clip";
 
@@ -47,13 +48,25 @@ function splitWords(title: ReactNode) {
       if (!isValidElement(child)) return child;
       const el = child as ReactElement<{ children?: ReactNode; className?: string; style?: CSSProperties }>;
       if (el.type === Fragment) return walk(el.props.children);
+      // The highlighted phrase rides in an .hl wrapper, which draws the marker stroke under it
+      if (isHighlight(el)) {
+        return (
+          <span className="word" style={{ "--w": n++ } as CSSProperties}>
+            <span className="hl">{el}</span>
+          </span>
+        );
+      }
       return cloneElement(el, { className: `${el.props.className ?? ""} word`, style: { ...el.props.style, "--w": n++ } as CSSProperties });
     });
   return walk(title);
 }
 
-/** Section header: eyebrow pill, large title (wrap a phrase in .gradient-text to highlight it) and an optional lead. */
+/**
+ * Section header: eyebrow pill (with an optional index, "01"), a large title (wrap a phrase in .gradient-text to
+ * highlight it with the marker stroke) and an optional lead.
+ */
 export function SectionHeading({
+  index,
   label,
   title,
   children,
@@ -71,9 +84,12 @@ export function SectionHeading({
     <div ref={ref} className={`rv rv-up ${visible ? "rv-in" : ""} ${center ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}`}>
       <span className="eyebrow">
         <span className="h-1.5 w-1.5 rounded-full bg-grad" />
+        {index && <span className="opacity-60">{index} /</span>}
         {label}
       </span>
-      <h2 className="mt-5 text-balance font-display text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl">{splitWords(title)}</h2>
+      <h2 className="section-title mt-6 text-balance font-display text-[clamp(2.4rem,5.4vw,4.5rem)] font-extrabold leading-[1] tracking-[-0.04em]">
+        {splitWords(title)}
+      </h2>
       {children}
     </div>
   );

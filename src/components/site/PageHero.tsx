@@ -1,6 +1,7 @@
 import { Fragment, ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { markHighlights } from "./highlight";
 
 export interface Crumb {
   label: string;
@@ -66,6 +67,9 @@ export default function PageHero({
     <section className="relative overflow-hidden px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:pb-24 lg:pt-36">
       <div className="clouds pointer-events-none absolute inset-0" aria-hidden="true" />
       <div className="dot-grid pointer-events-none absolute inset-0 opacity-70" aria-hidden="true" />
+      <div className="orb -left-[10%] top-[-10%] h-[30vw] w-[30vw] bg-iris/30" aria-hidden="true" />
+      <div className="orb right-[-8%] top-[20%] h-[24vw] w-[24vw] bg-sky2/30" style={{ animationDelay: "-6s" }} aria-hidden="true" />
+      <div className="grid-floor" aria-hidden="true" />
 
       <div className={`relative mx-auto grid max-w-[1240px] grid-cols-[minmax(0,1fr)] items-center gap-12 ${aside ? "lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)] lg:gap-16" : ""}`}>
         <div className={aside ? "min-w-0" : "max-w-3xl"}>
@@ -77,13 +81,13 @@ export default function PageHero({
             </p>
           )}
           <h1
-            className={`fade-up ${eyebrow ? "mt-5" : "mt-8"} text-balance font-display text-[clamp(2.4rem,6vw,4.25rem)] font-extrabold leading-[1.04] tracking-tight`}
+            className={`hero-title fade-up ${eyebrow ? "mt-6" : "mt-8"} text-balance font-display text-[clamp(2.6rem,6.6vw,5.25rem)] font-extrabold leading-[.98] tracking-[-0.045em]`}
             style={{ animationDelay: ".1s" }}
           >
-            {title}
+            {markHighlights(title)}
           </h1>
           {lead && (
-            <p className="fade-up mt-6 max-w-2xl text-lg leading-relaxed text-ink-2" style={{ animationDelay: ".18s" }}>
+            <p className="fade-up mt-7 max-w-2xl text-lg leading-relaxed text-ink-2 sm:text-xl" style={{ animationDelay: ".18s" }}>
               {lead}
             </p>
           )}

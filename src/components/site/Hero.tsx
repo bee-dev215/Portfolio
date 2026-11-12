@@ -1,16 +1,20 @@
 import { CSSProperties } from "react";
-import { CalendarDays, Gift, GitBranch, LockKeyhole, ShieldCheck, Timer, UserCheck } from "lucide-react";
+import { ArrowRight, CalendarDays, Gift, GitBranch, LockKeyhole, ShieldCheck, Timer, UserCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { company, offer, servicePath, services, stackGroups } from "@/data/company";
 import { serviceIcons } from "./icons";
 import AgentConsole from "./AgentConsole";
 import NetworkMap from "./NetworkMap";
+import RotatingWords from "./RotatingWords";
 
 const badges = [
   { icon: GitBranch, label: "Senior engineers only", tint: "text-iris" },
   { icon: ShieldCheck, label: "You own the code", tint: "text-emerald-500" },
   { icon: Timer, label: "Working software in two weeks", tint: "text-sky2" },
 ];
+
+// What the team gets back, cycled through the headline's highlighted phrase
+const gains = ["its week back.", "its evenings back.", "its focus back.", "its Mondays back."];
 
 // Every tool in the stack, for the strip under the hero
 const tools = stackGroups.flatMap((g) => g.items);
@@ -19,6 +23,8 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden pt-28 sm:pt-32 lg:pt-36">
       <div className="clouds pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div className="orb left-[-8%] top-[8%] h-[34vw] w-[34vw] bg-iris/40" aria-hidden="true" />
+      <div className="orb right-[-6%] top-[30%] h-[28vw] w-[28vw] bg-sky2/35" style={{ animationDelay: "-7s" }} aria-hidden="true" />
       <NetworkMap />
 
       <div className="relative mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-12 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)] lg:gap-14">
@@ -29,31 +35,31 @@ export default function Hero() {
             className="fade-up group inline-flex items-center gap-2.5 rounded-full border border-line bg-surface py-1 pl-1 pr-3.5 text-[13px] font-semibold shadow-sm transition-colors hover:border-brand/40"
             style={{ animationDelay: ".05s" }}
           >
-            <span className="bg-grad inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-volt px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0b1020]">
               <Gift className="h-3.5 w-3.5" /> Free
             </span>
             {offer.title}
           </Link>
 
           <h1
-            className="fade-up mt-7 font-display text-[clamp(2.5rem,5.2vw,4.25rem)] font-extrabold leading-[1.04] tracking-[-0.035em]"
+            className="hero-title fade-up mt-7 font-display text-[clamp(2.5rem,5.8vw,5rem)] font-extrabold leading-[.95] tracking-[-0.045em]"
             style={{ animationDelay: ".12s" }}
           >
             <span className="block">AI agents that</span>
             <span className="block">give your team</span>
-            <span className="gradient-text">its week back.</span>
+            <RotatingWords words={gains} className="mark" itemClassName="gradient-text" />
           </h1>
 
-          <p className="fade-up mt-6 max-w-[580px] text-lg leading-relaxed text-ink-2" style={{ animationDelay: ".2s" }}>
+          <p className="fade-up mt-7 max-w-[580px] text-lg leading-relaxed text-ink-2 sm:text-xl" style={{ animationDelay: ".2s" }}>
             {company.tagline}
           </p>
 
           <div className="fade-up mt-8 flex flex-col gap-3 sm:flex-row" style={{ animationDelay: ".28s" }}>
-            <Link to="/book" className="btn btn-primary px-7 py-3.5">
+            <Link to="/book" className="btn btn-primary px-8 py-4 text-base">
               Book a free call <CalendarDays className="h-4 w-4" />
             </Link>
-            <Link to="/projects" className="btn btn-secondary px-7 py-3.5">
-              See our work
+            <Link to="/projects" className="btn btn-secondary px-8 py-4 text-base">
+              See our work <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
