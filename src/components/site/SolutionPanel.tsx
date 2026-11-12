@@ -6,7 +6,7 @@ const HOVER_INTENT_MS = 90; // sweeping the mouse across the row shouldn't open 
 
 /**
  * One photo panel in the Solutions gallery. Collapsed it is a numbered spine; active it opens wide (tall on phones) and
- * tells the story. Hover, keyboard focus or a tap makes it active; clicking the active panel opens the viewer.
+ * tells the story. Hover, keyboard focus or a tap makes it active; clicking the active panel opens the solution's page.
  */
 export default function SolutionPanel({
   solution,
@@ -35,8 +35,7 @@ export default function SolutionPanel({
       }}
       onPointerLeave={() => window.clearTimeout(timer.current)}
     >
-      {/* The viewer's photo morphs out of this frame and back into it */}
-      <div data-solution-photo={solution.id} className="absolute inset-0 overflow-hidden rounded-[inherit]">
+      <div className="absolute inset-0 overflow-hidden rounded-[inherit]">
         {solution.image && <img src={solution.image} alt="" loading="lazy" width={1280} height={800} className="sol-panel-img h-full w-full object-cover" />}
       </div>
       <div className="photo-fade absolute inset-0" />
@@ -72,7 +71,6 @@ export default function SolutionPanel({
       </div>
 
       <button
-        data-solution-trigger={solution.id}
         onClick={() => (active ? onOpen() : onActivate())}
         // keyboard focus opens the panel; a pointer press waits for the click so the first tap on a phone only expands it
         onFocus={(e) => e.currentTarget.matches(":focus-visible") && onActivate()}

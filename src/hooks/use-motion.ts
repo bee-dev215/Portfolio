@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
 
 // ---------- Environment checks ----------
 export const prefersReducedMotion = () =>
@@ -8,31 +7,6 @@ export const prefersReducedMotion = () =>
 /** True on devices with a precise pointer that can hover (mouse / trackpad). */
 export const hasFinePointer = () =>
   typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-
-/** True where the browser can morph between DOM states (View Transitions API). */
-export const supportsViewTransitions = () => typeof document !== "undefined" && "startViewTransition" in document;
-
-let transitionRun = 0;
-
-/**
- * Applies a React state update as a view transition: elements sharing a `view-transition-name` before and after morph
- * into each other and everything else cross-fades. `kind` is set as html[data-vt] for the duration so CSS can pick
- * the animation. Falls back to an instant update without support or under reduced motion.
- */
-export function viewTransition(update: () => void, kind?: string): Promise<void> {
-  if (!supportsViewTransitions() || prefersReducedMotion()) {
-    update();
-    return Promise.resolve();
-  }
-  const run = ++transitionRun;
-  const html = document.documentElement;
-  if (kind) html.dataset.vt = kind;
-  else delete html.dataset.vt;
-  const done = () => {
-    if (run === transitionRun) delete html.dataset.vt;
-  };
-  return document.startViewTransition(() => flushSync(update)).finished.then(done, done);
-}
 
 // ---------- Hooks ----------
 

@@ -1,12 +1,11 @@
 /* Role tabs: the gradient underline grows in under the chosen role */
 .outcome-tab-bar { transform-origin: center; transition: transform .35s var(--ease); }
 
-/* The heading and each moment of the week rise in, one after another, when the role changes */
-.outcome-swap, ol.outcome-swap > li { animation: outcome-in .45s var(--ease) both; }
-ol.outcome-swap { animation: none; }
+/* When the role changes, the heading and both panels rise in, then each moment of the week one after another */
+.outcome-swap, .outcome-panel, .outcome-moment { animation: outcome-in .45s var(--ease) both; }
 @keyframes outcome-in { from { opacity: 0; transform: translateY(8px); } }
 
 @media (prefers-reduced-motion: reduce) {
   .outcome-tab-bar { transition: none; }
-  .outcome-swap, ol.outcome-swap > li { animation: none; }
+  .outcome-swap, .outcome-panel, .outcome-moment { animation: none; }
 }

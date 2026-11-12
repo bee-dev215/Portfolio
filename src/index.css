@@ -528,10 +528,6 @@ a.card-hover:active, button.card-hover:active { scale: .985; }
 .marquee-host:hover .marquee { animation-play-state: paused; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
-/* Modal */
-.modal-in { animation: modal-in .35s var(--ease) both; }
-@keyframes modal-in { from { opacity: 0; transform: translateY(16px) scale(.98); } }
-
 /* Process: stacking cards. Each card shrinks and fades back as the next slides over it (--cover from useCardStack) */
 .stack-inner {
   transform: translateY(calc(var(--cover, 0) * -6px)) scale(calc(1 - var(--cover, 0) * .07)); transform-origin: 50% 0;
@@ -636,24 +632,6 @@ a.card-hover:active, button.card-hover:active { scale: .985; }
   .metro-loop-tag { position: absolute; left: 50%; bottom: 0; translate: -50% 50%; white-space: nowrap; }
 }
 
-/* Viewer: the open photo breathes slowly */
-.kenburns { animation: kenburns 14s ease-in-out infinite alternate; }
-@keyframes kenburns { from { transform: none; } to { transform: scale(1.12) translate(-1.5%, -1%); } }
-.viewer-rise > * { opacity: 0; transform: translateY(14px); animation: fadeup .6s var(--ease) forwards; animation-delay: calc(var(--d, 0ms) + var(--i, 0) * 70ms); }
-
-/* Viewer transitions (View Transitions API, see viewTransition in use-motion). Opening and closing morph the panel photo
-   into the viewer photo; next/prev wipe the new photo in over the old one as it recedes. The pseudo-elements live on
-   <html>, outside .site-root, so they spell out the easing instead of using var(--ease) */
-::view-transition-group(solution-photo) { animation-duration: .7s; animation-timing-function: cubic-bezier(.22, .61, .36, 1); }
-::view-transition-old(solution-photo), ::view-transition-new(solution-photo) { height: 100%; object-fit: cover; overflow: clip; }
-html[data-vt]::view-transition-old(root), html[data-vt]::view-transition-new(root) { animation-duration: .45s; }
-html[data-vt="next"]::view-transition-new(solution-photo) { mix-blend-mode: normal; animation: vt-wipe-next .8s cubic-bezier(.65, 0, .35, 1) both; }
-html[data-vt="prev"]::view-transition-new(solution-photo) { mix-blend-mode: normal; animation: vt-wipe-prev .8s cubic-bezier(.65, 0, .35, 1) both; }
-html[data-vt="next"]::view-transition-old(solution-photo), html[data-vt="prev"]::view-transition-old(solution-photo) { mix-blend-mode: normal; animation: vt-recede .8s cubic-bezier(.22, .61, .36, 1) both; }
-@keyframes vt-wipe-next { from { clip-path: inset(0 0 0 100%); transform: scale(1.08); } to { clip-path: inset(0); transform: none; } }
-@keyframes vt-wipe-prev { from { clip-path: inset(0 100% 0 0); transform: scale(1.08); } to { clip-path: inset(0); transform: none; } }
-@keyframes vt-recede { to { transform: scale(.92); filter: brightness(.5); } }
-
 /* ============================================================
    ENERGY LAYER — the bolder, more active pieces
    ============================================================ */
@@ -750,8 +728,7 @@ html[data-theme="dark"] .site-root, .on-dark { --mark-a: .8; }
   .scroll-line { display: none; }
   .card-hover, .btn { transition: none; }
   .sheen::after { display: none; }
-  .marquee, .live-dot::after, .typing > i, .msg-in, .modal-in, .kenburns, .mega-in, .mega-swap { animation: none; }
-  .viewer-rise > * { opacity: 1; transform: none; animation: none; }
+  .marquee, .live-dot::after, .typing > i, .msg-in, .mega-in, .mega-swap { animation: none; }
   .site-root :is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up, .lucide-arrow-down, .lucide-arrow-up-right, .lucide-chevron-right, .lucide-chevron-left, .lucide-send) { translate: none; }
   .btn:active:not(:disabled), a.card-hover:active, button.card-hover:active, .scroll-top, .scroll-top.is-shown:active { scale: none; translate: none; }
   .eyebrow.landed { animation: landed-glow 1.8s linear both; }

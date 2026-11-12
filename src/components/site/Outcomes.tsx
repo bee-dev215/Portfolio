@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowDown, ArrowRight, BookOpen, Check, Gift, Headset, Hourglass, LucideIcon, Receipt, Rocket, Sparkles } from "lucide-react";
+import { BookOpen, Check, Gift, Headset, Hourglass, LucideIcon, Receipt, Rocket, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { bookCall, offer, servicePath, services, type ServiceKey, solutionPath, solutions } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
@@ -130,7 +130,7 @@ export default function Outcomes() {
 
         {/* Roles, as underlined tabs */}
         <Reveal delay={80}>
-          <div className="-mx-5 mt-12 overflow-x-auto px-5 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
+          <div className="-mx-5 mt-12 overflow-x-auto px-5 pt-1 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
             <div className="flex w-max min-w-full gap-7 border-b border-line" role="group" aria-label="Choose a role">
               {roles.map((r) => {
                 const RIcon = r.icon;
@@ -140,7 +140,7 @@ export default function Outcomes() {
                     key={r.key}
                     onClick={() => setRoleKey(r.key)}
                     aria-pressed={on}
-                    className={`relative flex shrink-0 items-center gap-2 whitespace-nowrap pb-3.5 text-[15px] font-semibold transition-colors ${on ? "text-ink" : "text-subtle hover:text-ink"}`}
+                    className={`relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-md pb-3.5 focus-visible:outline-offset-[-2px] text-[15px] font-semibold transition-colors ${on ? "text-ink" : "text-subtle hover:text-ink"}`}
                   >
                     <RIcon className={`h-4 w-4 ${on ? "text-brand-text" : ""}`} /> {r.label}
                     <span className={`outcome-tab-bar bg-grad absolute inset-x-0 -bottom-px h-[3px] rounded-full ${on ? "scale-x-100" : "scale-x-0"}`} aria-hidden="true" />
@@ -173,48 +173,46 @@ export default function Outcomes() {
               </div>
             </div>
 
-            {/* The week, before and after, moment by moment */}
-            <div className="mt-8 hidden grid-cols-[8.5rem_1fr_2.5rem_1fr] items-center gap-x-4 pb-3 md:grid" aria-hidden="true">
-              <span />
-              <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-subtle">
-                <Hourglass className="h-4 w-4" /> Before
-              </span>
-              <span />
-              <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand-text">
-                <Sparkles className="h-4 w-4" /> With AI doing the busywork
-              </span>
+            {/* The week, before and after, as two panels side by side */}
+            <div className="mt-8 grid gap-4 md:grid-cols-2">
+              <div className="outcome-panel relative overflow-hidden rounded-3xl bg-[#0b1020] p-7 text-white ring-1 ring-white/10 sm:p-9">
+                <div className="dot-grid pointer-events-none absolute inset-0 opacity-[.07]" aria-hidden="true" />
+                <p className="relative flex items-center gap-2 text-xs font-bold uppercase tracking-[.16em] text-white/55">
+                  <Hourglass className="h-4 w-4" /> Before
+                </p>
+                <ol className="relative mt-6 divide-y divide-white/10">
+                  {role.before.map((m, i) => (
+                    <li key={m.when} className="outcome-moment py-5 first:pt-0 last:pb-0" style={{ animationDelay: `${i * 70}ms` }}>
+                      <p className="text-[11px] font-bold uppercase tracking-[.16em] text-white/40">{m.when}</p>
+                      <p className="mt-1.5 text-[16px] leading-relaxed text-white/70 sm:text-[17px]">{m.text}</p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              {/* The rise-in sits on a wrapper: the panel's own animation is the flowing gradient */}
+              <div className="outcome-panel" style={{ animationDelay: "90ms" }}>
+                <div className="cta-flow relative h-full overflow-hidden rounded-3xl p-7 text-white shadow-[0_30px_60px_-24px_rgb(var(--iris-rgb)/.6)] sm:p-9">
+                  <div className="foot-cta-glow pointer-events-none absolute inset-0" aria-hidden="true" />
+                  <p className="relative flex items-center gap-2 text-xs font-bold uppercase tracking-[.16em] text-white/85">
+                    <Sparkles className="h-4 w-4" /> With AI doing the busywork
+                  </p>
+                  <ol className="relative mt-6 divide-y divide-white/20">
+                    {role.after.map((m, i) => (
+                      <li key={m.when} className="outcome-moment flex gap-3.5 py-5 first:pt-0 last:pb-0" style={{ animationDelay: `${160 + i * 70}ms` }}>
+                        <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-brand" aria-hidden="true">
+                          <Check className="h-4 w-4" strokeWidth={3} />
+                        </span>
+                        <div>
+                          <p className="text-[11px] font-bold uppercase tracking-[.16em] text-white/70">{m.when}</p>
+                          <p className="mt-1.5 text-[16px] font-medium leading-relaxed sm:text-[17px]">{m.text}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
             </div>
-            <ol className="outcome-swap mt-6 border-b border-line md:mt-0">
-              {role.before.map((b, i) => {
-                const a = role.after[i];
-                return (
-                  <li
-                    key={b.when}
-                    className="grid gap-3 border-t border-line py-6 md:grid-cols-[8.5rem_1fr_2.5rem_1fr] md:items-center md:gap-x-4"
-                    style={{ animationDelay: `${i * 70}ms` }}
-                  >
-                    <p className="font-display text-sm font-bold uppercase tracking-[.12em] text-ink">{b.when}</p>
-                    <p className="leading-relaxed text-ink-2">
-                      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-subtle md:hidden">Before</span>
-                      {b.text}
-                    </p>
-                    <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-soft text-brand-text" aria-hidden="true">
-                      <ArrowDown className="h-4 w-4 md:hidden" />
-                      <ArrowRight className="hidden h-4 w-4 md:block" />
-                    </span>
-                    <div className="flex gap-3 rounded-2xl border border-brand/20 bg-surface p-4 shadow-[var(--shadow-card)]">
-                      <span className="icon-tile mt-0.5 h-7 w-7 shrink-0 rounded-full" aria-hidden="true">
-                        <Check className="h-3.5 w-3.5" />
-                      </span>
-                      <p className="leading-relaxed text-ink">
-                        <span className="sr-only">After: </span>
-                        {a.text}
-                      </p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
             <p className="mt-3 text-xs text-subtle">Illustrative scenarios, not measured results.</p>
           </div>
         </Reveal>
