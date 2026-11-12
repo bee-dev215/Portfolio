@@ -1,9 +1,8 @@
-import { CSSProperties } from "react";
-import { ArrowRight, CalendarDays, Gift, GitBranch, LockKeyhole, ShieldCheck, Timer, UserCheck } from "lucide-react";
+import { ArrowRight, CalendarDays, Gift, GitBranch, ShieldCheck, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { company, offer, servicePath, services, stackGroups } from "@/data/company";
 import { serviceIcons } from "./icons";
-import AgentConsole from "./AgentConsole";
+import AgentOrbit from "./AgentOrbit";
 import NetworkMap from "./NetworkMap";
 import RotatingWords from "./RotatingWords";
 
@@ -91,36 +90,9 @@ export default function Hero() {
           </nav>
         </div>
 
-        {/* the agent at work */}
+        {/* the agent and the tools it works in */}
         <div className="fade-up relative" style={{ animationDelay: ".24s" }}>
-          <div className="bg-grad pointer-events-none absolute -inset-8 -z-10 rounded-[48px] opacity-25 blur-3xl" aria-hidden="true" />
-          <div className="glow-ring rounded-[29.5px] p-[1.5px]">
-            <AgentConsole />
-          </div>
-
-          {/* Floating proof points, on wide screens */}
-          <div className="float-y glass shadow-soft absolute -left-10 -top-11 hidden items-center gap-2.5 rounded-2xl border border-line px-3.5 py-2.5 xl:flex" aria-hidden="true">
-            <span className="grid h-8 w-8 place-items-center rounded-xl bg-sun/15 text-sun">
-              <UserCheck className="h-4 w-4" />
-            </span>
-            <span className="leading-tight">
-              <span className="block text-[12px] font-bold">Human in the loop</span>
-              <span className="block text-[11px] text-subtle">You approve what matters</span>
-            </span>
-          </div>
-          <div
-            className="float-y glass shadow-soft absolute -bottom-11 -right-8 hidden items-center gap-2.5 rounded-2xl border border-line px-3.5 py-2.5 xl:flex"
-            style={{ "--float-delay": "-3s" } as CSSProperties}
-            aria-hidden="true"
-          >
-            <span className="grid h-8 w-8 place-items-center rounded-xl bg-emerald-500/15 text-emerald-500">
-              <LockKeyhole className="h-4 w-4" />
-            </span>
-            <span className="leading-tight">
-              <span className="block text-[12px] font-bold">Runs in your cloud</span>
-              <span className="block text-[11px] text-subtle">Never trains on your data</span>
-            </span>
-          </div>
+          <AgentOrbit />
         </div>
       </div>
 

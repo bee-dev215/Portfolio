@@ -266,20 +266,15 @@ html[data-theme="dark"] .site-root, .on-dark {
 }
 .net-map canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 @keyframes net-in { from { opacity: 0; } }
-/* Animated gradient ring: a band of brand light runs slowly around the element's edge. Put it on a wrapper with 1px of
-   padding around a rounded card (the ring shows in that padding) */
-@property --spin { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
-.glow-ring { position: relative; isolation: isolate; }
-.glow-ring::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; padding: 1.5px;
-  background: conic-gradient(from var(--spin), rgb(var(--brand-rgb) / .15) 0 50%, rgb(var(--sky-rgb)) 66%, rgb(var(--iris-rgb)) 76%, rgb(var(--brand-rgb) / .15) 90%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
-  animation: spin-ring 7s linear infinite;
-}
-@keyframes spin-ring { to { --spin: 360deg; } }
-/* Gentle bob for floating badges (set --float-delay to stagger them) */
-.float-y { animation: float-y 6s ease-in-out var(--float-delay, 0s) infinite; }
-@keyframes float-y { 50% { transform: translateY(-8px); } }
+/* Home hero agent orbit (AgentOrbit.tsx): the rings turn slowly, a packet runs out along the lit spoke and two soft
+   pulses ripple off the core */
+.orbit-spin { transform-box: view-box; transform-origin: center; animation: orbit-spin 80s linear infinite; }
+.orbit-spin-rev { animation-direction: reverse; animation-duration: 120s; }
+@keyframes orbit-spin { to { transform: rotate(360deg); } }
+.orbit-packet { stroke-dasharray: 8 92; animation: orbit-packet 1.3s var(--ease) infinite; }
+@keyframes orbit-packet { from { stroke-dashoffset: 8; } to { stroke-dashoffset: -100; } }
+.orbit-pulse { opacity: 0; animation: orbit-pulse 3.2s var(--ease-out) infinite; }
+@keyframes orbit-pulse { from { transform: scale(1); opacity: .45; } to { transform: scale(1.75); opacity: 0; } }
 
 /* ---------- Brand ---------- */
 /* The gradient only paints inside the box, so pad it past the glyphs (descenders, overhangs) and cancel the padding with
@@ -757,7 +752,8 @@ html[data-theme="dark"] .site-root, .on-dark { --mark-a: .8; }
 .stat-ghost::before { content: attr(data-ghost); position: absolute; inset: 0; color: transparent; -webkit-text-stroke: 1px rgb(var(--iris-rgb) / .35); translate: 6px 6px; pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-bg::before, .clouds::before, .clouds::after, .gradient-text, .net-map, .glow-ring::before, .float-y { animation: none; }
+  .site-bg::before, .clouds::before, .clouds::after, .gradient-text, .net-map, .orbit-spin, .orbit-pulse { animation: none; }
+  .orbit-packet { animation: none; stroke-dasharray: none; opacity: .5; }
   .btn-primary::after { display: none; }
   .rv, .fade-up, .stagger > *, .word { opacity: 1; transform: none; filter: none; transition: none; animation: none !important; }
   .unveil { clip-path: none; transition: none; }
