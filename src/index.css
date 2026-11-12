@@ -680,13 +680,23 @@ html[data-theme="dark"] .site-root, .on-dark { --mark-a: .8; }
 .rotator > .is-after { transform: translateY(105%); opacity: 0; }
 
 /* Kinetic band: giant words sliding across the page, alternating solid and outlined, sped up and skewed by scrolling */
-.kinetic { position: relative; overflow: hidden; padding-block: clamp(1.5rem, 4vw, 3rem); }
-.kinetic-row { display: flex; width: max-content; will-change: transform; }
-.kinetic-row > span { display: inline-flex; align-items: center; gap: clamp(1rem, 2.5vw, 2.25rem); padding-right: clamp(1rem, 2.5vw, 2.25rem); white-space: nowrap;
-  font-family: "Bricolage Grotesque", Inter, system-ui, sans-serif; font-weight: 800; font-size: clamp(2.75rem, 8vw, 7.5rem); line-height: 1; letter-spacing: -.04em; text-transform: uppercase; }
-.kinetic-outline { color: transparent; -webkit-text-stroke: 1.5px rgb(var(--ink-rgb) / .55); }
-.kinetic-fill { background: var(--grad-text) 0 center / 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; padding: .1em 0; }
-.kinetic-star { width: .5em; height: .5em; flex: none; color: rgb(var(--volt-rgb)); filter: drop-shadow(0 0 12px rgb(var(--volt-rgb) / .6)); }
+/* Framed by hairlines, with the words fading out at both edges instead of being cut off by the screen */
+.kinetic { position: relative; overflow: hidden; }
+.kinetic:not(.kinetic-tape) { padding-block: clamp(1.1rem, 2.6vw, 2rem); margin-block: clamp(1rem, 3vw, 2.5rem);
+  border-block: 1px solid rgb(var(--ink-rgb) / .08);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
+.kinetic:not(.kinetic-tape)::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(60% 120% at 50% 50%, rgb(var(--brand-rgb) / .05), transparent 70%); }
+.kinetic-row { position: relative; display: flex; width: max-content; will-change: transform; }
+.kinetic-row > span { display: inline-flex; align-items: center; gap: clamp(1.25rem, 3vw, 2.75rem); padding-right: clamp(1.25rem, 3vw, 2.75rem); white-space: nowrap;
+  font-family: "Bricolage Grotesque", Inter, system-ui, sans-serif; font-weight: 800; font-size: clamp(2.5rem, 7vw, 6.5rem); line-height: 1.05; letter-spacing: -.025em; text-transform: uppercase; }
+/* The quiet alternate words: a solid ink "ghost" that fades toward the baseline. Solid, not stroked — a text stroke draws
+   a seam everywhere letters touch and wherever the variable font's own contours overlap inside a glyph */
+.kinetic-outline { color: transparent; padding: .08em .04em; margin-inline: -.04em;
+  background: linear-gradient(180deg, rgb(var(--ink-rgb) / .2), rgb(var(--ink-rgb) / .07)); -webkit-background-clip: text; background-clip: text; }
+.kinetic-fill { background: var(--grad-text) 0 center / 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; padding: .08em .04em; margin-inline: -.04em; }
+.kinetic-star { width: .38em; height: .38em; flex: none; color: rgb(var(--volt-rgb)); filter: drop-shadow(0 0 6px rgb(var(--volt-rgb) / .45)); }
+html:not([data-theme="dark"]) .kinetic:not(.kinetic-tape) .kinetic-star { color: #84cc16; filter: none; } /* a flat, deeper lime reads on the light page; the glow only works on dark */
 /* Tape: a lime strip, tilted across the seam above the footer, in mono caps */
 .kinetic-tape { padding-block: 0; transform: rotate(-1.6deg) scaleX(1.04); background: rgb(var(--volt-rgb)); color: #0b1020; box-shadow: 0 18px 40px -18px rgb(0 0 0 / .45); }
 .kinetic-tape .kinetic-row > span { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: clamp(.95rem, 1.8vw, 1.35rem); font-weight: 700; letter-spacing: .06em; padding-block: .85rem; }
