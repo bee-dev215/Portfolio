@@ -54,26 +54,11 @@ const ALONG = [0.5]; // where each route's particles sit, as a share of the way 
 const EDGE = { x: 0.5, y: 0.46, rx: 0.68, ry: 0.78, from: 0.55, top: [0.04, 0.2] } as const;
 
 type Pt = { x: number; y: number };
-// A route between two hubs, as a quadratic curve bowed like a great-circle path
-type Route = { p0: Pt; c: Pt; p1: Pt; len: number };
-// Data in transit: a packet runs a route (either way) with a comet tail; a ripple marks where it lands
-type Packet = { route: Route; rev: boolean; start: number; dur: number };
-type Ripple = Pt & { start: number; edge: number };
-
-const MAX_PACKETS = 10; // in flight at once
-const TRAIL = 20; // samples in a packet's tail
-const TAIL = 0.18; // tail length, as a share of the route
-const RIPPLE_MS = 1000;
 // A light at a fixed spot: its edge fade, and the period (ms per radian) and phase of its blink
 type Light = Pt & { edge: number; period: number; phase: number };
 
 const rgba = (c: string, a: number) => `rgb(${c} / ${a})`;
 const wave = (t: number) => 0.5 + 0.5 * Math.sin(t); // 0…1
-const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
-const onCurve = ({ p0, c, p1 }: Route, t: number): Pt => {
-  const u = 1 - t;
-  return { x: u * u * p0.x + 2 * u * t * c.x + t * t * p1.x, y: u * u * p0.y + 2 * u * t * c.y + t * t * p1.y };
-};
 
 /** Brand colours as RGB channels, read from the site tokens so the map follows the light/dark theme. */
 const palette = (el: Element) => {
@@ -90,9 +75,8 @@ const palette = (el: Element) => {
 };
 
 /**
- * Hero backdrop: a dotted world map with a global network on it. The hubs breathe gently, particles along the routes
- * blink on their own beat, and data packets travel hub to hub with a glowing tail, lighting their route as they go and
- * rippling where they land. Pauses off screen; under reduced motion it draws the map once and stays still.
+ * Hero backdrop: a dotted world map with a global network on it. The hubs breathe gently and particles along the routes
+ * blink on their own beat. Pauses off screen; under reduced motion it draws the map once and stays still.
  */
 export default function NetworkMap() {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -111,10 +95,6 @@ export default function NetworkMap() {
     let w = 0, h = 0, dpr = 1, mapW = 0, cell = 0, x0 = 0, y0 = 0;
     let hubs: Light[] = [];
     let particles: Light[] = [];
-    let routes: Route[] = [];
-    let packets: Packet[] = [];
-    let ripples: Ripple[] = [];
-    let nextSpawn = 0;
     let now = 0; // own clock, so a paused map picks up where it left off
 
     const project = (lon: number, lat: number): Pt => ({
@@ -163,14 +143,8 @@ export default function NetworkMap() {
         const dx = p1.x - p0.x, dy = p1.y - p0.y;
         const sign = dx < 0 ? -1 : 1;
         const c = { x: (p0.x + p1.x) / 2 + sign * dy * 0.22, y: (p0.y + p1.y) / 2 - sign * dx * 0.22 };
-        return { p0, c, p1, len: Math.hypot(dx, dy) };
+        return { p0, c, p1 };
       });
-
-      // Packets run only the routes that stay on screen end to end (not those wrapping round the map's edge)
-      const inside = (pt: Pt) => pt.x > 8 && pt.x < w - 8 && fade(pt.x, pt.y) > 0.15;
-      routes = arcs.filter((r) => inside(r.p0) && inside(r.p1));
-      packets = [];
-      ripples = [];
 
       particles = arcs.flatMap(({ p0, c, p1 }) => {
         const shifts = p1.x > x0 + mapW ? [0, -mapW] : p1.x < x0 ? [0, mapW] : [0];
@@ -254,53 +228,6 @@ export default function NetworkMap() {
         dot(p.x, p.y, 1.6);
       }
 
-      // Packets: the route lights up faintly while one is on it, then a fading comet tail and a bright head
-      for (const pk of packets) {
-        const life = Math.min(1, (now - pk.start) / pk.dur);
-        const t = easeInOut(life);
-        const at = (u: number) => onCurve(pk.route, pk.rev ? 1 - u : u);
-        const head = at(t);
-        const edge = fade(head.x, head.y);
-        const show = Math.sin(Math.PI * life); // in and out over the trip
-
-        ctx.globalAlpha = 0.16 * show * edge;
-        ctx.strokeStyle = rgba(pal.line, 1);
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        for (let k = 0; k <= 36; k++) {
-          const q = onCurve(pk.route, k / 36);
-          if (k) ctx.lineTo(q.x, q.y);
-          else ctx.moveTo(q.x, q.y);
-        }
-        ctx.stroke();
-
-        ctx.fillStyle = rgba(pal.glow, 1);
-        for (let k = TRAIL; k >= 1; k--) {
-          const u = t - (k / TRAIL) * TAIL;
-          if (u < 0) continue;
-          const q = at(u);
-          const f = 1 - k / TRAIL;
-          ctx.globalAlpha = f * f * 0.85 * fade(q.x, q.y) * Math.min(1, show * 3);
-          dot(q.x, q.y, 0.5 + 1.7 * f);
-        }
-        ctx.globalAlpha = 0.4 * edge * Math.min(1, show * 3);
-        dot(head.x, head.y, 7);
-        ctx.fillStyle = rgba(pal.head, 1);
-        ctx.globalAlpha = edge * Math.min(1, show * 3);
-        dot(head.x, head.y, 2.4);
-      }
-
-      // Ripples where packets land
-      ctx.strokeStyle = rgba(pal.glow, 1);
-      ctx.lineWidth = 1.5;
-      for (const r of ripples) {
-        const k = (now - r.start) / RIPPLE_MS;
-        ctx.globalAlpha = (1 - k) ** 1.5 * 0.75 * r.edge;
-        ctx.beginPath();
-        ctx.arc(r.x, r.y, 3 + k * 18, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-
       // Hubs breathe gently, each on its own beat
       ctx.fillStyle = rgba(pal.glow, 1);
       for (const hub of hubs) {
@@ -320,26 +247,10 @@ export default function NetworkMap() {
     let raf = 0;
     let last = 0;
     let running = false;
-    // Lands finished packets (leaving a ripple), clears spent ripples and launches new packets at a steady trickle
-    const advance = () => {
-      packets = packets.filter((pk) => {
-        if (now - pk.start < pk.dur) return true;
-        const end = pk.rev ? pk.route.p0 : pk.route.p1;
-        ripples.push({ ...end, start: now, edge: fade(end.x, end.y) });
-        return false;
-      });
-      ripples = ripples.filter((r) => now - r.start < RIPPLE_MS);
-      if (routes.length && packets.length < MAX_PACKETS && now >= nextSpawn) {
-        const route = routes[Math.floor(Math.random() * routes.length)];
-        packets.push({ route, rev: Math.random() < 0.5, start: now, dur: Math.min(3800, Math.max(1600, route.len * 6)) });
-        nextSpawn = now + 200 + Math.random() * 450;
-      }
-    };
 
     const frame = (t: number) => {
       now += Math.min(t - (last || t), 64);
       last = t;
-      advance();
       paintLive();
       raf = requestAnimationFrame(frame);
     };
