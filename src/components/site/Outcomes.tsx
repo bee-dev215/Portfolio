@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { BookOpen, Check, Gift, Headset, Hourglass, LucideIcon, Receipt, Rocket } from "lucide-react";
+import { ArrowDown, ArrowRight, BookOpen, Check, Gift, Headset, Hourglass, LucideIcon, Receipt, Rocket, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { bookCall, offer, servicePath, services, type ServiceKey, solutionPath, solutions } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
 import "./Outcomes.css";
-
-type Mode = "before" | "after";
 
 interface Moment {
   when: string;
@@ -16,7 +14,7 @@ interface Role {
   key: string;
   label: string;
   icon: LucideIcon;
-  week: string; // the card's heading
+  week: string; // the comparison's heading
   intro: string;
   links: { label: string; to: string }[]; // the solutions and services that fix it
   before: Moment[];
@@ -108,13 +106,10 @@ const roles: Role[] = [
   },
 ];
 
-/** Home-page "busywork" section: a role's week before and after, then the free-prototype offer and a call to book. */
+/** Home-page "busywork" section: a role's week, before and after side by side, then the free-prototype offer and a call to book. */
 export default function Outcomes() {
   const [roleKey, setRoleKey] = useState(roles[0].key);
-  const [mode, setMode] = useState<Mode>("before");
   const role = roles.find((r) => r.key === roleKey) ?? roles[0];
-  const Icon = role.icon;
-  const after = mode === "after";
 
   return (
     <section id="busywork" className="relative overflow-hidden px-5 py-24 sm:px-8 lg:py-32">
@@ -129,115 +124,98 @@ export default function Outcomes() {
           }
         >
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-            Every team has a task like this — the re-typing, chasing and copy-paste that quietly fills the week. Pick a role, then switch between before and after.
+            Every team has a task like this — the re-typing, chasing and copy-paste that quietly fills the week. Pick a role to see the same week before and after.
           </p>
         </SectionHeading>
 
+        {/* Roles, as underlined tabs */}
         <Reveal delay={80}>
-          <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="-mx-5 overflow-x-auto px-5 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
-              <div className="flex w-max gap-1 rounded-full border border-line bg-surface p-1" role="group" aria-label="Choose a role">
-                {roles.map((r) => {
-                  const RIcon = r.icon;
-                  const on = r.key === roleKey;
-                  return (
-                    <button
-                      key={r.key}
-                      onClick={() => setRoleKey(r.key)}
-                      aria-pressed={on}
-                      className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 ${
-                        on ? "bg-grad text-white shadow-[0_8px_18px_-10px_rgb(var(--brand-rgb)/.8)]" : "text-ink-2 hover:text-ink"
-                      }`}
-                    >
-                      <RIcon className="h-4 w-4" /> {r.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Before / after switch */}
-            <div className="relative grid w-full shrink-0 grid-cols-2 rounded-full border border-line bg-raised p-1 sm:w-auto" role="group" aria-label="Show the week before or after">
-              <span
-                className={`outcome-thumb absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full shadow-sm ${after ? "translate-x-full bg-grad" : "bg-surface"}`}
-                aria-hidden="true"
-              />
-              {(["before", "after"] as Mode[]).map((m) => (
-                <button
-                  key={m}
-                  onClick={() => setMode(m)}
-                  aria-pressed={mode === m}
-                  className={`relative z-10 px-6 py-2 text-sm font-semibold capitalize transition-colors ${mode === m ? (m === "after" ? "text-white" : "text-ink") : "text-subtle hover:text-ink"}`}
-                >
-                  {m}
-                </button>
-              ))}
+          <div className="-mx-5 mt-12 overflow-x-auto px-5 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
+            <div className="flex w-max min-w-full gap-7 border-b border-line" role="group" aria-label="Choose a role">
+              {roles.map((r) => {
+                const RIcon = r.icon;
+                const on = r.key === roleKey;
+                return (
+                  <button
+                    key={r.key}
+                    onClick={() => setRoleKey(r.key)}
+                    aria-pressed={on}
+                    className={`relative flex shrink-0 items-center gap-2 whitespace-nowrap pb-3.5 text-[15px] font-semibold transition-colors ${on ? "text-ink" : "text-subtle hover:text-ink"}`}
+                  >
+                    <RIcon className={`h-4 w-4 ${on ? "text-brand-text" : ""}`} /> {r.label}
+                    <span className={`outcome-tab-bar bg-grad absolute inset-x-0 -bottom-px h-[3px] rounded-full ${on ? "scale-x-100" : "scale-x-0"}`} aria-hidden="true" />
+                  </button>
+                );
+              })}
             </div>
           </div>
         </Reveal>
 
-        <Reveal delay={120} className="mt-6">
-          <div className={`card overflow-hidden rounded-3xl transition-colors duration-500 ${after ? "grad-border" : ""}`}>
-            <div className="grid lg:grid-cols-[0.8fr_1.2fr]">
-              {/* Who */}
-              <div className="relative overflow-hidden border-b border-line p-7 sm:p-9 lg:border-b-0 lg:border-r">
-                <div className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${after ? "opacity-100" : "opacity-0"}`} aria-hidden="true">
-                  <div className="mesh absolute inset-0" />
-                </div>
-                <div className="relative">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className={`grid h-12 w-12 place-items-center rounded-2xl transition-colors duration-500 ${after ? "icon-tile" : "bg-raised text-ink-2"}`}>
-                      <Icon className="h-6 w-6" />
-                    </span>
-                    <span className="chip text-[11px] uppercase tracking-wider">Illustrative</span>
-                  </div>
-                  <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-subtle">{after ? "With AI doing the busywork" : "Today"}</p>
-                  <h3 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">{role.week}</h3>
-                  <p className="mt-3 leading-relaxed text-ink-2">{role.intro}</p>
-
-                  <div className="mt-8">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-subtle">See how</p>
-                    <ul className="mt-3 flex flex-wrap gap-2">
-                      {role.links.map((l) => (
-                        <li key={l.to}>
-                          <Link
-                            to={l.to}
-                            className="group inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-semibold text-ink transition-colors hover:border-brand/40 hover:text-brand-text"
-                          >
-                            {l.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+        <Reveal delay={120}>
+          <div key={role.key} className="mt-10" aria-live="polite">
+            {/* Whose week, and what fixes it */}
+            <div className="outcome-swap flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+              <div className="max-w-2xl">
+                <h3 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">{role.week}</h3>
+                <p className="mt-2 leading-relaxed text-ink-2">{role.intro}</p>
               </div>
+              <div className="flex shrink-0 flex-wrap items-center gap-2">
+                <span className="mr-1 text-xs font-semibold uppercase tracking-wider text-subtle">See how</span>
+                {role.links.map((l) => (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    className="inline-flex items-center rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-semibold text-ink transition-colors hover:border-brand/40 hover:text-brand-text"
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
 
-              {/* The week */}
-              <ol key={`${role.key}-${mode}`} className="outcome-swap relative space-y-1 p-5 sm:p-7" aria-live="polite">
-                {role[mode].map((m, i) => (
-                  <li key={m.when} className="flex gap-4 rounded-2xl p-3 sm:p-4" style={{ animationDelay: `${i * 70}ms` }}>
-                    <span
-                      className={`mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full ${after ? "bg-brand-soft text-brand-text" : "bg-raised text-subtle"}`}
-                      aria-hidden="true"
-                    >
-                      {after ? <Check className="h-4 w-4" /> : <Hourglass className="h-4 w-4" />}
+            {/* The week, before and after, moment by moment */}
+            <div className="mt-8 hidden grid-cols-[8.5rem_1fr_2.5rem_1fr] items-center gap-x-4 pb-3 md:grid" aria-hidden="true">
+              <span />
+              <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-subtle">
+                <Hourglass className="h-4 w-4" /> Before
+              </span>
+              <span />
+              <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand-text">
+                <Sparkles className="h-4 w-4" /> With AI doing the busywork
+              </span>
+            </div>
+            <ol className="outcome-swap mt-6 border-b border-line md:mt-0">
+              {role.before.map((b, i) => {
+                const a = role.after[i];
+                return (
+                  <li
+                    key={b.when}
+                    className="grid gap-3 border-t border-line py-6 md:grid-cols-[8.5rem_1fr_2.5rem_1fr] md:items-center md:gap-x-4"
+                    style={{ animationDelay: `${i * 70}ms` }}
+                  >
+                    <p className="font-display text-sm font-bold uppercase tracking-[.12em] text-ink">{b.when}</p>
+                    <p className="leading-relaxed text-ink-2">
+                      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-subtle md:hidden">Before</span>
+                      {b.text}
+                    </p>
+                    <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-soft text-brand-text" aria-hidden="true">
+                      <ArrowDown className="h-4 w-4 md:hidden" />
+                      <ArrowRight className="hidden h-4 w-4 md:block" />
                     </span>
-                    <div>
-                      <p className={`text-xs font-semibold uppercase tracking-wider ${after ? "text-brand-text" : "text-subtle"}`}>{m.when}</p>
-                      <p className={`mt-1 text-[15px] leading-relaxed sm:text-base ${after ? "text-ink" : "text-ink-2"}`}>{m.text}</p>
+                    <div className="flex gap-3 rounded-2xl border border-brand/20 bg-surface p-4 shadow-[var(--shadow-card)]">
+                      <span className="icon-tile mt-0.5 h-7 w-7 shrink-0 rounded-full" aria-hidden="true">
+                        <Check className="h-3.5 w-3.5" />
+                      </span>
+                      <p className="leading-relaxed text-ink">
+                        <span className="sr-only">After: </span>
+                        {a.text}
+                      </p>
                     </div>
                   </li>
-                ))}
-                {!after && (
-                  <li className="px-3 pt-2 sm:px-4">
-                    <button onClick={() => setMode("after")} className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                      See the same week after
-                    </button>
-                  </li>
-                )}
-              </ol>
-            </div>
+                );
+              })}
+            </ol>
+            <p className="mt-3 text-xs text-subtle">Illustrative scenarios, not measured results.</p>
           </div>
         </Reveal>
 
