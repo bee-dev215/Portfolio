@@ -106,14 +106,15 @@ export default function AgentOrbit() {
           </span>
         </div>
 
-        {/* Nodes: the tools the agent works in */}
+        {/* Nodes: the tools the agent works in. The tile itself is centred on the ring point, so the spoke meets its middle;
+            the label hangs below it, out of the layout */}
         {nodes.map((n, i) => {
           const p = at(i, RING);
           const on = i === current;
           return (
             <div
               key={n.key}
-              className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5"
+              className="absolute -translate-x-1/2 -translate-y-1/2"
               style={{ left: `${(p.x / SIZE) * 100}%`, top: `${(p.y / SIZE) * 100}%` }}
               onPointerEnter={(e) => e.pointerType === "mouse" && setHovered(i)}
               onPointerLeave={() => {
@@ -131,7 +132,7 @@ export default function AgentOrbit() {
               >
                 <n.icon className="h-5 w-5 sm:h-6 sm:w-6" />
               </span>
-              <span className={`text-[11px] font-bold uppercase tracking-[.14em] transition-colors sm:text-[12px] ${on ? "text-ink" : "text-subtle"}`}>{n.label}</span>
+              <span className={`absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap text-[11px] font-bold [text-shadow:0_0_4px_rgb(var(--canvas-rgb)),0_0_8px_rgb(var(--canvas-rgb))] uppercase tracking-[.14em] transition-colors sm:text-[12px] ${on ? "text-ink" : "text-subtle"}`}>{n.label}</span>
             </div>
           );
         })}
