@@ -93,6 +93,13 @@ export const dayKey = (d: Date, timeZone: string) => {
   return `${w.y}-${String(w.m + 1).padStart(2, "0")}-${String(w.d).padStart(2, "0")}`;
 };
 
+/** The hour (0–23) an instant falls on in a time zone, for grouping times into morning, afternoon and evening. */
+export const hourIn = (d: Date, timeZone: string) => wallClock(d.getTime(), timeZone).h;
+
+/** "9:30 – 10:00 AM MST": a call's start and end. */
+export const rangeLabel = (d: Date, minutes: number, timeZone: string) =>
+  `${timeLabel(d, timeZone)} – ${timeLabel(new Date(d.getTime() + minutes * MINUTE), timeZone)} ${zoneName(timeZone, d)}`;
+
 /** "9:30 AM" */
 export const timeLabel = (d: Date, timeZone: string) => fmt(timeZone, { hour: "numeric", minute: "2-digit" }).format(d);
 

@@ -761,3 +761,74 @@ html:not([data-theme="dark"]) .kinetic:not(.kinetic-tape) .kinetic-star { color:
   .sol-panel, .sol-panel-img, .sol-panel-tint, .sol-panel-spine, .sol-panel-body > * { clip-path: none; transition: none; }
 }
 
+
+/* ---------- Call booking (/book) ---------- */
+/* Left column: a faint brand wash that fades down into the surface */
+.book-aside { background: linear-gradient(180deg, rgb(var(--brand-soft-rgb) / .55), rgb(var(--raised-rgb) / .35) 55%, rgb(var(--raised-rgb) / .2)); }
+/* Kind-of-call cards: lift on hover, a gradient edge when chosen */
+.book-type { position: relative; transition: border-color .25s var(--ease), background-color .25s var(--ease), box-shadow .3s var(--ease), translate .3s var(--ease-out); }
+.book-type.is-on { box-shadow: 0 14px 30px -18px rgb(var(--brand-rgb) / .55), inset 0 0 0 1px rgb(var(--brand-rgb) / .15); }
+.book-type.is-on::before { content: ""; position: absolute; left: -1px; top: 18%; bottom: 18%; width: 3px; border-radius: 0 3px 3px 0; background: var(--grad); }
+@media (hover: hover) and (pointer: fine) { .book-type:not(.is-on):hover { translate: 0 -2px; box-shadow: 0 10px 22px -16px rgb(var(--shadow-rgb) / calc(.4 * var(--shadow-k))); } }
+.book-type:has(:focus-visible) { outline: 2px solid rgb(var(--brand-rgb)); outline-offset: 3px; }
+.book-offer::after { content: ""; position: absolute; right: -30px; top: -30px; width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, rgb(var(--sun-rgb) / .25), transparent 70%); pointer-events: none; }
+
+/* The "soonest time" shortcut */
+.soonest {
+  display: inline-flex; align-items: center; gap: .5rem; border-radius: 9999px; padding: .25rem .8rem .25rem .25rem;
+  border: 1px solid rgb(var(--brand-rgb) / .25); background: rgb(var(--brand-soft-rgb) / .6); color: rgb(var(--ink-2-rgb)); font-size: .78rem;
+  transition: border-color .2s, box-shadow .25s var(--ease), translate .25s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) { .soonest:hover { border-color: rgb(var(--brand-rgb) / .55); box-shadow: 0 8px 18px -10px rgb(var(--brand-rgb) / .6); translate: 0 -1px; } }
+
+/* Day strip: no scrollbar, edges fade while more days hide beyond them */
+.day-strip { scrollbar-width: none; overscroll-behavior-x: contain; }
+.day-strip::-webkit-scrollbar { display: none; }
+.day-strip.fade-start { -webkit-mask-image: linear-gradient(90deg, transparent, #000 56px); mask-image: linear-gradient(90deg, transparent, #000 56px); }
+.day-strip.fade-end { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 56px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 56px), transparent); }
+.day-strip.fade-start.fade-end { -webkit-mask-image: linear-gradient(90deg, transparent, #000 56px, #000 calc(100% - 56px), transparent); mask-image: linear-gradient(90deg, transparent, #000 56px, #000 calc(100% - 56px), transparent); }
+.strip-nav {
+  display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9999px; border: 1px solid var(--line); background: rgb(var(--surface-rgb));
+  color: rgb(var(--ink-2-rgb)); transition: border-color .2s, color .2s, opacity .2s, background-color .2s;
+}
+.strip-nav:hover:not(:disabled) { border-color: rgb(var(--brand-rgb) / .5); color: rgb(var(--brand-text-rgb)); background: rgb(var(--brand-soft-rgb) / .6); }
+.strip-nav:disabled { opacity: .35; cursor: default; }
+
+.day-btn { transition: border-color .2s, background-color .2s, color .2s, box-shadow .3s var(--ease), translate .3s var(--ease-out); }
+.day-btn.is-on { background: var(--grad); box-shadow: 0 12px 24px -12px rgb(var(--brand-rgb) / .8), inset 0 1px 0 rgb(255 255 255 / .25); translate: 0 -2px; }
+@media (hover: hover) and (pointer: fine) { .day-btn:not(.is-on):hover { translate: 0 -2px; box-shadow: 0 10px 20px -14px rgb(var(--brand-rgb) / .5); } }
+
+/* Time buttons: drop in one after another, glow on hover, gradient when chosen */
+.slot-btn { transition: border-color .2s, background-color .2s, color .2s, box-shadow .25s var(--ease), translate .25s var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .slot-btn:not(.is-on):hover { border-color: rgb(var(--brand-rgb) / .6); background: rgb(var(--brand-soft-rgb)); color: rgb(var(--brand-text-rgb)); translate: 0 -2px; box-shadow: 0 10px 18px -12px rgb(var(--brand-rgb) / .6); }
+}
+.slot-btn.is-on { background: var(--grad); box-shadow: 0 10px 22px -10px rgb(var(--brand-rgb) / .75), inset 0 1px 0 rgb(255 255 255 / .25); }
+.slot-btn:active { scale: .97; }
+.slot-in { animation: slot-in .4s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 22ms); }
+@keyframes slot-in { from { opacity: 0; translate: 0 8px; } }
+
+/* The chosen-time bar */
+.book-bar { animation: book-bar .45s var(--ease-out) both; }
+@keyframes book-bar { from { opacity: 0; translate: 0 14px; scale: .98; } }
+.date-leaf { box-shadow: 0 10px 20px -10px rgb(var(--brand-rgb) / .75), inset 0 1px 0 rgb(255 255 255 / .25); }
+
+/* Confirmation: the tick pops in under a burst of confetti */
+.pop-in { animation: pop-in .6s cubic-bezier(.34, 1.56, .64, 1) both; }
+.pop-in::after { content: ""; position: absolute; inset: 0; border-radius: inherit; border: 2px solid rgb(var(--brand-rgb) / .5); animation: pop-ring 1.4s var(--ease-out) .2s both; }
+@keyframes pop-in { from { scale: 0; rotate: -25deg; } }
+@keyframes pop-ring { from { opacity: 1; scale: 1; } to { opacity: 0; scale: 1.9; } }
+.confetti { position: absolute; left: 50%; top: 50%; pointer-events: none; }
+.confetti > i { position: absolute; left: -3px; top: -5px; width: 7px; height: 11px; border-radius: 2px; opacity: 0; animation: confetti 1.4s var(--ease-out) var(--d) both; }
+.confetti > i:nth-child(3n) { width: 8px; height: 8px; border-radius: 50%; }
+@keyframes confetti {
+  0% { opacity: 1; transform: translate(0, 0) scale(.3) rotate(0); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--x), calc(var(--y) + 50px)) scale(1) rotate(var(--r)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot-in, .book-bar, .pop-in, .pop-in::after { animation: none; }
+  .confetti { display: none; }
+  .day-btn, .slot-btn, .book-type, .soonest { transition: none; translate: none !important; }
+}
