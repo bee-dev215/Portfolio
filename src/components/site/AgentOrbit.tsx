@@ -29,6 +29,25 @@ const STEP_MS = 2600;
 const angle = (i: number) => ((i * 360) / nodes.length) * (Math.PI / 180); // 0 = right, so no node sits top or bottom centre
 const at = (i: number, r: number) => ({ x: C + r * Math.cos(angle(i)), y: C + r * Math.sin(angle(i)) });
 
+/** A dot riding a ring: soft halo, bright head and a fading trail. `from` is the head's angle in degrees,
+    `dir` the side the trail falls on (opposite the ring's direction of travel). */
+function Satellite({ r, from, dir, className }: { r: number; from: number; dir: 1 | -1; className: string }) {
+  const pt = (deg: number) => ({ x: C + r * Math.cos((deg * Math.PI) / 180), y: C + r * Math.sin((deg * Math.PI) / 180) });
+  const head = pt(from);
+  return (
+    <g className={className}>
+      {[5, 4, 3, 2, 1].map((k) => {
+        const p = pt(from + dir * k * 2.6);
+        return <circle key={k} cx={p.x} cy={p.y} r={4.5 - k * 0.6} opacity={0.75 - k * 0.13} />;
+      })}
+      <circle cx={head.x} cy={head.y} r="14" opacity=".18" />
+      <circle cx={head.x} cy={head.y} r="9" opacity=".35" />
+      <circle cx={head.x} cy={head.y} r="5.5" />
+      <circle cx={head.x} cy={head.y} r="2" fill="white" />
+    </g>
+  );
+}
+
 /** Hero visual: the agent at the centre, wired to the tools it works in; one connection lights up at a time. */
 export default function AgentOrbit() {
   const [active, setActive] = useState(0);
@@ -58,14 +77,14 @@ export default function AgentOrbit() {
           </defs>
           <circle cx={C} cy={C} r={RING * 0.9} fill="url(#orbit-glow)" />
 
-          {/* Rings: the outer one carries the nodes, both turn slowly with a satellite riding each */}
+          {/* Rings: the outer one carries the nodes, both turn slowly with a glowing satellite (and its fading trail) riding each */}
           <g className="orbit-spin">
-            <circle cx={C} cy={C} r={RING} fill="none" className="stroke-line" strokeWidth="1.5" strokeDasharray="2 7" strokeLinecap="round" />
-            <circle cx={C + RING} cy={C} r="4" className="fill-sky2" />
+            <circle cx={C} cy={C} r={RING} fill="none" className="stroke-sky2/45" strokeWidth="2" strokeDasharray="2 7" strokeLinecap="round" />
+            <Satellite r={RING} from={0} dir={-1} className="fill-sky2" />
           </g>
           <g className="orbit-spin orbit-spin-rev">
-            <circle cx={C} cy={C} r={RING * 0.58} fill="none" className="stroke-line" strokeWidth="1.5" />
-            <circle cx={C} cy={C - RING * 0.58} r="3.5" className="fill-iris" />
+            <circle cx={C} cy={C} r={RING * 0.58} fill="none" className="stroke-iris/40" strokeWidth="1.5" />
+            <Satellite r={RING * 0.58} from={-90} dir={1} className="fill-iris" />
           </g>
 
           {/* Spokes: the active one lights up and carries a packet out to its node */}
