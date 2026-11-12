@@ -218,12 +218,12 @@ export default function NetworkMap() {
       // Particles: a faint glow that swells as each one blinks on, then the dot itself
       ctx.fillStyle = rgba(pal.glow, 1);
       for (const p of particles) {
-        ctx.globalAlpha = p.edge * level(p) ** 2 * 0.14;
-        dot(p.x, p.y, 4);
+        ctx.globalAlpha = p.edge * level(p) ** 2 * 0.2;
+        dot(p.x, p.y, 4.5);
       }
       ctx.fillStyle = rgba(pal.line, 1);
       for (const p of particles) {
-        ctx.globalAlpha = p.edge * (0.1 + 0.4 * level(p));
+        ctx.globalAlpha = p.edge * (0.12 + 0.55 * level(p));
         dot(p.x, p.y, 1.4);
       }
 
@@ -231,12 +231,12 @@ export default function NetworkMap() {
       ctx.fillStyle = rgba(pal.glow, 1);
       for (const hub of hubs) {
         const b = level(hub);
-        ctx.globalAlpha = hub.edge * (0.05 + b * 0.07);
+        ctx.globalAlpha = hub.edge * (0.08 + b * 0.1);
         dot(hub.x, hub.y, 3.5 + b * 1.5);
       }
       ctx.fillStyle = rgba(pal.head, 1);
       for (const hub of hubs) {
-        ctx.globalAlpha = hub.edge * 0.5;
+        ctx.globalAlpha = hub.edge * 0.65;
         dot(hub.x, hub.y, 1.9);
       }
       ctx.globalAlpha = 1;
