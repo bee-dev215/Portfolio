@@ -146,7 +146,8 @@ export default function NetworkMap() {
         return { p0, c, p1 };
       });
 
-      particles = arcs.flatMap(({ p0, c, p1 }) => {
+      // Only every other route carries a particle, so the map doesn't glitter
+      particles = arcs.filter((_, n) => n % 2 === 0).flatMap(({ p0, c, p1 }) => {
         const shifts = p1.x > x0 + mapW ? [0, -mapW] : p1.x < x0 ? [0, mapW] : [0];
         return ALONG.flatMap((t) => {
           const u = 1 - t;
@@ -214,34 +215,31 @@ export default function NetworkMap() {
     const paintLive = () => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
-      ctx.globalCompositeOperation = pal.dark ? "lighter" : "source-over";
-
-      // Particles: a soft glow that swells as each one blinks on, then the dot itself
+      // Particles: a faint glow that swells as each one blinks on, then the dot itself
       ctx.fillStyle = rgba(pal.glow, 1);
       for (const p of particles) {
-        ctx.globalAlpha = p.edge * level(p) ** 2 * 0.35;
-        dot(p.x, p.y, 5);
+        ctx.globalAlpha = p.edge * level(p) ** 2 * 0.14;
+        dot(p.x, p.y, 4);
       }
       ctx.fillStyle = rgba(pal.line, 1);
       for (const p of particles) {
-        ctx.globalAlpha = p.edge * (0.15 + 0.75 * level(p));
-        dot(p.x, p.y, 1.6);
+        ctx.globalAlpha = p.edge * (0.1 + 0.4 * level(p));
+        dot(p.x, p.y, 1.4);
       }
 
       // Hubs breathe gently, each on its own beat
       ctx.fillStyle = rgba(pal.glow, 1);
       for (const hub of hubs) {
         const b = level(hub);
-        ctx.globalAlpha = hub.edge * (0.12 + b * 0.16);
-        dot(hub.x, hub.y, 4 + b * 2);
+        ctx.globalAlpha = hub.edge * (0.05 + b * 0.07);
+        dot(hub.x, hub.y, 3.5 + b * 1.5);
       }
       ctx.fillStyle = rgba(pal.head, 1);
       for (const hub of hubs) {
-        ctx.globalAlpha = hub.edge * 0.85;
-        dot(hub.x, hub.y, 2.1);
+        ctx.globalAlpha = hub.edge * 0.5;
+        dot(hub.x, hub.y, 1.9);
       }
       ctx.globalAlpha = 1;
-      ctx.globalCompositeOperation = "source-over";
     };
 
     let raf = 0;
