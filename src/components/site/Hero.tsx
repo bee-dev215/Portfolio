@@ -1,8 +1,10 @@
-import { CalendarDays, Gift, GitBranch, ShieldCheck, Timer } from "lucide-react";
+import { CSSProperties } from "react";
+import { CalendarDays, Gift, GitBranch, LockKeyhole, ShieldCheck, Timer, UserCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { company, offer, servicePath, services, stackGroups } from "@/data/company";
 import { serviceIcons } from "./icons";
 import AgentConsole from "./AgentConsole";
+import NetworkMap from "./NetworkMap";
 
 const badges = [
   { icon: GitBranch, label: "Senior engineers only", tint: "text-iris" },
@@ -17,7 +19,7 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden pt-28 sm:pt-32 lg:pt-36">
       <div className="clouds pointer-events-none absolute inset-0" aria-hidden="true" />
-      <div className="dot-grid pointer-events-none absolute inset-0 opacity-70" aria-hidden="true" />
+      <NetworkMap />
 
       <div className="relative mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-12 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)] lg:gap-14">
         {/* message */}
@@ -85,8 +87,34 @@ export default function Hero() {
 
         {/* the agent at work */}
         <div className="fade-up relative" style={{ animationDelay: ".24s" }}>
-          <div className="bg-grad pointer-events-none absolute -inset-6 -z-10 rounded-[40px] opacity-20 blur-3xl" aria-hidden="true" />
-          <AgentConsole />
+          <div className="bg-grad pointer-events-none absolute -inset-8 -z-10 rounded-[48px] opacity-25 blur-3xl" aria-hidden="true" />
+          <div className="glow-ring rounded-[29.5px] p-[1.5px]">
+            <AgentConsole />
+          </div>
+
+          {/* Floating proof points, on wide screens */}
+          <div className="float-y glass shadow-soft absolute -left-10 -top-11 hidden items-center gap-2.5 rounded-2xl border border-line px-3.5 py-2.5 xl:flex" aria-hidden="true">
+            <span className="grid h-8 w-8 place-items-center rounded-xl bg-sun/15 text-sun">
+              <UserCheck className="h-4 w-4" />
+            </span>
+            <span className="leading-tight">
+              <span className="block text-[12px] font-bold">Human in the loop</span>
+              <span className="block text-[11px] text-subtle">You approve what matters</span>
+            </span>
+          </div>
+          <div
+            className="float-y glass shadow-soft absolute -bottom-11 -right-8 hidden items-center gap-2.5 rounded-2xl border border-line px-3.5 py-2.5 xl:flex"
+            style={{ "--float-delay": "-3s" } as CSSProperties}
+            aria-hidden="true"
+          >
+            <span className="grid h-8 w-8 place-items-center rounded-xl bg-emerald-500/15 text-emerald-500">
+              <LockKeyhole className="h-4 w-4" />
+            </span>
+            <span className="leading-tight">
+              <span className="block text-[12px] font-bold">Runs in your cloud</span>
+              <span className="block text-[11px] text-subtle">Never trains on your data</span>
+            </span>
+          </div>
         </div>
       </div>
 

@@ -93,27 +93,29 @@ export default function AgentConsole() {
     setStep(prefersReducedMotion() ? scenes[i].steps.length : 0);
   };
 
+  const done = Math.min(step, current.steps.length);
+
   return (
     <div
-      className="card shadow-soft relative overflow-hidden rounded-[28px]"
+      className="relative overflow-hidden rounded-[28px] border border-line bg-surface/80 shadow-soft backdrop-blur-xl"
       onPointerEnter={(e) => e.pointerType === "mouse" && setPaused(true)}
       onPointerLeave={() => setPaused(false)}
     >
       {/* Window bar */}
-      <div className="flex items-center gap-3 border-b border-line bg-raised/50 px-5 py-3.5">
+      <div className="flex items-center gap-3 border-b border-line bg-raised/40 px-5 py-3.5">
         <span className="flex gap-1.5" aria-hidden="true">
           <i className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
           <i className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
           <i className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
         </span>
         <span className="font-mono text-[11px] font-medium text-subtle">agent · live run</span>
-        <span className="ml-auto inline-flex items-center gap-1.5 text-[11px] font-semibold text-subtle">
+        <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-line bg-surface/70 px-2.5 py-1 text-[11px] font-semibold text-subtle">
           <span className="live-dot" /> Illustrative
         </span>
       </div>
 
       {/* Scenes */}
-      <div className="flex gap-1 border-b border-line px-3 pt-3" role="tablist" aria-label="Example tasks">
+      <div className="flex gap-1 px-3 pt-3" role="tablist" aria-label="Example tasks">
         {scenes.map((s, i) => {
           const on = i === scene;
           return (
@@ -126,13 +128,17 @@ export default function AgentConsole() {
             >
               <s.icon className="h-4 w-4" />
               {s.tab}
-              {on && <span className="bg-grad absolute inset-x-2 -bottom-px h-0.5 rounded-full" />}
             </button>
           );
         })}
       </div>
 
-      <div key={current.key} className="min-h-[372px] p-5 sm:p-6" role="tabpanel" aria-live="polite">
+      {/* Run progress */}
+      <div className="h-[2px] bg-line" aria-hidden="true">
+        <div className="bg-grad h-full shadow-[0_0_12px_rgb(var(--sky-rgb)/.8)] transition-[width] duration-700 ease-out" style={{ width: `${(done / current.steps.length) * 100}%` }} />
+      </div>
+
+      <div key={current.key} className="p-5 sm:p-6" role="tabpanel" aria-live="polite">
         {/* Trigger */}
         <div className="msg-in flex items-center gap-3 rounded-2xl border border-line bg-raised/50 px-4 py-3">
           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-surface text-brand-text shadow-sm">
@@ -141,17 +147,23 @@ export default function AgentConsole() {
           <p className="min-w-0 text-[13.5px] font-medium leading-snug text-ink">{current.trigger}</p>
         </div>
 
-        {/* Steps */}
+        {/* Steps: queued ones wait faintly, the running one types, finished ones check off */}
         <ol className="relative mt-4 space-y-2.5 pl-1">
           <span className="absolute bottom-3 left-[19px] top-3 w-px bg-line" aria-hidden="true" />
+          <span
+            className="bg-grad absolute left-[19px] top-3 w-px origin-top transition-transform duration-700 ease-out"
+            style={{ height: "calc(100% - 24px)", transform: `scaleY(${Math.max(0, done - 1) / (current.steps.length - 1)})` }}
+            aria-hidden="true"
+          />
           {current.steps.map((st, i) => {
-            if (i > step) return null;
+            const queued = i > step;
             const working = i === step && !finished;
+            const ran = !queued && !working;
             return (
-              <li key={st.label} className="msg-in relative flex items-start gap-3">
+              <li key={st.label} className="relative flex items-start gap-3">
                 <span
-                  className={`relative z-[1] mt-0.5 grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full text-white ${
-                    working ? "border border-line bg-surface text-subtle" : st.person ? "bg-sun" : "bg-grad"
+                  className={`relative z-[1] mt-0.5 grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full text-[11px] font-bold transition-colors duration-500 ${
+                    ran ? (st.person ? "bg-sun text-white" : "bg-grad text-white shadow-[0_0_14px_rgb(var(--sky-rgb)/.55)]") : "border border-line bg-surface text-subtle"
                   }`}
                 >
                   {working ? (
@@ -160,37 +172,52 @@ export default function AgentConsole() {
                       <i />
                       <i />
                     </span>
+                  ) : queued ? (
+                    i + 1
                   ) : st.person ? (
                     <UserCheck className="h-3.5 w-3.5" />
                   ) : (
                     <Check className="h-3.5 w-3.5" />
                   )}
                 </span>
-                <div className="min-w-0 pt-1">
-                  <p className={`text-[11px] font-bold uppercase tracking-[.14em] ${st.person && !working ? "text-ink" : "text-subtle"}`}>
+                <div className={`min-w-0 flex-1 pt-1 transition-opacity duration-500 ${queued ? "opacity-45" : ""}`}>
+                  <p className={`text-[11px] font-bold uppercase tracking-[.14em] ${st.person && ran ? "text-ink" : "text-subtle"}`}>
                     {st.label}
-                    {st.person && !working && <span className="ml-2 rounded-full bg-sun/15 px-2 py-0.5 text-[10px] tracking-wider text-ink">A person decides</span>}
+                    {st.person && ran && <span className="msg-in ml-2 inline-block rounded-full bg-sun/15 px-2 py-0.5 text-[10px] tracking-wider text-ink">A person decides</span>}
                   </p>
-                  <p className={`mt-0.5 text-[14px] leading-snug transition-opacity ${working ? "opacity-40" : "text-ink-2"}`}>{st.detail}</p>
+                  {queued ? (
+                    <span className="mt-2 block h-2.5 w-2/3 rounded-full bg-subtle/15" aria-hidden="true" />
+                  ) : (
+                    <p className={`msg-in mt-0.5 text-[14px] leading-snug ${working ? "opacity-50" : "text-ink-2"}`}>{st.detail}</p>
+                  )}
                 </div>
               </li>
             );
           })}
         </ol>
 
-        {/* Result */}
-        {finished && (
-          <div className="msg-in mt-5 flex items-center gap-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3">
+        {/* Result: a placeholder until the run finishes, so the card never changes height */}
+        {finished ? (
+          <div key="done" className="msg-in mt-5 flex items-center gap-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3">
             <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-emerald-500 text-white">
               <Check className="h-3.5 w-3.5" />
             </span>
             <p className="text-[13.5px] font-semibold text-emerald-800 [[data-theme=dark]_&]:text-emerald-300">{current.done}</p>
           </div>
+        ) : (
+          <div key="wait" className="mt-5 flex items-center gap-3 rounded-2xl border border-dashed border-line px-4 py-3 text-[13.5px] text-subtle">
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-line">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand" />
+            </span>
+            Working through the task…
+          </div>
         )}
       </div>
 
       <div className="flex items-center justify-between gap-3 border-t border-line px-5 py-3 text-[12px] text-subtle">
-        <span>Every step logged</span>
+        <span>
+          Every step logged · <span className="font-mono tabular-nums">{done}/{current.steps.length}</span>
+        </span>
         <span className="flex gap-1.5" aria-hidden="true">
           {scenes.map((s, i) => (
             <i key={s.key} className={`h-1.5 rounded-full transition-all duration-500 ${i === scene ? "bg-grad w-5" : "w-1.5 bg-subtle/40"}`} />
