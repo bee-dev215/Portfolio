@@ -650,13 +650,19 @@ a.card-hover:active, button.card-hover:active { scale: .985; }
 @keyframes mark-in { to { transform: scaleX(1); } }
 html[data-theme="dark"] .site-root, .on-dark { --mark-a: .8; }
 
-/* Page-hero backdrop: a soft glow rising from the bottom edge with specks of light drifting up through it.
+/* Page-hero backdrop layers (sky, dots, orbs, specks), faded out over the hero's last stretch so the hero ends
+   without a visible edge where the page content begins */
+.hero-backdrop {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent); mask-image: linear-gradient(to bottom, #000 62%, transparent);
+}
+/* Page-hero backdrop: a soft glow low in the hero with specks of light drifting up through it.
    Two layers of specks at different sizes and speeds give it depth; the far layer also twinkles */
 .motes {
   position: absolute; inset: 0; pointer-events: none; overflow: hidden;
   background:
-    radial-gradient(55% 40% at 50% 104%, rgb(var(--brand-rgb) / .2), rgb(var(--iris-rgb) / .07) 55%, transparent 80%),
-    radial-gradient(30% 30% at 82% 100%, rgb(var(--sky-rgb) / .12), transparent 75%);
+    radial-gradient(55% 40% at 50% 78%, rgb(var(--brand-rgb) / .2), rgb(var(--iris-rgb) / .07) 55%, transparent 80%),
+    radial-gradient(30% 30% at 82% 74%, rgb(var(--sky-rgb) / .12), transparent 75%);
   -webkit-mask-image: linear-gradient(to top, #000 20%, transparent 88%); mask-image: linear-gradient(to top, #000 20%, transparent 88%);
 }
 .motes::before, .motes::after { content: ""; position: absolute; inset: 0; background-size: var(--t) var(--t); animation: motes-rise var(--d) linear infinite; }
