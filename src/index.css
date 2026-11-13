@@ -132,12 +132,11 @@
   --shadow-card-lg: 0 2px 6px rgb(15 23 42 / .06), 0 34px 70px -10px rgb(79 70 229 / .28);
   --shadow-btn: 0 10px 24px -6px rgb(79 70 229 / .45);
   --shadow-btn-hover: 0 16px 34px -6px rgb(79 70 229 / .6);
-  /* Hero sky (.clouds): two pools of light, a tint from the top, white cloud puffs and faint wave lines */
+  /* Hero sky (.clouds): two pools of light, a tint from the top and white cloud puffs */
   --sky-1: #cfe2ff;
   --sky-2: #d9e9ff;
   --sky-top: #e4eeff;
   --cloud-o: 1;
-  --waves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1440' height='420' viewBox='0 0 1440 420' fill='none' stroke='%233b82f6' stroke-opacity='0.09'%3E%3Cpath d='M0 110C240 50 480 170 720 110S1200 50 1440 110'/%3E%3Cpath d='M0 160C260 100 500 220 740 160S1220 100 1440 160'/%3E%3Cpath d='M0 250C220 190 520 310 760 240S1200 190 1440 250'/%3E%3Cpath d='M0 310C300 260 560 360 820 300S1240 260 1440 310'/%3E%3Cpath d='M0 370C280 330 600 410 860 360S1260 330 1440 370'/%3E%3C/svg%3E");
   --ease: cubic-bezier(.22, .61, .36, 1);
   --ease-out: cubic-bezier(.16, 1, .3, 1); /* fast start, long soft landing: scroll reveals and sliding indicators */
   --logo-mark: url("/images/logo-mark.webp");
@@ -230,8 +229,8 @@ html[data-theme="dark"] .site-root, .on-dark {
 }
 /* Tinted band for alternating sections */
 .band { background: linear-gradient(to bottom, rgb(var(--raised-rgb) / .7), rgb(var(--raised-rgb) / .35)); }
-/* Hero sky: pooled blue light, white cloud puffs drifting side to side and faint wave lines sliding along the bottom.
-   Put it on an absolutely positioned layer; the puffs and waves sit inside it */
+/* Hero sky: pooled blue light and white cloud puffs drifting side to side.
+   Put it on an absolutely positioned layer; the puffs sit inside it */
 .clouds {
   isolation: isolate; overflow: hidden;
   background:
@@ -250,13 +249,7 @@ html[data-theme="dark"] .site-root, .on-dark {
   filter: blur(18px);
   animation: cloud-drift 32s ease-in-out infinite alternate;
 }
-.clouds::after {
-  content: ""; position: absolute; inset: auto 0 0; height: 70%; z-index: -1; pointer-events: none;
-  background: var(--waves) 0 bottom / 1440px auto repeat-x;
-  animation: waves-drift 48s linear infinite;
-}
 @keyframes cloud-drift { from { transform: translateX(-2.5%); } to { transform: translateX(3%); } }
-@keyframes waves-drift { to { background-position-x: -1440px; } }
 
 /* Home hero network map (NetworkMap.tsx): the dotted world and its traffic on two stacked canvases, sized to the map's
    proportions (the canvases fade their own edges) */
@@ -657,18 +650,36 @@ a.card-hover:active, button.card-hover:active { scale: .985; }
 @keyframes mark-in { to { transform: scaleX(1); } }
 html[data-theme="dark"] .site-root, .on-dark { --mark-a: .8; }
 
-/* Hero and page-hero backdrop: a perspective grid floor whose lines run toward the viewer */
-.grid-floor {
-  position: absolute; inset: auto -20% 0; height: 62%; pointer-events: none; transform-origin: 50% 100%;
-  transform: perspective(520px) rotateX(62deg);
-  background-image:
-    linear-gradient(rgb(var(--brand-rgb) / .22) 1.5px, transparent 1.5px),
-    linear-gradient(90deg, rgb(var(--iris-rgb) / .18) 1.5px, transparent 1.5px);
-  background-size: 64px 64px;
-  -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 85%); mask-image: linear-gradient(to top, #000 10%, transparent 85%);
-  animation: floor-run 3.2s linear infinite;
+/* Page-hero backdrop: a soft glow rising from the bottom edge with specks of light drifting up through it.
+   Two layers of specks at different sizes and speeds give it depth; the far layer also twinkles */
+.motes {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  background:
+    radial-gradient(55% 40% at 50% 104%, rgb(var(--brand-rgb) / .2), rgb(var(--iris-rgb) / .07) 55%, transparent 80%),
+    radial-gradient(30% 30% at 82% 100%, rgb(var(--sky-rgb) / .12), transparent 75%);
+  -webkit-mask-image: linear-gradient(to top, #000 20%, transparent 88%); mask-image: linear-gradient(to top, #000 20%, transparent 88%);
 }
-@keyframes floor-run { to { background-position: 0 64px, 0 0; } }
+.motes::before, .motes::after { content: ""; position: absolute; inset: 0; background-size: var(--t) var(--t); animation: motes-rise var(--d) linear infinite; }
+.motes::before {
+  --t: 280px; --d: 26s;
+  background-image:
+    radial-gradient(2px 2px at 34px 52px, rgb(var(--sky-rgb) / .85), transparent),
+    radial-gradient(1.5px 1.5px at 132px 188px, rgb(var(--brand-hi-rgb) / .8), transparent),
+    radial-gradient(2.5px 2.5px at 214px 96px, rgb(var(--iris-rgb) / .7), transparent),
+    radial-gradient(1.5px 1.5px at 248px 238px, rgb(var(--sky-rgb) / .75), transparent),
+    radial-gradient(2px 2px at 86px 254px, rgb(var(--brand-hi-rgb) / .7), transparent);
+}
+.motes::after {
+  --t: 190px; --d: 40s;
+  background-image:
+    radial-gradient(1px 1px at 22px 140px, rgb(var(--sky-rgb) / .7), transparent),
+    radial-gradient(1.2px 1.2px at 104px 34px, rgb(var(--iris-rgb) / .65), transparent),
+    radial-gradient(1px 1px at 160px 110px, rgb(var(--brand-hi-rgb) / .7), transparent),
+    radial-gradient(1.2px 1.2px at 64px 176px, rgb(var(--sky-rgb) / .6), transparent);
+  animation: motes-rise var(--d) linear infinite, motes-twinkle 4.5s ease-in-out infinite alternate;
+}
+@keyframes motes-rise { to { background-position: 0 calc(-1 * var(--t)); } }
+@keyframes motes-twinkle { from { opacity: .35; } to { opacity: 1; } }
 /* Glowing orbs that orbit slowly behind hero content */
 .orb { position: absolute; border-radius: 9999px; pointer-events: none; filter: blur(60px); opacity: .55; animation: orb 18s ease-in-out infinite alternate; }
 @keyframes orb { 33% { translate: 6vw -4vh; scale: 1.15; } 66% { translate: -4vw 5vh; scale: .9; } 100% { translate: 3vw 2vh; scale: 1.05; } }
@@ -728,7 +739,7 @@ html:not([data-theme="dark"]) .kinetic:not(.kinetic-tape) .kinetic-star { color:
 .stat-ghost::before { content: attr(data-ghost); position: absolute; inset: 0; color: transparent; -webkit-text-stroke: 1px rgb(var(--iris-rgb) / .35); translate: 6px 6px; pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-bg::before, .clouds::before, .clouds::after, .gradient-text, .net-map, .orbit-spin, .orbit-pulse { animation: none; }
+  .site-bg::before, .clouds::before, .gradient-text, .net-map, .orbit-spin, .orbit-pulse { animation: none; }
   .orbit-packet { animation: none; stroke-dasharray: none; opacity: .5; }
   .btn-primary::after { display: none; }
   .rv, .fade-up, .stagger > *, .word { opacity: 1; transform: none; filter: none; transition: none; animation: none !important; }
@@ -744,7 +755,7 @@ html:not([data-theme="dark"]) .kinetic:not(.kinetic-tape) .kinetic-star { color:
   .eyebrow.landed { animation: landed-glow 1.8s linear both; }
   .section-pill.is-placed, .scroll-top { transition: opacity .2s; }
   .route-bar { animation: none; transform: scaleX(.6); }
-  .btn-primary, .cta-flow, .grid-floor, .orb, .sticky-cta-ring::before, .eyebrow > .bg-grad:first-child::after { animation: none; }
+  .btn-primary, .cta-flow, .motes::before, .motes::after, .orb, .sticky-cta-ring::before, .eyebrow > .bg-grad:first-child::after { animation: none; }
   .mark::after { transform: scaleX(1); animation: none; }
   .hl { background-size: 100% .17em; transition: none; animation: none !important; }
   .rotator > span { transition: none; }
