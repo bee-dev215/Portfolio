@@ -40,10 +40,9 @@ export default function Footer({ cta = true }: { cta?: boolean }) {
 
   return (
     <footer className="on-dark relative isolate overflow-hidden bg-canvas px-5 pt-20 sm:px-8 sm:pt-24">
-      {/* Backdrop: pooled brand light, a faint dot grid and a gradient hairline along the top */}
+      {/* Backdrop: pooled brand light and a faint dot grid. No rule along the top: the lime tape laid across the seam marks where the footer starts */}
       <div className="mesh pointer-events-none absolute inset-0 -z-10 opacity-80" aria-hidden="true" />
       <div className="dot-grid pointer-events-none absolute inset-0 -z-10 opacity-60" aria-hidden="true" />
-      <div className="bg-grad absolute inset-x-0 top-0 h-px opacity-70" aria-hidden="true" />
 
       <div className="mx-auto max-w-[1240px]">
         {/* CTA card */}

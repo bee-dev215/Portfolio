@@ -20,7 +20,9 @@ export default function CtaBand({
   secondary?: { label: string; to: string };
 }) {
   return (
-    <section className="px-5 pb-24 sm:px-8 lg:pb-32">
+    // No top padding of its own: it leans on the section above. After a tinted .band it adds some, so the card
+    // doesn't sit on the band's bottom edge
+    <section className="px-5 pb-24 sm:px-8 lg:pb-32 [.band+&]:pt-20 lg:[.band+&]:pt-28">
       <Reveal variant="scale" className="mx-auto max-w-[1240px]">
         <div className="cta-flow relative overflow-hidden rounded-[2rem] p-8 text-white sm:p-12 lg:p-16">
           <img src="/images/cta-backdrop.webp" alt="" loading="lazy" width={740} height={416} className="absolute inset-0 h-full w-full object-cover opacity-20 mix-blend-luminosity" />
