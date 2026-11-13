@@ -1,6 +1,0 @@
-import{e as o,l as a,j as e,S as d,R as c,L as m}from"./index-CHq6rkTK.js";import{P as p}from"./ProjectCard-DXW1e-YR.js";/**
- * @license lucide-react v0.462.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */const g=o("UserRound",[["circle",{cx:"12",cy:"8",r:"5",key:"1hypcn"}],["path",{d:"M20 21a8 8 0 0 0-16 0",key:"rfgkzh"}]]);function u({match:t,title:n,lead:s,band:i=!1}){const l=a.filter(t);return l.length===0?null:e.jsx("section",{className:`px-5 py-20 sm:px-8 lg:py-28 ${i?"band":""}`,children:e.jsxs("div",{className:"mx-auto max-w-[1240px]",children:[e.jsxs("div",{className:"flex flex-col justify-between gap-6 lg:flex-row lg:items-end",children:[e.jsx(d,{label:"Our work",title:n,children:s&&e.jsx("p",{className:"mt-5 max-w-2xl text-lg leading-relaxed text-ink-2",children:s})}),e.jsx(c,{delay:100,children:e.jsxs(m,{to:"/projects",className:"btn btn-secondary shrink-0 px-6 py-3 text-sm",children:["All ",a.length," projects"]})})]}),e.jsx("ul",{className:"mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3",children:l.slice(0,3).map((r,x)=>e.jsx("li",{children:e.jsx(c,{delay:x*80,className:"h-full",children:e.jsx(p,{project:r})})},r.slug))})]})})}export{u as P,g as U};

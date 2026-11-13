@@ -714,9 +714,23 @@ html[data-theme="dark"] .site-root, .on-dark { --mark-a: .8; }
 .kinetic-fill { background: var(--grad-text) 0 center / 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; padding: .08em .04em; margin-inline: -.04em; }
 .kinetic-star { width: .38em; height: .38em; flex: none; color: rgb(var(--volt-rgb)); filter: drop-shadow(0 0 6px rgb(var(--volt-rgb) / .45)); }
 html:not([data-theme="dark"]) .kinetic:not(.kinetic-tape) .kinetic-star { color: #84cc16; filter: none; } /* a flat, deeper lime reads on the light page; the glow only works on dark */
-/* Tape: a lime strip, tilted across the seam above the footer, in mono caps */
-.kinetic-tape { padding-block: 0; transform: rotate(-1.6deg) scaleX(1.04); background: rgb(var(--volt-rgb)); color: #0b1020; box-shadow: 0 18px 40px -18px rgb(0 0 0 / .45); }
-.kinetic-tape .kinetic-row > span { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: clamp(.95rem, 1.8vw, 1.35rem); font-weight: 700; letter-spacing: .06em; padding-block: .85rem; }
+/* Tape: a lime strip, tilted across the seam above the footer, in mono caps. It acts as the footer's top border:
+   the footer slides up under it and its top edge is cut along the tape's centre line (see .foot-tucked) */
+:root {
+  --tape-h: calc(1.05 * clamp(.95rem, 1.8vw, 1.35rem) + 1.7rem); /* one line of tape text plus its padding, fixed so the footer can tuck under it exactly */
+  --tape-rise: 1.397vw;      /* how far the tape's centre line climbs from mid-screen to the right edge: 50vw × tan(1.6°) */
+}
+.kinetic-tape { display: flex; align-items: center; height: var(--tape-h); padding-block: 0; transform: rotate(-1.6deg) scaleX(1.04); background: rgb(var(--volt-rgb)); color: #0b1020; box-shadow: 0 18px 40px -18px rgb(0 0 0 / .45); }
+.kinetic-tape .kinetic-row > span { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: clamp(.95rem, 1.8vw, 1.35rem); font-weight: 700; letter-spacing: .06em; }
+/* The footer that sits under the tape: pulled up to the tape's centre line at the right edge, then cut on the same
+   slope, so no page background shows between them anywhere along the tape. The padding gives back what the pull took */
+.foot-tucked {
+  --pull: calc(var(--tape-h) / 2 + var(--tape-rise));
+  margin-top: calc(-1 * var(--pull));
+  padding-top: calc(4rem + var(--pull));
+  clip-path: polygon(0 calc(2 * var(--tape-rise)), 100% 0, 100% 100%, 0 100%);
+}
+@media (min-width: 640px) { .foot-tucked { padding-top: calc(5rem + var(--pull)); } }
 .kinetic-tape .kinetic-star { color: #0b1020; filter: none; width: .7em; height: .7em; }
 
 /* Cursor ring: trails the pointer and swells over anything clickable (fine pointers only; the native cursor stays) */

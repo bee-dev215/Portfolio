@@ -178,8 +178,8 @@ export default function PageShell({
       <main id="main" tabIndex={-1} className="outline-none">
         {children}
       </main>
-      {/* Every page signs off with the promises on a moving ink tape, just above the footer */}
-      <KineticBand tape words={signOff} speed={0.5} className="relative z-[1] -mb-4" />
+      {/* Every page signs off with the promises on a moving lime tape that doubles as the footer's top border */}
+      <KineticBand tape words={signOff} speed={0.5} className="relative z-[1]" />
       <Footer cta={footerCta} />
       <ScrollTop />
       <StickyCta />
