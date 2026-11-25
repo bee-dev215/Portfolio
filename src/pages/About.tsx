@@ -5,9 +5,10 @@ import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
 import ForCompanies from "@/components/site/ForCompanies";
+import HowWeWork from "@/components/site/HowWeWork";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
 import { roleIcons, valueIcons } from "@/components/site/icons";
-import { company, principles, rolePath, roles, values } from "@/data/company";
+import { company, rolePath, roles, values } from "@/data/company";
 
 const tiles = [
   { icon: Globe2, title: "Remote-first", desc: "Every role, every step, fully online." },
@@ -140,42 +141,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* How we work */}
-      <section className="px-5 py-24 sm:px-8 lg:py-32">
-        <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-[.9fr_1.1fr] lg:gap-20">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <SectionHeading
-              label="How we work"
-              title={
-                <>
-                  Built for people who work <span className="gradient-text">from anywhere.</span>
-                </>
-              }
-            />
-            <Reveal delay={120}>
-              <div className="mt-10 overflow-hidden rounded-[1.75rem] border border-line bg-raised shadow-soft">
-                <img src="/images/remote/step-onboarding.webp" alt="" loading="lazy" width={1280} height={800} className="aspect-[16/10] w-full object-cover" />
-              </div>
-            </Reveal>
-          </div>
-          <ol className="space-y-5">
-            {principles.map((p, i) => (
-              <li key={p.title}>
-                <Reveal delay={i * 90}>
-                  <div className="card relative overflow-hidden p-8 sm:p-10">
-                    <span className="pointer-events-none absolute -right-2 -top-6 select-none font-display text-[8rem] font-medium leading-none text-ink/[.05]" aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <p className="font-mono text-xs font-bold text-brand-text">{String(i + 1).padStart(2, "0")}</p>
-                    <h3 className="mt-3 font-display text-2xl font-medium tracking-[-0.015em]">{p.title}</h3>
-                    <p className="mt-3 max-w-xl text-lg leading-relaxed text-ink-2">{p.desc}</p>
-                  </div>
-                </Reveal>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      <HowWeWork />
 
       {/* Join the team */}
       <section className="band px-5 py-24 sm:px-8 lg:py-28">

@@ -14,9 +14,9 @@ export const company = {
   initials: "J",
   entity: "Limited liability company",
   discipline: "Remote careers",
-  email: "terabyte5050@gmail.com",
-  phone: "+1 (480) 271 8467",
-  phoneHref: "tel:+14802718467",
+  email: "hello@jovano.io",
+  phone: "+1 (347) 850-4577",
+  phoneHref: "tel:+13478504577",
   availability: "Hiring now · Open worldwide",
   responseTime: "one business day", // replies to messages
   reviewTime: "five business days", // a decision on an application
@@ -515,10 +515,31 @@ export const values: { key: ValueKey; title: string; desc: string }[] = [
   { key: "empowerment", title: "Empowerment", desc: "Clear levels, real feedback and the tools to grow into the next role." },
 ];
 
-export const principles = [
-  { title: "Remote by design", desc: "We write things down, work async by default and meet when it matters. Nobody is a second-class citizen for being far away." },
-  { title: "Transparent by default", desc: "Your rate, your hours and how your pay is worked out are in writing, in your workspace, from day one." },
-  { title: "People before process", desc: "A person reviews every application, answers every message and has your back when something goes wrong." },
+export type PrincipleKey = "remote" | "transparent" | "people";
+
+export const principles: { key: PrincipleKey; title: string; desc: string; points: string[]; image: string; focus?: string }[] = [
+  {
+    key: "remote",
+    title: "Remote by design",
+    desc: "We write things down, work async by default and meet when it matters. Nobody is a second-class citizen for being far away.",
+    points: ["Written briefs and hand-overs", "A few hours of overlap, not 9-to-5", "Meetings with a purpose and notes"],
+    image: "/images/remote/step-onboarding.webp",
+    focus: "60% 0%",
+  },
+  {
+    key: "transparent",
+    title: "Transparent by default",
+    desc: "Your rate, your hours and how your pay is worked out are in writing, in your workspace, from day one.",
+    points: ["Your rate agreed before you start", "Every payslip itemised", "Level criteria written down"],
+    image: "/images/remote/role-operations.webp",
+  },
+  {
+    key: "people",
+    title: "People before process",
+    desc: "A person reviews every application, answers every message and has your back when something goes wrong.",
+    points: ["A named lead and a buddy", "Real replies, usually the same day", "Help first, process second"],
+    image: "/images/remote/why-people.webp",
+  },
 ];
 
 // For companies hiring a remote team through Jovano (home, About, Contact)

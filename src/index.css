@@ -756,3 +756,26 @@ html:not([data-theme="dark"]) .kinetic:not(.kinetic-tape) .kinetic-star { color:
 /* Tilted backdrop behind a floating mock card */
 .tilt-back { rotate: -3deg; background: linear-gradient(135deg, rgb(var(--brand-rgb) / .12), rgb(var(--iris-rgb) / .1), rgb(var(--sky-rgb) / .12)); }
 .tilt-back.is-flip { rotate: 3deg; }
+
+/* How we work (HowWeWork.tsx): the active principle opens and a lime bar counts down to the next; the photos cross-fade
+   with a slow zoom, and the caption and the floating card rise in each time the principle changes */
+.principle-body { grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .6s var(--ease-out), opacity .4s var(--ease); }
+.principle.is-on .principle-body { grid-template-rows: 1fr; opacity: 1; }
+.principle-timer { transform: scaleX(0); transform-origin: left; }
+.principle-timer.is-running { animation: principle-timer var(--cycle) linear forwards; }
+@keyframes principle-timer { to { transform: scaleX(1); } }
+.stage-photo { opacity: 0; scale: 1.08; transition: opacity .9s var(--ease), scale 6s var(--ease-out); }
+.stage-photo.is-on { opacity: 1; scale: 1; }
+.stage-in { animation: stage-in .6s var(--ease-out) .15s both; }
+@keyframes stage-in { from { opacity: 0; translate: 0 -8px; } }
+.stage-card { animation: stage-card .7s var(--ease-out) .25s both; }
+@keyframes stage-card { from { opacity: 0; translate: 0 18px; scale: .96; } }
+@media (prefers-reduced-motion: reduce) {
+  .principle-body, .stage-photo { transition: none; }
+  .stage-photo { scale: none; }
+  .principle-timer.is-running, .stage-in, .stage-card { animation: none; }
+}
+
+/* Hero "Now hiring" ribbon: a slower, steady scroll (it pauses on hover via .marquee-host) */
+.hiring-marquee { animation-duration: 38s; }
+@media (prefers-reduced-motion: reduce) { .hiring-marquee { animation: none; flex-wrap: wrap; width: auto; } .hiring-marquee > [aria-hidden] { display: none; } }

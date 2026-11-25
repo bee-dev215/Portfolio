@@ -154,22 +154,43 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Now hiring: the roles, where Timeline shows its client logos */}
+      {/* Now hiring: one bar with a live badge, a scrolling ribbon of the open roles and a link to all of them */}
       <div className="relative mx-auto mt-16 max-w-[1240px] px-5 pb-16 sm:px-8 lg:mt-20 lg:pb-20">
-        <p className="text-sm font-medium text-subtle">Now hiring for</p>
-        <ul className="mt-5 flex flex-wrap gap-x-10 gap-y-4">
-          {roles.map((r) => {
-            const Icon = roleIcons[r.key];
-            return (
-              <li key={r.key}>
-                <Link to={rolePath(r)} className="group flex items-center gap-2.5 text-ink-2 transition-colors hover:text-brand-text">
-                  <Icon className="h-5 w-5 shrink-0 text-subtle transition-colors group-hover:text-brand-text" />
-                  <span className="whitespace-nowrap font-display text-[17px] font-medium leading-tight">{r.title}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="hiring-bar fade-up flex flex-col gap-4 rounded-[1.75rem] border border-line bg-surface/90 p-3 shadow-[0_20px_50px_-30px_rgb(15_31_61/.35)] backdrop-blur sm:flex-row sm:items-center sm:rounded-full sm:p-2" style={{ animationDelay: ".4s" }}>
+          <p className="flex shrink-0 items-center gap-3 rounded-full bg-ink py-2.5 pl-4 pr-5 text-sm font-semibold text-canvas">
+            <span className="live-dot !bg-volt" />
+            Now hiring
+            <span className="rounded-full bg-white/15 px-2 py-0.5 text-xs tabular-nums">{roles.length} roles</span>
+          </p>
+
+          <div className="marquee-host min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]">
+            <ul className="marquee hiring-marquee flex w-max items-center gap-2.5 py-1" aria-label="Open roles">
+              {[...roles, ...roles].map((r, i) => {
+                const Icon = roleIcons[r.key];
+                const copy = i >= roles.length;
+                return (
+                  <li key={`${r.key}-${i}`} aria-hidden={copy || undefined}>
+                    <Link
+                      to={rolePath(r)}
+                      tabIndex={copy ? -1 : undefined}
+                      className="group flex items-center gap-2.5 whitespace-nowrap rounded-full border border-line bg-surface py-1.5 pl-1.5 pr-4 transition-colors hover:border-brand/40 hover:bg-brand-soft/60"
+                    >
+                      <span className="grid h-8 w-8 place-items-center rounded-full bg-brand-soft text-brand-text transition-colors group-hover:bg-brand group-hover:text-white">
+                        <Icon className="h-4 w-4" />
+                      </span>
+                      <span className="text-sm font-semibold text-ink">{r.title}</span>
+                      <span className="text-xs text-subtle">Remote</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          <Link to="/roles" className="btn btn-secondary shrink-0 justify-center px-5 py-2.5 text-sm">
+            All roles <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );
