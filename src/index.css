@@ -744,6 +744,11 @@ html:not([data-theme="dark"]) .kinetic:not(.kinetic-tape) .kinetic-star { color:
 @keyframes net-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .net-map { animation: none; } }
 
+/* Hero globe (Globe.tsx): fades and settles in behind the app windows */
+.globe { animation: globe-in 1.8s var(--ease-out) .15s both; }
+@keyframes globe-in { from { opacity: 0; scale: .9; } }
+@media (prefers-reduced-motion: reduce) { .globe { animation: none; } }
+
 /* ============================================================
    TIMELINE-STYLE LAYOUT PIECES
    ============================================================ */

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Mic, PhoneOff, Video, Wallet } from "lucide-react";
+import { ArrowRight, Globe2, Mic, PhoneOff, Video, Wallet } from "lucide-react";
 import { Link } from "react-router-dom";
 import { rolePath, roles } from "@/data/company";
+import Globe from "./Globe";
 import { Monogram } from "./Navbar";
 import { roleIcons } from "./icons";
 import RotatingWords from "./RotatingWords";
@@ -116,12 +117,13 @@ function Windows() {
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden pt-32 sm:pt-36 lg:pt-40">
+    <section className="relative overflow-hidden pt-32 sm:pt-36 lg:pt-28">
       <div className="wash pointer-events-none absolute inset-0" aria-hidden="true" />
 
       <div className="relative mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-14 px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">
         <div>
           <p className="fade-up eyebrow eyebrow-pill" style={{ animationDelay: ".05s" }}>
+            <Globe2 className="h-4 w-4 text-brand-text" aria-hidden="true" />
             Remote-first · Open to applicants worldwide
           </p>
 
@@ -150,12 +152,16 @@ export default function Hero() {
         </div>
 
         <div className="fade-up relative" style={{ animationDelay: ".24s" }}>
-          <Windows />
+          {/* The world turning behind the app windows: the team's cities, linked across every ocean */}
+          <Globe className="absolute left-[56%] top-0 aspect-square w-[108%] -translate-x-1/2 -translate-y-[10%]" />
+          <div className="relative pt-[25%]">
+            <Windows />
+          </div>
         </div>
       </div>
 
       {/* Now hiring: one bar with a live badge, a scrolling ribbon of the open roles and a link to all of them */}
-      <div className="relative mx-auto mt-16 max-w-[1240px] px-5 pb-16 sm:px-8 lg:mt-20 lg:pb-20">
+      <div className="relative mx-auto mt-16 max-w-[1240px] px-5 pb-16 sm:px-8 lg:mt-12 lg:pb-20">
         <div className="hiring-bar fade-up flex flex-col gap-4 rounded-[1.75rem] border border-line bg-surface/90 p-3 shadow-[0_20px_50px_-30px_rgb(15_31_61/.35)] backdrop-blur sm:flex-row sm:items-center sm:rounded-full sm:p-2" style={{ animationDelay: ".4s" }}>
           <p className="flex shrink-0 items-center gap-3 rounded-full bg-ink py-2.5 pl-4 pr-5 text-sm font-semibold text-canvas">
             <span className="live-dot !bg-volt" />
