@@ -30,30 +30,51 @@ function LinkColumn({ title, links }: { title: string; links: { to: string; labe
 /** "Start your application": an email field that opens the apply form with the address filled in. */
 function StartApplication() {
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    startApplication(undefined, email.trim() || undefined);
+    const value = email.trim();
+    // Empty is fine (the form opens blank); anything typed must look like an email
+    if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setError("That doesn't look like an email address.");
+      return;
+    }
+    startApplication(undefined, value || undefined);
   };
   return (
-    <form onSubmit={submit} className="mt-8 max-w-sm">
+    // noValidate: the check above shows a message in the site's own style instead of the browser's pop-up
+    <form onSubmit={submit} noValidate className="mt-8 max-w-sm">
       <label htmlFor="foot-email" className={headCls}>
         Start your application
       </label>
-      <div className="mt-4 flex gap-2 rounded-full border border-white/15 bg-white/5 p-1.5 focus-within:border-white/40">
+      {/* The whole pill lights up on focus; the field inside draws no ring of its own */}
+      <div
+        className={`mt-4 flex items-center gap-2 rounded-full border bg-white/[.06] p-1.5 transition-[border-color,box-shadow] duration-200 focus-within:shadow-[0_0_0_4px_rgb(59_130_246/.25)] ${
+          error ? "border-rose-400/70" : "border-white/15 focus-within:border-sky-300/70"
+        }`}
+      >
         <input
           id="foot-email"
           type="email"
+          inputMode="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (error) setError("");
+          }}
           placeholder="Email address"
           autoComplete="email"
-          className="min-w-0 flex-1 bg-transparent px-3 text-sm text-white outline-none placeholder:text-white/45"
+          aria-invalid={!!error}
+          aria-describedby="foot-email-note"
+          className="foot-input h-10 min-w-0 flex-1 rounded-full bg-transparent pl-4 pr-2 text-sm text-white caret-sky-300 placeholder:text-white/45"
         />
-        <button type="submit" className="btn btn-primary shrink-0 px-4 py-2.5 text-sm">
+        <button type="submit" className="btn btn-primary shrink-0 px-5 py-2.5 text-sm">
           Get started <ArrowRight className="h-4 w-4" />
         </button>
       </div>
-      <p className="mt-2.5 text-xs text-white/55">Free to apply. Takes about five minutes.</p>
+      <p id="foot-email-note" className={`mt-2.5 pl-4 text-xs ${error ? "text-rose-300" : "text-white/55"}`} role={error ? "alert" : undefined}>
+        {error || "Free to apply. Takes about five minutes."}
+      </p>
     </form>
   );
 }

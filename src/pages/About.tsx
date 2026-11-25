@@ -154,18 +154,19 @@ export default function About() {
               </>
             }
           />
-          <ul className="stagger is-in mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Every row of cards shares one height, so a title that wraps doesn't make its card stand out */}
+          <ul className="stagger is-in mt-12 grid auto-rows-fr gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {roles.map((r, i) => {
               const Icon = roleIcons[r.key];
               return (
-                <li key={r.key} style={{ "--i": i } as CSSProperties}>
-                  <Link to={rolePath(r)} className="card card-hover group flex items-center gap-4 p-5">
+                <li key={r.key} className="h-full" style={{ "--i": i } as CSSProperties}>
+                  <Link to={rolePath(r)} className="card card-hover group flex h-full min-h-[88px] items-center gap-4 p-5">
                     <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-brand-soft text-brand-text transition-colors group-hover:bg-grad group-hover:text-white">
                       <Icon className="h-5 w-5" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block font-display text-lg font-bold">{r.title}</span>
-                      <span className="block truncate text-sm text-subtle">{r.category}</span>
+                      <span className="block font-display text-lg font-semibold leading-tight">{r.title}</span>
+                      <span className="mt-1 block truncate text-sm text-subtle">{r.category}</span>
                     </span>
                     <ArrowRight className="h-4 w-4 shrink-0 text-subtle" />
                   </Link>

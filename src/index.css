@@ -779,3 +779,8 @@ html:not([data-theme="dark"]) .kinetic:not(.kinetic-tape) .kinetic-star { color:
 /* Hero "Now hiring" ribbon: a slower, steady scroll (it pauses on hover via .marquee-host) */
 .hiring-marquee { animation-duration: 38s; }
 @media (prefers-reduced-motion: reduce) { .hiring-marquee { animation: none; flex-wrap: wrap; width: auto; } .hiring-marquee > [aria-hidden] { display: none; } }
+
+/* Footer email field: it sits inside a pill that shows the focus, so it draws no outline of its own (the site-wide
+   :focus-visible ring would otherwise box it in) and the browser's autofill colours don't paint a light block on navy */
+.site-root .foot-input, .site-root .foot-input:focus, .site-root .foot-input:focus-visible { outline: none; box-shadow: none; }
+.site-root .foot-input:-webkit-autofill { -webkit-text-fill-color: #fff; -webkit-box-shadow: 0 0 0 40px #16294c inset; caret-color: #7dd3fc; }
