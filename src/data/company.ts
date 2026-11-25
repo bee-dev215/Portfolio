@@ -1,7 +1,7 @@
 // ============================================================
-//  SITE CONTENT — Jovano, an AI & software engineering company.
+//  SITE CONTENT — Jovano, a remote-first team hiring people worldwide.
 //  Edit this single file to update the public site
-//  (company details, the free-prototype offer, call booking, services, solutions, process, stack, team).
+//  (company details, roles, the application steps, pay and levels, the workspace, values).
 // ============================================================
 
 import { startNavigation } from "@/lib/route-preload";
@@ -13,38 +13,40 @@ export const company = {
   legalName: "Jovano LLC",
   initials: "J",
   entity: "Limited liability company",
-  discipline: "AI & software engineering",
+  discipline: "Remote careers",
   email: "terabyte5050@gmail.com",
   phone: "+1 (480) 271 8467",
   phoneHref: "tel:+14802718467",
-  availability: "Booking new projects",
-  responseTime: "one business day",
-  engagements: "Free two-week prototype · Fixed-scope builds · Dedicated teams",
+  availability: "Hiring now · Open worldwide",
+  responseTime: "one business day", // replies to messages
+  reviewTime: "five business days", // a decision on an application
   tagline:
-    "Jovano is a small senior team that builds AI agents, automations and custom software — so the repetitive work that eats your team's week runs on its own.",
+    "Jovano is a remote-first team. We hire capable people anywhere in the world, train them, and place them on real work for the companies we support — with fair pay, on time, and a person you can talk to.",
   intro:
-    "AI that does real work, automation that connects your systems, and the custom software around both — built by one senior team, from the first call to production.",
+    "Six career paths, one remote team. Apply in minutes, get reviewed by a real person, and build your career from wherever you open your laptop.",
+  mission: "To open remote careers to capable people everywhere, through a path that is simple, personal and fair.",
+  vision: "A world where great work is never limited by location.",
   about: [
-    "Jovano is an AI and software engineering company. We build AI agents, automations and the custom software around them — the tools that take the re-typing, chasing, copying and answering off people's desks, for growing businesses and software companies.",
-    "We start with a task, not a technology. A short call to understand what's slowing your team down, a working prototype on your own data within two weeks, and only then a plan for the full build. You judge us by software you can click, not by slides.",
-    "You work directly with the senior engineers who write the code, and everything we build is yours: source code, cloud accounts and documentation, from the first day. We stay as long as you need us — and make sure you don't have to.",
+    "Jovano is a remote-first company. We build dedicated remote teams for growing businesses — virtual assistants, customer support, engineers, QA testers, operations and business development — and we hire the people on those teams from anywhere in the world.",
+    "Every team member is hired, trained and paid by Jovano. The companies we support pay us for the work; we pay you, on a fixed schedule, with a payslip that shows exactly how your pay was worked out.",
+    "We started Jovano because talent is everywhere but opportunity isn't. A great support specialist in Nairobi or a sharp engineer in Bogotá shouldn't need to move cities to do their best work.",
   ],
 };
 
 // ------------------------------------------------------------
-//  The free-prototype offer — shown in the hero, on the booking page and in the closing calls to action.
-//  It is a business promise: change or remove it here and every mention follows.
+//  Promises we make to every applicant. They show up in the hero, on the apply page and on the footer tape.
+//  They are business promises: change them here and every mention follows.
 // ------------------------------------------------------------
 
-export const offer = {
-  badge: "First two weeks on us",
-  title: "A working prototype in two weeks — on us",
-  desc: "Tell us the task that eats your week. If AI or software can take it off your plate, we build a working prototype on your own data in two weeks, free of charge. If it's worth building properly, we quote the rest; if not, you've lost nothing.",
+export const promises = {
+  free: "Free to apply — we never ask applicants for money",
+  human: "Every application is read by a real person",
+  pay: "Paid twice a month, on time, with a clear payslip",
 };
 
 // ------------------------------------------------------------
-//  Call booking (/book). Times are worked out in the team's time zone below and shown to each visitor in theirs.
-//  Booked calls are kept in the database (/admin → Bookings), which also stops two people taking the same time.
+//  Call booking. The public booking page is gone, but /admin still lists calls booked before the switch,
+//  so these settings stay for the admin inbox (src/components/admin/MessagesInbox.tsx).
 // ------------------------------------------------------------
 
 export type CallTypeKey = "intro" | "discovery";
@@ -52,462 +54,537 @@ export type CallTypeKey = "intro" | "discovery";
 export interface CallType {
   key: CallTypeKey;
   label: string;
-  minutes: number; // no longer than booking.slotMinutes, so calls never overlap
+  minutes: number;
   desc: string;
 }
 
 export const booking = {
-  timezone: "America/Phoenix", // the team's working hours are in this time zone (Arizona: no daylight saving)
-  days: [1, 2, 3, 4, 5], // weekdays calls can be booked on: 0 = Sunday … 6 = Saturday
-  start: "09:00", // the first call starts at…
-  end: "17:00", // …and the last one ends by
-  slotMinutes: 30, // calls start on the hour and half-hour; supabase/setup.sql (book_call) checks the same grid
-  minNoticeHours: 12, // the soonest a call can be booked
-  daysAhead: 21, // how far ahead
-  meetingUrl: "", // your Google Meet or Zoom room; until it's set, the confirmation says the link follows by email
+  timezone: "America/Phoenix",
+  days: [1, 2, 3, 4, 5],
+  start: "09:00",
+  end: "17:00",
+  slotMinutes: 30,
+  minNoticeHours: 12,
+  daysAhead: 21,
+  meetingUrl: "",
   callTypes: [
-    {
-      key: "intro",
-      label: "Quick intro chat",
-      minutes: 15,
-      desc: "Tell us the task that eats your week. We'll tell you honestly whether AI or software can take it off your plate.",
-    },
-    {
-      key: "discovery",
-      label: "Discovery call",
-      minutes: 30,
-      desc: "Walk us through the workflow, the systems and the data. You leave with a rough plan for a two-week prototype.",
-    },
+    { key: "intro", label: "Intro call", minutes: 15, desc: "A short call to answer your questions." },
+    { key: "discovery", label: "Longer call", minutes: 30, desc: "A longer conversation." },
   ] as CallType[],
 };
 
 // ------------------------------------------------------------
-//  Services — the three things we do
+//  Roles — the career paths we hire for. Each one gets a card on the home page and /roles, and its own page
+//  at /roles/<slug>. Photos live in public/images/ (16:10).
 // ------------------------------------------------------------
 
-export type ServiceKey = "ai" | "automation" | "software";
+export type RoleKey = "assistant" | "support" | "engineer" | "growth" | "qa" | "operations";
+export type RoleTrack = "Operations" | "Support" | "Engineering" | "Growth";
 
-export interface Service {
-  key: ServiceKey;
-  slug: string; // URL: /services/<slug>
+export interface Role {
+  key: RoleKey;
+  slug: string; // URL: /roles/<slug>
   title: string;
-  desc: string;
-  includes: string[];
-  image: string; // photo for the menu preview and the service page (public/images/svc-*.webp, 16:10)
-}
-
-export const services: Service[] = [
-  {
-    key: "ai",
-    slug: "ai-agents-assistants",
-    title: "AI agents & assistants",
-    desc: "Assistants that answer from your own documents, agents that use your tools, and voice agents that pick up the phone — tested on your real cases before they ship.",
-    includes: ["LLM apps & agents", "RAG over your data", "Voice & chat agents"],
-    image: "/images/svc-llm.webp",
-  },
-  {
-    key: "automation",
-    slug: "ai-automation",
-    title: "AI workflow automation",
-    desc: "The re-typing, copy-paste and chasing handed to AI — documents read, systems updated and people nudged, with a person approving what matters.",
-    includes: ["Document processing", "Workflow automation", "System integrations"],
-    image: "/images/svc-automation.webp",
-  },
-  {
-    key: "software",
-    slug: "custom-software",
-    title: "Custom software & SaaS",
-    desc: "Web apps, internal tools and SaaS products built around how your business runs — including AI features in a product you already have, and builds that need rescuing.",
-    includes: ["Web apps & SaaS", "AI features in your product", "APIs, cloud & rescue"],
-    image: "/images/svc-platform.webp",
-  },
-];
-
-// ------------------------------------------------------------
-//  Technology stack. Each group shows up to 8 tools.
-// ------------------------------------------------------------
-
-export const stackGroups = [
-  { title: "AI models", items: ["Anthropic Claude", "OpenAI GPT", "Google Gemini", "Llama", "Mistral", "Whisper"] },
-  { title: "AI frameworks", items: ["LangChain", "LlamaIndex", "Model Context Protocol", "Hugging Face", "vLLM", "OpenCV"] },
-  { title: "Web & backend", items: ["TypeScript", "React", "Next.js", "Node.js", "Python", "FastAPI"] },
-  { title: "Data & cloud", items: ["PostgreSQL", "pgvector", "Redis", "AWS", "Docker", "Terraform"] },
-];
-
-// ------------------------------------------------------------
-//  Solutions — packaged AI starting points we adapt per client.
-//  Images live in public/images/ (16:10).
-// ------------------------------------------------------------
-
-export interface Solution {
-  id: number;
-  slug: string; // URL: /solutions/<slug>
-  title: string;
-  category: string; // where it works
-  domain: string;
-  service: ServiceKey; // the service it is delivered under
-  summary: string;
-  description: string;
-  capabilities: string[];
-  tech: string[];
-  deliverables: string[];
+  track: RoleTrack;
+  category: string; // the work, in a few words
+  short: string; // one line for cards
+  summary: string; // the role page's lead
   image: string;
+  focus?: string; // object-position, when the subject isn't centred
+  commitment: string;
+  schedule: string;
+  highlights: string[]; // three bullets for cards
+  duties: string[]; // what you'll do
+  requirements: string[]; // what you need
+  bonus: string[]; // nice to have
+  tools: string[];
+  skillsCheck: string; // the role's step 2
+  day: { time: string; title: string; desc: string }[]; // a day in the role
 }
 
-export const solutions: Solution[] = [
+export const roles: Role[] = [
   {
-    id: 1,
-    slug: "document-ai",
-    title: "Document AI",
-    category: "Back office",
-    domain: "Invoices · Forms · Contracts",
-    service: "automation",
-    summary: "Paperwork in, clean data out — invoices, forms and contracts read, checked and posted to your systems, with a person approving the exceptions.",
-    description:
-      "Document AI takes the documents your team re-types every day — invoices, purchase orders, intake forms, delivery notes, contracts — and turns them into structured data. It reads PDFs, scans and email attachments, checks each field against your rules and existing records, and posts the result to your accounting, CRM or ERP. Anything unusual lands in a review queue, so people only handle the exceptions.",
-    capabilities: [
-      "Reads PDFs, scans, photos and email attachments",
-      "Checks every field against your rules and existing records",
-      "Review queue for exceptions, with the source highlighted",
-      "Posts approved data to your accounting, CRM or ERP",
+    key: "assistant",
+    slug: "virtual-assistant",
+    title: "Virtual Assistant",
+    track: "Operations",
+    category: "Calendars, inbox & client calls",
+    short: "Keep a busy team organised: calendars, inboxes, calls and the hundred small things in between.",
+    summary:
+      "You're the person a busy founder or team lead relies on to keep the week running. You manage calendars and inboxes, join and take notes on client calls, follow up on what was agreed and keep documents tidy — so the people you support can focus on the work only they can do.",
+    image: "/images/remote/role-assistant.webp",
+    commitment: "Full-time or part-time",
+    schedule: "Flexible, with 4 hours' overlap with your team",
+    highlights: ["Choose your hours around a shared overlap", "Support one team, not a queue of strangers", "Levels that raise your base rate"],
+    duties: [
+      "Manage calendars: schedule meetings across time zones and protect focus time",
+      "Triage the inbox: draft replies, flag what's urgent and file the rest",
+      "Join client and team calls, take clear notes and send the follow-ups",
+      "Keep documents, trackers and shared drives organised and up to date",
+      "Book travel, prepare agendas and handle small research tasks",
     ],
-    tech: ["Claude / GPT", "Azure Document Intelligence", "Python", "FastAPI", "PostgreSQL", "React"],
-    deliverables: ["Extraction pipeline", "Review & approval app", "System connectors", "Accuracy test set"],
-    image: "/images/sol-document-ai.webp",
+    requirements: [
+      "Clear, friendly written and spoken English",
+      "A reliable computer, a stable internet connection and a headset",
+      "Comfort with Google Workspace or Microsoft 365",
+      "Good judgement about what can wait and what can't",
+    ],
+    bonus: ["Experience as an executive or administrative assistant", "A second language", "Familiarity with Notion, Slack or a CRM"],
+    tools: ["Google Workspace", "Microsoft 365", "Slack", "Notion", "Zoom", "Calendly"],
+    skillsCheck: "Plan a sample week from a messy inbox and calendar, and record a two-minute video introduction.",
+    day: [
+      { time: "09:00", title: "Inbox sweep", desc: "Clear overnight email, flag two urgent replies for your lead." },
+      { time: "10:30", title: "Client call", desc: "Join the weekly client check-in, take notes, send the recap." },
+      { time: "13:00", title: "Calendar Tetris", desc: "Move three meetings so a launch review fits across time zones." },
+      { time: "15:30", title: "Wrap-up", desc: "Update the task tracker and leave a handover note for tomorrow." },
+    ],
   },
   {
-    id: 2,
-    slug: "knowledge-assistant",
-    title: "Knowledge Assistant",
-    category: "Back office",
-    domain: "RAG · Policies · Internal docs",
-    service: "ai",
-    summary: "An assistant that answers your team's questions from your own manuals, policies and past work — always with a link to the source.",
-    description:
-      "Knowledge Assistant gives staff instant, cited answers from the documents your company already has: procedures, handbooks, specifications, past proposals and project files. It respects existing permissions through single sign-on, says so when it doesn't know, and works where your people already are — a web app, Microsoft Teams or Slack. Content owners see which questions are asked, so gaps get filled.",
-    capabilities: [
-      "Cited answers from manuals, policies and project files",
-      "Single sign-on and document-level permissions",
-      "Works in a web app, Microsoft Teams or Slack",
-      "Question analytics that show where documentation is missing",
+    key: "support",
+    slug: "customer-support-specialist",
+    title: "Customer Support Specialist",
+    track: "Support",
+    category: "Chat, email & phone support",
+    short: "Be the friendly, knowledgeable voice customers reach when they need help — by chat, email or phone.",
+    summary:
+      "You help customers of the companies we support get unstuck. You answer questions by chat, email and phone, troubleshoot problems step by step, write up the bugs you find for the product team, and make sure every customer leaves the conversation better off than they arrived.",
+    image: "/images/remote/role-support.webp",
+    focus: "50% 25%",
+    commitment: "Full-time or part-time",
+    schedule: "Shift-based, with shifts you choose each week",
+    highlights: ["Pick your shifts every week", "Full product training before your first ticket", "Clear quality targets, coaching included"],
+    duties: [
+      "Answer customer questions by chat, email and phone",
+      "Troubleshoot account and product issues step by step",
+      "Write up bugs and feedback clearly for the product team",
+      "Keep the help centre accurate as the product changes",
+      "Hit response-time and quality targets you agree with your lead",
     ],
-    tech: ["LlamaIndex", "pgvector", "Claude / GPT", "FastAPI", "React", "Azure"],
-    deliverables: ["Assistant web & chat app", "Ingestion pipeline", "Admin console", "Evaluation set"],
-    image: "/images/sol-knowledge.webp",
+    requirements: [
+      "Excellent written English and a patient, warm tone",
+      "A quiet place to work, a reliable computer and a headset",
+      "Comfort learning new software quickly",
+      "At least 6 months in any customer-facing role",
+    ],
+    bonus: ["Experience with Zendesk, Intercom or Freshdesk", "Technical support or SaaS experience", "A second language"],
+    tools: ["Zendesk", "Intercom", "Freshdesk", "Slack", "Loom", "Jira"],
+    skillsCheck: "Reply to three sample support tickets in writing, and record a two-minute video introduction.",
+    day: [
+      { time: "08:00", title: "Shift start", desc: "Read the handover from the previous shift and check the queue." },
+      { time: "10:00", title: "Live chat", desc: "Help a dozen customers, solving most in the first reply." },
+      { time: "13:30", title: "Bug report", desc: "Reproduce a billing issue and write it up for engineering." },
+      { time: "16:00", title: "Coaching", desc: "A 20-minute review of last week's tickets with your lead." },
+    ],
   },
   {
-    id: 3,
-    slug: "ai-voice-agent",
-    title: "AI Voice Agent",
-    category: "Customer-facing",
-    domain: "Calls · Chat · Scheduling",
-    service: "ai",
-    summary: "Answers calls and chats around the clock, books appointments, qualifies leads and hands anything tricky to a person — with a written summary.",
-    description:
-      "AI Voice Agent picks up when your team can't: after hours, at lunch, or when every line is busy. It answers common questions from your own information, books and reschedules appointments in your calendar or scheduling system, takes messages and qualifies new inquiries. Anything sensitive or unusual is passed to a person, and every conversation arrives as a short written summary instead of a voicemail.",
-    capabilities: [
-      "Natural phone and chat conversations, day and night",
-      "Books and reschedules in your calendar or scheduling system",
-      "Hands off to a person by rules you set",
-      "Call summaries and transcripts sent to your team",
+    key: "engineer",
+    slug: "software-engineer",
+    title: "Software Engineer",
+    track: "Engineering",
+    category: "Web & product engineering",
+    short: "Build and ship real web products with a small, senior team — code reviews, clear specs and no busywork.",
+    summary:
+      "You join a small product team building web applications for the companies we support. You turn clear specs into working features, write tests, review your teammates' code and ship to production — with a senior engineer to pair with and a team that writes things down.",
+    image: "/images/remote/role-engineer.webp",
+    commitment: "Full-time",
+    schedule: "Async-first, with a daily overlap with your team",
+    highlights: ["Ship to production in your first weeks", "Code review and pairing with senior engineers", "Modern stack, clear specs, real ownership"],
+    duties: [
+      "Build features end to end across the front end and the API",
+      "Write tests and keep the code you touch better than you found it",
+      "Review pull requests and pair with teammates on tricky problems",
+      "Estimate honestly and flag risks early",
+      "Document what you build so the next person can pick it up",
     ],
-    tech: ["Twilio", "Whisper", "Claude / GPT", "Node.js", "PostgreSQL", "AWS"],
-    deliverables: ["Voice & chat agent", "Calendar & CRM connectors", "Hand-off rules", "Call review dashboard"],
-    image: "/images/sol-voice-agent.webp",
+    requirements: [
+      "2+ years building web applications professionally",
+      "Strong TypeScript or JavaScript, and React or a similar framework",
+      "Experience with a back-end language and SQL",
+      "Clear written communication for async work",
+    ],
+    bonus: ["Node.js, Python or Go", "Cloud experience (AWS, GCP or Azure)", "Open-source contributions or a public portfolio"],
+    tools: ["TypeScript", "React", "Node.js", "PostgreSQL", "GitHub", "Linear"],
+    skillsCheck: "A short take-home exercise (about 90 minutes), followed by a code walk-through at the interview.",
+    day: [
+      { time: "09:30", title: "Async stand-up", desc: "Post yesterday's progress and today's plan in the team channel." },
+      { time: "10:00", title: "Deep work", desc: "Build the new invoice export and its tests." },
+      { time: "14:00", title: "Pairing", desc: "Work through a tricky migration with a senior engineer." },
+      { time: "16:30", title: "Code review", desc: "Review two pull requests and ship yours to staging." },
+    ],
+  },
+  {
+    key: "growth",
+    slug: "business-development-representative",
+    title: "Business Development Representative",
+    track: "Growth",
+    category: "Leads, proposals & pipeline",
+    short: "Help Jovano win new clients: research leads, write tailored proposals and keep the pipeline moving.",
+    summary:
+      "You help Jovano grow. You research companies that could use a remote team, write tailored proposals and outreach in Jovano's own name, keep every opportunity up to date in the CRM, and hand warm leads to the account team — with clear targets and a commission on the work you help win.",
+    image: "/images/remote/role-growth.webp",
+    commitment: "Full-time or part-time",
+    schedule: "Flexible, with weekly pipeline reviews",
+    highlights: ["Base pay plus commission on won work", "Templates, training and a clear playbook", "Every proposal in Jovano's own name"],
+    duties: [
+      "Research companies and decision-makers that fit our services",
+      "Write tailored proposals and outreach on behalf of Jovano",
+      "Track every lead and conversation in the CRM",
+      "Book introductory calls for the account team",
+      "Review what's working each week and sharpen the playbook",
+    ],
+    requirements: [
+      "Persuasive, error-free written English",
+      "Curiosity about how businesses work and what they need",
+      "Organised, target-driven and comfortable with a CRM",
+      "Some experience in sales, marketing or recruiting",
+    ],
+    bonus: ["Experience with Upwork, LinkedIn Sales Navigator or HubSpot", "A background in B2B services", "A second language"],
+    tools: ["HubSpot", "LinkedIn", "Google Sheets", "Notion", "Slack", "Loom"],
+    skillsCheck: "Research one sample company and write a short tailored proposal, plus a two-minute video introduction.",
+    day: [
+      { time: "09:00", title: "Pipeline check", desc: "Update the CRM and follow up on two warm conversations." },
+      { time: "11:00", title: "Research", desc: "Shortlist ten companies hiring for support roles this month." },
+      { time: "14:00", title: "Proposals", desc: "Write two tailored proposals from the playbook templates." },
+      { time: "16:00", title: "Hand-off", desc: "Brief the account team on a call you booked for Thursday." },
+    ],
+  },
+  {
+    key: "qa",
+    slug: "qa-tester",
+    title: "QA Tester",
+    track: "Engineering",
+    category: "Testing & quality",
+    short: "Find the bugs before customers do: test new features on web and mobile and write reports engineers love.",
+    summary:
+      "You make sure what the product teams ship actually works. You test new features on web and mobile, write clear, reproducible bug reports, keep test plans current and work with engineers to confirm fixes — the last line of defence before a release reaches real customers.",
+    image: "/images/remote/role-qa.webp",
+    commitment: "Full-time or part-time",
+    schedule: "Flexible, aligned to the release calendar",
+    highlights: ["Test real products before they ship", "A path into automation and engineering", "Work closely with product teams"],
+    duties: [
+      "Test new features on web and mobile against the spec",
+      "Write clear, reproducible bug reports with steps and screenshots",
+      "Maintain test plans and regression checklists",
+      "Confirm fixes and sign off releases with the team",
+      "Suggest improvements when something feels confusing to use",
+    ],
+    requirements: [
+      "A sharp eye for detail and a methodical way of working",
+      "Clear written English",
+      "Access to a computer and a smartphone for testing",
+      "Comfort with issue trackers such as Jira or Linear",
+    ],
+    bonus: ["Experience with test automation (Playwright, Cypress)", "Basic SQL or API testing with Postman", "ISTQB or similar certification"],
+    tools: ["Jira", "Linear", "Postman", "Playwright", "BrowserStack", "TestRail"],
+    skillsCheck: "Test a small sample app and report the bugs you find, plus a two-minute video introduction.",
+    day: [
+      { time: "09:00", title: "Release prep", desc: "Review what's in today's build and plan the test run." },
+      { time: "10:30", title: "Exploratory testing", desc: "Find three issues in the new checkout flow on mobile." },
+      { time: "13:30", title: "Bug reports", desc: "Write them up with steps, screenshots and expected results." },
+      { time: "16:00", title: "Sign-off", desc: "Re-test the fixes and sign off the release." },
+    ],
+  },
+  {
+    key: "operations",
+    slug: "data-operations-specialist",
+    title: "Data & Operations Specialist",
+    track: "Operations",
+    category: "Research, data & operations",
+    short: "Keep the data clean and the operations running: research, data entry, reporting and process upkeep.",
+    summary:
+      "You keep the operations of the teams we support running smoothly. You research and enrich data, keep spreadsheets and systems accurate, build simple reports and document the processes everyone relies on — the careful, organised work that makes everything else possible.",
+    image: "/images/remote/role-operations.webp",
+    commitment: "Full-time or part-time",
+    schedule: "Flexible, deadline-based",
+    highlights: ["Flexible, deadline-based hours", "Learn reporting and automation tools", "Clear checklists and quality targets"],
+    duties: [
+      "Research companies, products and contacts and record what you find",
+      "Enter, clean and enrich data in spreadsheets and business systems",
+      "Build simple weekly reports and dashboards",
+      "Write and update step-by-step process documents",
+      "Spot errors and suggest better ways of working",
+    ],
+    requirements: [
+      "Careful, accurate and organised",
+      "Good English reading and writing",
+      "Confident with Google Sheets or Excel",
+      "A reliable computer and internet connection",
+    ],
+    bonus: ["Experience with Airtable, Zapier or a CRM", "Basic formulas, pivot tables or SQL", "A background in admin or bookkeeping"],
+    tools: ["Google Sheets", "Excel", "Airtable", "Zapier", "Notion", "HubSpot"],
+    skillsCheck: "Clean and summarise a small sample data set, plus a two-minute video introduction.",
+    day: [
+      { time: "08:30", title: "Data check", desc: "Run the morning checklist and fix two mismatched records." },
+      { time: "10:00", title: "Research", desc: "Enrich 40 new leads with company size and contact details." },
+      { time: "13:00", title: "Reporting", desc: "Update the weekly dashboard for your team lead." },
+      { time: "15:30", title: "Process docs", desc: "Rewrite the onboarding checklist with a teammate's feedback." },
+    ],
   },
 ];
 
-/** The solutions delivered under a service. */
-export const solutionsFor = (key: ServiceKey) => solutions.filter((s) => s.service === key);
+export const roleTracks: RoleTrack[] = ["Operations", "Support", "Engineering", "Growth"];
+export const rolePath = (r: Pick<Role, "slug">) => `/roles/${r.slug}`;
+export const roleBySlug = (slug?: string) => roles.find((r) => r.slug === slug);
 
 // ------------------------------------------------------------
-//  Delivery process. Activities use "Label: detail" so the UI can emphasise the label.
+//  The path in: five steps from applying to your first payment (home page, /how-it-works, the apply page).
 // ------------------------------------------------------------
 
-export interface Phase {
-  id: number;
+export interface Step {
+  id: string;
   name: string;
-  title: string;
+  time: string; // how long it takes
   summary: string;
-  activities: string[];
-  outputs: string[];
-  image: string; // banner photo on the phase card (public/images/phase-*.webp, 16:10)
+  activities: string[]; // "Label: detail" puts the label in bold
+  needs: string[]; // chips: what you need for this step
+  image: string;
+  focus?: string; // object-position for the banner photo, when its subject isn't centred
 }
 
-export const phases: Phase[] = [
+export const steps: Step[] = [
   {
-    id: 1,
-    name: "Discover",
-    title: "Find the busywork",
-    summary: "A short call about the task that eats your week. We learn how the work is done today, which systems it touches and what 'fixed' would look like.",
+    id: "apply",
+    name: "Apply online",
+    time: "About 5 minutes",
+    summary: "Choose a role, tell us a little about yourself and add a link to your CV or portfolio. No account fees, no long forms.",
     activities: [
-      "Call: A free 15- or 30-minute call with a senior engineer, not a salesperson.",
-      "Workflow walk-through: We watch the task being done and map the systems and data it touches.",
-      "Success measures: What 'done' means for your team, agreed before anything is built.",
-      "Prototype plan: A one-page plan for what we'll prove in the next two weeks.",
+      "Pick your role: choose the career path that fits you best — you can mention a second one too.",
+      "Tell us about you: where you're based, your experience and when you're available.",
+      "Confirmation: you get an email confirming we've received your application.",
     ],
-    outputs: ["Workflow map", "Success measures", "Two-week prototype plan"],
-    image: "/images/phase-discover.webp",
+    needs: ["A CV or LinkedIn link", "10 quiet minutes"],
+    image: "/images/remote/step-apply.webp",
+    focus: "50% 30%",
   },
   {
-    id: 2,
-    name: "Prototype",
-    title: "Two weeks, on us",
-    summary: "A working prototype on your own data within two weeks — free. You see the busywork handled by software before you commit to anything.",
+    id: "skills",
+    name: "Skills check",
+    time: "30–90 minutes, on your schedule",
+    summary: "A short, practical task that mirrors the real work, and a two-minute video introduction. No trick questions.",
     activities: [
-      "Build: The core of the solution working end to end on a sample of your real data.",
-      "Try it: Your team uses it on real tasks and tells us what helps and what doesn't.",
-      "Proposal: If it's worth building properly, a fixed-scope quote with milestones. If not, you've lost nothing.",
+      "A real-world task: a sample support reply, a bug hunt, a short coding exercise — matched to your role.",
+      "Video intro: two minutes about you, recorded in your browser. Re-record as often as you like.",
+      "Your timing: you have five days to send both, whenever suits you.",
     ],
-    outputs: ["Working prototype", "Feedback notes", "Fixed-scope proposal"],
-    image: "/images/phase-prototype.webp",
+    needs: ["Camera & microphone", "A browser"],
+    image: "/images/remote/step-skills.webp",
   },
   {
-    id: 3,
-    name: "Build",
-    title: "Production engineering",
-    summary: "Secure, maintainable software built in short iterations, with a demo every week and automated tests on every change.",
+    id: "interview",
+    name: "Interview",
+    time: "A 30-minute video call",
+    summary: "A relaxed conversation with someone from the team. We talk through your task, and you ask us anything.",
     activities: [
-      "Architecture: A design that fits your systems, your security needs and your budget to run.",
-      "Weekly demos: Working software every week, so progress is something you can click.",
-      "Quality: Code review, automated tests and AI evaluations on every release.",
+      "Real people: you speak with a recruiter and, for most roles, a future team lead.",
+      "Two-way: bring your questions about pay, hours, the team and growth.",
+      "A clear answer: you hear back within five business days, whatever the decision.",
     ],
-    outputs: ["Source code in your repository", "CI/CD pipeline", "Security review"],
-    image: "/images/phase-build.webp",
+    needs: ["A quiet room", "Your questions"],
+    image: "/images/about-remote.webp",
   },
   {
-    id: 4,
-    name: "Launch",
-    title: "Release & training",
-    summary: "A careful rollout to real users, the training your team needs, and everything handed over: code, cloud accounts and documentation.",
+    id: "onboard",
+    name: "Onboarding",
+    time: "Your first week — paid",
+    summary: "Sign your contract, set up your workspace and learn the tools and the team. Training time is paid time.",
     activities: [
-      "Rollout: A staged release, starting with a small group, with monitoring from day one.",
-      "Training: Short sessions for the people who use it and the people who'll maintain it.",
-      "Handover: Code, credentials, runbooks and architecture notes — all in your name.",
+      "Contract & payouts: sign online and choose how you'd like to be paid.",
+      "Training: role and client training at your own pace, with a lead on hand.",
+      "A buddy: a teammate in the same role to answer the small questions.",
     ],
-    outputs: ["Production release", "Training sessions", "Runbooks & documentation"],
-    image: "/images/phase-launch.webp",
+    needs: ["ID for your contract", "Payout details"],
+    image: "/images/remote/step-onboarding.webp",
+    focus: "50% 20%",
   },
   {
-    id: 5,
-    name: "Support",
-    title: "Measure & improve",
-    summary: "Launch is the start. We watch reliability, cost and usage, fix what needs fixing and keep improving it for as long as you want us to.",
+    id: "work",
+    name: "Start working & earning",
+    time: "Paid twice a month",
+    summary: "Join your team, do great work and get paid on time. Every quarter, a review — and a clear path to the next level.",
     activities: [
-      "Monitoring: Uptime, errors, cost and AI quality dashboards with alerts.",
-      "Iteration: Regular releases driven by your team's feedback.",
-      "Support: A support plan sized to the system — or a clean handover to your own team.",
+      "Your team: you're assigned to a client team with a named lead.",
+      "Pay on schedule: twice a month, with a payslip that shows every line.",
+      "Growth: quarterly reviews and levels that raise your base rate.",
     ],
-    outputs: ["Support plan", "Release notes", "Monthly health report"],
-    image: "/images/phase-improve.webp",
+    needs: ["Your best work", "Curiosity"],
+    image: "/images/remote/step-earning.webp",
+    focus: "50% 22%",
   },
 ];
 
 // ------------------------------------------------------------
-//  Company
+//  Pay & growth
 // ------------------------------------------------------------
 
-export const principles = [
-  {
-    title: "The task before the tech",
-    desc: "We start from the work that eats your week, not from a tool we want to sell. If a spreadsheet fix is enough, we'll say so.",
-  },
-  {
-    title: "Senior engineers, direct line",
-    desc: "You talk to the people who design and write the code. No account-manager relay, no juniors learning on your project.",
-  },
-  {
-    title: "Show, don't promise",
-    desc: "A working prototype in two weeks, then a demo every week. You judge progress by software you can use.",
-  },
-  {
-    title: "Yours to keep",
-    desc: "Source code, cloud accounts and documentation belong to you from day one. No lock-in, no hostage hosting.",
-  },
-];
-
-// ------------------------------------------------------------
-//  Team. PLACEHOLDER PROFILES: fictional names on licensed stock portraits.
-//  Replace with your real team before launch — visitors will read these as your staff.
-//  photo: portrait in public/images/team/ (4:5); without one the card shows initials.
-// ------------------------------------------------------------
-
-export interface TeamMember {
+export interface Level {
+  n: number;
   name: string;
-  role: string;
-  bio: string;
-  photo?: string;
-  linkedin?: string;
-  focus?: string[]; // up to three specialities, shown as tags
+  reach: string; // how you get there
+  gains: string; // what changes
+  height: number; // bar height in the chart, 0–100 (illustrative, not a pay figure)
 }
 
-export const team: TeamMember[] = [
-  {
-    name: "Martin Keller",
-    role: "Founder & CEO",
-    bio: "Takes most of the first calls, and makes sure every project starts from a real task that's eating someone's week.",
-    photo: "/images/team/martin.webp",
-    focus: ["Discovery", "Strategy", "Partnerships"],
-  },
-  {
-    name: "Kenji Watanabe",
-    role: "CTO · Head of engineering",
-    bio: "Owns architecture and engineering standards, from the first prototype to production infrastructure and security.",
-    photo: "/images/team/kenji.webp",
-    focus: ["Architecture", "Cloud", "Security"],
-  },
-  {
-    name: "Mei Lin Chen",
-    role: "Lead AI engineer",
-    bio: "Builds and tests the AI behind our assistants, agents and document tools, with a focus on accuracy and safe hand-offs.",
-    photo: "/images/team/mei.webp",
-    focus: ["LLM apps", "Agents", "Evaluation"],
-  },
-  {
-    name: "Marcus Bello",
-    role: "Senior full-stack engineer",
-    bio: "Turns prototypes into fast, reliable web apps and SaaS products, and wires them into the systems clients already use.",
-    photo: "/images/team/marcus.webp",
-    focus: ["React", "Node.js", "Integrations"],
-  },
-  {
-    name: "Grace Park",
-    role: "AI automation engineer",
-    bio: "Automates the copy-paste between systems — document pipelines, integrations and the agents that run them, with approvals built in.",
-    photo: "/images/team/grace.webp",
-    focus: ["Automation", "Document AI", "Integrations"],
-  },
-  {
-    name: "Owen Brady",
-    role: "Product designer",
-    bio: "Shapes interfaces that make AI and complex software feel simple, from first sketch to a design system your team can reuse.",
-    photo: "/images/team/owen.webp",
-    focus: ["Product design", "UX research", "Prototyping"],
-  },
+export const levels: Level[] = [
+  { n: 1, name: "Associate", reach: "Where everyone starts after onboarding.", gains: "Your base rate, full training and a buddy.", height: 38 },
+  { n: 2, name: "Specialist", reach: "Two strong quarterly reviews.", gains: "A higher base rate and first pick of new teams.", height: 56 },
+  { n: 3, name: "Senior", reach: "Consistent quality and helping others.", gains: "A higher rate again, and mentoring new joiners.", height: 76 },
+  { n: 4, name: "Lead", reach: "Lead a small team or a client account.", gains: "Lead pay, a seat in hiring and planning.", height: 98 },
 ];
 
-// Shown beside the contact form
-export const nextSteps = [
-  { title: "Reply from an engineer", desc: `A senior engineer reads your message and replies within ${company.responseTime}.` },
-  { title: "A short call", desc: "15 or 30 minutes about the task, the systems it touches and what 'fixed' looks like." },
-  { title: "Two-week prototype, on us", desc: "Working software on your own data — then a fixed-scope quote only if it's worth building." },
+export const payouts = [
+  { key: "bank", label: "Bank transfer", desc: "Local currency where available" },
+  { key: "wise", label: "Wise", desc: "Low fees, fast in most countries" },
+  { key: "payoneer", label: "Payoneer", desc: "Popular with remote professionals" },
+  { key: "usdt", label: "USDT", desc: "On request, where it's legal" },
 ];
 
-export const companyFile = [
-  { k: "Legal name", v: company.legalName },
-  { k: "Entity", v: company.entity },
-  { k: "Focus", v: company.discipline },
-  { k: "Engagements", v: company.engagements },
+export const payFacts = [
+  { k: "Schedule", v: "Twice a month, on fixed dates" },
+  { k: "Payslip", v: "Every hour, bonus and deduction, line by line" },
+  { k: "Rate", v: "Agreed in writing before you start" },
+  { k: "Reviews", v: "Every quarter, with a clear next level" },
+];
+
+// ------------------------------------------------------------
+//  Why join — photo tiles and reasons
+// ------------------------------------------------------------
+
+export const whyTiles: { title: string; desc: string; image: string; tags: string[] }[] = [
+  { title: "Work from anywhere", desc: "Your office is wherever you open your laptop — home, a café or a co-working space.", image: "/images/remote/why-anywhere.webp", tags: ["Remote", "Any location"] },
+  { title: "Learn from real people", desc: "Training, a buddy and a lead who has done the job before you — always a message away.", image: "/images/remote/why-people.webp", tags: ["Training", "Mentoring"] },
+  { title: "Your own hours", desc: "Flexible schedules with a shared overlap, so work fits around your life — not the other way round.", image: "/images/remote/why-hours.webp", tags: ["Flexible", "Your schedule"] },
+];
+
+export type PerkKey = "anywhere" | "simple" | "human" | "hours" | "pay" | "levels";
+
+export const perks: { key: PerkKey; title: string; desc: string; note: string }[] = [
+  { key: "anywhere", title: "Work from anywhere", desc: "Open to applicants worldwide. All you need is a computer, a reliable connection and the right skills.", note: "Home, a café or a co-working space — your choice, every day." },
+  { key: "simple", title: "A simple, honest application", desc: "Five minutes to apply, no fees, ever. You always know where your application stands.", note: "An email at every step, and a decision within five business days." },
+  { key: "human", title: "Reviewed by a real person", desc: "A recruiter reads every application and every task. Nobody is filtered out by a keyword script.", note: "You'll speak to a person before any decision is made." },
+  { key: "hours", title: "Your hours, your rules", desc: "Choose your schedule or your shifts, with a few hours of overlap so your team can reach you.", note: "Agreed in writing before you start, and easy to change." },
+  { key: "pay", title: "Paid on time, every time", desc: "Twice a month, by bank, Wise, Payoneer or USDT — with a payslip that shows every line.", note: "Every hour, bonus and fee, visible in your workspace." },
+  { key: "levels", title: "Levels that reward growth", desc: "Quarterly reviews and four clear levels. Each one raises your base rate and your responsibilities.", note: "The criteria for every level are written down from day one." },
 ];
 
 // Promises, not results: each one is made elsewhere on the site too
 export const stats = [
-  { value: "2", label: "Weeks to a working prototype — on us" },
-  { value: "1", label: "Business day to a reply from an engineer" },
-  { value: "100%", label: "Of the code and cloud accounts in your name" },
-  { value: "0", label: "Account managers between you and the engineers" },
+  { value: "100%", label: "Remote", desc: "Apply, interview, train and work without leaving home." },
+  { value: String(roles.length), label: "Career paths", desc: "From virtual assistance to software engineering." },
+  { value: "$0", label: "To apply", desc: "We never ask applicants for money. Not now, not later." },
+  { value: "1:1", label: "Support", desc: "A real person to talk to, from your first day." },
 ];
 
 // ------------------------------------------------------------
-//  Photography credits. Freepik's (now Magnific) free licence requires attribution, so every
-//  photo used on the site is listed here and shown at /terms#credits. Pexels photos don't
-//  require it, but are credited alongside for consistency.
+//  The member workspace (home and /how-it-works)
+// ------------------------------------------------------------
+
+export type WorkspaceKey = "overview" | "schedule" | "tasks" | "payments" | "chat" | "learning";
+
+export const workspaceFeatures: { key: WorkspaceKey; title: string; desc: string; headline: string; points: string[] }[] = [
+  { key: "overview", title: "Overview", desc: "Your week at a glance: shifts, tasks, messages and your next payday.", headline: "Your whole week, on one screen", points: ["Hours worked and planned this pay period", "Today's shifts and meetings in your time zone", "Progress towards your next level"] },
+  { key: "schedule", title: "Schedule", desc: "Set your availability and see your shifts and meetings in your own time zone.", headline: "A calendar that works in your time zone", points: ["Mark the hours you're available", "Pick open shifts each week", "Meetings converted to your local time"] },
+  { key: "tasks", title: "Tasks", desc: "Everything assigned to you, with clear priorities and due dates.", headline: "Always know what's next", points: ["Clear priorities from your lead", "Due dates you can plan around", "Hand-over notes between shifts"] },
+  { key: "payments", title: "Payments", desc: "Every payslip and payout, with the hours and bonuses behind it.", headline: "Pay you can check, line by line", points: ["A payslip for every pay period", "Hours, bonuses and fees itemised", "Your full payout history"] },
+  { key: "chat", title: "Team chat", desc: "Message your lead, your buddy and the support team in real time.", headline: "A real person, one message away", points: ["Your team channel and your lead", "A buddy for the small questions", "Support from the Jovano team"] },
+  { key: "learning", title: "Learning", desc: "Role guides, client playbooks and short courses that count towards your next level.", headline: "Learn as you earn", points: ["Role guides and client playbooks", "Short courses at your own pace", "Progress that counts towards your next level"] },
+];
+
+// ------------------------------------------------------------
+//  What to have ready (/how-it-works)
+// ------------------------------------------------------------
+
+export type ReadyKey = "computer" | "internet" | "camera" | "payout";
+
+export const readyList: { key: ReadyKey; title: string; desc: string }[] = [
+  { key: "computer", title: "A computer", desc: "A laptop or desktop from the last five years, with an up-to-date browser." },
+  { key: "internet", title: "A reliable connection", desc: "Stable broadband (10 Mbps or more) — enough for a clear video call." },
+  { key: "camera", title: "Camera & microphone", desc: "For your video intro and interview. A headset helps for support roles." },
+  { key: "payout", title: "A way to get paid", desc: "A bank, Wise or Payoneer account — added after you join, never before." },
+];
+
+// ------------------------------------------------------------
+//  About: values and principles
+// ------------------------------------------------------------
+
+export type ValueKey = "integrity" | "excellence" | "collaboration" | "empowerment";
+
+export const values: { key: ValueKey; title: string; desc: string }[] = [
+  { key: "integrity", title: "Integrity", desc: "We say what we'll pay, pay it on time and never ask applicants for money." },
+  { key: "excellence", title: "Excellence", desc: "We hire carefully, train properly and hold ourselves to the standard we ask of you." },
+  { key: "collaboration", title: "Collaboration", desc: "Remote doesn't mean alone. Every person has a lead, a buddy and a team." },
+  { key: "empowerment", title: "Empowerment", desc: "Clear levels, real feedback and the tools to grow into the next role." },
+];
+
+export const principles = [
+  { title: "Remote by design", desc: "We write things down, work async by default and meet when it matters. Nobody is a second-class citizen for being far away." },
+  { title: "Transparent by default", desc: "Your rate, your hours and how your pay is worked out are in writing, in your workspace, from day one." },
+  { title: "People before process", desc: "A person reviews every application, answers every message and has your back when something goes wrong." },
+];
+
+// For companies hiring a remote team through Jovano (home, About, Contact)
+export const forCompanies = {
+  title: "Need a remote team?",
+  desc: "We build dedicated remote teams — assistants, support, engineers, QA and operations — hired, trained and managed by Jovano, so you get the output without the overhead.",
+  points: ["Vetted, trained people", "One monthly invoice", "Replacements at no extra cost"],
+};
+
+// ------------------------------------------------------------
+//  Photography credits. Pexels photos don't require attribution, but are credited for consistency
+//  and shown at /terms#credits.
 // ------------------------------------------------------------
 
 export interface ImageCredit {
   file: string;
   subject: string;
   author: string;
-  href: string; // the photo's page on its source site
-  source?: "Magnific" | "Pexels"; // defaults to Magnific
+  href: string;
+  source?: "Magnific" | "Pexels";
 }
 
 export const imageCredits: ImageCredit[] = [
-  { file: "sol-knowledge.webp", subject: "Knowledge Assistant — colleagues reviewing work on screen", author: "Apunto Group", href: "https://www.pexels.com/photo/focused-colleagues-working-on-project-in-office-7752873/", source: "Pexels" },
-  { file: "company-team.webp", subject: "Company page, product team — two colleagues mapping ideas with colourful sticky notes on a board", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/creative-team-brainstorming-with-colored-notes-39219856/", source: "Pexels" },
-  { file: "cta-backdrop.webp", subject: "CTA banner backdrop — engineer studying glowing blue data on a large screen in a dark room", author: "Sylvain Cls", href: "https://www.pexels.com/photo/man-in-sunglasses-and-screen-5866051/", source: "Pexels" },
-  { file: "svc-llm.webp", subject: "AI agents & assistants — chat prompt to a language model (Visualising AI artwork by Wes Cockx)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-illustration-depicts-language-models-which-generate-text-it-was-created-by-wes-cockx-as-part-of-the-visualising-ai-project-l-18069695/", source: "Pexels" },
-  { file: "svc-build.webp", subject: "Two engineers building together at a monitor", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/young-professionals-working-with-computers-7988745/", source: "Pexels" },
-  { file: "tech-datacenter.webp", subject: "Data centre — aisle of server racks", author: "Brett Sayles", href: "https://www.pexels.com/photo/server-racks-on-data-center-4508751/", source: "Pexels" },
-  { file: "tech-code.webp", subject: "Code on screen — developer at a dual-monitor standing desk", author: "Christina Morillo", href: "https://www.pexels.com/photo/woman-sitting-in-front-laptop-1181677/", source: "Pexels" },
-  { file: "tech-ai-abstract.webp", subject: "Abstract AI visual — iridescent glass shapes (Visualising AI artwork by Wes Cockx)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-image-visualises-artificial-general-intelligence-or-agi-it-was-created-by-wes-cockx-as-part-of-the-visualising-ai-project-l-17486102/", source: "Pexels" },
-  { file: "proj-saas-platform-rescue.webp", subject: "SaaS Platform Rescue — engineers working through results together at a laptop", author: "Artem Podrez", href: "https://www.pexels.com/photo/people-looking-at-the-screen-of-a-laptop-8519253/", source: "Pexels" },
-  { file: "proj-saas-platform-rescue-2.webp", subject: "SaaS Platform Rescue — team mapping findings on a glass wall", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/collaborative-office-team-brainstorming-39204849/", source: "Pexels" },
-  { file: "proj-clinic-call-assistant-2.webp", subject: "Clinic Call Assistant project — clinician in scrubs going over a tablet with a patient at a clinic", author: "Cedric Fauntleroy", href: "https://www.pexels.com/photo/a-doctor-and-a-patient-looking-at-a-tablet-4266938/", source: "Pexels" },
-  { file: "about-pairing.webp", subject: "About — engineers pair-programming at one screen", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/men-working-on-a-computer-7988742/", source: "Pexels" },
-  { file: "about-research.webp", subject: "About — walking a client through a prototype", author: "Yan Krukau", href: "https://www.pexels.com/photo/women-sitting-at-the-meeting-table-with-laptop-and-digital-tablet-8837735/", source: "Pexels" },
-  { file: "about-remote.webp", subject: "About — hybrid team meeting on video call", author: "MART PRODUCTION", href: "https://www.pexels.com/photo/a-group-of-people-in-a-meeting-using-video-call-7644076/", source: "Pexels" },
-  { file: "about-office.webp", subject: "About — bright, plant-filled studio", author: "Thirdman", href: "https://www.pexels.com/photo/man-and-woman-having-a-conversation-7653773/", source: "Pexels" },
-  { file: "about-celebrate.webp", subject: "About page, launch celebration — team cheering and high-fiving across a table of laptops", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/office-team-having-a-meeting-in-the-room-7988238/", source: "Pexels" },
-  { file: "phase-discover.webp", subject: "Delivery phase — Discover (workshop around a meeting table)", author: "Thirdman", href: "https://www.pexels.com/photo/a-group-of-people-having-a-meeting-in-the-office-7652176/", source: "Pexels" },
-  { file: "phase-prototype.webp", subject: "Delivery phase — Prototype", author: "Akshar Dave🌻", href: "https://www.pexels.com/photo/a-person-holding-black-smartphone-11780441/", source: "Pexels" },
-  { file: "phase-build.webp", subject: "Delivery phase — Build", author: "ThisIsEngineering", href: "https://www.pexels.com/photo/woman-coding-on-computer-3861958/", source: "Pexels" },
-  { file: "phase-improve.webp", subject: "Delivery phase — Support (reviewing metrics on a wall screen)", author: "Artem Podrez", href: "https://www.pexels.com/photo/a-woman-doing-a-presentation-at-a-meeting-5716030/", source: "Pexels" },
-  { file: "proj-clinic-call-assistant.webp", subject: "After-Hours Clinic Call Assistant — doctor taking a phone call at her desk while typing on a laptop", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/female-doctor-using-laptop-and-phone-in-office-39192373/", source: "Pexels" },
-  { file: "sol-voice-agent.webp", subject: "AI Voice Agent — smiling support agent in a headset taking a call at his desk", author: "Yan Krukau", href: "https://www.pexels.com/photo/man-in-white-long-sleeve-shirt-sitting-in-front-of-a-computer-8867374/", source: "Pexels" },
-  { file: "company-client.webp", subject: "Company page, client calls — two colleagues waving to a client on a laptop video call (laptop logo retouched out)", author: "Karola G", href: "https://www.pexels.com/photo/happy-people-talking-on-video-call-on-computer-5908491/", source: "Pexels" },
-  { file: "trust-security.webp", subject: "Security & AI — engineer reviewing code on dual monitors in a calm office", author: "Ofspace LLC, Culture", href: "https://www.pexels.com/photo/a-man-sitting-at-a-desk-with-two-monitors-16323580/", source: "Pexels" },
-  { file: "phase-launch.webp", subject: "Delivery phase — Launch (team celebrating at a laptop)", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/team-celebrating-success-with-a-laptop-39204861/", source: "Pexels" },
-  { file: "svc-platform.webp", subject: "Custom software & SaaS — developer writing HTML on a large monitor", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/back-view-shot-of-a-man-working-on-his-computer-7988113/", source: "Pexels" },
-  { file: "svc-automation.webp", subject: "AI workflow automation — data flowing through a chain of processing stages (Visualising AI artwork by Novoto Studio)", author: "Google DeepMind", href: "https://www.pexels.com/photo/an-artist-s-illustration-of-artificial-intelligence-ai-this-image-was-inspired-by-neural-networks-used-in-deep-learning-it-was-created-by-novoto-studio-as-part-of-the-visualising-ai-pr-17483874/", source: "Pexels" },
-  { file: "proj-invoice-intake-automation.webp", subject: "Invoice Intake Automation project — accountant checking figures on a calculator beside a laptop and a stack of paperwork", author: "Mikhail Nilov", href: "https://www.pexels.com/photo/a-woman-computing-with-a-calculator-8297069/", source: "Pexels" },
-  { file: "proj-invoice-intake-automation-2.webp", subject: "Invoice Intake Automation — modern apartment building with balconies against a blue sky", author: "Jan van der Wolf", href: "https://www.pexels.com/photo/modern-apartment-building-against-clear-blue-sky-37224965/", source: "Pexels" },
-  { file: "sol-document-ai.webp", subject: "Document AI — woman reading through documents at her laptop in a bright office", author: "RDNE Stock project", href: "https://www.pexels.com/photo/a-woman-reading-documents-5915207/", source: "Pexels" },
-  { file: "proj-contract-review-assistant.webp", subject: "Contract Review Assistant project — lawyer highlighting a contract at her office desk", author: "RDNE Stock project", href: "https://www.pexels.com/photo/a-female-lawyer-writing-on-documents-7841463/", source: "Pexels" },
-  { file: "proj-contract-review-assistant-2.webp", subject: "Contract Review Assistant — colleagues reviewing documents together at a table", author: "Kindel Media", href: "https://www.pexels.com/photo/people-working-together-on-the-table-7651829/", source: "Pexels" },
-  { file: "team/martin.webp", subject: "Team portrait — Martin Keller (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/portrait-positive-confident-businessman_3584960.htm" },
-  { file: "team/kenji.webp", subject: "Team portrait — Kenji Watanabe (placeholder)", author: "katemangostar", href: "https://www.magnific.com/free-photo/content-confident-handsome-asian-businessman-looking-camera_3583387.htm" },
-  { file: "team/mei.webp", subject: "Team portrait — Mei Lin Chen (placeholder)", author: "benzoix", href: "https://www.magnific.com/free-photo/young-asian-woman-professional-entrepreneur-standing-office-clothing-smiling-looking-confident-white-background_23649170.htm" },
-  { file: "team/marcus.webp", subject: "Team portrait — Marcus Bello (placeholder)", author: "Bruno Curly", href: "https://www.pexels.com/photo/portrait-of-man-wearing-grey-polo-shirt-26125923/", source: "Pexels" },
-  { file: "team/grace.webp", subject: "Team portrait — Grace Park (placeholder)", author: "Tran Nhu Tuan", href: "https://www.pexels.com/photo/confident-businesswoman-in-professional-attire-29995622/", source: "Pexels" },
-  { file: "team/owen.webp", subject: "Team portrait — Owen Brady (placeholder)", author: "cookie_studio", href: "https://www.magnific.com/free-photo/handsome-bearded-redhead-guy-posing-against-white-wall-with-glasses_11104169.htm" },
+  { file: "remote/hero-main.webp", subject: "Home hero — man in headphones on a video call at his home-office desk", author: "Pexels contributor", href: "https://www.pexels.com/photo/6267056/", source: "Pexels" },
+  { file: "remote/hero-home.webp", subject: "Home hero — working from home at a round wooden table with a laptop and notebook", author: "Tranmautritam", href: "https://www.pexels.com/photo/woman-in-black-tank-shirt-facing-a-black-laptop-computer-on-brown-wooden-round-table-68761/", source: "Pexels" },
+  { file: "remote/role-assistant.webp", subject: "Virtual Assistant — planning in a notebook beside a laptop", author: "Karola G", href: "https://www.pexels.com/photo/person-writing-on-notebook-while-using-a-laptop-5387268/", source: "Pexels" },
+  { file: "remote/role-support.webp", subject: "Customer Support Specialist — woman in a headset at her laptop", author: "Karola G", href: "https://www.pexels.com/photo/a-woman-wearing-headset-and-using-a-laptop-4468124/", source: "Pexels" },
+  { file: "remote/role-engineer.webp", subject: "Software Engineer — developer coding on two monitors", author: "Lisa Fotios", href: "https://www.pexels.com/photo/man-working-on-computers-coding-16129724/", source: "Pexels" },
+  { file: "remote/role-growth.webp", subject: "Business Development — video call with a client from a café", author: "Jack Sparrow", href: "https://www.pexels.com/photo/woman-on-a-vide-conference-5917841/", source: "Pexels" },
+  { file: "remote/role-qa.webp", subject: "QA Tester — testing an app on a phone beside a laptop", author: "iam hogir", href: "https://www.pexels.com/photo/woman-using-touchscreen-17754374/", source: "Pexels" },
+  { file: "remote/role-operations.webp", subject: "Data & Operations — reviewing a spreadsheet on a laptop", author: "Wolf Art", href: "https://www.pexels.com/photo/person-analyzing-data-on-laptop-screen-34639577/", source: "Pexels" },
+  { file: "remote/step-apply.webp", subject: "Apply online — on the sofa with a laptop", author: "Mizuno K", href: "https://www.pexels.com/photo/woman-sitting-on-couch-studying-on-laptop-12911654/", source: "Pexels" },
+  { file: "remote/step-skills.webp", subject: "Skills check — a video call at a home desk with notes", author: "Ivan S", href: "https://www.pexels.com/photo/woman-having-video-call-in-home-office-4240610/", source: "Pexels" },
+  { file: "about-remote.webp", subject: "Interview — a team on a video call with a candidate", author: "MART PRODUCTION", href: "https://www.pexels.com/photo/a-group-of-people-in-a-meeting-using-video-call-7644076/", source: "Pexels" },
+  { file: "remote/step-onboarding.webp", subject: "Onboarding — a group video call on a laptop", author: "cottonbro studio", href: "https://www.pexels.com/photo/a-group-of-people-chatting-in-a-video-call-in-a-laptop-5486096/", source: "Pexels" },
+  { file: "remote/step-earning.webp", subject: "Start earning — celebrating at a laptop in a home office", author: "Vitaly Gariev", href: "https://www.pexels.com/photo/excited-man-celebrating-success-at-laptop-39219501/", source: "Pexels" },
+  { file: "remote/why-anywhere.webp", subject: "Work from anywhere — typing on a laptop at a café", author: "iam hogir", href: "https://www.pexels.com/photo/woman-sitting-with-laptop-17754365/", source: "Pexels" },
+  { file: "remote/why-people.webp", subject: "Learn from real people — two colleagues working through something together", author: "Christina Morillo", href: "https://www.pexels.com/photo/two-woman-sitting-on-sofa-while-using-laptops-1181274/", source: "Pexels" },
+  { file: "remote/why-hours.webp", subject: "Your own hours — morning coffee and a laptop at home", author: "RDNE Stock project", href: "https://www.pexels.com/photo/a-woman-drinking-from-a-mug-while-sitting-6517217/", source: "Pexels" },
+  { file: "cta-backdrop.webp", subject: "Call-to-action backdrop — glowing data on a large screen", author: "Sylvain Cls", href: "https://www.pexels.com/photo/man-in-sunglasses-and-screen-5866051/", source: "Pexels" },
 ];
 
 // ------------------------------------------------------------
-//  Top-bar menus. Services, Solutions and Our work list the data above;
-//  the Company menu is set here. Hovering an item previews it on the right.
+//  Navigation
 // ------------------------------------------------------------
 
-export type CompanyMenuKey = "about" | "approach" | "technology" | "team" | "responsible" | "contact";
+// Home page sections, in order (the navbar highlights the link that covers the one in view)
+export const homeSections = ["why", "workspace", "process", "roles", "pay", "global", "life", "faq"];
 
-export interface CompanyMenuItem {
-  key: CompanyMenuKey;
-  label: string;
-  desc: string;
-  to: string; // page route
-  image: string; // photo shown in the top-bar menu while the item is hovered
-}
-
-export const companyMenu: CompanyMenuItem[] = [
-  { key: "about", label: "About", desc: "Who we are, how we work with clients and what we stand for.", to: "/about", image: "/images/about-office.webp" },
-  { key: "approach", label: "How we work", desc: "From a free call to a two-week prototype to production — and the ways to engage.", to: "/approach", image: "/images/phase-discover.webp" },
-  { key: "technology", label: "Technology", desc: "The models, frameworks and cloud platforms we build with — and how we choose.", to: "/technology", image: "/images/tech-ai-abstract.webp" },
-  { key: "team", label: "Team", desc: "The senior engineers and designers you'll work with directly.", to: "/team", image: "/images/about-celebrate.webp" },
-  { key: "responsible", label: "Security & AI", desc: "How we protect your data, your code and your customers.", to: "/responsible-ai", image: "/images/trust-security.webp" },
-  { key: "contact", label: "Contact", desc: `Tell us what's eating your week — we reply within ${company.responseTime}.`, to: "/contact", image: "/images/company-client.webp" },
+// Top-level links after the Roles menu
+export const navLinks = [
+  { to: "/how-it-works", label: "How it works", sections: ["process", "workspace", "pay"] },
+  { to: "/about", label: "About", sections: ["why", "global", "life"] },
+  { to: "/faq", label: "FAQ", sections: ["faq"] },
+  { to: "/contact", label: "Contact", sections: [] as string[] },
 ];
 
-// Home page sections, in order (the navbar highlights the menu that covers the one in view)
-export const homeSections = ["busywork", "services", "solutions", "projects", "process", "company", "faq", "contact"];
-
-// Every page, for the footer site map
+// Every page, for the footer and the 404 page
 export const sitePages = [
-  { to: "/services", label: "Services" },
-  { to: "/solutions", label: "Solutions" },
-  { to: "/projects", label: "Our work" },
-  { to: "/approach", label: "How we work" },
-  { to: "/technology", label: "Technology" },
-  { to: "/about", label: "About" },
-  { to: "/team", label: "Team" },
-  { to: "/responsible-ai", label: "Security & AI" },
-  { to: "/faq", label: "Questions" },
-  { to: "/book", label: "Book a call" },
+  { to: "/roles", label: "Open roles" },
+  { to: "/how-it-works", label: "How it works" },
+  { to: "/about", label: "About us" },
+  { to: "/faq", label: "FAQ" },
+  { to: "/apply", label: "Apply now" },
   { to: "/contact", label: "Contact" },
 ];
-
-// Page URLs, so every link to a solution or service agrees
-export const solutionPath = (s: Pick<Solution, "slug">) => `/solutions/${s.slug}`;
-export const servicePath = (s: Pick<Service, "slug">) => `/services/${s.slug}`;
 
 export const legalLinks = [
   { to: "/privacy", label: "Privacy policy" },
@@ -542,5 +619,13 @@ export const startEnquiry = (topic?: string) => {
   else go(topic ? `/contact?topic=${encodeURIComponent(topic)}` : "/contact");
 };
 
-/** Opens the booking page (/book); a topic, such as a service or solution title, is carried into the booking form. */
-export const bookCall = (topic?: string) => go(topic ? `/book?topic=${encodeURIComponent(topic)}` : "/book");
+/** The apply page, optionally with a role chosen and an email filled in. */
+export const applyPath = (role?: Pick<Role, "slug">, email?: string) => {
+  const q = new URLSearchParams();
+  if (role) q.set("role", role.slug);
+  if (email) q.set("email", email);
+  const s = q.toString();
+  return s ? `/apply?${s}` : "/apply";
+};
+
+export const startApplication = (role?: Pick<Role, "slug">, email?: string) => go(applyPath(role, email));

@@ -1,11 +1,9 @@
 import { FormEvent, useEffect, useState } from "react";
-import { CalendarDays, Check, Loader2, Send } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, Loader2, Send } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { booking, company, ENQUIRE_EVENT, nextSteps } from "@/data/company";
-import { CONTACT_SUBJECTS, ContactPrefill, PREFILL_EVENT } from "@/components/contact/form";
-import { useAvailability } from "@/hooks/use-availability";
-import { dayParts, localZone, timeLabel } from "@/lib/booking-time";
+import { company, ENQUIRE_EVENT } from "@/data/company";
+import { CONTACT_SUBJECTS, ContactPrefill, PREFILL_EVENT, TOPIC_SUBJECTS } from "@/components/contact/form";
 import { emailInbox, sendToCrm, tag } from "@/lib/leads";
 import { saveMessage } from "@/lib/messagesApi";
 import { copyLine, directLines, tipCls } from "./reach";
@@ -15,12 +13,21 @@ const EMPTY = { name: "", email: "", company: "", phone: "", subject: CONTACT_SU
 type Form = typeof EMPTY;
 
 // Pre-fills the message for a topic, unless the visitor has already started writing
-const forTopic = (topic: string) => (f: Form) =>
-  f.message.trim() ? f : { ...f, subject: CONTACT_SUBJECTS[0], message: `We'd like to talk about ${topic} for our business. ` };
+const forTopic = (topic: string) => (f: Form) => {
+  const subject = TOPIC_SUBJECTS[topic];
+  if (subject) return { ...f, subject };
+  return f.message.trim() ? f : { ...f, message: `About ${topic}: ` };
+};
 
-/** "How do you want to reach us?": email, phone and booking as three action tiles. */
+// What happens after a message is sent
+const nextSteps = [
+  { title: "A person reads it", desc: "Every message goes to a real person on the team, usually the same day." },
+  { title: "We reply by email", desc: `You'll hear back within ${company.responseTime}, with a straight answer.` },
+  { title: "Hiring? We'll set up a call", desc: "For companies, a short call to understand the team you need." },
+];
+
+/** "How do you want to reach us?": email, phone and the application as three action tiles. */
 function ReachUs() {
-  const shortest = Math.min(...booking.callTypes.map((t) => t.minutes));
   const tile = "group relative flex flex-col rounded-2xl border border-line bg-surface p-3.5 transition-colors hover:border-brand/50 hover:bg-brand-soft/50 sm:p-4";
   const icon = "grid h-10 w-10 place-items-center rounded-xl bg-brand-soft text-brand-text transition-colors group-hover:bg-brand group-hover:text-on-brand";
   const title = "mt-3 font-display text-sm font-bold sm:mt-4 sm:text-base";
@@ -40,62 +47,14 @@ function ReachUs() {
             <span className={tipCls}>{l.value}</span>
           </a>
         ))}
-        <Link to="/book" className={tile}>
+        <Link to="/apply" className={tile}>
           <span className={icon}>
-            <CalendarDays className="h-[18px] w-[18px]" />
+            <ArrowUpRight className="h-[18px] w-[18px]" />
           </span>
-          <span className={title}>Book a call</span>
-          <span className={note}>Free {shortest}-minute call</span>
+          <span className={title}>Apply</span>
+          <span className={note}>Ready to join? Start here</span>
         </Link>
       </div>
-    </div>
-  );
-}
-
-/** "Prefer to talk?": the next few open call times, each opening the booking page at that time. */
-function NextTimes() {
-  const { slots, loading } = useAvailability();
-  const zone = localZone();
-  const next = slots.slice(0, 3);
-  const shortest = Math.min(...booking.callTypes.map((t) => t.minutes));
-
-  return (
-    <div className="card p-6">
-      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-subtle">
-        <CalendarDays className="h-4 w-4 text-brand-text" /> Prefer to talk?
-      </p>
-      <p className="mt-3 font-display text-lg font-bold">Book a free {shortest}-minute call</p>
-      {loading ? (
-        <div className="mt-4 flex gap-2" aria-hidden="true">
-          {[0, 1, 2].map((i) => (
-            <span key={i} className="h-14 flex-1 animate-pulse rounded-xl bg-raised" />
-          ))}
-        </div>
-      ) : (
-        next.length > 0 && (
-          <ul className="mt-4 grid grid-cols-3 gap-2" aria-label="Next open times">
-            {next.map((s) => {
-              const p = dayParts(s, zone);
-              return (
-                <li key={s.getTime()}>
-                  <Link
-                    to={`/book?slot=${encodeURIComponent(s.toISOString())}`}
-                    className="flex flex-col items-center rounded-xl border border-line bg-surface py-2 text-center transition-colors hover:border-brand hover:bg-brand-soft hover:text-brand-text"
-                  >
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-subtle">
-                      {p.weekday} {p.day}
-                    </span>
-                    <span className="text-sm font-bold tabular-nums">{timeLabel(s, zone)}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        )
-      )}
-      <Link to="/book" className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-        See all times
-      </Link>
     </div>
   );
 }
@@ -115,7 +74,7 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  // "Start a project" / "Discuss this solution" buttons elsewhere on the page open a fresh form, pre-filled for that solution.
+  // Buttons elsewhere on the page that ask about a topic open a fresh form, pre-filled for it.
   // preventDefault tells them the form is here, so they scroll to it instead of opening /contact.
   useEffect(() => {
     const onEnquire = (e: Event) => {
@@ -128,7 +87,7 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
     return () => window.removeEventListener(ENQUIRE_EVENT, onEnquire);
   }, []);
 
-  // The project planner on /contact writes a complete brief, so it replaces the subject and message
+  // prefillContact() writes a complete subject and message, so it replaces both
   useEffect(() => {
     const onPrefill = (e: Event) => {
       const { subject, message } = (e as CustomEvent<ContactPrefill>).detail;
@@ -224,12 +183,12 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
             label="Contact"
             title={
               <>
-                Let's take something <span className="gradient-text">off your plate.</span>
+                We're here to <span className="gradient-text">help.</span>
               </>
             }
           >
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-2">
-              Describe the task your team keeps doing by hand, or the software you need built. A senior engineer, not a salesperson, replies within {company.responseTime}.
+              A question about a role, your application or hiring a remote team? Send us a message and a real person replies within {company.responseTime}.
             </p>
           </SectionHeading>
         )}
@@ -241,7 +200,15 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
             </Reveal>
 
             <Reveal delay={80} variant="left">
-              <NextTimes />
+              <Link to="/faq" className="card card-hover group flex items-center gap-4 p-6">
+                <span className="icon-tile h-11 w-11 shrink-0">
+                  <ArrowRight className="h-5 w-5" />
+                </span>
+                <span>
+                  <span className="block font-display text-lg font-bold">Quick answer?</span>
+                  <span className="block text-sm text-subtle">Most questions about applying and pay are answered in the FAQ.</span>
+                </span>
+              </Link>
             </Reveal>
 
             <Reveal delay={160} variant="left">
@@ -269,7 +236,7 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
                   <div className="icon-tile h-16 w-16">
                     <Check className="h-8 w-8" />
                   </div>
-                  <h3 className="mt-6 font-display text-3xl font-extrabold">Message received</h3>
+                  <h3 className="mt-6 font-display text-3xl font-medium">Message received</h3>
                   <p className="mt-3 max-w-sm text-ink-2">Thanks for contacting {company.name}. We'll read it carefully and reply within {company.responseTime}.</p>
                   <button type="button" onClick={() => setSent(false)} className="u-link mt-6 text-sm font-semibold text-brand-text">
                     Send another message
@@ -278,7 +245,7 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
               ) : (
                 <div className="space-y-5">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-display text-xl font-bold">Tell us what you need</h3>
+                    <h3 className="font-display text-xl font-bold">Send us a message</h3>
                     <span className="flex items-center gap-2 text-xs font-medium text-subtle">
                       <span className="live-dot" /> Usually replies in a day
                     </span>
@@ -286,19 +253,19 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
                       <label htmlFor="c-name" className={label}>Name</label>
-                      <input id="c-name" value={form.name} onChange={set("name")} placeholder="Jane Doe" autoComplete="name" className={`field ${errors.name ? err : ""}`} />
+                      <input id="c-name" value={form.name} onChange={set("name")} placeholder="Maria Santos" autoComplete="name" className={`field ${errors.name ? err : ""}`} />
                       {errors.name && <p className="mt-1.5 text-xs text-red-500">{errors.name}</p>}
                     </div>
                     <div>
-                      <label htmlFor="c-email" className={label}>Work email</label>
-                      <input id="c-email" type="email" value={form.email} onChange={set("email")} placeholder="jane@company.com" autoComplete="email" className={`field ${errors.email ? err : ""}`} />
+                      <label htmlFor="c-email" className={label}>Email</label>
+                      <input id="c-email" type="email" value={form.email} onChange={set("email")} placeholder="maria@email.com" autoComplete="email" className={`field ${errors.email ? err : ""}`} />
                       {errors.email && <p className="mt-1.5 text-xs text-red-500">{errors.email}</p>}
                     </div>
                   </div>
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="c-company" className={label}>Company <span className="font-normal text-subtle">(optional)</span></label>
-                      <input id="c-company" value={form.company} onChange={set("company")} placeholder="Acme Property Group" autoComplete="organization" className="field" />
+                      <label htmlFor="c-company" className={label}>Company or country <span className="font-normal text-subtle">(optional)</span></label>
+                      <input id="c-company" value={form.company} onChange={set("company")} placeholder="Where you're based, or your company" autoComplete="organization" className="field" />
                     </div>
                     <div>
                       <label htmlFor="c-phone" className={label}>Phone <span className="font-normal text-subtle">(optional)</span></label>
@@ -306,7 +273,7 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
                     </div>
                   </div>
                   <div>
-                    <label htmlFor="c-subject" className={label}>What can we help with?</label>
+                    <label htmlFor="c-subject" className={label}>What's it about?</label>
                     <select id="c-subject" value={form.subject} onChange={set("subject")} className="field">
                       {CONTACT_SUBJECTS.map((s) => (
                         <option key={s}>{s}</option>
@@ -320,7 +287,7 @@ export default function Contact({ showHeading = true }: { showHeading?: boolean 
                       rows={5}
                       value={form.message}
                       onChange={set("message")}
-                      placeholder="The task your team does by hand today, the tools involved, and your timeline…"
+                      placeholder="Your question, the email you applied with, or the team you're looking to hire…"
                       className={`field resize-none ${errors.message ? err : ""}`}
                     />
                     {errors.message && <p className="mt-1.5 text-xs text-red-500">{errors.message}</p>}

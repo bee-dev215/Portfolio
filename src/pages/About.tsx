@@ -1,267 +1,217 @@
-import { Compass, EyeOff, KeyRound, Lock, LucideIcon, Presentation, ScrollText, Users } from "lucide-react";
+import { CSSProperties } from "react";
+import { ArrowRight, Compass, Globe2, Target, UserCheck, Users, Wallet } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
 import CtaBand from "@/components/site/CtaBand";
+import ForCompanies from "@/components/site/ForCompanies";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
-import PageSection from "@/components/company/PageSection";
-import { serviceIcons } from "@/components/site/icons";
-import { team, bookCall, company, companyFile, principles, servicePath, services } from "@/data/company";
-import { confidentiality, practices, studioGallery } from "@/data/company-pages";
+import { roleIcons, valueIcons } from "@/components/site/icons";
+import { company, principles, rolePath, roles, values } from "@/data/company";
 
-// Same order as `principles`
-const principleIcons: LucideIcon[] = [Compass, Users, Presentation, KeyRound];
-const confidentialityIcons: LucideIcon[] = [Lock, ScrollText, EyeOff];
-
-function HeroCollage() {
-  return (
-    <div className="relative pb-14 pr-6 sm:pr-14">
-      <div className="shadow-soft overflow-hidden rounded-[2rem]">
-        <img src="/images/company-team.webp" alt="Two colleagues mapping ideas with sticky notes on a board" width={740} height={555} className="aspect-[4/3] w-full object-cover" />
-      </div>
-      <div className="absolute bottom-0 right-0 w-[48%] overflow-hidden rounded-3xl border-4 border-canvas shadow-soft">
-        <img src="/images/company-client.webp" alt="Two colleagues waving to a client on a video call at a laptop" width={480} height={360} className="aspect-[4/3] w-full object-cover" />
-      </div>
-      {/* Shown once the team has loaded */}
-      {team.length > 0 && (
-        <div className="glass shadow-soft absolute -left-2 bottom-6 hidden items-center gap-3 rounded-2xl border border-line p-3 pr-4 sm:flex">
-          <div className="flex">
-            {team
-              .filter((m) => m.photo)
-              .slice(0, 4)
-              .map((m, i) => (
-                <img key={m.name} src={m.photo} alt="" width={36} height={36} className={`h-9 w-9 rounded-full border-2 border-surface object-cover ${i ? "-ml-3" : ""}`} />
-              ))}
-          </div>
-          <span className="text-sm font-semibold leading-tight">
-            {team.length} people
-            <br />
-            <span className="font-medium text-subtle">one senior team</span>
-          </span>
-        </div>
-      )}
-    </div>
-  );
-}
+const tiles = [
+  { icon: Globe2, title: "Remote-first", desc: "Every role, every step, fully online." },
+  { icon: Users, title: `${roles.length} roles, one team`, desc: "Support, engineering, ops and growth." },
+  { icon: UserCheck, title: "Personal review", desc: "A person reads every application." },
+  { icon: Wallet, title: "Paid on time", desc: "Twice a month, with a clear payslip." },
+];
 
 export default function About() {
-
   return (
-    <PageShell title="About" description={`${company.name}: ${company.discipline}. Who we are, what we stand for and how the company is organized.`}>
+    <PageShell title="About us" description={`${company.name} is a remote-first team hiring capable people worldwide. ${company.mission}`}>
       <PageHero
-        crumbs={[{ label: "About" }]}
-        eyebrow="About us"
+        crumbs={[{ label: "About us" }]}
+        eyebrow="Our mission & story"
         title={
           <>
-            Software and AI that <span className="gradient-text">take work off your desk.</span>
+            Great work, from <span className="gradient-text">anywhere.</span>
           </>
         }
-        lead={company.intro}
+        lead={company.mission}
         actions={
           <>
-            <button onClick={() => bookCall()} className="btn btn-primary px-7 py-3.5">
-              Book a call
-            </button>
-            <Link to="/team" className="btn btn-secondary px-7 py-3.5">
-              Meet the team
+            <Link to="/roles" className="btn btn-primary px-7 py-4 text-base">
+              Explore roles <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/how-it-works" className="btn btn-secondary px-7 py-4 text-base">
+              How it works
             </Link>
           </>
         }
-        aside={<HeroCollage />}
+        aside={
+          <div className="relative">
+            <div className="aspect-[4/3] overflow-hidden rounded-[2rem] border border-line bg-raised shadow-soft">
+              <img src="/images/remote/role-growth.webp" alt="" width={1280} height={800} className="h-full w-full object-cover" />
+            </div>
+            <div className="absolute -bottom-8 -left-2 w-[46%] overflow-hidden rounded-[1.4rem] border-4 border-surface bg-raised shadow-soft sm:-left-8">
+              <img src="/images/remote/why-hours.webp" alt="" width={1280} height={800} className="aspect-[4/3] h-full w-full object-cover" />
+            </div>
+          </div>
+        }
       />
 
-      {/* Story and company facts */}
-      <PageSection band>
-        <div className="grid gap-12 lg:grid-cols-[1.2fr_.8fr] lg:gap-20">
-          <div>
-            <SectionHeading
-              label="Our story"
-              title={
-                <>
-                  The task first, <span className="gradient-text">then the technology.</span>
-                </>
-              }
-            />
-            <Reveal delay={80}>
-              <div className="mt-6 space-y-5 text-lg leading-relaxed text-ink-2">
-                {company.about.map((p, i) => (
-                  <p key={i} className={i === 0 ? "text-ink" : ""}>
-                    {p}
-                  </p>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-          <Reveal delay={120} variant="right" className="lg:sticky lg:top-28 lg:self-start">
-            <div className="card shadow-soft rounded-3xl p-6 sm:p-8">
-              <p className="text-xs font-semibold uppercase tracking-wider text-subtle">Company facts</p>
-              <dl className="mt-5 divide-y divide-line">
-                {companyFile.map((row) => (
-                  <div key={row.k} className="flex flex-col gap-1 py-3.5 first:pt-0 last:pb-0 sm:flex-row sm:justify-between sm:gap-6">
-                    <dt className="text-sm text-subtle">{row.k}</dt>
-                    <dd className="text-sm font-semibold sm:text-right">{row.v}</dd>
-                  </div>
-                ))}
-              </dl>
-              <div className="mt-6 flex items-center gap-2 border-t border-line pt-5 text-sm text-subtle">
-                <span className="live-dot" /> {company.availability}
-              </div>
+      {/* Who we are */}
+      <section className="px-5 pb-24 pt-10 sm:px-8 lg:pb-32">
+        <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
+          <SectionHeading
+            label="Who we are"
+            title={
+              <>
+                Talent is everywhere. <span className="gradient-text">Opportunity should be too.</span>
+              </>
+            }
+          />
+          <Reveal delay={100}>
+            <div className="space-y-5 text-lg leading-relaxed text-ink-2">
+              {company.about.map((p) => (
+                <p key={p}>{p}</p>
+              ))}
             </div>
           </Reveal>
         </div>
-      </PageSection>
-
-      {/* Inside the studio: a photo bento, the first photo large */}
-      <PageSection>
-        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <SectionHeading
-            label="Inside the studio"
-            title={
-              <>
-                Engineers and designers, <span className="gradient-text">at one table.</span>
-              </>
-            }
-          >
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">How a project actually happens: pairing on the hard parts, walking clients through working prototypes, and showing progress every week.</p>
-          </SectionHeading>
-          <Reveal delay={100}>
-            <Link to="/projects" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-              See our projects
-            </Link>
-          </Reveal>
-        </div>
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[repeat(2,15rem)]">
-          {studioGallery.map((g, i) => (
-            <li key={g.src} className={i === 0 ? "sm:col-span-2 lg:row-span-2" : ""}>
-              <Reveal delay={i * 80} variant={i === 0 ? "scale" : "up"} className="h-full">
-                <figure className="shadow-soft group relative h-full overflow-hidden rounded-3xl bg-raised">
-                  <div className="unveil sheen h-full">
-                    <img src={g.src} alt={g.alt} loading="lazy" width={1280} height={800} className={`h-full w-full object-cover ${i === 0 ? "aspect-[4/3] lg:aspect-auto" : "aspect-[16/10] lg:aspect-auto"}`} />
-                  </div>
-                  <div className="photo-fade absolute inset-0" aria-hidden="true" />
-                  <figcaption className={`absolute inset-x-0 bottom-0 p-5 font-medium text-white ${i === 0 ? "text-base sm:p-7" : "text-sm"}`}>{g.caption}</figcaption>
-                </figure>
+        <ul className="mx-auto mt-14 grid max-w-[1240px] grid-cols-2 gap-4 lg:grid-cols-4">
+          {tiles.map((t, i) => (
+            <li key={t.title}>
+              <Reveal delay={i * 70} className="h-full">
+                <div className="card spotlight h-full p-6">
+                  <t.icon className="h-6 w-6 text-brand-text" />
+                  <p className="mt-4 font-display text-lg font-bold">{t.title}</p>
+                  <p className="mt-1 text-sm text-subtle">{t.desc}</p>
+                </div>
               </Reveal>
             </li>
           ))}
         </ul>
-      </PageSection>
+      </section>
 
-      {/* Principles */}
-      <PageSection band>
-        <SectionHeading
-          label="What we stand for"
-          center
-          title={
-            <>
-              Four principles behind <span className="gradient-text">every project.</span>
-            </>
-          }
-        />
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {principles.map((p, i) => {
-            const Icon = principleIcons[i % principleIcons.length];
-            return (
-              <Reveal key={p.title} delay={i * 80} className="h-full">
-                <div className="card card-hover h-full p-6">
-                  <span className="icon-tile h-11 w-11">
-                    <Icon className="h-5 w-5" />
+      {/* Vision & mission */}
+      <section className="px-5 pb-24 sm:px-8 lg:pb-32">
+        <div className="mx-auto grid max-w-[1240px] gap-5 md:grid-cols-2">
+          {[
+            { icon: Compass, k: "Our vision", v: company.vision },
+            { icon: Target, k: "Our mission", v: company.mission },
+          ].map((x, i) => (
+            <Reveal key={x.k} delay={i * 100} variant="scale" className="h-full">
+              <div className="on-dark relative h-full overflow-hidden rounded-[2rem] bg-canvas p-8 text-ink shadow-soft sm:p-12">
+                <div className="mesh pointer-events-none absolute inset-0" aria-hidden="true" />
+                <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
+                <div className="relative">
+                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-volt">
+                    <x.icon className="h-4 w-4" /> {x.k}
                   </span>
-                  <h3 className="mt-5 font-display text-lg font-bold">{p.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-2">{p.desc}</p>
+                  <p className="mt-5 text-balance font-display text-[clamp(1.6rem,3vw,2.5rem)] font-medium leading-[1.1] tracking-tight">{x.v}</p>
                 </div>
-              </Reveal>
-            );
-          })}
-        </div>
-      </PageSection>
-
-      {/* Practices */}
-      <PageSection>
-        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <SectionHeading
-            label="How we're organized"
-            title={
-              <>
-                Three practices, <span className="gradient-text">one team per project.</span>
-              </>
-            }
-          >
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
-              Every project draws on the practices it needs, so AI, automation and software decisions are made together — not handed over the wall.
-            </p>
-          </SectionHeading>
-          <Reveal delay={100}>
-            <Link to="/approach" className="btn btn-secondary shrink-0 px-6 py-3 text-sm">
-              How we work
-            </Link>
-          </Reveal>
-        </div>
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
-          {practices.map((p, i) => (
-            <Reveal key={p.title} delay={i * 80} className="h-full">
-              <article className="card h-full p-7 sm:p-8">
-                <p className="font-display text-sm font-bold text-brand-text">{String(i + 1).padStart(2, "0")}</p>
-                <h3 className="mt-2 font-display text-2xl font-bold tracking-tight">{p.title}</h3>
-                <p className="mt-3 leading-relaxed text-ink-2">{p.desc}</p>
-                <ul className="mt-6 flex flex-wrap gap-2 border-t border-line pt-5">
-                  {p.services.map((key) => {
-                    const s = services.find((x) => x.key === key);
-                    if (!s) return null;
-                    const Icon = serviceIcons[key];
-                    return (
-                      <li key={key}>
-                        <Link to={servicePath(s)} className="chip px-3 py-1.5 text-[13px] transition-colors hover:border-brand/40 hover:bg-brand-soft hover:text-brand-text">
-                          <Icon className="h-3.5 w-3.5" /> {s.title}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </article>
+              </div>
             </Reveal>
           ))}
         </div>
-      </PageSection>
+      </section>
 
-      {/* Confidentiality */}
-      <PageSection id="confidentiality" band>
-        <div className="grid gap-12 lg:grid-cols-[.85fr_1.15fr] lg:gap-20">
+      {/* Values */}
+      <section className="band px-5 py-24 sm:px-8 lg:py-32">
+        <div className="mx-auto max-w-[1240px]">
           <SectionHeading
-            label="Confidentiality"
+            center
+            label="Our values"
             title={
               <>
-                Why you won't see <span className="gradient-text">client logos here.</span>
+                What we <span className="gradient-text">stand for.</span>
               </>
             }
-          >
-            <p className="mt-5 text-lg leading-relaxed text-ink-2">Our clients share customer records, financial documents and products that haven't launched. Keeping that private comes first.</p>
-            <Link to="/responsible-ai" className="btn btn-secondary mt-8 px-6 py-3 text-sm">
-              How we protect client work
-            </Link>
-          </SectionHeading>
-          <div className="space-y-4">
-            {confidentiality.map((c, i) => {
-              const Icon = confidentialityIcons[i % confidentialityIcons.length];
+          />
+          <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {values.map((v, i) => {
+              const Icon = valueIcons[v.key];
               return (
-                <Reveal key={c.title} delay={i * 80} variant="right">
-                  <div className="card flex gap-5 p-6">
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand-text">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <div>
-                      <h3 className="font-display text-lg font-bold">{c.title}</h3>
-                      <p className="mt-1.5 leading-relaxed text-ink-2">{c.desc}</p>
+                <li key={v.key}>
+                  <Reveal delay={i * 80} className="h-full">
+                    <div className="card card-hover h-full p-7">
+                      <span className="icon-tile h-12 w-12">
+                        <Icon className="h-[22px] w-[22px]" />
+                      </span>
+                      <h3 className="mt-6 font-display text-xl font-bold">{v.title}</h3>
+                      <p className="mt-2 leading-relaxed text-ink-2">{v.desc}</p>
                     </div>
-                  </div>
-                </Reveal>
+                  </Reveal>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
-      </PageSection>
+      </section>
 
-      <CtaBand title="Tell us what's eating your week." secondary={{ label: "How we work", to: "/approach" }} />
+      {/* How we work */}
+      <section className="px-5 py-24 sm:px-8 lg:py-32">
+        <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-[.9fr_1.1fr] lg:gap-20">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <SectionHeading
+              label="How we work"
+              title={
+                <>
+                  Built for people who work <span className="gradient-text">from anywhere.</span>
+                </>
+              }
+            />
+            <Reveal delay={120}>
+              <div className="mt-10 overflow-hidden rounded-[1.75rem] border border-line bg-raised shadow-soft">
+                <img src="/images/remote/step-onboarding.webp" alt="" loading="lazy" width={1280} height={800} className="aspect-[16/10] w-full object-cover" />
+              </div>
+            </Reveal>
+          </div>
+          <ol className="space-y-5">
+            {principles.map((p, i) => (
+              <li key={p.title}>
+                <Reveal delay={i * 90}>
+                  <div className="card relative overflow-hidden p-8 sm:p-10">
+                    <span className="pointer-events-none absolute -right-2 -top-6 select-none font-display text-[8rem] font-medium leading-none text-ink/[.05]" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <p className="font-mono text-xs font-bold text-brand-text">{String(i + 1).padStart(2, "0")}</p>
+                    <h3 className="mt-3 font-display text-2xl font-medium tracking-[-0.015em]">{p.title}</h3>
+                    <p className="mt-3 max-w-xl text-lg leading-relaxed text-ink-2">{p.desc}</p>
+                  </div>
+                </Reveal>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Join the team */}
+      <section className="band px-5 py-24 sm:px-8 lg:py-28">
+        <div className="mx-auto max-w-[1240px]">
+          <SectionHeading
+            label="Join the team"
+            title={
+              <>
+                {roles.length} ways to <span className="gradient-text">be part of it.</span>
+              </>
+            }
+          />
+          <ul className="stagger is-in mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {roles.map((r, i) => {
+              const Icon = roleIcons[r.key];
+              return (
+                <li key={r.key} style={{ "--i": i } as CSSProperties}>
+                  <Link to={rolePath(r)} className="card card-hover group flex items-center gap-4 p-5">
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-brand-soft text-brand-text transition-colors group-hover:bg-grad group-hover:text-white">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-display text-lg font-bold">{r.title}</span>
+                      <span className="block truncate text-sm text-subtle">{r.category}</span>
+                    </span>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-subtle" />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </section>
+
+      <ForCompanies />
+      <CtaBand title="Join us — from wherever you are." secondary={{ label: "How it works", to: "/how-it-works" }} />
     </PageShell>
   );
 }

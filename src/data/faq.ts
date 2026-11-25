@@ -1,10 +1,10 @@
 // ============================================================
 //  Frequently asked questions — the FAQ page (/faq) shows them all by category;
-//  the home page and the contact page show the ones marked `featured`.
+//  the home page and the apply page show the ones marked `featured`.
 //  `id` is the question's anchor (/faq#id) — keep it stable once published, links may point to it.
 // ============================================================
 
-export type FaqCategory = "The free prototype" | "Working with us" | "AI & quality" | "Security & data" | "Pricing & timelines";
+export type FaqCategory = "Applying" | "Roles & hours" | "Pay & levels" | "Working with Jovano" | "Trust & safety";
 
 export interface Faq {
   id: string;
@@ -14,142 +14,130 @@ export interface Faq {
   featured?: boolean;
 }
 
-export const faqCategories: FaqCategory[] = ["The free prototype", "Working with us", "AI & quality", "Security & data", "Pricing & timelines"];
+export const faqCategories: FaqCategory[] = ["Applying", "Roles & hours", "Pay & levels", "Working with Jovano", "Trust & safety"];
 
 export const faqs: Faq[] = [
-  // ---------- The free prototype ----------
+  // ---------- Applying ----------
   {
-    id: "free-prototype",
-    category: "The free prototype",
+    id: "who-can-apply",
+    category: "Applying",
     featured: true,
-    q: "What does the free two-week prototype include?",
-    a: "One task, built end to end on a sample of your real data, in two weeks. It starts with a short call and a one-page plan of what we'll prove. At the end, your team tries it on real work and you get a demo and an honest recommendation: a fixed-scope quote if it's worth building properly, or a plain \"not worth it\" if it isn't.",
+    q: "Who can apply?",
+    a: "Anyone, anywhere, who is of working age where they live, has the skills for the role and can work with a reliable computer and internet connection. We hire on skills and attitude, not on where you went to school or which country you're in.",
   },
   {
-    id: "whats-the-catch",
-    category: "The free prototype",
+    id: "cost-to-apply",
+    category: "Applying",
     featured: true,
-    q: "Is there a catch?",
-    a: "No. There's no fee and no obligation to continue. A working prototype is the quickest way for both sides to see whether the work is worth doing, and most of the effort goes into understanding your task — which we'd need to do anyway. If you don't go ahead, you owe nothing and we delete the sample data you shared.",
+    q: "Does it cost anything to apply?",
+    a: "No. Applying, the skills check, the interview, onboarding and training are all free, and we will never ask you for a payment, a deposit or a \"starter kit\". If anyone claiming to be from Jovano asks you for money, it isn't us — please report it to us.",
   },
   {
-    id: "prototype-fit",
-    category: "The free prototype",
-    q: "What kind of task fits a two-week prototype?",
-    a: "Repetitive work with a clear input and a clear result: reading invoices or forms, answering routine calls or questions, moving data between systems, answering questions from your own documents. If the whole problem is bigger, we pick the slice that proves the idea. If software isn't the answer, we'll tell you on the call.",
+    id: "what-to-prepare",
+    category: "Applying",
+    featured: true,
+    q: "What do I need to apply?",
+    a: "About five minutes, a CV or LinkedIn profile (a portfolio link for engineers), and a computer with a camera and microphone for the video intro later on. You don't need to set up any payment details until after you've joined.",
   },
   {
-    id: "what-we-need",
-    category: "The free prototype",
-    q: "What do you need from us?",
-    a: "One person who knows the work and can make decisions, some time with the people who do the task today, a sample of real examples to build on, and test or read-only access to the systems involved. For the prototype, that means a kickoff and a demo — not weeks of meetings.",
+    id: "after-apply",
+    category: "Applying",
+    featured: true,
+    q: "What happens after I apply?",
+    a: "You'll get an email confirming we've received your application. A recruiter reads it, and if it's a fit we send you a short, role-specific skills check and ask for a two-minute video intro. After that comes a 30-minute interview, and then a decision — within five business days of each step.",
+  },
+  {
+    id: "not-accepted",
+    category: "Applying",
+    q: "What if my application isn't accepted?",
+    a: "We'll tell you, rather than leaving you waiting. Where we can, we'll say what would make a stronger application. You're welcome to apply again after three months, or straight away for a different role.",
+  },
+  {
+    id: "multiple-roles",
+    category: "Applying",
+    q: "Can I apply for more than one role?",
+    a: "Yes. Pick the role that fits you best on the form and mention a second one in your note. If your skills suit a different role better, the recruiter will suggest it.",
   },
 
-  // ---------- Working with us ----------
+  // ---------- Roles & hours ----------
   {
-    id: "the-call",
-    category: "Working with us",
+    id: "choose-hours",
+    category: "Roles & hours",
     featured: true,
-    q: "What happens on the call?",
-    a: "You talk to a senior engineer, not a salesperson. Tell us about the task that eats your team's week — how it's done today, which systems it touches and what \"fixed\" would look like. We'll tell you honestly whether software can help and, if it can, what a two-week prototype would prove. Book 15 minutes for a quick intro, or 30 for a fuller discovery call.",
+    q: "Can I choose my own hours?",
+    a: "Mostly, yes. Most roles are flexible with a few hours of overlap with your team each day. Support roles are shift-based, and you choose your shifts each week. Your schedule is agreed in writing before you start.",
   },
   {
-    id: "who-owns-the-code",
-    category: "Working with us",
-    featured: true,
-    q: "Who owns the code?",
-    a: "You do. Source code lives in a repository you own, infrastructure runs in cloud accounts in your name, and documentation is handed over as we go — from day one, not at the end. No lock-in, and no hosting you can't move.",
+    id: "full-or-part-time",
+    category: "Roles & hours",
+    q: "Are the roles full-time or part-time?",
+    a: "Both, for most roles. Software engineering is full-time. Everything else can be full-time or part-time (at least 20 hours a week) — tell us what you're looking for on the form.",
   },
   {
-    id: "existing-systems",
-    category: "Working with us",
-    q: "Can you work with the systems we already use?",
-    a: "Yes — that's most of the job. We connect to accounting, CRM, scheduling, practice-management and e-commerce tools through their APIs, and through exports, email or desktop automation when there's no API. You don't need to replace what already works.",
-  },
-  {
-    id: "time-zones",
-    category: "Working with us",
-    q: "Do you work with clients in other time zones?",
-    a: "Yes. We work with clients in different time zones, and calls are booked in your local time — the booking page shows the available times in your own time zone. Weekly demos are set at a time that suits both sides, and written notes follow every call.",
-  },
-  {
-    id: "small-business",
-    category: "Working with us",
-    q: "Do you work with small businesses?",
-    a: "Yes. Small teams often feel the busywork most, because there's nobody else to hand it to. The free prototype lets you see whether it works before you spend anything, and builds are scoped to what you need, not to an enterprise budget.",
-  },
-  {
-    id: "take-over-project",
-    category: "Working with us",
-    q: "Can you take over a project someone else started?",
-    a: "Yes. We start with an audit of the code, infrastructure and documentation, and tell you plainly what state it's in. Then we stabilize what's there and move it forward in small, safe steps — without a risky rewrite unless one is truly needed.",
-  },
-  {
-    id: "own-engineers",
-    category: "Working with us",
-    q: "Do we need our own engineers?",
-    a: "No. We can design, build and run the system for you. If you do have engineers, we work alongside them in your repositories and hand over with documentation and training, so they can run and extend it without us.",
+    id: "experience-needed",
+    category: "Roles & hours",
+    q: "Do I need experience?",
+    a: "It depends on the role. Engineering asks for at least two years of professional experience; support asks for six months in any customer-facing job. For the other roles, the skills check matters more than your CV.",
   },
 
-  // ---------- AI & quality ----------
+  // ---------- Pay & levels ----------
   {
-    id: "wrong-answers",
-    category: "AI & quality",
-    q: "How do you stop the AI from getting things wrong?",
-    a: "Answers are grounded in your own documents and cite their sources, and the assistant says so when it doesn't know. Every release is tested against real examples from your business, consequential actions wait for a person's approval, and everything is logged so a mistake can be traced and fixed.",
+    id: "how-paid",
+    category: "Pay & levels",
+    featured: true,
+    q: "How and when do I get paid?",
+    a: "Twice a month, on fixed dates, by bank transfer, Wise, Payoneer or — on request, where it's legal — USDT. Every payout comes with a payslip that shows your hours, any bonuses and any deductions, line by line.",
   },
   {
-    id: "which-models",
-    category: "AI & quality",
-    q: "Which AI models do you use?",
-    a: "We choose per task. That might be a commercial model such as GPT, Claude or Gemini, or an open model such as Llama or Mistral, depending on quality, cost and privacy — and we can run open models inside your own cloud when data must stay there. The product is built so the model can be swapped later.",
+    id: "how-much",
+    category: "Pay & levels",
+    q: "How much does each role pay?",
+    a: "Rates depend on the role, your level and your experience, and are agreed in writing before you start. We share the range for your role at the interview, so you never have to guess — and you can always ask earlier.",
   },
   {
-    id: "replace-staff",
-    category: "AI & quality",
-    q: "Will AI replace our staff?",
-    a: "That's not what we build. The aim is to take the re-typing, chasing and copy-paste off people's desks, so they spend their time on the work that needs them. People stay in control of anything that matters.",
+    id: "levels",
+    category: "Pay & levels",
+    q: "What are levels?",
+    a: "Four steps — Associate, Specialist, Senior and Lead — that each raise your base rate and your responsibilities. You move up through quarterly reviews based on the quality of your work and how you help your team. The criteria for each level are in your workspace.",
+  },
+  {
+    id: "paid-training",
+    category: "Pay & levels",
+    q: "Is training paid?",
+    a: "Yes. Once you've signed your contract, onboarding and training time is paid at your base rate. The skills check you do while applying is short and unpaid, and it's never real client work.",
   },
 
-  // ---------- Security & data ----------
+  // ---------- Working with Jovano ----------
   {
-    id: "training-on-our-data",
-    category: "Security & data",
-    featured: true,
-    q: "Do you train AI on our data?",
-    a: "No. We use AI providers under business terms that exclude your data from model training, or run open models in your own cloud. Your data is used to do your work, not to improve anyone else's model. If a project ever needs a model trained on your data, it's trained for you alone, in your account, and only with your written agreement.",
+    id: "who-do-i-work-for",
+    category: "Working with Jovano",
+    q: "Who will I actually be working for?",
+    a: "You're hired, trained and paid by Jovano, and assigned to a team that supports one of our client companies. You'll know the company, your team lead and your responsibilities before your first day.",
   },
   {
-    id: "nda",
-    category: "Security & data",
-    q: "Will you sign an NDA?",
-    a: "Yes. We'll sign your NDA, or offer ours, before you share anything sensitive — including the sample data for a prototype. Client work stays confidential by default, which is also why you won't find client logos on this site.",
+    id: "contract",
+    category: "Working with Jovano",
+    q: "Will I have a contract?",
+    a: "Yes. Every team member signs a written contract — usually as an independent contractor — that sets out your role, your rate, your hours and how either side can end it. You'll have time to read it and ask questions before you sign.",
   },
   {
-    id: "data-security",
-    category: "Security & data",
-    q: "How do you keep our data secure?",
-    a: "Data is encrypted in transit and at rest, access is limited by role with single sign-on and multi-factor authentication, and secrets are kept out of code. When a project handles health information we design to support HIPAA requirements, and card payments go through Stripe to keep your PCI scope small. We're happy to answer your security questionnaire, too.",
+    id: "equipment",
+    category: "Working with Jovano",
+    q: "Do I need my own equipment?",
+    a: "Yes: a computer from the last five years, a stable internet connection and, for support roles, a headset. Any software or accounts you need for the work are provided by Jovano or the team you join.",
   },
 
-  // ---------- Pricing & timelines ----------
+  // ---------- Trust & safety ----------
   {
-    id: "pricing",
-    category: "Pricing & timelines",
-    featured: true,
-    q: "How does pricing work?",
-    a: "The two-week prototype is free. If it's worth building properly, we quote a fixed price for an agreed scope, with milestones, before any paid work starts — so the number doesn't move unless the scope does. Ongoing support, or a dedicated team, is billed monthly and sized to the work.",
+    id: "spot-scams",
+    category: "Trust & safety",
+    q: "How do I know a message is really from Jovano?",
+    a: "We only contact applicants from our company email address, and we never ask for money, gift cards, crypto deposits, or your bank password. We'll never ask you to apply for jobs or attend interviews under someone else's name. If something feels off, email us before you reply.",
   },
   {
-    id: "timeline",
-    category: "Pricing & timelines",
-    q: "How long does a project take?",
-    a: "The prototype takes two weeks. A full build depends on scope, and the proposal sets out the milestones before work starts. You see working software in a demo every week, so progress is never a surprise.",
-  },
-  {
-    id: "support",
-    category: "Pricing & timelines",
-    q: "Do you offer support and maintenance?",
-    a: "Yes. We monitor uptime, errors, cost and AI quality, fix what needs fixing and ship improvements based on your team's feedback. Support plans are sized to the system and billed monthly — or, if you'd rather run it yourselves, we hand over with runbooks and training.",
+    id: "my-data",
+    category: "Trust & safety",
+    q: "What happens to my personal information?",
+    a: "We use it only to review your application and, if you join, to run your contract and payroll. We don't sell it. You can ask us to see or delete it at any time — see our privacy policy for the details.",
   },
 ];

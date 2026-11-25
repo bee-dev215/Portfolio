@@ -1,23 +1,20 @@
-import { ArrowUp, CalendarDays } from "lucide-react";
+import { FormEvent, useState } from "react";
+import { ArrowRight, ArrowUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import { company, legalLinks, servicePath, services, sitePages, solutionPath, solutions } from "@/data/company";
-import { projectPath, projects } from "@/data/projects";
+import { company, legalLinks, rolePath, roles, sitePages, startApplication } from "@/data/company";
 import { scrollToTop } from "@/lib/scroll";
 import { Monogram, Wordmark } from "./Navbar";
-import ContactLine from "./ContactLine";
 import { copyLine, directLines } from "./reach";
+import Reveal from "./Reveal";
 
-const linkCls = "foot-link text-sm text-ink-2 transition-colors hover:text-ink";
-const headCls = "text-xs font-semibold uppercase tracking-[0.14em] text-subtle";
+const linkCls = "text-sm font-medium text-white/80 transition-colors hover:text-white";
+const headCls = "text-xs font-bold uppercase tracking-[0.16em] text-sky-300";
 
-// Company column: every page that isn't a service, solution or project
-const companyPages = sitePages.filter((p) => !["/solutions", "/projects", "/services"].includes(p.to));
-
-function LinkColumn({ title, to, links, className = "" }: { title: string; to?: string; links: { to: string; label: string }[]; className?: string }) {
+function LinkColumn({ title, links }: { title: string; links: { to: string; label: string }[] }) {
   return (
-    <div className={className}>
-      <p className={headCls}>{to ? <Link to={to} className="transition-colors hover:text-ink">{title}</Link> : title}</p>
-      <ul className="mt-5 space-y-3">
+    <div>
+      <p className={headCls}>{title}</p>
+      <ul className="mt-5 space-y-3.5">
         {links.map((l) => (
           <li key={l.to}>
             <Link to={l.to} className={linkCls}>
@@ -30,102 +27,127 @@ function LinkColumn({ title, to, links, className = "" }: { title: string; to?: 
   );
 }
 
+/** "Start your application": an email field that opens the apply form with the address filled in. */
+function StartApplication() {
+  const [email, setEmail] = useState("");
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    startApplication(undefined, email.trim() || undefined);
+  };
+  return (
+    <form onSubmit={submit} className="mt-8 max-w-sm">
+      <label htmlFor="foot-email" className={headCls}>
+        Start your application
+      </label>
+      <div className="mt-4 flex gap-2 rounded-full border border-white/15 bg-white/5 p-1.5 focus-within:border-white/40">
+        <input
+          id="foot-email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email address"
+          autoComplete="email"
+          className="min-w-0 flex-1 bg-transparent px-3 text-sm text-white outline-none placeholder:text-white/45"
+        />
+        <button type="submit" className="btn btn-primary shrink-0 px-4 py-2.5 text-sm">
+          Get started <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+      <p className="mt-2.5 text-xs text-white/55">Free to apply. Takes about five minutes.</p>
+    </form>
+  );
+}
+
+/** Closing call to action: a soft gradient card with everything centred. */
+export function ClosingCta({
+  eyebrow = "Start your application",
+  title = "Your next role is one application away.",
+  text = "Choose a role, tell us about yourself and we'll take it from there.",
+  to = "/apply",
+  label = "Apply now",
+  caption = "Free to apply · About five minutes · Reviewed by a real person",
+}: {
+  eyebrow?: string;
+  title?: string;
+  text?: string;
+  to?: string;
+  label?: string;
+  caption?: string;
+}) {
+  return (
+    <section className="px-5 py-20 sm:px-8 lg:py-28">
+      <Reveal variant="scale" className="mx-auto max-w-[1200px]">
+        <div className="wash-card rounded-[2rem] border border-line px-6 py-14 text-center sm:px-12 lg:py-20">
+          <p className="eyebrow">{eyebrow}</p>
+          <h2 className="mx-auto mt-4 max-w-3xl text-balance font-display text-[clamp(2rem,4.4vw,3.4rem)] font-normal leading-[1.08] tracking-[-0.02em] text-ink">{title}</h2>
+          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-ink-2">{text}</p>
+          <Link to={to} className="btn btn-primary mt-8 px-8 py-4 text-base">
+            {label} <ArrowRight className="h-4 w-4" />
+          </Link>
+          <p className="mt-4 text-sm text-subtle">{caption}</p>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
 export default function Footer({ cta = true }: { cta?: boolean }) {
   const year = new Date().getFullYear();
-  // Projects column: the featured ones, then a link to the rest
-  const footerProjects = [
-    ...projects.filter((p) => p.featured).map((p) => ({ to: projectPath(p), label: p.title })),
-    { to: "/projects", label: `All ${projects.length} projects` },
-  ];
 
   return (
-    <footer className="foot-tucked on-dark relative isolate overflow-hidden bg-canvas px-5 sm:px-8">
-      {/* Backdrop: pooled brand light and a faint dot grid. No rule along the top: the lime tape laid across the seam marks where the footer starts */}
-      <div className="mesh pointer-events-none absolute inset-0 -z-10 opacity-80" aria-hidden="true" />
-      <div className="dot-grid pointer-events-none absolute inset-0 -z-10 opacity-60" aria-hidden="true" />
+    <>
+      {cta && <ClosingCta />}
+      <footer className="foot-navy foot-tucked relative px-5 text-white sm:px-8">
+        <div className="mx-auto max-w-[1240px]">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:grid-cols-[1.6fr_1.1fr_.9fr_.9fr]">
+            <div className="col-span-2 sm:col-span-3 lg:col-span-1">
+              <div className="flex items-center gap-3">
+                <Monogram className="h-11 w-11 [--logo-mark:url('/images/logo-mark-dark.webp')]" />
+                <span className="leading-tight">
+                  <span className="sr-only">{company.name}</span>
+                  <Wordmark className="h-[22px] text-white" />
+                  <span className="mt-1 block text-xs text-white/60">{company.discipline}</span>
+                </span>
+              </div>
+              <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-white/75">A remote-first team hiring capable people worldwide — fair pay, on time, and a real person on the other side.</p>
+              <StartApplication />
+            </div>
 
-      <div className="mx-auto max-w-[1240px]">
-        {/* CTA card */}
-        {cta && (
-          <div className="foot-cta cta-flow relative overflow-hidden rounded-[2rem] p-8 text-white sm:p-12 lg:p-16">
-            <div className="foot-cta-glow pointer-events-none absolute inset-0" aria-hidden="true" />
-            <div className="relative grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
+            <LinkColumn title="Open roles" links={roles.map((r) => ({ to: rolePath(r), label: r.title }))} />
+            <LinkColumn title="Company" links={sitePages.filter((p) => p.to !== "/roles")} />
+            <div className="space-y-10">
               <div>
-                <h2 className="max-w-2xl font-display text-[clamp(2.1rem,5vw,4rem)] font-extrabold leading-[1] tracking-[-0.04em]">
-                  Ready to hand off the busywork?
-                </h2>
-                <p className="mt-4 max-w-lg text-white/80">
-                  Book a free call with a senior engineer. If software can take the task off your plate, the first two weeks of building are on us.
-                </p>
+                <p className={headCls}>Get in touch</p>
+                <ul className="mt-5 space-y-3.5">
+                  {directLines.map((l) => (
+                    <li key={l.key}>
+                      <a href={l.href} onClick={() => copyLine(l.value)} className={`${linkCls} break-all`}>
+                        {l.value}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="flex flex-col items-start gap-5 lg:items-center lg:justify-self-end">
-                <Link
-                  to="/book"
-                  className="btn magnetic group bg-volt px-7 py-4 text-base font-semibold text-[#0b1020] shadow-[0_16px_34px_-12px_rgb(0_0_0/.5)] hover:bg-white"
-                >
-                  Book a free call
-                  <CalendarDays className="h-4 w-4" />
-                </Link>
-                <ContactLine />
-              </div>
+              <LinkColumn title="Legal" links={[...legalLinks, { to: "/terms#credits", label: "Image credits" }]} />
             </div>
           </div>
-        )}
 
-        <div className={`${cta ? "mt-16 lg:mt-20" : ""} grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:grid-cols-[1.5fr_1fr_1.15fr_.9fr_.9fr]`}>
-          <div className="col-span-2 sm:col-span-3 lg:col-span-1">
-            <div className="flex items-center gap-3">
-              <Monogram className="h-11 w-11" />
-              <span className="leading-tight">
-                <span className="sr-only">{company.name}</span>
-                <Wordmark className="h-[22px]" />
-                <span className="mt-1 block text-xs text-subtle">{company.discipline}</span>
-              </span>
-            </div>
-            <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-2">
-              AI agents, automations and custom software that take the busywork off your team.
+          <div className="mt-16 flex flex-col gap-5 border-t border-white/10 py-7 text-sm text-white/55 sm:flex-row sm:items-center sm:justify-between">
+            <p>
+              © {year} {company.legalName}. All rights reserved. · Remote-first. Open to applicants worldwide.
             </p>
-            <p className={`mt-9 ${headCls}`}>Get in touch</p>
-            <ul className="mt-4 space-y-3">
-              {directLines.map((l) => (
-                <li key={l.key}>
-                  <a href={l.href} onClick={() => copyLine(l.value)} className={linkCls}>
-                    {l.value}
-                  </a>
-                </li>
-              ))}
-              <li>
-                <Link to="/book" className={linkCls}>
-                  Book a call
-                </Link>
-              </li>
-            </ul>
+            <button
+              onClick={() => scrollToTop()}
+              data-back-to-top
+              className="grid h-11 w-11 place-items-center rounded-full border border-white/20 text-white transition-colors hover:bg-white hover:text-[#0f1f3d]"
+              aria-label="Back to top"
+              title="Back to top"
+            >
+              <ArrowUp className="h-4 w-4" />
+            </button>
           </div>
-
-          <LinkColumn title="Services" to="/services" links={services.map((x) => ({ to: servicePath(x), label: x.title }))} />
-          <div className="space-y-9">
-            <LinkColumn title="Solutions" to="/solutions" links={solutions.map((x) => ({ to: solutionPath(x), label: x.title }))} />
-            <LinkColumn title="Our work" to="/projects" links={footerProjects} />
-          </div>
-          <LinkColumn title="Company" links={companyPages} />
-          <LinkColumn title="Legal" links={[...legalLinks, { to: "/terms#credits", label: "Image credits" }]} />
         </div>
-
-        <div className="mt-16 flex flex-col gap-5 border-t border-line py-7 text-sm text-subtle sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {year} {company.legalName}. All rights reserved.
-          </p>
-          <button
-            onClick={() => scrollToTop()}
-            data-back-to-top
-            className="grid h-11 w-11 place-items-center rounded-full border border-line bg-surface/70 text-ink transition-[background-color,border-color,color,scale] hover:border-brand/60 hover:bg-brand hover:text-white active:scale-95"
-            aria-label="Back to top"
-            title="Back to top"
-          >
-            <ArrowUp className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 }

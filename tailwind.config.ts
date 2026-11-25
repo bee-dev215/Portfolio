@@ -80,7 +80,7 @@ export default {
       fontFamily: {
         mono: ['JetBrains Mono', 'monospace'],
         sans: ['Inter', 'sans-serif'],
-        display: ['"Bricolage Grotesque"', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['"Baloo 2"', 'Inter', 'system-ui', 'sans-serif'],
         body: ['Inter', 'system-ui', 'sans-serif'],
         code: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },

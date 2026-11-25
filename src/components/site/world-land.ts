@@ -1,4 +1,4 @@
-// Land on a 1.5° dot grid for the hero network map, rasterised from Natural Earth's 1:50m land (via world-atlas).
+// Land on a 1.5° dot grid for the world map (NetworkMap.tsx), rasterised from Natural Earth's 1:50m land (via world-atlas).
 // Rows run from 82.5°N southward and columns from 180°W eastward, one step apart; odd rows sit half a step east
 // so the dots pack like a honeycomb. One bit per dot (1 = land), row by row, high bit first, base64-encoded.
 export const LAND = {

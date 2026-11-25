@@ -2,56 +2,50 @@ import { useEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/hooks/use-motion";
 import { LAND } from "./world-land";
 
-// Exchange points of the network, as [longitude, latitude]
+// Cities where remote team members live and work, as [longitude, latitude] (illustrative: we hire everywhere)
 const HUBS = {
-  sfo: [-122.4, 37.8],
-  dal: [-96.8, 32.8],
-  chi: [-87.6, 41.9],
-  nyc: [-74, 40.7],
-  mia: [-80.2, 25.8],
+  phx: [-112.1, 33.4],
+  tor: [-79.4, 43.7],
   mex: [-99.1, 19.4],
   bog: [-74.1, 4.7],
+  lim: [-77, -12],
   sao: [-46.6, -23.5],
-  scl: [-70.7, -33.4],
-  hnl: [-157.9, 21.3],
+  bue: [-58.4, -34.6],
+  lis: [-9.1, 38.7],
   lon: [-0.1, 51.5],
-  mad: [-3.7, 40.4],
-  fra: [8.7, 50.1],
-  sto: [18.1, 59.3],
-  mow: [37.6, 55.8],
+  war: [21, 52.2],
+  kyi: [30.5, 50.5],
   cai: [31.2, 30],
   los: [3.4, 6.5],
+  acc: [-0.2, 5.6],
   nbo: [36.8, -1.3],
-  jnb: [28, -26.2],
-  dxb: [55.3, 25.3],
-  bom: [72.9, 19.1],
-  sin: [103.8, 1.35],
-  hkg: [114.2, 22.3],
-  sel: [127, 37.6],
-  tyo: [139.7, 35.7],
+  cpt: [18.4, -33.9],
+  khi: [67, 24.9],
+  blr: [77.6, 13],
+  dac: [90.4, 23.8],
+  sgn: [106.7, 10.8],
+  mnl: [121, 14.6],
+  cgk: [106.8, -6.2],
   syd: [151.2, -33.9],
 } as const;
 type Hub = keyof typeof HUBS;
 const HUB_KEYS = Object.keys(HUBS) as Hub[];
 
-// Land trunks and the big subsea cables between the hubs. They are never drawn; their particles sit along them.
-// Pairs more than 180° apart cross the Pacific and wrap around the map's edges.
+// Who works with whom: one team across every time zone. Never drawn; their particles sit along them.
 const LINKS: [Hub, Hub][] = [
-  ["sfo", "chi"], ["sfo", "dal"], ["chi", "nyc"], ["dal", "mia"], ["dal", "mex"], ["nyc", "mia"],
-  ["mia", "bog"], ["mia", "sao"], ["bog", "sao"], ["sao", "scl"], ["bog", "scl"],
-  ["nyc", "lon"], ["nyc", "mad"], ["sao", "los"], ["hnl", "sfo"], ["tyo", "sfo"], ["syd", "hnl"],
-  ["lon", "fra"], ["lon", "mad"], ["fra", "sto"], ["sto", "mow"], ["fra", "mow"], ["fra", "cai"], ["mad", "los"],
-  ["los", "jnb"], ["jnb", "nbo"], ["nbo", "dxb"], ["cai", "dxb"], ["mow", "dxb"], ["mow", "sel"],
-  ["dxb", "bom"], ["bom", "sin"], ["sin", "hkg"], ["sin", "syd"], ["hkg", "sel"], ["hkg", "tyo"], ["sel", "tyo"],
+  ["phx", "tor"], ["phx", "mex"], ["mex", "bog"], ["bog", "lim"], ["lim", "sao"], ["sao", "bue"], ["bog", "sao"],
+  ["tor", "lon"], ["bog", "lis"], ["sao", "los"], ["lis", "lon"], ["lon", "war"], ["war", "kyi"], ["lis", "acc"],
+  ["acc", "los"], ["los", "nbo"], ["nbo", "cpt"], ["cai", "nbo"], ["kyi", "cai"], ["cai", "khi"], ["khi", "blr"],
+  ["blr", "dac"], ["dac", "sgn"], ["sgn", "mnl"], ["sgn", "cgk"], ["mnl", "syd"], ["cgk", "syd"], ["mnl", "phx"],
 ];
 
 const MIN_MAP_W = 960; // narrower screens show part of a map this wide…
-const NARROW_CENTER = -20; // …centred on the Atlantic, where the busiest cables cross (longitude)
+const NARROW_CENTER = 10; // …centred between the Americas and Asia (longitude)
 const ALONG = [0.5]; // where each route's particles sit, as a share of the way between its hubs
 // Edge fade, baked into the drawing (a CSS mask would re-composite the whole layer every frame): full strength inside
 // an ellipse around the middle, easing out toward the sides and bottom, and clear of the header at the top.
 // Fractions of the canvas size.
-const EDGE = { x: 0.5, y: 0.46, rx: 0.68, ry: 0.78, from: 0.55, top: [0.04, 0.2] } as const;
+const EDGE = { x: 0.5, y: 0.46, rx: 0.68, ry: 0.78, from: 0.55, top: [0, 0.12] } as const;
 
 type Pt = { x: number; y: number };
 // A light at a fixed spot: its edge fade, and the period (ms per radian) and phase of its blink
@@ -75,10 +69,10 @@ const palette = (el: Element) => {
 };
 
 /**
- * Hero backdrop: a dotted world map with a global network on it. The hubs breathe gently and particles along the routes
- * blink on their own beat. Pauses off screen; under reduced motion it draws the map once and stays still.
+ * A dotted world map with the team's cities on it. The cities breathe gently and particles between them blink on their
+ * own beat. Pauses off screen; under reduced motion it draws the map once and stays still.
  */
-export default function NetworkMap() {
+export default function NetworkMap({ className = "" }: { className?: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const baseRef = useRef<HTMLCanvasElement>(null);
   const liveRef = useRef<HTMLCanvasElement>(null);
@@ -299,7 +293,7 @@ export default function NetworkMap() {
   }, []);
 
   return (
-    <div ref={wrapRef} className="net-map pointer-events-none absolute inset-x-0 top-0" aria-hidden="true">
+    <div ref={wrapRef} className={`net-map pointer-events-none absolute inset-0 ${className}`} aria-hidden="true">
       <canvas ref={baseRef} />
       <canvas ref={liveRef} />
     </div>

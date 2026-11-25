@@ -10,20 +10,13 @@ import { internalLink, lazyPage, preloadPath, startNavigation } from "@/lib/rout
 import Home from "./pages/Home";
 
 // Inner pages load on demand, so the home page stays light
-const SolutionsIndex = lazyPage(["/solutions"], () => import("./pages/SolutionsIndex"));
-const SolutionDetail = lazyPage(["/solutions/:slug"], () => import("./pages/SolutionDetail"));
-const ProjectsIndex = lazyPage(["/projects"], () => import("./pages/ProjectsIndex"));
-const ProjectDetail = lazyPage(["/projects/:slug"], () => import("./pages/ProjectDetail"));
-const ServicesIndex = lazyPage(["/services"], () => import("./pages/ServicesIndex"));
-const ServiceDetail = lazyPage(["/services/:slug"], () => import("./pages/ServiceDetail"));
+const RolesIndex = lazyPage(["/roles"], () => import("./pages/RolesIndex"));
+const RoleDetail = lazyPage(["/roles/:slug"], () => import("./pages/RoleDetail"));
+const HowItWorks = lazyPage(["/how-it-works"], () => import("./pages/HowItWorks"));
 const About = lazyPage(["/about"], () => import("./pages/About"));
-const Approach = lazyPage(["/approach"], () => import("./pages/Approach"));
-const TechnologyPage = lazyPage(["/technology"], () => import("./pages/TechnologyPage"));
-const TeamPage = lazyPage(["/team"], () => import("./pages/TeamPage"));
-const ResponsibleAi = lazyPage(["/responsible-ai"], () => import("./pages/ResponsibleAi"));
 const FaqPage = lazyPage(["/faq"], () => import("./pages/FaqPage"));
+const Apply = lazyPage(["/apply"], () => import("./pages/Apply"));
 const ContactPage = lazyPage(["/contact"], () => import("./pages/ContactPage"));
-const BookCall = lazyPage(["/book"], () => import("./pages/BookCall"));
 const Legal = lazyPage(["/privacy", "/terms"], () => import("./pages/Legal"));
 const Admin = lazyPage(["/admin/:section?"], () => import("./pages/Admin"));
 const NotFound = lazyPage([], () => import("./pages/NotFound"));
@@ -32,7 +25,7 @@ const queryClient = new QueryClient();
 
 /**
  * Fetches a page's code as soon as a link to it is pointed at, focused or touched, and starts the progress bar when
- * one is clicked. The booking page, where most buttons lead, is fetched once the browser is idle.
+ * one is clicked. The apply page, where most buttons lead, is fetched once the browser is idle.
  */
 function usePagePreloading() {
   useEffect(() => {
@@ -45,7 +38,7 @@ function usePagePreloading() {
       const a = internalLink(e.target);
       if (a) startNavigation(a.href);
     };
-    const idle = window.requestIdleCallback ? window.requestIdleCallback(() => preloadPath("/book")) : window.setTimeout(() => preloadPath("/book"), 2000);
+    const idle = window.requestIdleCallback ? window.requestIdleCallback(() => preloadPath("/apply")) : window.setTimeout(() => preloadPath("/apply"), 2000);
     document.addEventListener("pointerover", intent, { passive: true });
     document.addEventListener("focusin", intent);
     document.addEventListener("touchstart", intent, { passive: true });
@@ -75,20 +68,13 @@ const App = () => {
             <Suspense fallback={<div className="site-root site-bg min-h-screen" />}>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/solutions" element={<SolutionsIndex />} />
-                <Route path="/solutions/:slug" element={<SolutionDetail />} />
-                <Route path="/projects" element={<ProjectsIndex />} />
-                <Route path="/projects/:slug" element={<ProjectDetail />} />
-                <Route path="/services" element={<ServicesIndex />} />
-                <Route path="/services/:slug" element={<ServiceDetail />} />
+                <Route path="/roles" element={<RolesIndex />} />
+                <Route path="/roles/:slug" element={<RoleDetail />} />
+                <Route path="/how-it-works" element={<HowItWorks />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/approach" element={<Approach />} />
-                <Route path="/technology" element={<TechnologyPage />} />
-                <Route path="/team" element={<TeamPage />} />
-                <Route path="/responsible-ai" element={<ResponsibleAi />} />
                 <Route path="/faq" element={<FaqPage />} />
+                <Route path="/apply" element={<Apply />} />
                 <Route path="/contact" element={<ContactPage />} />
-                <Route path="/book" element={<BookCall />} />
                 <Route path="/privacy" element={<Legal doc="privacy" />} />
                 <Route path="/terms" element={<Legal doc="terms" />} />
                 <Route path="/admin/:section?" element={<Admin />} />

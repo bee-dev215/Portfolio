@@ -65,25 +65,19 @@ export default function PageHero({
 }) {
   return (
     <section className="relative overflow-hidden px-5 pb-16 pt-28 sm:px-8 sm:pt-32 lg:pb-24 lg:pt-36">
-      <div className="hero-backdrop" aria-hidden="true">
-        <div className="clouds pointer-events-none absolute inset-0" />
-        <div className="dot-grid pointer-events-none absolute inset-0 opacity-70" />
-        <div className="orb -left-[10%] top-[-10%] h-[30vw] w-[30vw] bg-iris/30" />
-        <div className="orb right-[-8%] top-[20%] h-[24vw] w-[24vw] bg-sky2/30" style={{ animationDelay: "-6s" }} />
-        <div className="motes" />
-      </div>
+      <div className="wash pointer-events-none absolute inset-0" aria-hidden="true" />
 
       <div className={`relative mx-auto grid max-w-[1240px] grid-cols-[minmax(0,1fr)] items-center gap-12 ${aside ? "lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)] lg:gap-16" : ""}`}>
         <div className={aside ? "min-w-0" : "max-w-3xl"}>
           <Breadcrumbs crumbs={crumbs} />
           {eyebrow && (
-            <p className="fade-up eyebrow mt-8" style={{ animationDelay: ".05s" }}>
+            <p className="fade-up eyebrow eyebrow-pill mt-8" style={{ animationDelay: ".05s" }}>
               <span className="h-1.5 w-1.5 rounded-full bg-grad" />
               {eyebrow}
             </p>
           )}
           <h1
-            className={`hero-title fade-up ${eyebrow ? "mt-6" : "mt-8"} text-balance font-display text-[clamp(2.6rem,6.6vw,5.25rem)] font-extrabold leading-[.98] tracking-[-0.045em]`}
+            className={`hero-title fade-up ${eyebrow ? "mt-6" : "mt-8"} text-balance font-display text-[clamp(2.5rem,5.6vw,4.5rem)] font-normal leading-[1.05] tracking-[-0.025em] text-ink`}
             style={{ animationDelay: ".1s" }}
           >
             {markHighlights(title)}

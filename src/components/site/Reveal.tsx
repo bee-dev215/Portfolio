@@ -62,8 +62,8 @@ function splitWords(title: ReactNode) {
 }
 
 /**
- * Section header: eyebrow pill (with an optional index, "01"), a large title (wrap a phrase in .gradient-text to
- * highlight it with the marker stroke) and an optional lead.
+ * Section header: a small uppercase eyebrow, a large light title (wrap a phrase in .gradient-text to set it in the
+ * brand colour) and an optional lead. `split` puts the lead in a second column on wide screens, beside the title.
  */
 export function SectionHeading({
   index,
@@ -71,25 +71,42 @@ export function SectionHeading({
   title,
   children,
   center = false,
+  split = false,
 }: {
   index?: string;
   label: string;
   title: ReactNode;
   children?: ReactNode;
   center?: boolean;
+  split?: boolean;
 }) {
   const [ref, visible] = useInView<HTMLDivElement>();
 
-  return (
-    <div ref={ref} className={`rv rv-up ${visible ? "rv-in" : ""} ${center ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}`}>
+  const head = (
+    <>
       <span className="eyebrow">
         <span className="h-1.5 w-1.5 rounded-full bg-grad" />
         {index && <span className="opacity-60">{index} /</span>}
         {label}
       </span>
-      <h2 className="section-title mt-6 text-balance font-display text-[clamp(2.4rem,5.4vw,4.5rem)] font-extrabold leading-[1] tracking-[-0.04em]">
+      <h2 className="section-title mt-4 text-balance font-display text-[clamp(2.1rem,4.4vw,3.5rem)] font-normal leading-[1.08] tracking-[-0.02em] text-ink">
         {splitWords(title)}
       </h2>
+    </>
+  );
+
+  if (split) {
+    return (
+      <div ref={ref} className={`rv rv-up ${visible ? "rv-in" : ""} grid items-end gap-6 lg:grid-cols-2 lg:gap-16`}>
+        <div className="max-w-2xl">{head}</div>
+        {children && <div className="split-lead max-w-xl lg:justify-self-end [&>p]:mt-0">{children}</div>}
+      </div>
+    );
+  }
+
+  return (
+    <div ref={ref} className={`rv rv-up ${visible ? "rv-in" : ""} ${center ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}`}>
+      {head}
       {children}
     </div>
   );

@@ -1,10 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { team, imageCredits } from "@/data/company";
+import { imageCredits } from "@/data/company";
 import { LegalDocKey, legalDocs } from "@/data/legal";
 import PageShell from "@/components/site/PageShell";
 import { Breadcrumbs } from "@/components/site/PageHero";
-import { projects } from "@/data/projects";
 
 const CREDITS = { id: "credits", heading: "Image credits" };
 
@@ -12,13 +11,7 @@ export default function Legal({ doc }: { doc: LegalDocKey }) {
   const d = legalDocs[doc];
   const toc = doc === "terms" ? [...d.sections, CREDITS] : d.sections;
 
-  // Credit only the photos the site still shows: not portraits or project photos it no longer uses
-  const credits = imageCredits.filter(({ file }) => {
-    const path = `/images/${file}`;
-    if (file.startsWith("team/")) return team.some((m) => m.photo === path);
-    if (file.startsWith("proj-")) return projects.some((p) => p.image === path || p.gallery.src === path);
-    return true;
-  });
+  const credits = imageCredits;
 
   return (
     <PageShell title={d.title} footerCta>
@@ -52,7 +45,7 @@ export default function Legal({ doc }: { doc: LegalDocKey }) {
           <article className="max-w-3xl">
             <Breadcrumbs crumbs={[{ label: d.title }]} />
             <span className="eyebrow mt-8">Legal · Last updated {d.updated}</span>
-            <h1 className="mt-6 font-display text-5xl font-extrabold tracking-tight sm:text-6xl">{d.title}</h1>
+            <h1 className="mt-6 font-display text-5xl font-medium tracking-[-0.015em] sm:text-6xl">{d.title}</h1>
             <p className="mt-6 text-lg leading-relaxed text-ink-2">{d.intro}</p>
 
             {d.sections.map((s) => (

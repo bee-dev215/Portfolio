@@ -1,226 +1,71 @@
-import { CSSProperties, useEffect, useRef, useState } from "react";
-import { Check, Gift } from "lucide-react";
+import { CSSProperties } from "react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { offer, phases } from "@/data/company";
-import { isFreePhase } from "@/data/company-pages";
-import { prefersReducedMotion } from "@/hooks/use-motion";
-import { glideTo, markLanding } from "@/lib/scroll";
+import { steps } from "@/data/company";
 import Reveal, { SectionHeading } from "./Reveal";
 
-// Cards pin below the navbar, each a little lower than the last so the stack shows its edges
-const STICKY_TOP = 104;
-const STACK_STEP = 18;
-
-function Activity({ text }: { text: string }) {
-  const i = text.indexOf(": ");
-  if (i === -1) return <>{text}</>;
-  return (
-    <>
-      <strong className="font-semibold text-ink">{text.slice(0, i)}</strong>
-      <span className="text-ink-2"> — {text.slice(i + 2)}</span>
-    </>
-  );
-}
-
 /**
- * Scroll-driven stack: each phase card pins in place and the next one slides up over it.
- * Writes --cover (0–1, how far the next card has covered this one) on every card and
- * reports the phase currently on top; the phase map beside it can also glide straight to a phase.
+ * The five steps from applying to the first payday, as numbered columns on a grey band. The last step is the payoff,
+ * so it is set apart as a dark card. `more` adds links to /apply and /how-it-works (off on that page itself).
  */
-function useCardStack(count: number) {
-  const cards = useRef<(HTMLElement | null)[]>([]);
-  const [active, setActive] = useState(0);
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const reduced = prefersReducedMotion();
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      let top = 0;
-      let total = 0;
-      cards.current.forEach((el, i) => {
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        const pin = STICKY_TOP + i * STACK_STEP;
-        if (r.top <= pin + 40) top = i;
-        const next = cards.current[i + 1];
-        let cover = 0;
-        if (next && !reduced) {
-          const nr = next.getBoundingClientRect();
-          cover = Math.min(1, Math.max(0, (r.bottom - nr.top) / Math.max(1, r.height)));
-        }
-        total += cover;
-        // light up a card's checklist once it is well into view, rather than only once it pins
-        el.classList.toggle("is-reached", r.top < window.innerHeight * 0.6);
-        el.style.setProperty("--cover", cover.toFixed(4));
-      });
-      setActive(top);
-      // Continuous 0–1 across the whole stack: the sum of how far each card has been covered
-      setProgress(reduced ? top / Math.max(1, count - 1) : total / Math.max(1, count - 1));
-    };
-    const schedule = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-    };
-  }, [count]);
-
-  // Glides to the point where a card has just pinned on top of the stack. A pinned card's own box sits at its pin,
-  // so its resting place is worked out from the list's top and the cards before it
-  const goTo = (i: number) => {
-    const list = cards.current[0]?.parentElement;
-    const card = cards.current[i];
-    if (!list || !card) return;
-    const restingTop = () => {
-      let y = list.getBoundingClientRect().top + window.scrollY;
-      for (const el of cards.current.slice(0, i)) if (el) y += el.offsetHeight + parseFloat(getComputedStyle(el).marginBottom);
-      return y;
-    };
-    glideTo(() => restingTop() - (STICKY_TOP + i * STACK_STEP) + 1).then((arrived) => {
-      if (arrived) markLanding(card.firstElementChild as HTMLElement);
-    });
-  };
-
-  return { cards, active, progress, goTo };
-}
-
-/** The delivery phases, with the free prototype marked. `more` adds a link to the full approach page (off on that page itself). */
 export default function Process({ more = true }: { more?: boolean }) {
-  const { cards, active, progress, goTo } = useCardStack(phases.length);
-
   return (
-    <section id="process" className="band px-5 py-24 sm:px-8 lg:py-32">
-      <div className="mx-auto grid max-w-[1240px] gap-12 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)] lg:gap-16">
-        {/* Left: heading and a live progress map that follows the stack */}
-        <div className="lg:sticky lg:top-[104px] lg:self-start">
-          <SectionHeading
-            label="Process"
-            title={
-              <>
-                From the first call <span className="gradient-text">to working software.</span>
-              </>
-            }
-          >
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-2">
-              {phases.length} phases, each with clear outputs and a decision point. The prototype is on us: working software on your own data in two weeks, before you commit to anything.
-            </p>
-            {more && (
-              <Link to="/approach" className="btn btn-secondary mt-8 px-6 py-3 text-sm">
-                How we work
+    <section id="process" className="band px-5 py-24 sm:px-8 lg:py-28">
+      <div className="mx-auto max-w-[1200px]">
+        <SectionHeading
+          label="How it works"
+          title={
+            <>
+              From application <span className="gradient-text">to your first payday.</span>
+            </>
+          }
+        >
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">
+            {steps.length} clear steps, all online. You always know where your application stands, and you hear back within five business days at every step.
+          </p>
+        </SectionHeading>
+
+        <Reveal delay={100}>
+          <ol className="stagger mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:gap-5">
+            {steps.map((s, i) => {
+              const last = i === steps.length - 1;
+              return (
+                <li
+                  key={s.id}
+                  style={{ "--i": i } as CSSProperties}
+                  className={last ? "rounded-[1.5rem] bg-ink p-6 text-canvas lg:-mt-0" : "step-col pt-6"}
+                >
+                  <span
+                    className={`grid h-10 w-10 place-items-center rounded-full font-mono text-sm font-bold ${
+                      last ? "bg-volt text-[#0b1020]" : "bg-surface text-brand-text"
+                    }`}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className={`mt-5 font-display text-[1.35rem] font-medium leading-tight ${last ? "text-canvas" : "text-ink"}`}>{s.name}</h3>
+                  <p className={`mt-1 text-xs font-semibold uppercase tracking-wider ${last ? "text-canvas/60" : "text-brand-text"}`}>{s.time}</p>
+                  <p className={`mt-3 text-[15px] leading-relaxed ${last ? "text-canvas/80" : "text-ink-2"}`}>{s.summary}</p>
+                </li>
+              );
+            })}
+          </ol>
+        </Reveal>
+
+        <div className="mt-12 flex flex-col gap-6 border-t border-line pt-8 lg:flex-row lg:items-center lg:justify-between">
+          <p className="max-w-2xl text-[15px] leading-relaxed text-ink-2">
+            Free at every step. No fees, no deposits, no starter kits — and a real person reads every application and every task.
+          </p>
+          {more && (
+            <div className="flex flex-wrap gap-3">
+              <Link to="/apply" className="btn btn-primary px-6 py-3 text-sm">
+                Start your application <ArrowRight className="h-4 w-4" />
               </Link>
-            )}
-          </SectionHeading>
-
-          <Reveal delay={120} className="hidden lg:block">
-            <ol className="relative mt-10 space-y-1" aria-label="Delivery phases">
-              <span className="absolute bottom-5 left-[17px] top-5 w-px bg-line" aria-hidden="true" />
-              <span
-                className="bg-grad absolute left-[16px] top-5 w-[3px] origin-top rounded-full"
-                style={{ height: "calc(100% - 40px)", transform: `scaleY(${progress})` }}
-                aria-hidden="true"
-              />
-              {phases.map((p, i) => {
-                const state = i === active ? "now" : i < active ? "done" : "next";
-                return (
-                  <li key={p.id} aria-current={state === "now" ? "step" : undefined}>
-                    <button onClick={() => goTo(i)} className="group relative flex w-full items-center gap-4 rounded-2xl py-2 pr-3 text-left">
-                      <span
-                        className={`stack-node relative z-[1] grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full text-sm font-bold ${
-                          state === "now"
-                            ? "is-now bg-grad text-white"
-                            : state === "done"
-                              ? "bg-brand-soft text-brand-text"
-                              : "border border-line bg-surface text-subtle"
-                        }`}
-                      >
-                        {state === "done" ? <Check className="h-4 w-4" /> : i + 1}
-                      </span>
-                      <span className={`transition-all duration-500 ${state === "now" ? "translate-x-1" : "opacity-60 group-hover:translate-x-1 group-hover:opacity-100"}`}>
-                        <span className="flex items-center gap-2 font-display text-lg font-bold text-ink">
-                          {p.name}
-                          {isFreePhase(p) && (
-                            <span className="chip border-sun/30 bg-sun/10 px-2 py-0.5 text-[11px] font-semibold text-ink">
-                              <Gift className="h-3 w-3 text-sun" /> Free
-                            </span>
-                          )}
-                        </span>
-                        <span className="block text-sm text-subtle">{p.title}</span>
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
-          </Reveal>
+              <Link to="/how-it-works" className="btn btn-secondary px-6 py-3 text-sm">
+                See the full process
+              </Link>
+            </div>
+          )}
         </div>
-
-        {/* Right: the stack */}
-        <ol className="relative" aria-label="What happens in each phase">
-          {phases.map((p, i) => {
-            const free = isFreePhase(p);
-            return (
-              <li
-                key={p.id}
-                ref={(el) => (cards.current[i] = el)}
-                className="stack-card mb-6 last:mb-0 lg:sticky lg:mb-10"
-                style={{ top: STICKY_TOP + i * STACK_STEP, zIndex: i + 1 } as CSSProperties}
-              >
-                <article className={`stack-inner card relative overflow-hidden ${free ? "grad-border" : ""}`}>
-                  {/* Photo banner, with the phase number outlined over it (and the offer badge on the free phase) */}
-                  <div className="relative h-36 overflow-hidden bg-raised sm:h-44">
-                    <img src={p.image} alt="" loading="lazy" width={1280} height={800} className="stack-photo h-full w-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[rgb(10_16_32/.7)] via-[rgb(10_16_32/.15)] to-transparent" aria-hidden="true" />
-                    {free && (
-                      <span className="glass absolute left-7 top-4 inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-xs font-bold text-ink sm:left-10">
-                        <Gift className="h-3.5 w-3.5 text-sun" /> {offer.badge}
-                      </span>
-                    )}
-                    <span className="stack-num pointer-events-none absolute -bottom-7 right-3 select-none font-display text-[7rem] font-extrabold leading-none sm:-bottom-9 sm:text-[9rem]" aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <p className="absolute bottom-4 left-7 text-sm font-semibold text-white sm:left-10">
-                      Phase {String(i + 1).padStart(2, "0")} of {String(phases.length).padStart(2, "0")} · {p.title}
-                    </p>
-                  </div>
-
-                  <div className="p-7 sm:p-10">
-                    <h3 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{p.name}</h3>
-                    <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-2">{p.summary}</p>
-                    <ul className="mt-7 space-y-4">
-                      {p.activities.map((a, k) => (
-                        <li key={a} className="stack-item flex gap-3 leading-relaxed" style={{ "--i": k } as CSSProperties}>
-                          <span className="bg-grad mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full text-white">
-                            <Check className="h-3 w-3" />
-                          </span>
-                          <span>
-                            <Activity text={a} />
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-8 flex flex-wrap items-center gap-2 border-t border-line pt-6">
-                      <span className="mr-1 text-xs font-semibold uppercase tracking-wider text-subtle">You receive</span>
-                      {p.outputs.map((t) => (
-                        <span key={t} className="chip border-brand/20 bg-brand-soft text-brand-text">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  {/* Shade that deepens as the next card slides over */}
-                  <div className="stack-shade pointer-events-none absolute inset-0 rounded-[inherit]" aria-hidden="true" />
-                </article>
-              </li>
-            );
-          })}
-        </ol>
       </div>
     </section>
   );

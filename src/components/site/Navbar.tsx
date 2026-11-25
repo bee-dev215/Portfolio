@@ -1,19 +1,8 @@
 import { FocusEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
-import { Building2, CalendarDays, ChevronDown, Cpu, LucideIcon, Mail, Menu, Route, ShieldCheck, Users, X } from "lucide-react";
+import { ArrowRight, ChevronDown, LucideIcon, Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import {
-  bookCall,
-  company,
-  companyMenu,
-  CompanyMenuKey,
-  homeSections,
-  servicePath,
-  services,
-  solutionPath,
-  solutions,
-} from "@/data/company";
-import { projectPath, projects } from "@/data/projects";
-import { serviceIcons } from "./icons";
+import { company, homeSections, navLinks, rolePath, roles } from "@/data/company";
+import { roleIcons } from "./icons";
 import ThemeToggle from "./ThemeToggle";
 
 function useScrollState() {
@@ -60,8 +49,6 @@ export const Wordmark = ({ className = "h-[19px]" }: { className?: string }) => 
 //  Menus, built from the site data
 // ------------------------------------------------------------
 
-const companyIcons: Record<CompanyMenuKey, LucideIcon> = { about: Building2, approach: Route, technology: Cpu, team: Users, responsible: ShieldCheck, contact: Mail };
-
 interface MenuItem {
   key: string;
   label: string;
@@ -87,89 +74,32 @@ interface MenuGroup {
 
 const numberWords = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
 
-/** 8 → "Eight", for the menu eyebrows */
+/** 6 → "Six", for the menu eyebrow */
 const spell = (n: number) => numberWords[n] ?? String(n);
 
-/** The Our work menu, built from the projects. */
-const projectsMenu: MenuGroup = {
-  key: "projects",
-  label: "Our work",
-  eyebrow: `${spell(projects.length)} case studies`,
-  caption: "AI agents, automations and software we've built to take busywork off people's desks.",
-  image: "/images/tech-code.webp",
-  paths: ["/projects"],
-  sections: ["projects"],
-  all: { label: "All projects", to: "/projects" },
-  items: projects.map((p) => ({
-    key: `project-${p.slug}`,
-    label: p.title,
-    desc: p.client,
-    blurb: p.summary,
-    image: p.image,
-    to: projectPath(p),
+/** The Roles menu, built from the roles. */
+const rolesMenu: MenuGroup = {
+  key: "roles",
+  label: "Roles",
+  eyebrow: `${spell(roles.length)} career paths · Open worldwide`,
+  caption: "Six ways to join one remote team — from virtual assistance and support to engineering and QA.",
+  image: "/images/remote/why-anywhere.webp",
+  paths: ["/roles"],
+  sections: ["roles"],
+  all: { label: "See all open roles", to: "/roles" },
+  items: roles.map((r) => ({
+    key: `role-${r.key}`,
+    label: r.title,
+    desc: r.category,
+    blurb: r.short,
+    image: r.image,
+    focus: r.focus,
+    icon: roleIcons[r.key],
+    to: rolePath(r),
   })),
 };
 
-// The menus in order
-const menus: MenuGroup[] = [
-  {
-    key: "services",
-    label: "Services",
-    eyebrow: `${spell(services.length)} services`,
-    caption: "AI agents and assistants, AI workflow automation, and the custom software around them — from a two-week prototype to production.",
-    image: "/images/svc-build.webp",
-    paths: ["/services"],
-    sections: ["services"],
-    all: { label: "All services", to: "/services" },
-    items: services.map((s) => ({
-      key: `service-${s.key}`,
-      label: s.title,
-      desc: s.includes.join(" · "),
-      blurb: s.desc,
-      image: s.image,
-      icon: serviceIcons[s.key],
-      to: servicePath(s),
-    })),
-  },
-  {
-    key: "solutions",
-    label: "Solutions",
-    eyebrow: `${spell(solutions.length)} AI solutions`,
-    caption: "Ready-made AI starting points for the most common busywork, fitted to your own documents, tools and team.",
-    image: "/images/about-pairing.webp",
-    paths: ["/solutions"],
-    sections: ["solutions"],
-    all: { label: "All solutions", to: "/solutions" },
-    items: solutions.map((s) => ({
-      key: `solution-${s.id}`,
-      label: s.title,
-      desc: s.domain,
-      blurb: s.summary,
-      image: s.image,
-      to: solutionPath(s),
-    })),
-  },
-  projectsMenu,
-  {
-    key: "company",
-    label: "Company",
-    eyebrow: `Inside ${company.name}`,
-    caption: "Who we are, how we work and how to reach us — senior engineers you talk to directly.",
-    image: "/images/company-team.webp",
-    paths: [...companyMenu.map((c) => c.to), "/faq"],
-    sections: ["process", "company", "faq", "contact"],
-    all: { label: "Questions & answers", to: "/faq" },
-    items: companyMenu.map((c) => ({
-      key: `company-${c.key}`,
-      label: c.label,
-      desc: c.desc,
-      blurb: c.desc,
-      image: c.image,
-      icon: companyIcons[c.key],
-      to: c.to,
-    })),
-  },
-];
+const menus: MenuGroup[] = [rolesMenu];
 
 const preloaded = new Set<string>();
 
@@ -305,12 +235,10 @@ export default function Navbar() {
     setOpen(false);
   };
 
-  const book = () => {
-    close();
-    bookCall();
-  };
-
   const isActive = (g: MenuGroup) => (home ? g.sections.includes(active) : g.paths.some((p) => pathname === p || pathname.startsWith(`${p}/`)));
+  const linkActive = (l: (typeof navLinks)[number]) => (home ? l.sections.includes(active) : pathname === l.to || pathname.startsWith(`${l.to}/`));
+  const navCls =
+    "relative flex items-center gap-1 whitespace-nowrap px-2.5 font-display text-sm font-semibold transition-colors after:absolute after:inset-x-2 after:-bottom-px after:z-[1] after:h-0.5 after:bg-brand-text after:transition-transform after:duration-200 xl:px-4 xl:text-[15px] xl:after:inset-x-3";
 
   return (
     <header
@@ -321,14 +249,12 @@ export default function Navbar() {
       onKeyDown={onKeyDown}
       onBlur={onBlur}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        menu
-          ? "border-b border-line bg-surface"
-          : scrolled || open
-            ? "glass border-b border-line shadow-[0_8px_30px_-20px_rgb(var(--shadow-rgb)/.5)]"
-            : "border-b border-transparent"
+        menu || scrolled || open
+          ? "border-b border-line bg-surface shadow-[0_8px_30px_-24px_rgb(var(--shadow-rgb)/.5)]"
+          : "border-b border-line bg-surface"
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-[1240px] items-center gap-4 px-5 sm:px-8 lg:h-[72px]">
+      <div className="mx-auto flex h-16 max-w-[1240px] items-center gap-4 px-5 sm:px-8 lg:h-[84px]">
         <Link
           to="/"
           className="flex shrink-0 items-center gap-2.5 text-left"
@@ -357,7 +283,7 @@ export default function Navbar() {
                   aria-expanded={isOpen}
                   aria-controls={`menu-${g.key}`}
                   // The underline sits on the header's bottom edge, above the scroll progress line; while a menu is open only its trigger has one
-                  className={`relative flex items-center gap-1 whitespace-nowrap px-2.5 font-display text-sm font-semibold transition-colors after:absolute after:inset-x-2 after:-bottom-px after:z-[1] after:h-0.5 after:bg-brand-text after:transition-transform after:duration-200 xl:px-4 xl:text-[15px] xl:after:inset-x-3 ${
+                  className={`${navCls} ${
                     isOpen || isActive(g) ? "text-brand-text" : "text-ink hover:text-brand-text"
                   } ${isOpen || (!menu && isActive(g)) ? "after:scale-x-100" : "after:scale-x-0"}`}
                 >
@@ -373,22 +299,33 @@ export default function Navbar() {
                       <MenuPhoto group={g} peek={peek} onClick={close} />
                       <div className="border-l border-line pl-7">
                         <p className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-subtle">{g.eyebrow}</p>
-                        <ul className="grid grid-cols-2 gap-x-8 gap-y-1">
-                          {g.items.map((it, i) => (
-                            <li key={it.key}>
-                              <Link
-                                to={it.to}
-                                onPointerEnter={() => setPeek(i)}
-                                onFocus={() => setPeek(i)}
-                                onClick={close}
-                                className={`block py-2.5 font-display text-base font-medium leading-snug transition-[color,transform] duration-150 ${
-                                  peek === i ? "translate-x-[3px] text-brand-text" : "text-ink"
-                                }`}
-                              >
-                                {it.label}
-                              </Link>
-                            </li>
-                          ))}
+                        <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+                          {g.items.map((it, i) => {
+                            const Icon = it.icon;
+                            return (
+                              <li key={it.key}>
+                                <Link
+                                  to={it.to}
+                                  onPointerEnter={() => setPeek(i)}
+                                  onFocus={() => setPeek(i)}
+                                  onClick={close}
+                                  className={`-mx-2 flex items-center gap-3 rounded-xl px-2 py-2.5 transition-[color,background-color,transform] duration-150 ${
+                                    peek === i ? "translate-x-[3px] bg-raised/70 text-brand-text" : "text-ink"
+                                  }`}
+                                >
+                                  {Icon && (
+                                    <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-colors ${peek === i ? "bg-grad text-white" : "bg-brand-soft text-brand-text"}`}>
+                                      <Icon className="h-[17px] w-[17px]" />
+                                    </span>
+                                  )}
+                                  <span className="min-w-0">
+                                    <span className="block font-display text-[15px] font-semibold leading-snug">{it.label}</span>
+                                    <span className="block truncate text-xs text-subtle">{it.desc}</span>
+                                  </span>
+                                </Link>
+                              </li>
+                            );
+                          })}
                         </ul>
                         <Link
                           to={g.all.to}
@@ -405,12 +342,22 @@ export default function Navbar() {
               </div>
             );
           })}
+          {navLinks.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              aria-current={pathname === l.to ? "page" : undefined}
+              className={`${navCls} ${linkActive(l) ? "text-brand-text after:scale-x-100" : "text-ink after:scale-x-0 hover:text-brand-text"} ${menu ? "after:scale-x-0" : ""}`}
+            >
+              {l.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="ml-auto flex items-center gap-2 lg:ml-0">
           <ThemeToggle />
-          <Link to="/book" className="btn btn-primary hidden whitespace-nowrap px-5 py-2.5 text-sm sm:inline-flex">
-            Book a call <CalendarDays className="h-4 w-4" />
+          <Link to="/apply" className="btn btn-dark hidden whitespace-nowrap px-6 py-3 text-sm sm:inline-flex">
+            Apply now <ArrowRight className="h-4 w-4" />
           </Link>
           <button
             onClick={() => setOpen((o) => !o)}
@@ -422,7 +369,7 @@ export default function Navbar() {
           </button>
         </div>
       </div>
-      <span className={`scroll-line bg-grad absolute inset-x-0 bottom-[-1px] h-[2px] transition-opacity duration-300 ${scrolled && !menu ? "opacity-100" : "opacity-0"}`} aria-hidden="true" />
+      
 
       {open && (
         <div className="fade-up max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-line px-5 pb-6 pt-2 sm:px-8 lg:hidden" style={{ animationDuration: ".3s" }}>
@@ -470,12 +417,22 @@ export default function Navbar() {
               </div>
             );
           })}
+          {navLinks.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              onClick={close}
+              className={`flex items-center justify-between border-b border-line py-4 font-display text-lg font-semibold ${linkActive(l) ? "text-brand-text" : "text-ink"}`}
+            >
+              {l.label}
+            </Link>
+          ))}
           <div className="mt-5 flex items-center gap-2 text-sm text-subtle">
             <span className="live-dot" /> {company.availability}
           </div>
-          <button onClick={book} className="btn btn-primary mt-5 w-full py-3.5">
-            Book a free call <CalendarDays className="h-4 w-4" />
-          </button>
+          <Link to="/apply" onClick={close} className="btn btn-primary mt-5 w-full py-3.5">
+            Apply now — it's free <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       )}
     </header>

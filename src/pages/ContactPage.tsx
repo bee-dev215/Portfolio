@@ -1,17 +1,16 @@
-import { CalendarDays, ClipboardList, Clock, Gift, Handshake, PenLine } from "lucide-react";
+import { ArrowRight, Building2, Clock, PenLine, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageShell from "@/components/site/PageShell";
 import PageHero from "@/components/site/PageHero";
 import Contact from "@/components/site/Contact";
-import ProjectScoper from "@/components/contact/ProjectScoper";
 import Reveal, { SectionHeading } from "@/components/site/Reveal";
-import { company, offer, scrollToId } from "@/data/company";
+import { company, scrollToId } from "@/data/company";
 import { faqs } from "@/data/faq";
 
 const facts = [
   { icon: Clock, k: "Reply time", v: `Within ${company.responseTime}` },
-  { icon: Gift, k: "First step", v: `A free call — then ${offer.badge.toLowerCase()}` },
-  { icon: Handshake, k: "Engagements", v: company.engagements },
+  { icon: ShieldCheck, k: "Applicants", v: "We never ask for money — ever" },
+  { icon: Building2, k: "Companies", v: "Dedicated remote teams, managed by us" },
 ];
 
 // Questions people usually ask before getting in touch
@@ -19,27 +18,24 @@ const beforeYouWrite = faqs.filter((f) => f.featured).slice(0, 4);
 
 export default function ContactPage() {
   return (
-    <PageShell title="Contact" description={`Tell ${company.name} what your team does by hand, or what you need built — a senior engineer replies within ${company.responseTime}.`}>
+    <PageShell title="Contact" description={`Questions about a role, your application or hiring a remote team? A real person at ${company.name} replies within ${company.responseTime}.`}>
       <PageHero
         crumbs={[{ label: "Contact" }]}
         eyebrow="Contact"
         title={
           <>
-            Let's take something <span className="gradient-text">off your plate.</span>
+            We're here <span className="gradient-text">to help.</span>
           </>
         }
-        lead={`Busywork to automate, an app to build or a project to rescue? Tell us about it — a senior engineer, not a salesperson, replies within ${company.responseTime}. Or skip the email and book a call.`}
+        lead={`A question about a role, your application or your pay? Looking to hire a remote team? Send us a message and a real person replies within ${company.responseTime}.`}
         actions={
           <>
-            <Link to="/book" className="btn btn-primary px-7 py-3.5">
-              <CalendarDays className="h-4 w-4" /> Book a call
-            </Link>
-            <button onClick={() => scrollToId("scoper")} className="btn btn-secondary px-7 py-3.5">
-              <ClipboardList className="h-4 w-4" /> Plan your project
-            </button>
-            <button onClick={() => scrollToId("contact")} className="btn btn-secondary px-7 py-3.5">
+            <button onClick={() => scrollToId("contact")} className="btn btn-primary px-7 py-3.5">
               <PenLine className="h-4 w-4" /> Write to us
             </button>
+            <Link to="/apply" className="btn btn-secondary px-7 py-3.5">
+              Apply now <ArrowRight className="h-4 w-4" />
+            </Link>
           </>
         }
         aside={
@@ -61,21 +57,15 @@ export default function ContactPage() {
               ))}
             </dl>
             <p className="mt-6 border-t border-line pt-5 text-sm leading-relaxed text-ink-2">
-              We keep client work confidential — see how in{" "}
-              <Link to="/responsible-ai" className="font-semibold text-brand-text underline-offset-2 hover:underline">
-                Security & AI
+              Got a message claiming to be from us that asks for money?{" "}
+              <Link to="/faq#spot-scams" className="font-semibold text-brand-text underline-offset-2 hover:underline">
+                Here's how to check
               </Link>
               .
             </p>
           </div>
         }
       />
-
-      <div id="scoper" className="scroll-mt-24">
-        <Reveal>
-          <ProjectScoper />
-        </Reveal>
-      </div>
 
       <Contact showHeading={false} />
 

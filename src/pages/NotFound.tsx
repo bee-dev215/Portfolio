@@ -12,7 +12,7 @@ export default function NotFound() {
         <div className="mesh pointer-events-none absolute inset-0" aria-hidden="true" />
         <div className="relative mx-auto max-w-2xl text-center">
           <p className="eyebrow">Page not found</p>
-          <h1 className="gradient-text mt-5 font-display text-8xl font-extrabold tracking-tight">404</h1>
+          <h1 className="gradient-text mt-5 font-display text-8xl font-medium tracking-[-0.015em]">404</h1>
           <p className="mt-4 text-lg text-ink-2">
             There's nothing at <span className="font-code text-base text-ink">{pathname}</span> — try one of these pages instead.
           </p>

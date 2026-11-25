@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
-import { bookCall, company } from "@/data/company";
 import { faqs as allFaqs } from "@/data/faq";
+import Reveal, { SectionHeading } from "./Reveal";
 
 // The home page shows the featured questions; /faq has them all
 const faqs = allFaqs.filter((f) => f.featured);
-import Reveal, { SectionHeading } from "./Reveal";
 
 // FAQPage structured data, so search results can show the answers
 const faqSchema = JSON.stringify({
@@ -27,19 +26,19 @@ export default function Faq() {
             label="FAQ"
             title={
               <>
-                Questions, <span className="gradient-text">answered.</span>
+                Good to know <span className="gradient-text">before you apply.</span>
               </>
             }
           >
             <p className="mt-5 max-w-md text-lg leading-relaxed text-ink-2">
-              Straight answers on the free prototype, pricing, ownership and security at {company.shortName}. If yours isn't here, ask us on a call.
+              Straight answers on applying, hours, pay and how we keep things safe. If yours isn't here, send us a message — a person replies.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-              <button onClick={() => bookCall()} className="btn btn-secondary px-6 py-3 text-sm">
-                Book a call
-              </button>
+              <Link to="/contact" className="btn btn-secondary px-6 py-3 text-sm">
+                Ask a question
+              </Link>
               <Link to="/faq" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-text">
-                All {allFaqs.length} questions
+                Read all {allFaqs.length} questions
               </Link>
             </div>
           </SectionHeading>
