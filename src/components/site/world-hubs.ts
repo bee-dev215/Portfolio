@@ -1,5 +1,5 @@
 // Cities where remote team members live and work, as [longitude, latitude] (illustrative: we hire everywhere).
-// Shared by the flat world map (NetworkMap.tsx) and the hero globe (Globe.tsx).
+// Lit on the hero globe (Globe.tsx).
 export const HUBS = {
   phx: [-112.1, 33.4],
   tor: [-79.4, 43.7],
@@ -28,10 +28,22 @@ export const HUBS = {
 export type Hub = keyof typeof HUBS;
 export const HUB_KEYS = Object.keys(HUBS) as Hub[];
 
-// Who works with whom: one team across every time zone
-export const LINKS: [Hub, Hub][] = [
-  ["phx", "tor"], ["phx", "mex"], ["mex", "bog"], ["bog", "lim"], ["lim", "sao"], ["sao", "bue"], ["bog", "sao"],
-  ["tor", "lon"], ["bog", "lis"], ["sao", "los"], ["lis", "lon"], ["lon", "war"], ["war", "kyi"], ["lis", "acc"],
-  ["acc", "los"], ["los", "nbo"], ["nbo", "cpt"], ["cai", "nbo"], ["kyi", "cai"], ["cai", "khi"], ["khi", "blr"],
-  ["blr", "dac"], ["dac", "sgn"], ["sgn", "mnl"], ["sgn", "cgk"], ["mnl", "syd"], ["cgk", "syd"], ["mnl", "phx"],
+// One major city in each of the world's main time zones, west to east, as [longitude, latitude].
+// Lit on the flat world map (NetworkMap.tsx) behind "One team, every time zone".
+export const ZONE_CITIES: readonly (readonly [number, number])[] = [
+  [-118.2, 34.1], // Los Angeles, UTC−8
+  [-99.1, 19.4], // Mexico City, UTC−6
+  [-74, 40.7], // New York, UTC−5
+  [-46.6, -23.5], // São Paulo, UTC−3
+  [-0.1, 51.5], // London, UTC+0
+  [3.4, 6.5], // Lagos, UTC+1
+  [31.2, 30], // Cairo, UTC+2
+  [36.8, -1.3], // Nairobi, UTC+3
+  [55.3, 25.2], // Dubai, UTC+4
+  [67, 24.9], // Karachi, UTC+5
+  [90.4, 23.8], // Dhaka, UTC+6
+  [106.8, -6.2], // Jakarta, UTC+7
+  [121, 14.6], // Manila, UTC+8
+  [139.7, 35.7], // Tokyo, UTC+9
+  [151.2, -33.9], // Sydney, UTC+10
 ];

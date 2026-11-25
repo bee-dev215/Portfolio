@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Globe2, Mic, PhoneOff, Video, Wallet } from "lucide-react";
 import { Link } from "react-router-dom";
 import { rolePath, roles } from "@/data/company";
-import Globe from "./Globe";
 import { Monogram } from "./Navbar";
+import HeroDots from "./HeroDots";
 import { roleIcons } from "./icons";
 import RotatingWords from "./RotatingWords";
 
@@ -154,8 +154,8 @@ export default function Hero() {
         </div>
 
         <div className="fade-up relative" style={{ animationDelay: ".24s" }}>
-          {/* The world turning behind the app windows: the team's cities, linked across every ocean */}
-          <Globe className="hero-far absolute left-[56%] top-0 aspect-square w-[108%] -translate-x-1/2 -translate-y-[10%]" />
+          {/* A field of dots behind the app windows, fading out at its edges */}
+          <HeroDots className="hero-far absolute left-[55%] top-[40%] aspect-square w-[125%] -translate-x-1/2 -translate-y-1/2" />
           <div className="hero-near relative pt-[25%]">
             <Windows />
           </div>

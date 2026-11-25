@@ -768,10 +768,19 @@ html:not([data-theme="dark"]) .kinetic:not(.kinetic-tape) .kinetic-star { color:
 @keyframes net-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .net-map { animation: none; } }
 
-/* Hero globe (Globe.tsx): fades and settles in behind the app windows */
-.globe { animation: globe-in 1.8s var(--ease-out) .15s both; }
-@keyframes globe-in { from { opacity: 0; scale: .9; } }
-@media (prefers-reduced-motion: reduce) { .globe { animation: none; } }
+/* Hero dots (HeroDots.tsx): a field of brand dots behind the app windows, fading out toward its edges and
+   drifting slowly, over a faint glow */
+.hero-dots {
+  background:
+    radial-gradient(rgb(var(--brand-text-rgb) / .6) 1.7px, transparent 2.1px) 0 0 / 24px 24px,
+    radial-gradient(closest-side, rgb(var(--sky-rgb) / .18), rgb(var(--iris-rgb) / .08) 60%, transparent);
+  -webkit-mask-image: radial-gradient(closest-side, #000 45%, transparent);
+  mask-image: radial-gradient(closest-side, #000 45%, transparent);
+  animation: hero-dots-in 1.6s var(--ease-out) .15s both, hero-dots-drift 40s linear infinite;
+}
+@keyframes hero-dots-in { from { opacity: 0; } }
+@keyframes hero-dots-drift { to { background-position: 24px 24px, 0 0; } }
+@media (prefers-reduced-motion: reduce) { .hero-dots { animation: none; } }
 
 /* ============================================================
    TIMELINE-STYLE LAYOUT PIECES

@@ -1,15 +1,19 @@
 import { useEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/hooks/use-motion";
 import { LAND } from "./world-land";
-import { HUBS, HUB_KEYS, LINKS } from "./world-hubs";
+import { ZONE_CITIES } from "./world-hubs";
 
 const MIN_MAP_W = 960; // narrower screens show part of a map this wide…
 const NARROW_CENTER = 10; // …centred between the Americas and Asia (longitude)
-const ALONG = [0.5]; // where each route's particles sit, as a share of the way between its hubs
 // Edge fade, baked into the drawing (a CSS mask would re-composite the whole layer every frame): full strength inside
 // an ellipse around the middle, easing out toward the sides and bottom, and clear of the header at the top.
 // Fractions of the canvas size.
 const EDGE = { x: 0.5, y: 0.46, rx: 0.68, ry: 0.78, from: 0.55, top: [0, 0.12] } as const;
+// Assembly: the land dots start scattered like sand and swirl into the map as the section scrolls up. It begins as the
+// section's top rises past `from` of the viewport height and is complete by `to`. Each dot waits up to `stagger` of the
+// way before setting off; `swirl` is how far (radians) its path turns on the way in; `ease` is the scroll lag (ms).
+const GATHER = { from: 0.85, to: 0.1, stagger: 0.5, swirl: 1.1, ease: 180 } as const;
+const SHADES = [0.15, 0.21, 0.27, 0.35]; // land dots, each a touch lighter or darker for texture
 
 type Pt = { x: number; y: number };
 // A light at a fixed spot: its edge fade, and the period (ms per radian) and phase of its blink
@@ -17,6 +21,15 @@ type Light = Pt & { edge: number; period: number; phase: number };
 
 const rgba = (c: string, a: number) => `rgb(${c} / ${a})`;
 const wave = (t: number) => 0.5 + 0.5 * Math.sin(t); // 0…1
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+/** A stable pseudo-random 0…1 per (index, salt), so the scatter looks the same after a resize. */
+const hash = (i: number, salt: number) => {
+  let x = Math.imul(i ^ Math.imul(salt, 0x9e3779b9), 0x85ebca6b);
+  x ^= x >>> 13;
+  x = Math.imul(x, 0xc2b2ae35);
+  x ^= x >>> 16;
+  return (x >>> 0) / 4294967296;
+};
 
 /** Brand colours as RGB channels, read from the site tokens so the map follows the light/dark theme. */
 const palette = (el: Element) => {
@@ -26,15 +39,16 @@ const palette = (el: Element) => {
   return {
     dark,
     dot: dark ? v("--brand-text-rgb") : v("--line-rgb"),
-    line: dark ? v("--brand-text-rgb") : v("--brand-rgb"),
     glow: v("--sky-rgb"),
     head: dark ? "224 242 254" : v("--brand-rgb"),
   };
 };
 
 /**
- * A dotted world map with the team's cities on it. The cities breathe gently and particles between them blink on their
- * own beat. Pauses off screen; under reduced motion it draws the map once and stays still.
+ * A dotted world map with a light in each of the world's main time zones. As the section scrolls into view the dots
+ * gather from a scatter into the map (and scatter again on the way back up); once it has formed, the city lights come on
+ * and breathe gently, each on its own beat. Pauses off screen; under reduced motion it draws the formed map once and
+ * stays still.
  */
 export default function NetworkMap({ className = "" }: { className?: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -50,10 +64,40 @@ export default function NetworkMap({ className = "" }: { className?: string }) {
     const still = prefersReducedMotion();
     const land = Uint8Array.from(atob(LAND.bits), (ch) => ch.charCodeAt(0));
     let pal = palette(wrap);
-    let w = 0, h = 0, dpr = 1, mapW = 0, cell = 0, x0 = 0, y0 = 0;
+    let w = 0, h = 0, dpr = 1, cell = 0, x0 = 0, y0 = 0;
     let hubs: Light[] = [];
-    let particles: Light[] = [];
     let now = 0; // own clock, so a paused map picks up where it left off
+    const section = wrap.parentElement ?? wrap; // measured instead of the wrapper, which drifts with the scroll
+
+    // Every land dot, once: grid position and shade
+    const landRow: number[] = [], landCol: number[] = [], landShade: number[] = [];
+    for (let row = 0; row < LAND.rows; row++) {
+      for (let col = 0; col < LAND.cols; col++) {
+        const i = row * LAND.cols + col;
+        if (!((land[i >> 3] >> (7 - (i & 7))) & 1)) continue;
+        landRow.push(row);
+        landCol.push(col);
+        landShade.push(((row * 7919) ^ (col * 104729)) % SHADES.length);
+      }
+    }
+    // The on-screen dots for the current layout: where each lands, how far off it starts, when it sets off, its shade
+    let dots = {
+      n: 0,
+      tx: new Float32Array(0),
+      ty: new Float32Array(0),
+      ox: new Float32Array(0),
+      oy: new Float32Array(0),
+      delay: new Float32Array(0),
+      shade: new Uint8Array(0),
+    };
+
+    // How formed the map should be at the current scroll position (0 scattered … 1 formed), and how formed it is shown
+    const gatherGoal = () => {
+      if (still) return 1;
+      const vh = window.innerHeight || 1;
+      return clamp01((vh * GATHER.from - section.getBoundingClientRect().top) / (vh * (GATHER.from - GATHER.to)));
+    };
+    let formed = gatherGoal();
 
     const project = (lon: number, lat: number): Pt => ({
       x: x0 + ((lon + 180) / LAND.step) * cell,
@@ -80,7 +124,7 @@ export default function NetworkMap({ className = "" }: { className?: string }) {
       w = wrap.clientWidth;
       h = wrap.clientHeight;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
-      mapW = Math.max(w, MIN_MAP_W);
+      const mapW = Math.max(w, MIN_MAP_W);
       cell = mapW / LAND.cols;
       x0 = Math.min(0, Math.max(w - mapW, w / 2 - ((NARROW_CENTER + 180) / 360) * mapW));
       y0 = Math.max(0, (h - LAND.rows * cell) * 0.6);
@@ -89,58 +133,73 @@ export default function NetworkMap({ className = "" }: { className?: string }) {
         cv.height = Math.round(h * dpr);
       }
 
-      hubs = HUB_KEYS.map((k, n) => light(project(HUBS[k][0], HUBS[k][1]), n, 900));
-      const arcs = LINKS.map(([ka, kb]) => {
-        const [lonA, latA] = HUBS[ka];
-        let [lonB] = HUBS[kb];
-        if (lonB - lonA > 180) lonB -= 360;
-        else if (lonA - lonB > 180) lonB += 360;
-        const p0 = project(lonA, latA);
-        const p1 = project(lonB, HUBS[kb][1]);
-        // Bow each route upward, away from the map, like a great-circle path
-        const dx = p1.x - p0.x, dy = p1.y - p0.y;
-        const sign = dx < 0 ? -1 : 1;
-        const c = { x: (p0.x + p1.x) / 2 + sign * dy * 0.22, y: (p0.y + p1.y) / 2 - sign * dx * 0.22 };
-        return { p0, c, p1 };
+      // Land dots: each starts somewhere random across the canvas and sets off a little later the farther it sits from
+      // the middle, so the map forms from the centre outward with some sand-like jitter
+      const r = Math.max(0.75, cell * 0.2);
+      const keep: number[] = [];
+      for (let k = 0; k < landRow.length; k++) {
+        const x = x0 + (landCol[k] + 0.5 + (landRow[k] & 1) * 0.5) * cell;
+        if (x >= -r && x <= w + r) keep.push(k);
+      }
+      const n = keep.length;
+      // The scatter covers the map's own band (a little taller), not the whole section, so the sand reads as a cloud
+      const mapH = LAND.rows * cell;
+      const sy0 = Math.max(0, y0 - mapH * 0.15);
+      const sy1 = Math.min(h, y0 + mapH * 1.1);
+      dots = {
+        n,
+        tx: new Float32Array(n),
+        ty: new Float32Array(n),
+        ox: new Float32Array(n),
+        oy: new Float32Array(n),
+        delay: new Float32Array(n),
+        shade: new Uint8Array(n),
+      };
+      keep.forEach((k, j) => {
+        const tx = x0 + (landCol[k] + 0.5 + (landRow[k] & 1) * 0.5) * cell;
+        const ty = y0 + landRow[k] * cell;
+        const id = landRow[k] * LAND.cols + landCol[k];
+        dots.tx[j] = tx;
+        dots.ty[j] = ty;
+        dots.ox[j] = (hash(id, 1) * 1.3 - 0.15) * w - tx;
+        dots.oy[j] = sy0 + hash(id, 2) * (sy1 - sy0) - ty;
+        const far = Math.min(1, Math.hypot((tx - w / 2) / (w / 2), (ty - h / 2) / (h / 2)) / 1.3);
+        dots.delay[j] = GATHER.stagger * (0.55 * hash(id, 3) + 0.45 * far);
+        dots.shade[j] = landShade[k];
       });
 
-      // Only every other route carries a particle, so the map doesn't glitter
-      particles = arcs.filter((_, n) => n % 2 === 0).flatMap(({ p0, c, p1 }) => {
-        const shifts = p1.x > x0 + mapW ? [0, -mapW] : p1.x < x0 ? [0, mapW] : [0];
-        return ALONG.flatMap((t) => {
-          const u = 1 - t;
-          const x = u * u * p0.x + 2 * u * t * c.x + t * t * p1.x;
-          const y = u * u * p0.y + 2 * u * t * c.y + t * t * p1.y;
-          return shifts.map((s) => ({ x: x + s, y }));
-        });
-      })
-        .filter(({ x }) => x > -10 && x < w + 10)
-        .map((pt, i) => light(pt, i, 420))
-        .filter((p) => p.edge > 0);
+      hubs = ZONE_CITIES.map(([lon, lat], n) => light(project(lon, lat), n, 900));
     };
 
-    // The still layer: land dots, each a touch lighter or darker for texture
+    // The land layer. Repainted only while the map is gathering; once formed it stays still.
     const paintBase = () => {
       const c = baseCtx;
       c.setTransform(dpr, 0, 0, dpr, 0, 0);
       c.clearRect(0, 0, w, h);
       const r = Math.max(0.75, cell * 0.2);
-      const shades = [0.15, 0.21, 0.27, 0.35];
-      shades.forEach((alpha, shade) => {
+      const span = 1 - GATHER.stagger;
+      // Scattered grains are fainter; they firm up as they settle
+      const strength = (0.7 + 0.3 * formed) * (pal.dark ? 1.3 : 1);
+      SHADES.forEach((alpha, shade) => {
         c.beginPath();
-        for (let row = 0; row < LAND.rows; row++) {
-          for (let col = 0; col < LAND.cols; col++) {
-            const i = row * LAND.cols + col;
-            if (!((land[i >> 3] >> (7 - (i & 7))) & 1)) continue;
-            if (((row * 7919) ^ (col * 104729)) % shades.length !== shade) continue;
-            const x = x0 + (col + 0.5 + (row & 1) * 0.5) * cell;
-            if (x < -r || x > w + r) continue;
-            const y = y0 + row * cell;
-            c.moveTo(x + r, y);
-            c.arc(x, y, r, 0, Math.PI * 2);
+        for (let j = 0; j < dots.n; j++) {
+          if (dots.shade[j] !== shade) continue;
+          let x = dots.tx[j], y = dots.ty[j], rr = r;
+          const t = clamp01((formed - dots.delay[j]) / span);
+          if (t < 1) {
+            // Ease in along a gentle swirl: the leftover offset shrinks and turns as the dot closes in
+            const left = (1 - t) ** 3;
+            const a = GATHER.swirl * left;
+            const cos = Math.cos(a), sin = Math.sin(a);
+            const ox = dots.ox[j] * left, oy = dots.oy[j] * left;
+            x += ox * cos - oy * sin;
+            y += ox * sin + oy * cos;
+            rr = r * (0.75 + 0.25 * (1 - left));
           }
+          c.moveTo(x + rr, y);
+          c.arc(x, y, rr, 0, Math.PI * 2);
         }
-        c.fillStyle = rgba(pal.dot, alpha * (pal.dark ? 1.3 : 1));
+        c.fillStyle = rgba(pal.dot, alpha * strength);
         c.fill();
       });
 
@@ -173,31 +232,22 @@ export default function NetworkMap({ className = "" }: { className?: string }) {
     const paintLive = () => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
+      // The city lights come on only as the map finishes forming
+      const lit = clamp01((formed - 0.8) / 0.2) ** 2;
+      if (lit === 0) return;
       ctx.globalCompositeOperation = pal.dark ? "lighter" : "source-over";
 
-      // Particles: a soft glow that swells as each one blinks on, then the dot itself
-      ctx.fillStyle = rgba(pal.glow, 1);
-      for (const p of particles) {
-        ctx.globalAlpha = p.edge * level(p) ** 2 * 0.28;
-        dot(p.x, p.y, 4.5);
-      }
-      ctx.fillStyle = rgba(pal.line, 1);
-      for (const p of particles) {
-        ctx.globalAlpha = p.edge * (0.15 + 0.7 * level(p));
-        dot(p.x, p.y, 1.4);
-      }
-
-      // Hubs breathe gently, each on its own beat
+      // Each city breathes gently on its own beat: a soft glow that swells, then the light itself
       ctx.fillStyle = rgba(pal.glow, 1);
       for (const hub of hubs) {
         const b = level(hub);
-        ctx.globalAlpha = hub.edge * (0.1 + b * 0.14);
-        dot(hub.x, hub.y, 3.5 + b * 1.5);
+        ctx.globalAlpha = lit * hub.edge * (0.12 + b * 0.18);
+        dot(hub.x, hub.y, 4 + b * 2.5);
       }
       ctx.fillStyle = rgba(pal.head, 1);
       for (const hub of hubs) {
-        ctx.globalAlpha = hub.edge * 0.8;
-        dot(hub.x, hub.y, 2);
+        ctx.globalAlpha = lit * hub.edge * 0.85;
+        dot(hub.x, hub.y, 2.2);
       }
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = "source-over";
@@ -208,8 +258,16 @@ export default function NetworkMap({ className = "" }: { className?: string }) {
     let running = false;
 
     const frame = (t: number) => {
-      now += Math.min(t - (last || t), 64);
+      const dt = Math.min(t - (last || t), 64);
+      now += dt;
       last = t;
+      // Follow the scroll with a little lag, so wheel steps glide instead of jumping
+      const goal = gatherGoal();
+      if (goal !== formed) {
+        formed += (goal - formed) * (1 - Math.exp(-dt / GATHER.ease));
+        if (Math.abs(goal - formed) < 0.002) formed = goal;
+        paintBase();
+      }
       paintLive();
       raf = requestAnimationFrame(frame);
     };
@@ -245,7 +303,18 @@ export default function NetworkMap({ className = "" }: { className?: string }) {
     });
     theme.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-    const seen = new IntersectionObserver(([entry]) => (entry.isIntersecting ? play() : pause()));
+    const seen = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return pause();
+      // Back on screen after a jump (an anchor link, a fast fling): start from where the page now is, not mid-gather
+      if (!running && !still) {
+        const goal = gatherGoal();
+        if (goal === 0 || goal === 1) {
+          formed = goal;
+          redraw();
+        }
+      }
+      play();
+    });
     seen.observe(wrap);
 
     return () => {
