@@ -1,14 +1,13 @@
 import { useEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/hooks/use-motion";
 import { LAND } from "./world-land";
-import { HUBS, HUB_KEYS, LINKS } from "./world-hubs";
+import { HUBS, HUB_KEYS } from "./world-hubs";
 
 const DEG = Math.PI / 180;
 const TILT = 18; // latitude at the centre of the view, so the inhabited north faces us
 const START_LON = -25; // the Atlantic: the Americas, Europe and Africa all in view on first paint
 const SPIN = 4.5; // degrees per second, eastward like the real Earth
-const LIFT = 1.24; // canvas half-size over globe radius: room for the routes that arc off the surface
-const SAMPLES = 40; // points per route
+const LIFT = 1.18; // canvas half-size over globe radius: room for the halo
 
 type P3 = { x: number; y: number; z: number };
 
@@ -28,15 +27,13 @@ const palette = (el: Element) => {
     dark,
     land: dark ? v("--brand-text-rgb") : v("--line-rgb"),
     grid: dark ? v("--brand-text-rgb") : v("--brand-rgb"),
-    route: dark ? v("--sky-rgb") : v("--brand-rgb"),
-    pulse: dark ? "224 242 254" : v("--iris-rgb"),
     glow: v("--sky-rgb"),
     hub: dark ? "224 242 254" : v("--brand-rgb"),
   };
 };
 
 /**
- * A slowly turning dotted globe with the team's cities on it and routes arcing between them, each carrying a pulse.
+ * A slowly turning dotted globe with the team's cities shining on it.
  * Sized to its parent (keep it square). Pauses off screen; under reduced motion it draws one still view.
  */
 export default function Globe({ className = "" }: { className?: string }) {
@@ -76,23 +73,6 @@ export default function Globe({ className = "" }: { className?: string }) {
 
     const hubs = HUB_KEYS.map((k) => unit(HUBS[k][0], HUBS[k][1]));
 
-    // Each route: the great circle between two cities, lifted off the surface in proportion to its length
-    const routes = LINKS.map(([a, b], n) => {
-      const p = unit(HUBS[a][0], HUBS[a][1]);
-      const q = unit(HUBS[b][0], HUBS[b][1]);
-      const ang = Math.acos(Math.min(1, p.x * q.x + p.y * q.y + p.z * q.z));
-      const s = Math.sin(ang) || 1;
-      const height = 0.04 + ang * 0.16;
-      const pts: P3[] = [];
-      for (let k = 0; k <= SAMPLES; k++) {
-        const t = k / SAMPLES;
-        const wa = Math.sin((1 - t) * ang) / s, wb = Math.sin(t * ang) / s;
-        const r = 1 + height * Math.sin(Math.PI * t);
-        pts.push({ x: (wa * p.x + wb * q.x) * r, y: (wa * p.y + wb * q.y) * r, z: (wa * p.z + wb * q.z) * r });
-      }
-      return { pts, period: 2600 + ((n * 977) % 1900), phase: (n * 0.618) % 1 };
-    });
-
     // Lines of latitude and longitude, as sampled circles
     const grid: P3[][] = [];
     for (let lat = -60; lat <= 60; lat += 30) {
@@ -122,8 +102,6 @@ export default function Globe({ className = "" }: { className?: string }) {
       y: m[3] * p.x + m[4] * p.y + m[5] * p.z,
       z: m[6] * p.x + m[7] * p.y + m[8] * p.z,
     });
-    // A point off the surface is hidden only while the globe's disc covers it
-    const shown = (v: P3) => v.z > 0 || v.x * v.x + v.y * v.y > 1;
 
     const layout = () => {
       size = Math.min(wrap.clientWidth, wrap.clientHeight);
@@ -206,54 +184,19 @@ export default function Globe({ className = "" }: { className?: string }) {
         ctx.fill();
       }
 
-      // Routes: a faint arc, and a pulse that runs along it on its own clock
-      ctx.lineCap = "round";
-      for (const route of routes) {
-        const vs = route.pts.map(view);
-        ctx.strokeStyle = rgba(pal.route, pal.dark ? 0.35 : 0.3);
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        let pen = false;
-        vs.forEach((v) => {
-          if (!shown(v)) {
-            pen = false;
-            return;
-          }
-          const x = c + v.x * R, y = c - v.y * R;
-          if (pen) ctx.lineTo(x, y);
-          else ctx.moveTo(x, y);
-          pen = true;
-        });
-        ctx.stroke();
-
-        const head = ((now / route.period + route.phase) % 1) * 1.4 - 0.2; // rests a beat between runs
-        if (head < 0 || head > 1.2) continue;
-        const tail = 0.22;
-        ctx.lineWidth = 1.8;
-        for (let k = 1; k < vs.length; k++) {
-          const t = k / SAMPLES;
-          const d = head - t;
-          if (d < 0 || d > tail) continue;
-          const a = vs[k - 1], b = vs[k];
-          if (!shown(a) || !shown(b)) continue;
-          ctx.strokeStyle = rgba(pal.pulse, (1 - d / tail) * 0.9);
-          ctx.beginPath();
-          ctx.moveTo(c + a.x * R, c - a.y * R);
-          ctx.lineTo(c + b.x * R, c - b.y * R);
-          ctx.stroke();
-        }
-      }
-
-      // Cities on the near side: a breathing glow and a bright core
+      // Cities on the near side: each shines on its own beat, a soft glow swelling around a bright core
       hubs.forEach((p, n) => {
         const v = view(p);
         if (v.z <= 0.05) return;
         const x = c + v.x * R, y = c - v.y * R;
         const edge = Math.min(1, v.z * 3);
-        const b = 0.5 + 0.5 * Math.sin(now / (700 + n * 37) + n * 2.39);
-        ctx.fillStyle = rgba(pal.glow, edge * (0.12 + 0.18 * b));
+        const b = (0.5 + 0.5 * Math.sin(now / (700 + n * 37) + n * 2.39)) ** 2;
+        const glow = ctx.createRadialGradient(x, y, 0, x, y, 6 + 6 * b);
+        glow.addColorStop(0, rgba(pal.glow, edge * (0.25 + 0.4 * b)));
+        glow.addColorStop(1, rgba(pal.glow, 0));
+        ctx.fillStyle = glow;
         ctx.beginPath();
-        ctx.arc(x, y, 4 + 3 * b, 0, Math.PI * 2);
+        ctx.arc(x, y, 6 + 6 * b, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = rgba(pal.hub, edge * 0.95);
         ctx.beginPath();
