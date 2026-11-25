@@ -72,6 +72,20 @@ export default function Globe({ className = "" }: { className?: string }) {
     };
 
     const hubs = HUB_KEYS.map((k) => unit(HUBS[k][0], HUBS[k][1]));
+    // Each city lights the land dot nearest to it, so the light is part of the globe rather than a spark in front of
+    // it (most of the cities sit on a coast, between the dots or just offshore)
+    const snap = ({ xs, ys, zs }: ReturnType<typeof build>) =>
+      hubs.map((h) => {
+        let best = 0, dot = -2;
+        for (let i = 0; i < xs.length; i++) {
+          const d = h.x * xs[i] + h.y * ys[i] + h.z * zs[i];
+          if (d > dot) {
+            dot = d;
+            best = i;
+          }
+        }
+        return { x: xs[best], y: ys[best], z: zs[best] };
+      });
 
     // Lines of latitude and longitude, as sampled circles
     const grid: P3[][] = [];
@@ -88,6 +102,7 @@ export default function Globe({ className = "" }: { className?: string }) {
 
     let size = 0, dpr = 1, R = 0, c = 0;
     let land = landFor(1);
+    let lights = snap(land);
     let lon0 = START_LON;
     // Rotation as a matrix: spin about the pole, then tilt toward the viewer
     let m = [1, 0, 0, 0, 1, 0, 0, 0, 1];
@@ -114,6 +129,7 @@ export default function Globe({ className = "" }: { className?: string }) {
       ctx.canvas.style.height = `${size}px`;
       // Smaller globes take every other dot, so the land stays dotted rather than solid
       land = landFor(R < 170 ? 2 : 1);
+      lights = snap(land);
     };
 
     const paint = (now: number) => {
@@ -184,23 +200,33 @@ export default function Globe({ className = "" }: { className?: string }) {
         ctx.fill();
       }
 
-      // Cities on the near side: each shines on its own beat, a soft glow swelling around a bright core
-      hubs.forEach((p, n) => {
+      // City lights: their land dot shines a little larger and brighter on its own beat, with a glow that lies flat on
+      // the surface (squashed toward the rim) and dims toward the rim like the land around it
+      lights.forEach((p, n) => {
         const v = view(p);
-        if (v.z <= 0.05) return;
+        const edge = Math.min(1, Math.max(0, (v.z - 0.12) / 0.4));
+        if (edge <= 0) return;
         const x = c + v.x * R, y = c - v.y * R;
-        const edge = Math.min(1, v.z * 3);
+        const r = dotR * (0.7 + 0.3 * v.z);
         const b = (0.5 + 0.5 * Math.sin(now / (700 + n * 37) + n * 2.39)) ** 2;
-        const glow = ctx.createRadialGradient(x, y, 0, x, y, 6 + 6 * b);
-        glow.addColorStop(0, rgba(pal.glow, edge * (0.25 + 0.4 * b)));
+
+        const g = r * (3 + 3.5 * b);
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(Math.atan2(y - c, x - c));
+        ctx.scale(Math.max(0.25, v.z), 1);
+        const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, g);
+        glow.addColorStop(0, rgba(pal.glow, edge * (0.3 + 0.35 * b)));
         glow.addColorStop(1, rgba(pal.glow, 0));
         ctx.fillStyle = glow;
         ctx.beginPath();
-        ctx.arc(x, y, 6 + 6 * b, 0, Math.PI * 2);
+        ctx.arc(0, 0, g, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = rgba(pal.hub, edge * 0.95);
+        ctx.restore();
+
+        ctx.fillStyle = rgba(pal.hub, edge * (0.7 + 0.3 * b));
         ctx.beginPath();
-        ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+        ctx.arc(x, y, r * (1.25 + 0.25 * b), 0, Math.PI * 2);
         ctx.fill();
       });
     };
