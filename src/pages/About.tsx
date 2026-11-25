@@ -41,11 +41,11 @@ export default function About() {
         }
         aside={
           <div className="relative">
-            <div className="aspect-[4/3] overflow-hidden rounded-[2rem] border border-line bg-raised shadow-soft">
-              <img src="/images/remote/role-growth.webp" alt="" width={1280} height={800} className="h-full w-full object-cover" />
+            <div data-scroll className="aspect-[4/3] overflow-hidden rounded-[2rem] border border-line bg-raised shadow-soft">
+              <img src="/images/remote/role-growth.webp" alt="" width={1280} height={800} className="parallax-img h-full w-full object-cover" />
             </div>
-            <div className="absolute -bottom-8 -left-2 w-[46%] overflow-hidden rounded-[1.4rem] border-4 border-surface bg-raised shadow-soft sm:-left-8">
-              <img src="/images/remote/why-hours.webp" alt="" width={1280} height={800} className="aspect-[4/3] h-full w-full object-cover" />
+            <div data-scroll className="absolute -bottom-8 -left-2 w-[46%] overflow-hidden rounded-[1.4rem] border-4 border-surface bg-raised shadow-soft sm:-left-8">
+              <img src="/images/remote/why-hours.webp" alt="" width={1280} height={800} className="parallax-img aspect-[4/3] h-full w-full object-cover [--parallax:12%]" />
             </div>
           </div>
         }

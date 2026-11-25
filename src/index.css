@@ -409,6 +409,30 @@ html[data-theme="dark"] .site-root, .on-dark {
 /* Scroll-linked depth: layers drift at different speeds as the section passes (--p from useScrollProgress) */
 .drift { translate: 0 calc((var(--p, .5) - .5) * var(--drift, 60px)); }
 
+/* The rest of the scroll-linked motion, all driven by --p from a [data-scroll] ancestor (useScrollScenes).
+   Each uses `translate` / `scale` / `opacity` on elements whose entrance animations use other properties, so the two
+   compose instead of fighting. No transitions: the values follow the scroll frame by frame. */
+/* Hero, as it scrolls away: the copy lingers and fades, the globe sinks behind, the app windows lift ahead */
+.hero-copy { translate: 0 calc(var(--p, 0) * 160px); opacity: calc(1 - var(--p, 0) * 1.5); }
+.hero-far { translate: 0 calc(var(--p, 0) * 240px); }
+.hero-near { translate: 0 calc(var(--p, 0) * -70px); }
+/* Photos in a clipped frame: zoomed slightly, they slide against the frame as it passes (--parallax sets the range
+   and direction; keep it within twice the extra zoom, 12% at 1.14) */
+.parallax-img { scale: 1.14; translate: 0 calc((var(--p, .5) - .5) * var(--parallax, -12%)); will-change: translate; }
+/* A large panel tips up from a 3D tilt and settles flat as it comes in */
+.scroll-tilt-host { perspective: 1600px; }
+.scroll-tilt { transform-origin: 50% 100%; rotate: x calc((1 - var(--p, 1)) * 16deg); scale: calc(.92 + var(--p, 1) * .08); opacity: calc(.35 + var(--p, 1) * .65); }
+/* Closing call-to-action cards swell to full size as they arrive */
+.scroll-zoom { scale: calc(.88 + var(--p, 1) * .12); }
+/* One column on phones and tablets: the copy sits right above the windows, so the layers part more gently */
+@media (max-width: 1023px) {
+  .hero-copy { translate: 0 calc(var(--p, 0) * 50px); }
+  .hero-near { translate: 0 calc(var(--p, 0) * -30px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy, .hero-far, .hero-near, .parallax-img, .scroll-tilt, .scroll-zoom { translate: none; rotate: none; scale: none; opacity: 1; }
+}
+
 /* Scroll progress line along the bottom of the navbar */
 .scroll-line { transform: scaleX(var(--progress, 0)); transform-origin: left; }
 

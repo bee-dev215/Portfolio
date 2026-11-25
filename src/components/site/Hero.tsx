@@ -117,11 +117,13 @@ function Windows() {
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden pt-32 sm:pt-36 lg:pt-28">
+    // As the reader scrolls on, the hero comes apart in depth: the copy lingers and fades, the globe sinks behind,
+    // the app windows lift ahead (data-scroll="exit" drives the .hero-* layers)
+    <section data-scroll="exit" className="relative overflow-hidden pt-32 sm:pt-36 lg:pt-28">
       <div className="wash pointer-events-none absolute inset-0" aria-hidden="true" />
 
       <div className="relative mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-14 px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">
-        <div>
+        <div className="hero-copy">
           <p className="fade-up eyebrow eyebrow-pill" style={{ animationDelay: ".05s" }}>
             <Globe2 className="h-4 w-4 text-brand-text" aria-hidden="true" />
             Remote-first · Open to applicants worldwide
@@ -153,8 +155,8 @@ export default function Hero() {
 
         <div className="fade-up relative" style={{ animationDelay: ".24s" }}>
           {/* The world turning behind the app windows: the team's cities, linked across every ocean */}
-          <Globe className="absolute left-[56%] top-0 aspect-square w-[108%] -translate-x-1/2 -translate-y-[10%]" />
-          <div className="relative pt-[25%]">
+          <Globe className="hero-far absolute left-[56%] top-0 aspect-square w-[108%] -translate-x-1/2 -translate-y-[10%]" />
+          <div className="hero-near relative pt-[25%]">
             <Windows />
           </div>
         </div>

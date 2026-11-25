@@ -394,13 +394,15 @@ export default function Workspace() {
           </div>
         </Reveal>
 
+        {/* The panel tips up from a 3D tilt and settles flat as it scrolls in */}
+        <div data-scroll="settle" className="scroll-tilt-host">
         <div
           ref={ref}
           id="workspace-panel"
           role="tabpanel"
           onPointerEnter={() => (hovering.current = true)}
           onPointerLeave={() => (hovering.current = false)}
-          className="card mt-5 grid items-center gap-10 p-7 sm:p-10 lg:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)] lg:gap-14 lg:p-12"
+          className="scroll-tilt card mt-5 grid items-center gap-10 p-7 sm:p-10 lg:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)] lg:gap-14 lg:p-12"
         >
           <div key={active} className="ws-view">
             <h3 className="font-display text-[clamp(1.7rem,3vw,2.3rem)] font-normal leading-tight tracking-[-0.015em] text-ink">{feature.headline}</h3>
@@ -418,6 +420,7 @@ export default function Workspace() {
             <div className="pointer-events-none absolute -inset-8 -z-10 rounded-[2.5rem] bg-[radial-gradient(closest-side,rgb(var(--iris-rgb)/.18),transparent)]" aria-hidden="true" />
             <Window active={active} onPick={pick} />
           </div>
+        </div>
         </div>
       </div>
     </section>

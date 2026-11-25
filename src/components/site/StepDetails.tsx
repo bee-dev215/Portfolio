@@ -51,7 +51,9 @@ export default function StepDetails() {
                 <div className="relative px-3 py-3 sm:px-6 sm:py-6">
                   <div className={`tilt-back absolute inset-0 rounded-[2rem] ${flip ? "is-flip" : ""}`} aria-hidden="true" />
                   <div className="relative overflow-hidden rounded-[1.5rem] border border-line bg-surface p-2 shadow-[0_30px_60px_-30px_rgb(15_31_61/.4)]">
-                    <img src={s.image} alt="" loading="lazy" width={1280} height={800} style={{ objectPosition: s.focus }} className="aspect-[16/11] w-full rounded-[1.1rem] object-cover" />
+                    <div data-scroll className="overflow-hidden rounded-[1.1rem]">
+                      <img src={s.image} alt="" loading="lazy" width={1280} height={800} style={{ objectPosition: s.focus }} className="parallax-img aspect-[16/11] w-full object-cover" />
+                    </div>
                   </div>
                 </div>
               </Reveal>

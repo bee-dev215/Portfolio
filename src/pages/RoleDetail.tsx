@@ -74,8 +74,8 @@ export default function RoleDetail() {
         }
         aside={
           <div className="relative">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-line bg-raised shadow-soft">
-              <img src={role.image} alt="" width={1280} height={800} style={{ objectPosition: role.focus }} className="h-full w-full object-cover" />
+            <div data-scroll className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-line bg-raised shadow-soft">
+              <img src={role.image} alt="" width={1280} height={800} style={{ objectPosition: role.focus }} className="parallax-img h-full w-full object-cover" />
               <div className="photo-fade absolute inset-0" />
             </div>
             <div className="glass absolute -bottom-6 left-4 right-4 grid grid-cols-2 gap-3 rounded-2xl border border-line p-4 shadow-soft sm:left-8 sm:right-8">

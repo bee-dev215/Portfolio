@@ -37,8 +37,9 @@ export default function GlobalTeam() {
   }, []);
 
   return (
-    <section id="global" className="relative overflow-hidden px-5 py-24 sm:px-8 lg:py-32">
-      <NetworkMap className="opacity-90" />
+    <section id="global" data-scroll className="relative overflow-hidden px-5 py-24 sm:px-8 lg:py-32">
+      {/* The map drifts slower than the page, so it reads as a layer far behind the cards */}
+      <NetworkMap className="drift opacity-90 [--drift:140px]" />
       <div className="relative mx-auto max-w-[1240px]">
         <SectionHeading
           center

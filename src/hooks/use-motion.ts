@@ -127,6 +127,76 @@ export function useInteractions() {
   }, []);
 }
 
+export type ScrollMode = "through" | "enter" | "exit" | "settle";
+
+/** An element's scroll progress, clamped to 0–1. See useScrollScenes for what each mode measures. */
+function scrollProgress(r: DOMRect, vh: number, mode: ScrollMode) {
+  let p: number;
+  if (mode === "exit") p = -r.top / Math.max(1, r.height);
+  else if (mode === "settle") p = (vh - r.top) / (vh * 0.6);
+  else if (mode === "enter") p = (vh - r.top) / Math.max(1, r.height);
+  else p = (vh - r.top) / (vh + r.height);
+  return Math.min(1, Math.max(0, p));
+}
+
+/**
+ * Scroll-linked motion for the whole page, from one scroll listener: every element marked `data-scroll` gets its
+ * progress (0–1) written to `--p` each frame while it is on screen, and its children animate off that in CSS.
+ * - "through" (default): 0 as its top enters the bottom of the viewport, 1 as its bottom leaves the top (parallax).
+ * - "exit": 0 while its top sits at the top of the viewport, 1 once it has scrolled fully out (the hero).
+ * - "settle": 0 as its top enters, 1 once its top is 40% up the viewport (tilts and zooms that land early).
+ * - "enter": 0 as its top enters, 1 once its bottom is in view.
+ * Put `data-scroll` on a frame that doesn't move itself, so the motion can't feed back into the measurement.
+ * Skipped under reduced motion, so CSS should give `var(--p, …)` its resting value.
+ */
+export function useScrollScenes(key?: string) {
+  useEffect(() => {
+    if (prefersReducedMotion() || typeof IntersectionObserver === "undefined") return;
+    const els = Array.from(document.querySelectorAll<HTMLElement>("[data-scroll]"));
+    if (!els.length) return;
+
+    const visible = new Set<HTMLElement>();
+    const write = (el: HTMLElement, vh: number) => {
+      const mode = (el.dataset.scroll || "through") as ScrollMode;
+      el.style.setProperty("--p", scrollProgress(el.getBoundingClientRect(), vh, mode).toFixed(4));
+    };
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      visible.forEach((el) => write(el, vh));
+    };
+    const schedule = () => {
+      if (!raf && visible.size) raf = requestAnimationFrame(update);
+    };
+
+    // Place everything once up front so nothing jumps on its first frame
+    els.forEach((el) => write(el, window.innerHeight));
+    const obs = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        const el = e.target as HTMLElement;
+        if (e.isIntersecting) visible.add(el);
+        else {
+          // A fast scroll can skip past the last frames: pin it to where it rests off screen (0 or 1)
+          visible.delete(el);
+          write(el, window.innerHeight);
+        }
+      }
+      schedule();
+    });
+    els.forEach((el) => obs.observe(el));
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      obs.disconnect();
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      els.forEach((el) => el.style.removeProperty("--p"));
+    };
+  }, [key]);
+}
+
 /**
  * Writes the element's scroll progress (0–1) to the CSS variable `--p` on it, once per frame while it is on screen.
  * "through": 0 as its top enters the bottom of the viewport, 1 as its bottom leaves the top (parallax).

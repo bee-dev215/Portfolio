@@ -96,9 +96,9 @@ export function ClosingCta({
   caption?: string;
 }) {
   return (
-    <section className="px-5 py-20 sm:px-8 lg:py-28">
+    <section data-scroll="settle" className="px-5 py-20 sm:px-8 lg:py-28">
       <Reveal variant="scale" className="mx-auto max-w-[1200px]">
-        <div className="wash-card rounded-[2rem] border border-line px-6 py-14 text-center sm:px-12 lg:py-20">
+        <div className="scroll-zoom wash-card rounded-[2rem] border border-line px-6 py-14 text-center sm:px-12 lg:py-20">
           <p className="eyebrow">{eyebrow}</p>
           <h2 className="mx-auto mt-4 max-w-3xl text-balance font-display text-[clamp(2rem,4.4vw,3.4rem)] font-normal leading-[1.08] tracking-[-0.02em] text-ink">{title}</h2>
           <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-ink-2">{text}</p>
