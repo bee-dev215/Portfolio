@@ -188,7 +188,7 @@ html[data-theme="dark"] .site-root, .on-dark {
   --sky-2: rgb(56 189 248 / .14);
   --sky-top: #0c1630;
   --cloud-o: .08;
-  --logo-mark: url("/images/logo-mark-dark.webp"); /* the J's navy shading lifted to blue so it reads on dark */
+  --logo-mark: url("/images/logo-mark-dark.webp"); /* the navy tiles lifted to pale blue so they read on dark */
   color: var(--ink);
 }
 .site-root {
@@ -276,11 +276,11 @@ html[data-theme="dark"] .site-root, .on-dark {
    A lighter band of the gradient travels slowly through the words */
 .gradient-text { color: rgb(var(--brand-text-rgb)); }
 .bg-grad { background: rgb(var(--brand-rgb)); }
-/* Logo, cut from public/images/logo.png: the tile J (swapped per theme via --logo-mark) and the "Jovano" wordmark,
+/* Logo, cut from public/images/logo.png: the four window tiles (swapped per theme via --logo-mark) and the "Jovano" wordmark,
    which is a mask so it takes the text colour. Size them with a height; the width follows. */
-.logo-mark { aspect-ratio: 419 / 515; background: var(--logo-mark) center / contain no-repeat; }
+.logo-mark { aspect-ratio: 524 / 483; background: var(--logo-mark) center / contain no-repeat; }
 .logo-wordmark {
-  aspect-ratio: 1365 / 315; background-color: currentColor;
+  aspect-ratio: 1211 / 268; background-color: currentColor;
   -webkit-mask: url("/images/logo-wordmark.webp") center / contain no-repeat; mask: url("/images/logo-wordmark.webp") center / contain no-repeat;
 }
 /* 1px gradient border on a rounded element (set a background on the element itself) */

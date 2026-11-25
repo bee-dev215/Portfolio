@@ -39,7 +39,7 @@ function useScrollState() {
   return { active, scrolled };
 }
 
-/** Logo mark: the tile J from public/images/logo.png, fitted inside the box. public/images/favicon.png is the same artwork. */
+/** Logo mark: the four window tiles from public/images/logo.png, fitted inside the box. public/images/favicon.png is the same artwork. */
 export const Monogram = ({ className = "h-9 w-9" }: { className?: string }) => <span aria-hidden="true" className={`logo-mark block shrink-0 ${className}`} />;
 
 /** The "Jovano" wordmark from the logo; set its height, the width follows. */
