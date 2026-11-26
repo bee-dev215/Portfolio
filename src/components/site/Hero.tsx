@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Globe2, Mic, PhoneOff, Video, Wallet } from "lucide-react";
 import { Link } from "react-router-dom";
 import { rolePath, roles } from "@/data/company";
-import { usePointerDepth } from "@/hooks/use-motion";
 import { Monogram } from "./Navbar";
 import HeroDots from "./HeroDots";
 import { roleIcons } from "./icons";
@@ -48,7 +47,7 @@ function Windows() {
   return (
     <div className="relative mx-auto w-full max-w-[620px] pb-24 sm:pb-28" aria-hidden="true">
       {/* back: the interview call */}
-      <div className="hero-photo hero-back overflow-hidden rounded-[1.4rem] border border-line bg-surface shadow-[0_30px_70px_-30px_rgb(15_31_61/.45)]">
+      <div className="hero-photo overflow-hidden rounded-[1.4rem] border border-line bg-surface shadow-[0_30px_70px_-30px_rgb(15_31_61/.45)]">
         <div className="flex items-center gap-3 border-b border-line px-4 py-2.5">
           {dots}
           <span className="flex items-center gap-1.5 rounded-full bg-raised px-2.5 py-1 text-[11px] font-semibold text-ink-2">
@@ -81,7 +80,7 @@ function Windows() {
       </div>
 
       {/* front: the workspace */}
-      <div className="hero-photo hero-front absolute bottom-0 right-[-4%] w-[72%] overflow-hidden rounded-[1.2rem] border border-line bg-surface shadow-[0_30px_70px_-24px_rgb(15_31_61/.45)] sm:right-[-8%]" style={{ animationDelay: ".2s" }}>
+      <div className="hero-photo absolute bottom-0 right-[-4%] w-[72%] overflow-hidden rounded-[1.2rem] border border-line bg-surface shadow-[0_30px_70px_-24px_rgb(15_31_61/.45)] sm:right-[-8%]" style={{ animationDelay: ".2s" }}>
         <div className="flex items-center gap-2 border-b border-line px-3.5 py-2">
           {dots}
           <span className="ml-2 text-[11px] font-semibold text-ink-2">Jovano Workspace</span>
@@ -117,12 +116,10 @@ function Windows() {
 }
 
 export default function Hero() {
-  // The pointer's offset across the hero (--tx / --ty) tilts the windows and shifts each layer by its depth
-  const depth = usePointerDepth<HTMLElement>();
   return (
     // As the reader scrolls on, the hero comes apart in depth: the copy lingers and fades, the globe sinks behind,
     // the app windows lift ahead (data-scroll="exit" drives the .hero-* layers)
-    <section ref={depth} data-scroll="exit" className="relative overflow-hidden pt-32 sm:pt-36 lg:pt-28">
+    <section data-scroll="exit" className="relative overflow-hidden pt-32 sm:pt-36 lg:pt-28">
       <div className="wash pointer-events-none absolute inset-0" aria-hidden="true" />
 
       <div className="relative mx-auto grid max-w-[1240px] grid-cols-1 items-center gap-14 px-5 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12">

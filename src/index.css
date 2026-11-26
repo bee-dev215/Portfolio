@@ -205,7 +205,7 @@ html[data-theme="dark"] .site-root, .on-dark {
     radial-gradient(38vmax 28vmax at 18% 22%, rgb(var(--sky-rgb) / .16), transparent 62%),
     radial-gradient(34vmax 26vmax at 82% 30%, rgb(var(--brand-rgb) / .12), transparent 62%),
     radial-gradient(44vmax 30vmax at 50% 82%, rgb(125 211 252 / .14), transparent 62%);
-  animation: aurora 26s ease-in-out infinite alternate;
+  animation: aurora 26s ease-in-out infinite alternate; opacity: 0;
 }
 @keyframes aurora {
   50% { transform: translate3d(5vmax, -3vmax, 0) rotate(7deg); }
@@ -275,15 +275,6 @@ html[data-theme="dark"] .site-root, .on-dark {
    negative margins to keep the layout unchanged; matters for tight line-heights and inline-block (.word) titles.
    A lighter band of the gradient travels slowly through the words */
 .gradient-text { color: rgb(var(--brand-text-rgb)); }
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  .gradient-text {
-    color: transparent; background: var(--grad-text) 0 50% / 200% auto; -webkit-background-clip: text; background-clip: text;
-    padding: .1em .06em .14em; margin: -.1em -.06em -.14em; -webkit-box-decoration-break: clone; box-decoration-break: clone;
-    animation: text-flow 9s linear infinite;
-  }
-}
-@keyframes text-flow { to { background-position: -200% 50%; } }
-.rotator > .gradient-text { padding: 0; margin: 0; } /* the rotator pads its own clipping box past the glyphs */
 .bg-grad { background: rgb(var(--brand-rgb)); }
 /* Logo, cut from public/images/logo.png: the four window tiles (swapped per theme via --logo-mark) and the "Jovano" wordmark,
    which is a mask so it takes the text colour. Size them with a height; the width follows. */
@@ -306,15 +297,14 @@ html[data-theme="dark"] .site-root, .on-dark {
 .card-hover { position: relative; transition: scale .2s var(--ease), translate .35s var(--ease-out), transform .45s var(--ease-out), box-shadow .3s var(--ease), border-color .3s var(--ease); }
 .card-hover::before {
   content: ""; position: absolute; inset: -1px; z-index: 1; padding: 1.5px; border-radius: inherit; pointer-events: none;
-  background: conic-gradient(from var(--spin, 0deg),rgb(var(--iris-rgb)), rgb(var(--brand-rgb)), rgb(var(--sky-rgb)), transparent 70%, rgb(var(--iris-rgb)));
-  opacity: 0; transition: opacity .3s var(--ease);
+  background: transparent; opacity: 0; transition: opacity .3s var(--ease);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
 }
 /* Spotlight: a soft sky-blue glow follows the pointer across a hoverable card (useSpotlight writes --mx / --my).
    Add .spotlight to give the glow to something that isn't a .card-hover */
 .card-hover::after, .spotlight::after {
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(var(--brand-rgb) / .1), rgb(var(--iris-rgb) / .04) 40%, transparent 65%);
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(var(--brand-rgb) / .05), transparent 60%);
   opacity: 0; transition: opacity .3s;
 }
 .spotlight { position: relative; }
@@ -322,7 +312,7 @@ html[data-theme="dark"] .site-root, .on-dark {
    the border turns brand blue, the shadow deepens and the spotlight follows the pointer */
 @media (hover: hover) and (pointer: fine) {
   .card-hover:hover { border-color: var(--line-strong); box-shadow: var(--shadow-card-lg); translate: 0 -3px; }
-  .card-hover:hover::before { opacity: 1; animation: spin-border 3.2s linear infinite; }
+  .card-hover:hover::before { opacity: 1; }
   .card-hover:hover::after, .spotlight:hover::after { opacity: 1; }
 }
 .glass { background: rgb(var(--surface-rgb) / .72); backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4); }
@@ -333,16 +323,15 @@ html[data-theme="dark"] .site-root, .on-dark {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: 9999px; font-weight: 600;
   transition: transform .15s var(--ease), scale .15s var(--ease), box-shadow .2s var(--ease), background-color .2s, border-color .2s, color .2s, opacity .2s, filter .15s;
   -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none;
-  position: relative; isolation: isolate; /* click ripples (.ripple-host) sit under the label */
 }
 .btn:disabled, .btn[aria-disabled="true"] { cursor: not-allowed; opacity: .55; box-shadow: none; }
 /* Primary: the blue → sky gradient pill on a soft blue glow. On hover (or keyboard focus) it lifts and a band of light
    sweeps across it */
 /* The gradient flows slowly through the pill all the time, faster while hovered; magnetic buttons drift toward the
    pointer through `translate` (useInteractions), which composes with the hover lift */
-.btn-primary { position: relative; overflow: hidden; background: rgb(var(--brand-rgb)) var(--grad-flow) 0 0 / 300% 100%; color: rgb(var(--on-brand-rgb)); box-shadow: var(--shadow-btn); animation: grad-flow 10s linear infinite; }
+.btn-primary { position: relative; background: rgb(var(--brand-rgb)); color: rgb(var(--on-brand-rgb)); box-shadow: var(--shadow-btn); }
 @keyframes grad-flow { to { background-position: -300% 0; } }
-.btn-primary::after {
+.btn-primary::after { display: none;
   content: ""; position: absolute; inset: 0 auto 0 -60%; width: 40%; pointer-events: none;
   background: linear-gradient(100deg, transparent, rgb(255 255 255 / .38), transparent); transform: skewX(-20deg);
   transition: left .6s ease;
@@ -352,7 +341,7 @@ html[data-theme="dark"] .site-root, .on-dark {
 .btn-dark { background: var(--ink); color: rgb(var(--canvas-rgb)); }
 .btn.is-magnetic { transition: translate .35s var(--ease-out), transform .15s var(--ease), scale .15s var(--ease), box-shadow .2s var(--ease), background-color .2s, border-color .2s, color .2s, opacity .2s, filter .15s; }
 @media (hover: hover) and (pointer: fine) {
-  .btn-primary:hover:not(:disabled) { filter: brightness(1.08) saturate(1.15); box-shadow: var(--shadow-btn-hover), 0 0 28px -4px rgb(var(--iris-rgb) / .45); transform: translateY(-1px); }
+  .btn-primary:hover:not(:disabled) { background: rgb(var(--brand-hi-rgb)); box-shadow: var(--shadow-btn-hover); transform: translateY(-1px); }
   .btn-dark:hover:not(:disabled) { background: rgb(var(--brand-rgb)); color: #fff; transform: translateY(-1px); }
   .btn-primary:hover:not(:disabled)::after { left: 130%; }
   .btn-secondary:hover:not(:disabled) { border-color: var(--ink); transform: translateY(-1px); }
@@ -408,7 +397,7 @@ html[data-theme="dark"] .site-root, .on-dark {
 .rv.rv-in { opacity: 1; transform: none; }
 
 /* Section titles: words rise out of a soft blur one after another; the gradient phrase lands last */
-.word { display: inline-block; opacity: 0; transform: translateY(.35em) rotate(2deg); filter: blur(8px); transition: opacity .7s var(--ease), transform .8s var(--ease), filter .7s var(--ease); transition-delay: calc(var(--rv-delay, 0ms) + 80ms + var(--w, 0) * 60ms); }
+.word { display: inline-block; opacity: 0; transform: translateY(.25em); transition: opacity .7s var(--ease), transform .8s var(--ease), filter .7s var(--ease); transition-delay: calc(var(--rv-delay, 0ms) + 80ms + var(--w, 0) * 60ms); }
 .rv-in .word { opacity: 1; transform: none; filter: blur(0); }
 
 /* Photo unveil: a curtain wipes up while the photo settles from a slight zoom */
@@ -665,28 +654,16 @@ html:not([data-theme="dark"]) .kinetic:not(.kinetic-tape) .kinetic-star { color:
 .kinetic-tape .kinetic-star { color: #0b1020; filter: none; width: .7em; height: .7em; }
 
 /* Cursor ring: trails the pointer and swells over anything clickable (fine pointers only; the native cursor stays) */
-/* CursorFx.tsx positions each layer with an inline transform; the ring's inner span carries its size so it can swell */
-.cursor-ring, .cursor-dot, .cursor-glow { position: fixed; left: 0; top: 0; pointer-events: none; opacity: 0; transition: opacity .3s; will-change: transform; }
-.cursor-ring { z-index: 90; width: 0; height: 0; }
-.cursor-ring > span {
-  position: absolute; left: -17px; top: -17px; width: 34px; height: 34px; border-radius: 9999px;
-  border: 1.5px solid rgb(var(--brand-rgb) / .65);
-  transition: inset .35s var(--ease-out), width .35s var(--ease-out), height .35s var(--ease-out), left .35s var(--ease-out), top .35s var(--ease-out), background-color .3s, border-color .3s, opacity .2s;
+.cursor-ring {
+  position: fixed; left: 0; top: 0; z-index: 90; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 9999px; pointer-events: none;
+  border: 1.5px solid rgb(var(--brand-rgb) / .7); opacity: 0;
+  transition: width .3s var(--ease-out), height .3s var(--ease-out), margin .3s var(--ease-out), background-color .3s, border-color .3s, opacity .3s;
 }
-.cursor-ring.is-on, .cursor-dot.is-on, .cursor-glow.is-on { opacity: 1; }
-.cursor-ring.is-link > span { left: -30px; top: -30px; width: 60px; height: 60px; background: rgb(var(--iris-rgb) / .1); border-color: rgb(var(--iris-rgb) / .5); backdrop-filter: saturate(1.4); }
-.cursor-ring.is-down > span { left: -12px; top: -12px; width: 24px; height: 24px; background: rgb(var(--brand-rgb) / .2); }
-.cursor-ring.is-text > span { opacity: 0; }
-.cursor-dot { z-index: 91; width: 0; height: 0; }
-.cursor-dot::before { content: ""; position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; border-radius: 9999px; background: rgb(var(--iris-rgb)); box-shadow: 0 0 10px rgb(var(--iris-rgb) / .7); transition: opacity .2s; }
-.cursor-dot.is-text::before { opacity: 0; }
-/* A wide wash of brand light behind the page content, trailing the pointer */
-.cursor-glow { z-index: -1; width: 0; height: 0; }
-.cursor-glow::before {
-  content: ""; position: absolute; left: -300px; top: -300px; width: 600px; height: 600px; border-radius: 9999px;
-  background: radial-gradient(closest-side, rgb(var(--brand-rgb) / .1), rgb(var(--iris-rgb) / .05) 50%, transparent);
-}
-html[data-theme="dark"] .cursor-glow::before { background: radial-gradient(closest-side, rgb(var(--brand-rgb) / .18), rgb(var(--iris-rgb) / .08) 50%, transparent); }
+.cursor-ring.is-on { opacity: 1; }
+.cursor-ring.is-link { width: 64px; height: 64px; margin: -32px 0 0 -32px; background: rgb(var(--iris-rgb) / .12); border-color: rgb(var(--iris-rgb) / .55); }
+.cursor-ring.is-down { width: 26px; height: 26px; margin: -13px 0 0 -13px; }
+.cursor-dot { position: fixed; left: 0; top: 0; z-index: 91; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 9999px; pointer-events: none; background: rgb(var(--iris-rgb)); opacity: 0; transition: opacity .3s; }
+.cursor-dot.is-on { opacity: 1; }
 
 /* Floating "Book a call" pill: rises in once the hero is behind the reader, steps aside for the footer */
 .sticky-cta { opacity: 0; translate: -50% 24px; pointer-events: none; transition: opacity .35s var(--ease), translate .5s var(--ease-out); }
@@ -791,9 +768,8 @@ html[data-theme="dark"] .cursor-glow::before { background: radial-gradient(close
 @keyframes net-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .net-map { animation: none; } }
 
-/* Hero dots (HeroDots.tsx): a field of brand dots behind the app windows, fading out toward its edges and
-   drifting slowly, over a faint glow */
-/* The dots themselves are drawn on the canvas inside (they react to the pointer); this layer is the glow under them */
+/* Hero dots (HeroDots.tsx): the dots are drawn on the canvas inside (they drift, ripple and react to the pointer);
+   this layer is the faint glow under them */
 .hero-dots {
   background: radial-gradient(closest-side, rgb(var(--sky-rgb) / .18), rgb(var(--iris-rgb) / .08) 60%, transparent);
   animation: hero-dots-in 1.6s var(--ease-out) .15s both;
@@ -841,34 +817,3 @@ html[data-theme="dark"] .cursor-glow::before { background: radial-gradient(close
    :focus-visible ring would otherwise box it in) and the browser's autofill colours don't paint a light block on navy */
 .site-root .foot-input, .site-root .foot-input:focus, .site-root .foot-input:focus-visible { outline: none; box-shadow: none; }
 .site-root .foot-input:-webkit-autofill { -webkit-text-fill-color: #fff; -webkit-box-shadow: 0 0 0 40px #16294c inset; caret-color: #7dd3fc; }
-
-/* ============================================================
-   SPARK LAYER — pointer play and finishing light
-   ============================================================ */
-/* Hoverable cards: the gradient edge spins around the card while it is hovered */
-@property --spin { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-@keyframes spin-border { to { --spin: 360deg; } }
-
-/* Click ripples (useRipples): a ring of light spreads from the spot that was pressed, under the label */
-.ripple-host { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; }
-.ripple-host > i {
-  position: absolute; border-radius: 50%; translate: -50% -50%; scale: 0; pointer-events: none;
-  background: radial-gradient(closest-side, rgb(255 255 255 / .5), rgb(255 255 255 / .18) 55%, transparent);
-  animation: ripple .75s var(--ease-out) forwards;
-}
-.btn-secondary .ripple-host > i { background: radial-gradient(closest-side, rgb(var(--brand-rgb) / .25), rgb(var(--brand-rgb) / .08) 55%, transparent); }
-@keyframes ripple { 60% { opacity: 1; } to { scale: 1; opacity: 0; } }
-
-/* Hero pointer depth (usePointerDepth writes --tx / --ty, −1 to 1): the windows tilt toward the pointer, the front
-   window floats ahead of the back one and the copy eases the other way. `transform` is free on all of these (their
-   entrance and scroll motion use `translate` / `scale`), so the three compose */
-.hero-near { transform: perspective(1400px) rotateY(calc(var(--tx, 0) * 7deg)) rotateX(calc(var(--ty, 0) * -6deg)); }
-.hero-back { transform: translate3d(calc(var(--tx, 0) * -10px), calc(var(--ty, 0) * -8px), 0); }
-.hero-front { transform: translate3d(calc(var(--tx, 0) * 24px), calc(var(--ty, 0) * 18px), 0); }
-.hero-copy { transform: translate3d(calc(var(--tx, 0) * -10px), calc(var(--ty, 0) * -6px), 0); }
-
-@media (prefers-reduced-motion: reduce) {
-  .card-hover:hover::before { animation: none; }
-  .cursor-ring, .cursor-dot, .cursor-glow, .ripple-host { display: none; }
-  .hero-near, .hero-back, .hero-front, .hero-copy { transform: none; }
-}
