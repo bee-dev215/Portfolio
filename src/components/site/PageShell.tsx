@@ -1,11 +1,12 @@
 import { MouseEvent, ReactNode, useEffect, useLayoutEffect, useRef } from "react";
 import { useLocation, useNavigate, useNavigationType } from "react-router-dom";
 import { company, setNavigator } from "@/data/company";
-import { useScrollScenes, useSpotlight } from "@/hooks/use-motion";
+import { useInteractions, useRipples, useScrollScenes, useSpotlight } from "@/hooks/use-motion";
 import { arriveAt, glideTo, scrollToElement, targetTop } from "@/lib/scroll";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollTop from "./ScrollTop";
+import CursorFx from "./CursorFx";
 
 const DEFAULT_TITLE = `${company.name} — Join our global remote team`;
 
@@ -73,6 +74,8 @@ export default function PageShell({
   const lastPath = useRef<string | null>(null);
   const lastSearch = useRef<string | null>(null);
   useSpotlight();
+  useInteractions();
+  useRipples();
   useScrollScenes(pathname);
 
   useEffect(() => {
@@ -175,6 +178,7 @@ export default function PageShell({
       </main>
       <Footer cta={footerCta} />
       <ScrollTop />
+      <CursorFx />
     </div>
   );
 }
